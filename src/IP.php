@@ -207,4 +207,15 @@ class IP
     {
         return $this->getNetworkIp($cidr)->getBinary() === $ip->getNetworkIp($cidr)->getBinary();
     }
+
+    /**
+     * To String (Magic Method)
+     *
+     * @access public
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->getBinary();
+    }
 }

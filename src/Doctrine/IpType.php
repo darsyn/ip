@@ -1,0 +1,104 @@
+<?php
+namespace Darsyn\IP\Doctrine;
+
+use Darsyn\IP\InvalidIpAddressException;
+use Darsyn\IP\IP;
+use Doctrine\DBAL\Types\ConversionException;
+use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Platforms\AbstractPlatform;
+
+/**
+ * Field type mapping for the Doctrine Database Abstraction Layer (DBAL).
+ *
+ * UUID fields will be stored as a string in the database and converted back to
+ * the Uuid value object when querying.
+ */
+class IpType extends Type
+{
+    /**
+     * @var string
+     */
+    const NAME = 'ip';
+
+    /**
+     * Get SQL Declaration
+     *
+     * @access public
+     * @param array $fieldDeclaration
+     * @param \Doctrine\DBAL\Platforms\AbstractPlatform $platform
+     * @return string
+     */
+    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    {
+        $fieldDeclaration['length'] = 16;
+        return $platform->getBinaryTypeDeclarationSQL($fieldDeclaration);
+    }
+
+    /**
+     * Convert to PHP Value
+     *
+     * @access public
+     * @param string $value
+     * @param \Doctrine\DBAL\Platforms\AbstractPlatform $platform
+     * @throws \Doctrine\DBAL\Types\ConversationException
+     * @return \Darsyn\IP\IP
+     */
+    public function convertToPHPValue($value, AbstractPlatform $platform)
+    {
+        if (empty($value)) {
+            return null;
+        }
+        if ($value instanceof IP) {
+            return $value;
+        }
+        try {
+            $ip = new IP($value);
+        } catch (InvalidIpAddressException $e) {
+            throw ConversionException::conversionFailed($value, self::NAME);
+        }
+        return $ip;
+    }
+
+    /**
+     * Convert to Database Value
+     *
+     * @access public
+     * @param \Darsyn\IP\IP $value
+     * @param \Doctrine\DBAL\Platforms\AbstractPlatform $platform
+     * @throws \Doctrine\DBAL\Types\ConversationException
+     * @return void
+     */
+    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    {
+        if (empty($value)) {
+            return null;
+        }
+        if ($value instanceof IP || IP::validate($value)) {
+            return (string) $value;
+        }
+        throw ConversionException::conversionFailed($value, self::NAME);
+    }
+
+    /**
+     * Get Type Name
+     *
+     * @access public
+     * @return string
+     */
+    public function getName()
+    {
+        return self::NAME;
+    }
+
+    /**
+     * Requires SQL Comment Hint?
+     *
+     * @access public
+     * @param \Doctrine\DBAL\Platforms\AbstractPlatform $platform
+     * @return boolean
+     */
+    public function requiresSQLCommentHint(AbstractPlatform $platform)
+    {
+        return true;
+    }
+}
