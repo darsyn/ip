@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- http://phpunit.de/manual/4.1/en/appendixes.configuration.html -->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.8/phpunit.xsd"
+         backupGlobals="false"
+         colors="true"
+         bootstrap="vendor/autoload.php"
+>
+    <testsuites>
+        <testsuite name="Project Test Suite">
+            <directory suffix="Test.php">tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <!-- Logging. -->
+    <logging>
+        <log type="coverage-html" target="build/coverage/" charset="UTF-8" highlight="true" lowUpperBound="60" highLowerBound="85" />
+        <log type="coverage-clover" target="build/coverage.xml" />
+        <log type="coverage-text" target="php://stdout" showUncoveredFiles="false" />
+    </logging>
+
+    <!-- Coverage filters. -->
+    <filter>
+        <whitelist>
+            <directory>src</directory>
+        </whitelist>
+    </filter>
+</phpunit>
