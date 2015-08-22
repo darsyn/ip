@@ -1,0 +1,31 @@
+{
+    "name": "darsyn/ip",
+    "description": "An immutable IP Address value object that provides several different notations, including helper functions.",
+    "license": "MIT",
+    "keywords": ["library", "value-object", "immutable", "ip", "ipv4", "ipv6"],
+    "type": "library",
+    "homepage": "https://github.com/darsyn/ip",
+    "authors": [
+        {
+            "name": "Zander Baldwin",
+            "email": "hello@zanderbaldwin.com",
+            "homepage": "http://zanderbaldwin.com/"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "Darsyn\\IP\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Darsyn\\IP\\Tests\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.8",
+        "humbug/humbug": "*"
+    }
+}

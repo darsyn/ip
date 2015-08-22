@@ -1,0 +1,4 @@
+/build/
+/vendor/
+# Because this library will never be the root package, don't commit Composer's lock file.
+/composer.lock
