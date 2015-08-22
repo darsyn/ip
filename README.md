@@ -1,7 +1,4 @@
-# IP Address [![Build Status](https://travis-ci.org/zanderbaldwin/utilities.svg?branch=develop)](https://travis-ci.org/zanderbaldwin/utilities)
-
-A static utility library designed to be a drop-in helper for dealing with IP addresses. The main idea is to convert IP
-addresses into binary strings so that mathematical operations can be performed easily (AND, XOR, etc).
+# IP Address [![Build Status](https://travis-ci.org/darsyn/ip.svg?branch=master)](https://travis-ci.org/darsyn/ip)
 
 IP is an immutable value object that provides several notations of the same IP value, including some helper functions
 for broadcast and network addresses, and whether its within the range of another IP address according to a CIDR
