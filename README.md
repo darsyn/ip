@@ -18,8 +18,12 @@ composer require darsyn/ip
 
 ### Requirements
 
-At the moment, this library depends on in-built IP functions, `inet_ntop` and `inet_pton`; due to this fact, the library
-will not be able to handle IPv6 addresses on 32-bit systems.
+On PHP 5.4, strings converted from IP addresses (such as `fd0a:238b:4a96::`) that end with a series of nul-characters
+get truncated, meaning that the converted binary sequence is not valid. Due to this, only PHP versions 5.5+ are
+supported.
+
+Secondly, this library cannot handle IPv6 addresses on 32-bit systems due to a dependency on the in-built PHP functions
+`inet_pton` and `int_ntop`, though a work-around may be provided in the future.
 
 ## Example Usage
 
