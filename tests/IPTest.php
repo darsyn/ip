@@ -3,10 +3,22 @@
 namespace Darsyn\IP\Tests;
 
 use Darsyn\IP\IP;
-use PHPUnit_Framework_TestCase as TestCase;
 
-class IPTest extends TestCase
+class IPTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * Test Setup
+     *
+     * @access protected
+     * @return void
+     */
+    protected function setUp()
+    {
+        if (PHP_INT_SIZE == 4) {
+            $this->markTestSkipped('Skipping test that can run only on a 64-bit build of PHP.');
+        }
+    }
+
     /**
      * Test: Protocol to Number (Protocol Inputs)
      *
@@ -377,5 +389,18 @@ class IPTest extends TestCase
         $ip1 = new IP($ip1);
         $ip2 = new IP($ip2);
         $this->assertFalse($ip1->inRange($ip2, 96 + $cidr));
+    }
+
+    /**
+     * To String
+     *
+     * @test
+     * @access public
+     * @return void
+     */
+    public function toString()
+    {
+        $ip = new IP('12.34.56.78');
+        $this->assertSame(pack('H*', '0000000000000000000000000c22384e'), (string) $ip);
     }
 }
