@@ -72,10 +72,10 @@ class IP
     {
         // If the IP address has been given in protocol notation, convert it to a 16-byte binary sequence.
         if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-            $ip = current(unpack('A4', inet_pton($ip)));
+            $ip = current(unpack('a4', inet_pton($ip)));
             $ip = str_pad($ip, 16, "\0", STR_PAD_LEFT);
         } elseif (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
-            $ip = current(unpack('A16', inet_pton($ip)));
+            $ip = current(unpack('a16', inet_pton($ip)));
         }
         if (is_string($ip) && strlen($ip) === 16) {
             return $ip;

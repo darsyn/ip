@@ -414,7 +414,7 @@ class IPTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array('12.34.56.78', 4),
-            array('192.168.033.10', 4),
+            array('192.168.33.10', 4),
             array('255.255.255.255', IP::VERSION_4),
             array('8.8.8.8', IP::VERSION_4),
             array('2001:4860:4860::8844', 6),
