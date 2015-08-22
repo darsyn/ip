@@ -55,7 +55,7 @@ use Doctrine\DBAL\Types\Type;
 Type::addType('ip', 'Darsyn\IP\Doctrine\IpType');
 ```
 
-If you are using [Symfony](http://symfony.com), then add the following to you main configuration:
+If you are using [Symfony](http://symfony.com), then add the following to your main configuration:
 
 ```yaml
 doctrine:
