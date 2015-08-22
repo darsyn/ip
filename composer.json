@@ -1,0 +1,31 @@
+{
+    "name": "darsyn/ip",
+    "description": "A collection of single class utilities for dealing with a wide-range of problems. These are designed to be drop-in helpers, and not a replacement for any form of framework.",
+    "license": "MIT",
+    "keywords": ["library", "value-object", "immutable", "ip", "ipv4", "ipv6"],
+    "type": "library",
+    "homepage": "https://github.com/darsyn/ip",
+    "authors": [
+        {
+            "name": "Zander Baldwin",
+            "email": "hello@zanderbaldwin.com",
+            "homepage": "http://zanderbaldwin.com/"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "Darsyn\\IP\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Darsyn\\IP\\Tests\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~4.8",
+        "humbug/humbug": "*"
+    }
+}
