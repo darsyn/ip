@@ -18,6 +18,9 @@ namespace Darsyn\IP;
  */
 class IP
 {
+    const VERSION_4 = 4;
+    const VERSION_6 = 6;
+
     /**
      * @access private
      * @var string
@@ -206,6 +209,19 @@ class IP
     public function inRange(IP $ip, $cidr)
     {
         return $this->getNetworkIp($cidr)->getBinary() === $ip->getNetworkIp($cidr)->getBinary();
+    }
+
+    public function getVersion()
+    {
+        $ip = preg_replace('/^\0{12}/', '', $this->getBinary());
+        return strlen($ip) < 16
+            ? self::VERSION_4
+            : self::VERSION_6;
+    }
+
+    public function isVersion($version)
+    {
+        return $this->getVersion() === $version;
     }
 
     /**
