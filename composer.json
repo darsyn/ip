@@ -1,6 +1,6 @@
 {
     "name": "darsyn/ip",
-    "description": "A collection of single class utilities for dealing with a wide-range of problems. These are designed to be drop-in helpers, and not a replacement for any form of framework.",
+    "description": "An immutable IP Address value object that provides several different notations, including helper functions.",
     "license": "MIT",
     "keywords": ["library", "value-object", "immutable", "ip", "ipv4", "ipv6"],
     "type": "library",
