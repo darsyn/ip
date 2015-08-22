@@ -18,6 +18,9 @@ namespace Darsyn\IP;
  */
 class IP
 {
+    const VERSION_4 = 4;
+    const VERSION_6 = 6;
+
     /**
      * @access private
      * @var string
@@ -69,10 +72,10 @@ class IP
     {
         // If the IP address has been given in protocol notation, convert it to a 16-byte binary sequence.
         if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-            $ip = current(unpack('A4', inet_pton($ip)));
+            $ip = current(unpack('a4', inet_pton($ip)));
             $ip = str_pad($ip, 16, "\0", STR_PAD_LEFT);
         } elseif (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
-            $ip = current(unpack('A16', inet_pton($ip)));
+            $ip = current(unpack('a16', inet_pton($ip)));
         }
         if (is_string($ip) && strlen($ip) === 16) {
             return $ip;
@@ -206,6 +209,32 @@ class IP
     public function inRange(IP $ip, $cidr)
     {
         return $this->getNetworkIp($cidr)->getBinary() === $ip->getNetworkIp($cidr)->getBinary();
+    }
+
+    /**
+     * Get Version
+     *
+     * @access public
+     * @return integer
+     */
+    public function getVersion()
+    {
+        $ip = preg_replace('/^\0{12}/', '', $this->getBinary());
+        return strlen($ip) < 16
+            ? self::VERSION_4
+            : self::VERSION_6;
+    }
+
+    /**
+     * Is Version?
+     *
+     * @access public
+     * @param integer
+     * @return boolean
+     */
+    public function isVersion($version)
+    {
+        return $this->getVersion() === $version;
     }
 
     /**
