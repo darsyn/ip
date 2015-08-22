@@ -211,6 +211,12 @@ class IP
         return $this->getNetworkIp($cidr)->getBinary() === $ip->getNetworkIp($cidr)->getBinary();
     }
 
+    /**
+     * Get Version
+     *
+     * @access public
+     * @return integer
+     */
     public function getVersion()
     {
         $ip = preg_replace('/^\0{12}/', '', $this->getBinary());
@@ -219,6 +225,13 @@ class IP
             : self::VERSION_6;
     }
 
+    /**
+     * Is Version?
+     *
+     * @access public
+     * @param integer
+     * @return boolean
+     */
     public function isVersion($version)
     {
         return $this->getVersion() === $version;

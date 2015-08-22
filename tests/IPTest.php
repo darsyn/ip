@@ -43,7 +43,7 @@ class IPTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Invalid IP Addresses
+     * Data Provider: Invalid IP Addresses
      *
      * @access public
      * @return array
@@ -192,7 +192,7 @@ class IPTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Valid Network Addresses (V4)
+     * Data Provider: Valid Network Addresses (V4)
      *
      * @access public
      * @return array
@@ -225,7 +225,7 @@ class IPTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Valid Network Addresses (V6)
+     * Data Provider: Valid Network Addresses (V6)
      *
      * @access public
      * @return array
@@ -256,7 +256,7 @@ class IPTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Valid Broadcast Addresses (V4)
+     * Data Provider: Valid Broadcast Addresses (V4)
      *
      * @access public
      * @return array
@@ -292,7 +292,7 @@ class IPTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Valid Broadcast Addresses (V6)
+     * Data Provider: Valid Broadcast Addresses (V6)
      *
      * @access public
      * @return array
@@ -323,7 +323,7 @@ class IPTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * In-Range IP Addresses
+     * Data Provider: In-Range IP Addresses
      *
      * @access public
      * @return array
@@ -340,7 +340,7 @@ class IPTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * In Range
+     * Test: In Range
      *
      * @test
      * @dataProvider inRangeIPs
@@ -358,7 +358,7 @@ class IPTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * In-Range IP Addresses
+     * Data Provider: Not In-Range IP Addresses
      *
      * @access public
      * @return array
@@ -374,7 +374,7 @@ class IPTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Not In Range
+     * Test: Not In Range
      *
      * @test
      * @dataProvider notInRangeIPs
@@ -392,7 +392,7 @@ class IPTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * To String
+     * Test: To String
      *
      * @test
      * @access public
@@ -402,5 +402,47 @@ class IPTest extends \PHPUnit_Framework_TestCase
     {
         $ip = new IP('12.34.56.78');
         $this->assertSame(pack('H*', '0000000000000000000000000c22384e'), (string) $ip);
+    }
+
+    /**
+     * Data Provider: IP Versions
+     *
+     * @access public
+     * @return array
+     */
+    public function ipVersions()
+    {
+        return array(
+            array('12.34.56.78', 4),
+            array('192.168.033.10', 4),
+            array('255.255.255.255', IP::VERSION_4),
+            array('8.8.8.8', IP::VERSION_4),
+            array('2001:4860:4860::8844', 6),
+            array('fd0a:238b:4a96::', IP::VERSION_6),
+            // Double check that this is reported as version 4 rather than the version 6 it looks like (due to the way
+            // versions are determined internally).
+            array('::1', 4),
+            // And finally, just check that it can properly detect a version 4 address in version 4/6 notation.
+            array('::0:12.34.56.78', 4),
+        );
+    }
+
+    /**
+     * Test: Get and Is Version
+     *
+     * @test
+     * @dataProvider ipVersions
+     * @access public
+     * @param string $ip
+     * @param integer $version
+     * @return void
+     */
+    public function getAndIsVersion($ip, $version)
+    {
+        $ip = new IP($ip);
+        $notVersion = $version === 4 ? 6 : 4;
+        $this->assertSame($version, $ip->getVersion());
+        $this->assertTrue($ip->isVersion($version));
+        $this->assertFalse($ip->isVersion($notVersion));
     }
 }
