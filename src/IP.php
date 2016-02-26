@@ -219,6 +219,28 @@ class IP
     }
 
     /**
+     * Whether the IP is version 4
+     *
+     * @access public
+     * @return boolean
+     */
+    public function isVersion4()
+    {
+        return $this->isVersion(self::VERSION_4);
+    }
+
+    /**
+     * Whether the IP is version 6
+     *
+     * @access public
+     * @return boolean
+     */
+    public function isVersion6()
+    {
+        return $this->isVersion(self::VERSION_6);
+    }
+
+    /**
      * To String (Magic Method)
      *
      * @access public
