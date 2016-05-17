@@ -9,11 +9,9 @@
         {
             "name": "Zander Baldwin",
             "email": "hello@zanderbaldwin.com",
-            "homepage": "http://zanderbaldwin.com/"
+            "homepage": "http://zanderbaldwin.com"
         }
     ],
-    "minimum-stability": "dev",
-    "prefer-stable": true,
     "autoload": {
         "psr-4": {
             "Darsyn\\IP\\": "src/"
@@ -26,7 +24,6 @@
     },
     "require-dev": {
         "phpunit/phpunit": "~4.8",
-        "humbug/humbug": "*",
         "doctrine/dbal": "~2.3"
     }
 }

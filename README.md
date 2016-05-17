@@ -153,6 +153,6 @@ which this project is licensed under.
 
 ## Authors
 
-- [Zander Baldwin](https://zanderbaldwin.com).
+- [Zander Baldwin](http://zanderbaldwin.com).
 
 If you make a contribution (submit a pull request), don't forget to add your name here!
