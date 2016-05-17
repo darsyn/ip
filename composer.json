@@ -17,6 +17,9 @@
             "Darsyn\\IP\\": "src/"
         }
     },
+    "require": {
+        "php": ">=5.5"
+    },
     "autoload-dev": {
         "psr-4": {
             "Darsyn\\IP\\Tests\\": "tests/"
