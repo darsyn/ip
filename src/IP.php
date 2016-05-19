@@ -62,12 +62,21 @@ class IP
         } elseif (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
             $ip = current(unpack('a16', inet_pton($ip)));
         }
-        if (is_string($ip) && strlen($ip) === 16) {
+        if (is_string($ip) && $this->getIpLength($ip) === 16) {
             return $ip;
         }
         // If the string was not 16-bytes long, then the IP supplied was neither
         // in protocol notation or binary sequence notation. Throw an exception.
         throw new InvalidIpAddressException;
+    }
+
+    /**
+     * @param string $ip
+     * @return int
+     */
+    private function getIpLength($ip)
+    {
+        return strlen(bin2hex($ip)) / 2;
     }
 
     /**
@@ -85,7 +94,7 @@ class IP
         // it means it's an IPv4 address. Remove the zero's first so that PHP's
         // in-built number-to-protocol function will convert it accordingly.
         $ip = preg_replace('/^\0{12}/', '', $this->getBinary());
-        return inet_ntop(pack('A' . strlen($ip), $ip));
+        return inet_ntop(pack('A' . $this->getIpLength($ip), $ip));
     }
 
     /**
@@ -208,7 +217,7 @@ class IP
     public function getVersion()
     {
         $ip = preg_replace('/^\0{12}/', '', $this->getBinary());
-        return strlen($ip) < 16
+        return $this->getIpLength($ip) < 16
             ? self::VERSION_4
             : self::VERSION_6;
     }
