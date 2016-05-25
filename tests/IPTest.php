@@ -43,6 +43,24 @@ class IPTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Data Provider: Valid IP Addresses
+     *
+     * @access public
+     * @return array
+     */
+    public function validIpAddresses()
+    {
+        return array(
+            array('12.34.56.78', 4),
+            array('::12.34.56.78', 4),
+            array('::1', 4),
+            array('2001:db8::a60:8a2e:370:7334', 6),
+            array('2001:0db8:0000:0000:0a60:8a2e:0370:7334', 6),
+            array('1234567890123456', 6),
+        );
+    }
+
+    /**
      * Data Provider: Invalid IP Addresses
      *
      * @access public
@@ -53,6 +71,7 @@ class IPTest extends \PHPUnit_Framework_TestCase
         return array(
             array('12.34.567.89'),
             array('2001:db8::a60:8a2e:370g:7334'),
+            array('1.2.3'),
             array('This one is completely wrong.'),
             // 15 bytes instead of 16.
             array(pack('H*', '20010db8000000000a608a2e037073')),
@@ -61,7 +80,25 @@ class IPTest extends \PHPUnit_Framework_TestCase
             array(array()),
             array((object) array()),
             array(null),
+            array(true),
+            array('123456789012345'),
+            array('12345678901234567'),
         );
+    }
+
+    /**
+     * Test: Validation Through Instantiation
+     *
+     * @test
+     * @dataProvider validIpAddresses
+     * @param  string $ipAddress
+     * @param  integer $version
+     * @return void
+     */
+    public function validationThroughInstantiation($ipAddress, $version)
+    {
+        $ip = new IP($ipAddress);
+        $this->assertTrue($ip->isVersion($version));
     }
 
     /**
@@ -94,35 +131,6 @@ class IPTest extends \PHPUnit_Framework_TestCase
         $ipv6 = new IP('2001:db8::a60:8a2e:370:7334');
         $this->assertSame('2001:db8::a60:8a2e:370:7334', $ipv6->getShortAddress());
         $this->assertSame('2001:0db8:0000:0000:0a60:8a2e:0370:7334', $ipv6->getLongAddress());
-    }
-
-    /**
-     * Test: Validate IP
-     *
-     * @test
-     * @access public
-     * @return void
-     */
-    public function testValidate()
-    {
-        // Any IP address.
-        $this->assertTrue(IP::validate('12.34.56.78'));
-        $this->assertTrue(IP::validate('::12.34.56.78'));
-        $this->assertTrue(IP::validate('2001:db8::a60:8a2e:370:7334'));
-        $this->assertTrue(IP::validate('2001:0db8:0000:0000:0a60:8a2e:0370:7334'));
-        $this->assertTrue(IP::validate('::1'));
-        $this->assertTrue(IP::validate('1234567890123456'));
-        $this->assertFalse(IP::validate('12.34.567.89'));
-        $this->assertFalse(IP::validate('2001:db8::a60:8a2e:370g:7334'));
-        $this->assertFalse(IP::validate('1.2.3'));
-        $this->assertFalse(IP::validate(true));
-        $this->assertFalse(IP::validate(array()));
-        $this->assertFalse(IP::validate((object) array()));
-        $this->assertFalse(IP::validate(123));
-        $this->assertFalse(IP::validate(12.3));
-        $this->assertFalse(IP::validate(null));
-        $this->assertFalse(IP::validate('123456789012345'));
-        $this->assertFalse(IP::validate('12345678901234567'));
     }
 
     /**
