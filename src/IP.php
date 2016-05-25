@@ -28,24 +28,6 @@ class IP
     private $ip;
 
     /**
-     * Validate IP Address
-     *
-     * This is only a static helper method, it is not used internally.
-     *
-     * @static
-     * @access public
-     * @param  string $ip
-     * @param  integer $type
-     * @return boolean
-     */
-    public static function validate($ip)
-    {
-        // Check that the IP address supplied is either 16 bytes long (binary notation) or validates as IPv4 or IPv6
-        // notation via PHP's in-built validator.
-        return is_string($ip) && (strlen($ip) === 16 || filter_var($ip, FILTER_VALIDATE_IP));
-    }
-
-    /**
      * Constructor
      *
      * @access public

@@ -71,12 +71,13 @@ class IpType extends Type
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
         if (empty($value)) {
-            return null;
+            return;
         }
-        if ($value instanceof IP || IP::validate($value)) {
-            return (string) $value;
+        try {
+            return (string) ($value instanceof IP ? $value : new IP($value));
+        } catch (InvalidIpAddressException $e) {
+            throw ConversionException::conversionFailed($value, static::NAME);
         }
-        throw ConversionException::conversionFailed($value, self::NAME);
     }
 
     /**
