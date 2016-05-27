@@ -413,26 +413,43 @@ class IPTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Data Provider: IP Versions
+     * Data Provider: IPs Version 4
      *
      * @access public
      * @return array
      */
-    public function ipVersions()
+    public function ipsVersion4()
     {
         return array(
-            array('12.34.56.78', 4),
-            array('192.168.33.10', 4),
+            array('12.34.56.78', IP::VERSION_4),
+            array('192.168.33.10', IP::VERSION_4),
             array('255.255.255.255', IP::VERSION_4),
             array('8.8.8.8', IP::VERSION_4),
-            array('2001:4860:4860::8844', 6),
-            array('fd0a:238b:4a96::', IP::VERSION_6),
             // Double check that this is reported as version 4 rather than the version 6 it looks like (due to the way
             // versions are determined internally).
-            array('::1', 4),
+            array('::1', IP::VERSION_4),
             // And finally, just check that it can properly detect a version 4 address in version 4/6 notation.
-            array('::0:12.34.56.78', 4),
+            array('::0:12.34.56.78', IP::VERSION_4),
         );
+    }
+
+    /**
+     * Data Provider: IPs Version 6
+     *
+     * @access public
+     * @return array
+     */
+    public function ipsVersion6()
+    {
+        return array(
+            array('2001:4860:4860::8844', IP::VERSION_6),
+            array('fd0a:238b:4a96::', IP::VERSION_6),
+        );
+    }
+
+    public function ipVersions()
+    {
+        return array_merge($this->ipsVersion4(), $this->ipsVersion6());
     }
 
     /**
@@ -452,5 +469,39 @@ class IPTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($version, $ip->getVersion());
         $this->assertTrue($ip->isVersion($version));
         $this->assertFalse($ip->isVersion($notVersion));
+    }
+
+    /**
+     * Test: Is Version 4
+     *
+     * @test
+     * @dataProvider ipsVersion4
+     * @access public
+     * @param string $ip
+     * @param integer $version
+     * @return void
+     */
+    public function isVersion4($ip, $version)
+    {
+        $ip = new IP($ip);
+        $this->assertSame($version, $ip->getVersion());
+        $this->assertTrue($ip->isVersion4());
+    }
+
+    /**
+     * Test: Is Version 6
+     *
+     * @test
+     * @dataProvider ipsVersion6
+     * @access public
+     * @param string $ip
+     * @param integer $version
+     * @return void
+     */
+    public function isVersion6($ip, $version)
+    {
+        $ip = new IP($ip);
+        $this->assertSame($version, $ip->getVersion());
+        $this->assertTrue($ip->isVersion6());
     }
 }

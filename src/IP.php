@@ -32,7 +32,6 @@ class IP
      *
      * @access public
      * @param string $ip
-     * @param integer $type
      * @throws \InvalidArgumentException
      * @throws \Darsyn\IP\InvalidIpAddressException
      */
@@ -62,7 +61,7 @@ class IP
         if (is_string($ip) && strlen($ip) === 16) {
             return $ip;
         }
-        // If the string was not 16-bytes long, then the IP suppled was neither in protocol notation or binary sequence
+        // If the string was not 16-bytes long, then the IP supplied was neither in protocol notation or binary sequence
         // notation. Throw an exception.
         throw new InvalidIpAddressException;
     }
@@ -102,7 +101,7 @@ class IP
     }
 
     /**
-     * Get Brinary Representation
+     * Get Binary Representation
      *
      * @access public
      * @return string
@@ -151,7 +150,7 @@ class IP
      * @access public
      * @param integer $cidr
      * @throws \InvalidArgumentException
-     * @return string
+     * @return IP
      */
     public function getNetworkIp($cidr)
     {
@@ -166,7 +165,7 @@ class IP
      * @access public
      * @param integer $cidr
      * @throws \InvalidArgumentException
-     * @return string
+     * @return IP
      */
     public function getBroadcastIp($cidr)
     {
@@ -217,6 +216,28 @@ class IP
     public function isVersion($version)
     {
         return $this->getVersion() === $version;
+    }
+
+    /**
+     * Whether the IP is version 4
+     *
+     * @access public
+     * @return boolean
+     */
+    public function isVersion4()
+    {
+        return $this->isVersion(self::VERSION_4);
+    }
+
+    /**
+     * Whether the IP is version 6
+     *
+     * @access public
+     * @return boolean
+     */
+    public function isVersion6()
+    {
+        return $this->isVersion(self::VERSION_6);
     }
 
     /**
