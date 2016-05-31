@@ -163,7 +163,7 @@ class IP
     {
         // Providing that the CIDR is valid, bitwise AND the IP address binary
         // sequence with the mask generated from the CIDR.
-        return new self($this->getBinary() & $this->getMask($cidr));
+        return new static($this->getBinary() & $this->getMask($cidr));
     }
 
     /**
@@ -179,7 +179,7 @@ class IP
         // Providing that the CIDR is valid, bitwise OR the IP address binary
         // sequence with the inverse of the mask generated from the CIDR.
         $mask = $this->getMask($cidr);
-        return new self($this->getBinary() | ~$mask);
+        return new static($this->getBinary() | ~$mask);
     }
 
     /**
