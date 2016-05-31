@@ -227,8 +227,8 @@ class IPTest extends \PHPUnit_Framework_TestCase
     public function networkAddresses($expected, $cidr)
     {
         $ip = new IP('12.34.56.78');
-        // Because we are working with IPv4 addresses, and the network CIDR is for IPv6 we need to convert it by
-        // adding 96.
+        // Because we are working with IPv4 addresses, and the network CIDR is
+        // for IPv6 we need to convert it by adding 96.
         $this->assertSame($expected, $ip->getNetworkIp(96 + $cidr)->getShortAddress());
     }
 
@@ -294,8 +294,8 @@ class IPTest extends \PHPUnit_Framework_TestCase
     public function broadcastAddress($expected, $cidr)
     {
         $ip = new IP('12.34.56.78');
-        // Because we are working with IPv4 addresses, and the network CIDR is for IPv6 we need to convert it by
-        // adding 96.
+        // Because we are working with IPv4 addresses, and the network CIDR is
+        // for IPv6 we need to convert it by adding 96.
         $this->assertSame($expected, $ip->getBroadcastIp(96 + $cidr)->getShortAddress());
     }
 
@@ -425,10 +425,11 @@ class IPTest extends \PHPUnit_Framework_TestCase
             array('192.168.33.10', IP::VERSION_4),
             array('255.255.255.255', IP::VERSION_4),
             array('8.8.8.8', IP::VERSION_4),
-            // Double check that this is reported as version 4 rather than the version 6 it looks like (due to the way
-            // versions are determined internally).
+            // Double check that this is reported as version 4 rather than the version 6
+            // it looks like (due to the way versions are determined internally).
             array('::1', IP::VERSION_4),
-            // And finally, just check that it can properly detect a version 4 address in version 4/6 notation.
+            // And finally, just check that it can properly detect a version 4
+            // address in version 4/6 notation.
             array('::0:12.34.56.78', IP::VERSION_4),
         );
     }

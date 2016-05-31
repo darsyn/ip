@@ -1,14 +1,17 @@
 <?php
+
 namespace Darsyn\IP;
 
 /**
  * IP Address
  *
- * IP is an immutable value object that provides several notations of the same IP value, including some helper functions
- * for broadcast and network addresses, and whether its within the range of another IP address according to a CIDR
+ * IP is an immutable value object that provides several notations of the same IP
+ * value, including some helper functions for broadcast and network addresses,
+ * and whether its within the range of another IP address according to a CIDR
  * (subnet mask).
- * Although it deals with both IPv4 and IPv6 notations, it makes no distinction between the two protocol formats as it
- * converts both of them to a 16-byte binary sequence for easy mathematical operations and consistency (for example,
+ * Although it deals with both IPv4 and IPv6 notations, it makes no distinction
+ * between the two protocol formats as it converts both of them to a 16-byte
+ * binary sequence for easy mathematical operations and consistency (for example,
  * storing both IPv4 and IPv6 in the same column in a database).
  *
  * @author      Zander Baldwin <hello@zanderbaldwin.com>
@@ -51,7 +54,8 @@ class IP
      */
     private function pton($ip)
     {
-        // If the IP address has been given in protocol notation, convert it to a 16-byte binary sequence.
+        // If the IP address has been given in protocol notation, convert it to
+        // a 16-byte binary sequence.
         if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
             $ip = current(unpack('a4', inet_pton($ip)));
             $ip = str_pad($ip, 16, "\0", STR_PAD_LEFT);
@@ -61,24 +65,25 @@ class IP
         if (is_string($ip) && strlen($ip) === 16) {
             return $ip;
         }
-        // If the string was not 16-bytes long, then the IP supplied was neither in protocol notation or binary sequence
-        // notation. Throw an exception.
+        // If the string was not 16-bytes long, then the IP supplied was neither
+        // in protocol notation or binary sequence notation. Throw an exception.
         throw new InvalidIpAddressException;
     }
 
     /**
      * Get Short Address
      *
-     * Converts an IP address into the smallest protocol notation it can; dot-notation for IPv4, and compacted (double
-     * colons) notation for IPv6.
+     * Converts an IP address into the smallest protocol notation it can; dot-notation
+     * for IPv4, and compacted (double colons) notation for IPv6.
      *
      * @access public
      * @return string
      */
     public function getShortAddress()
     {
-        // If the binary representation of the IP address begins with 12 zeros, it means it's an IPv4 address. Remove
-        // the zero's first so that PHP's in-built number-to-protocol function will convert it accordingly.
+        // If the binary representation of the IP address begins with 12 zeros,
+        // it means it's an IPv4 address. Remove the zero's first so that PHP's
+        // in-built number-to-protocol function will convert it accordingly.
         $ip = preg_replace('/^\0{12}/', '', $this->getBinary());
         return inet_ntop(pack('A' . strlen($ip), $ip));
     }
@@ -95,8 +100,8 @@ class IP
     {
         // Convert the 16-byte binary sequence into a hexadecimal-string representation.
         $hex = unpack('H*hex', $this->getBinary());
-        // Insert a colon between every block of 4 characters, and return the resulting IP address in full IPv6
-        // protocol notation.
+        // Insert a colon between every block of 4 characters, and return the
+        // resulting IP address in full IPv6 protocol notation.
         return substr(preg_replace('/([a-fA-F0-9]{4})/', '$1:', $hex['hex']), 0, -1);
     }
 
@@ -128,13 +133,15 @@ class IP
         }
         // Since it takes 4 bits per hexadecimal, how many sections of complete 1's do we have (f's)?
         $mask = str_repeat('f', floor($cidr / 4));
-        // Now we have less than four 1 bits left we need to determine what hexadecimal character should be added
-        // next. Of course, we should only add them in there are 1 bits leftover to prevent going over the 128-bit
-        // limit.
+        // Now we have less than four 1 bits left we need to determine what hexadecimal
+        // character should be added next. Of course, we should only add them in
+        // there are 1 bits leftover to prevent going over the 128-bit limit.
         if ($bits = $cidr % 4) {
-            // Create a string representation of a 4-bit binary sequence beginning with the amount of leftover 1's.
+            // Create a string representation of a 4-bit binary sequence beginning
+            // with the amount of leftover 1's.
             $bin = str_pad(str_repeat('1', $bits), 4, '0', STR_PAD_RIGHT);
-            // Convert that 4-bit binary string into a hexadecimal character, and append it to the mask.
+            // Convert that 4-bit binary string into a hexadecimal character,
+            // and append it to the mask.
             $mask .= dechex(bindec($bin));
         }
         // Fill the rest of the string up with zero's to pad it out to the correct length.
@@ -154,8 +161,8 @@ class IP
      */
     public function getNetworkIp($cidr)
     {
-        // Providing that the CIDR is valid, bitwise AND the IP address binary sequence with the mask generated from
-        // the CIDR.
+        // Providing that the CIDR is valid, bitwise AND the IP address binary
+        // sequence with the mask generated from the CIDR.
         return new self($this->getBinary() & $this->getMask($cidr));
     }
 
@@ -169,8 +176,8 @@ class IP
      */
     public function getBroadcastIp($cidr)
     {
-        // Providing that the CIDR is valid, bitwise OR the IP address binary sequence with the inverse of the mask
-        // generated from the CIDR.
+        // Providing that the CIDR is valid, bitwise OR the IP address binary
+        // sequence with the inverse of the mask generated from the CIDR.
         $mask = $this->getMask($cidr);
         return new self($this->getBinary() | ~$mask);
     }
@@ -178,8 +185,8 @@ class IP
     /**
      * Is IP Address In Range?
      *
-     * Returns a boolean value depending on whether the IP address in question is within the range of the target
-     * IP/CIDR combination.
+     * Returns a boolean value depending on whether the IP address in question
+     * is within the range of the target IP/CIDR combination.
      *
      * @access public
      * @param \Darsyn\IP\IP $ip
