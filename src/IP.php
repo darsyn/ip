@@ -31,6 +31,12 @@ class IP
     private $ip;
 
     /**
+     * @access private
+     * @var integer
+     */
+    private $version;
+
+    /**
      * Constructor
      *
      * @access public
@@ -209,17 +215,21 @@ class IP
     }
 
     /**
-     * Get Version
+     * Get the IP version from the binary value
      *
      * @access public
      * @return integer
      */
     public function getVersion()
     {
-        $ip = preg_replace('/^\0{12}/', '', $this->getBinary());
-        return $this->getIpLength($ip) < 16
-            ? self::VERSION_4
-            : self::VERSION_6;
+        if ($this->version === null) {
+            $ip = preg_replace('/^\0{12}/', '', $this->getBinary());
+            $this->version = $this->getIpLength($ip) < 16
+                ? self::VERSION_4
+                : self::VERSION_6;
+        }
+
+        return $this->version;
     }
 
     /**
