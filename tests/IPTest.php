@@ -2,6 +2,7 @@
 
 namespace Darsyn\IP\Tests;
 
+use Darsyn\IP\InvalidIpAddressException;
 use Darsyn\IP\IP;
 
 class IPTest extends \PHPUnit_Framework_TestCase
@@ -112,7 +113,13 @@ class IPTest extends \PHPUnit_Framework_TestCase
      */
     public function ptonInvalid($ipAddress)
     {
-        $ip = new IP($ipAddress);
+        try {
+            $ip = new IP($ipAddress);
+        } catch (InvalidIpAddressException $e) {
+            $this->assertSame($ipAddress, $e->getIp());
+            throw $e;
+        }
+        $this->fail();
     }
 
     /**

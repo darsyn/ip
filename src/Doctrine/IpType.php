@@ -1,4 +1,5 @@
 <?php
+
 namespace Darsyn\IP\Doctrine;
 
 use Darsyn\IP\InvalidIpAddressException;

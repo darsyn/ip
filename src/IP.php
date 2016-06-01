@@ -73,7 +73,7 @@ class IP
         }
         // If the string was not 16-bytes long, then the IP supplied was neither
         // in protocol notation or binary sequence notation. Throw an exception.
-        throw new InvalidIpAddressException;
+        throw new InvalidIpAddressException($ip);
     }
 
     /**
