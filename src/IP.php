@@ -16,7 +16,7 @@ namespace Darsyn\IP;
  *
  * @author      Zander Baldwin <hello@zanderbaldwin.com>
  * @link        https://github.com/darsyn/ip
- * @copyright   2015 Zander Baldwinq
+ * @copyright   2015 Zander Baldwin
  * @license     MIT/X11 <http://j.mp/mit-license>
  */
 class IP
