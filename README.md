@@ -158,5 +158,6 @@ which this project is licensed under.
 ## Authors
 
 - [Zander Baldwin](http://zanderbaldwin.com).
+- [Jaume Casado Ruiz](http://jau.cat).
 
 If you make a contribution (submit a pull request), don't forget to add your name here!
