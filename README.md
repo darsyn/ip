@@ -31,6 +31,7 @@ Secondly, this library cannot handle IPv6 addresses on 32-bit systems due to a d
 <?php
 
 use Darsyn\IP\IP;
+use Darsyn\IP\InvalidIpAddressException;
 
 /**
  * Basic Usage
@@ -49,13 +50,16 @@ $binary = $ip->getBinary();
 $binary = (string) $ip;
 
 /**
- * Static Helper
+ * Validation
+ * IP addresses get automatically validated on object instantiation; if the IP
+ * address supplied is invalid, an InvalidIpAddressException will be thrown.
  */
 
-IP::validate('192.168.0.1');          // bool(true)
-IP::validate('256.168.0.1');          // bool(false)
-IP::validate('2001:4860:4860::8844'); // bool(true)
-IP::validate('2001:4860:4860:8844');  // bool(false)
+try {
+    $ip = new IP('256.168.0.1');
+} catch (InvalidIpAddressException $e) {
+    echo 'The IP address is invalid!';
+}
 
 /**
  * Caveats
