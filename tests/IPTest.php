@@ -2,6 +2,7 @@
 
 namespace Darsyn\IP\Tests;
 
+use Darsyn\IP\InvalidIpAddressException;
 use Darsyn\IP\IP;
 
 class IPTest extends \PHPUnit_Framework_TestCase
@@ -43,6 +44,24 @@ class IPTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Data Provider: Valid IP Addresses
+     *
+     * @access public
+     * @return array
+     */
+    public function validIpAddresses()
+    {
+        return array(
+            array('12.34.56.78', 4),
+            array('::12.34.56.78', 4),
+            array('::1', 4),
+            array('2001:db8::a60:8a2e:370:7334', 6),
+            array('2001:0db8:0000:0000:0a60:8a2e:0370:7334', 6),
+            array('1234567890123456', 6),
+        );
+    }
+
+    /**
      * Data Provider: Invalid IP Addresses
      *
      * @access public
@@ -53,6 +72,7 @@ class IPTest extends \PHPUnit_Framework_TestCase
         return array(
             array('12.34.567.89'),
             array('2001:db8::a60:8a2e:370g:7334'),
+            array('1.2.3'),
             array('This one is completely wrong.'),
             // 15 bytes instead of 16.
             array(pack('H*', '20010db8000000000a608a2e037073')),
@@ -61,7 +81,25 @@ class IPTest extends \PHPUnit_Framework_TestCase
             array(array()),
             array((object) array()),
             array(null),
+            array(true),
+            array('123456789012345'),
+            array('12345678901234567'),
         );
+    }
+
+    /**
+     * Test: Validation Through Instantiation
+     *
+     * @test
+     * @dataProvider validIpAddresses
+     * @param  string $ipAddress
+     * @param  integer $version
+     * @return void
+     */
+    public function validationThroughInstantiation($ipAddress, $version)
+    {
+        $ip = new IP($ipAddress);
+        $this->assertTrue($ip->isVersion($version));
     }
 
     /**
@@ -75,7 +113,13 @@ class IPTest extends \PHPUnit_Framework_TestCase
      */
     public function ptonInvalid($ipAddress)
     {
-        $ip = new IP($ipAddress);
+        try {
+            $ip = new IP($ipAddress);
+        } catch (InvalidIpAddressException $e) {
+            $this->assertSame($ipAddress, $e->getIp());
+            throw $e;
+        }
+        $this->fail();
     }
 
     /**
@@ -94,35 +138,6 @@ class IPTest extends \PHPUnit_Framework_TestCase
         $ipv6 = new IP('2001:db8::a60:8a2e:370:7334');
         $this->assertSame('2001:db8::a60:8a2e:370:7334', $ipv6->getShortAddress());
         $this->assertSame('2001:0db8:0000:0000:0a60:8a2e:0370:7334', $ipv6->getLongAddress());
-    }
-
-    /**
-     * Test: Validate IP
-     *
-     * @test
-     * @access public
-     * @return void
-     */
-    public function testValidate()
-    {
-        // Any IP address.
-        $this->assertTrue(IP::validate('12.34.56.78'));
-        $this->assertTrue(IP::validate('::12.34.56.78'));
-        $this->assertTrue(IP::validate('2001:db8::a60:8a2e:370:7334'));
-        $this->assertTrue(IP::validate('2001:0db8:0000:0000:0a60:8a2e:0370:7334'));
-        $this->assertTrue(IP::validate('::1'));
-        $this->assertTrue(IP::validate('1234567890123456'));
-        $this->assertFalse(IP::validate('12.34.567.89'));
-        $this->assertFalse(IP::validate('2001:db8::a60:8a2e:370g:7334'));
-        $this->assertFalse(IP::validate('1.2.3'));
-        $this->assertFalse(IP::validate(true));
-        $this->assertFalse(IP::validate(array()));
-        $this->assertFalse(IP::validate((object) array()));
-        $this->assertFalse(IP::validate(123));
-        $this->assertFalse(IP::validate(12.3));
-        $this->assertFalse(IP::validate(null));
-        $this->assertFalse(IP::validate('123456789012345'));
-        $this->assertFalse(IP::validate('12345678901234567'));
     }
 
     /**
@@ -219,8 +234,8 @@ class IPTest extends \PHPUnit_Framework_TestCase
     public function networkAddresses($expected, $cidr)
     {
         $ip = new IP('12.34.56.78');
-        // Because we are working with IPv4 addresses, and the network CIDR is for IPv6 we need to convert it by
-        // adding 96.
+        // Because we are working with IPv4 addresses, and the network CIDR is
+        // for IPv6 we need to convert it by adding 96.
         $this->assertSame($expected, $ip->getNetworkIp(96 + $cidr)->getShortAddress());
     }
 
@@ -286,8 +301,8 @@ class IPTest extends \PHPUnit_Framework_TestCase
     public function broadcastAddress($expected, $cidr)
     {
         $ip = new IP('12.34.56.78');
-        // Because we are working with IPv4 addresses, and the network CIDR is for IPv6 we need to convert it by
-        // adding 96.
+        // Because we are working with IPv4 addresses, and the network CIDR is
+        // for IPv6 we need to convert it by adding 96.
         $this->assertSame($expected, $ip->getBroadcastIp(96 + $cidr)->getShortAddress());
     }
 
@@ -405,26 +420,44 @@ class IPTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Data Provider: IP Versions
+     * Data Provider: IPs Version 4
      *
      * @access public
      * @return array
      */
-    public function ipVersions()
+    public function ipsVersion4()
     {
         return array(
-            array('12.34.56.78', 4),
-            array('192.168.33.10', 4),
+            array('12.34.56.78', IP::VERSION_4),
+            array('192.168.33.10', IP::VERSION_4),
             array('255.255.255.255', IP::VERSION_4),
             array('8.8.8.8', IP::VERSION_4),
-            array('2001:4860:4860::8844', 6),
-            array('fd0a:238b:4a96::', IP::VERSION_6),
-            // Double check that this is reported as version 4 rather than the version 6 it looks like (due to the way
-            // versions are determined internally).
-            array('::1', 4),
-            // And finally, just check that it can properly detect a version 4 address in version 4/6 notation.
-            array('::0:12.34.56.78', 4),
+            // Double check that this is reported as version 4 rather than the version 6
+            // it looks like (due to the way versions are determined internally).
+            array('::1', IP::VERSION_4),
+            // And finally, just check that it can properly detect a version 4
+            // address in version 4/6 notation.
+            array('::0:12.34.56.78', IP::VERSION_4),
         );
+    }
+
+    /**
+     * Data Provider: IPs Version 6
+     *
+     * @access public
+     * @return array
+     */
+    public function ipsVersion6()
+    {
+        return array(
+            array('2001:4860:4860::8844', IP::VERSION_6),
+            array('fd0a:238b:4a96::', IP::VERSION_6),
+        );
+    }
+
+    public function ipVersions()
+    {
+        return array_merge($this->ipsVersion4(), $this->ipsVersion6());
     }
 
     /**
@@ -444,5 +477,39 @@ class IPTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($version, $ip->getVersion());
         $this->assertTrue($ip->isVersion($version));
         $this->assertFalse($ip->isVersion($notVersion));
+    }
+
+    /**
+     * Test: Is Version 4
+     *
+     * @test
+     * @dataProvider ipsVersion4
+     * @access public
+     * @param string $ip
+     * @param integer $version
+     * @return void
+     */
+    public function isVersion4($ip, $version)
+    {
+        $ip = new IP($ip);
+        $this->assertSame($version, $ip->getVersion());
+        $this->assertTrue($ip->isVersion4());
+    }
+
+    /**
+     * Test: Is Version 6
+     *
+     * @test
+     * @dataProvider ipsVersion6
+     * @access public
+     * @param string $ip
+     * @param integer $version
+     * @return void
+     */
+    public function isVersion6($ip, $version)
+    {
+        $ip = new IP($ip);
+        $this->assertSame($version, $ip->getVersion());
+        $this->assertTrue($ip->isVersion6());
     }
 }
