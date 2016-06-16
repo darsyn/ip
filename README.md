@@ -37,11 +37,16 @@ use Darsyn\IP\InvalidIpAddressException;
  * Basic Usage
  */
 
-$ip = new IP('12.34.56.78');
-$ip->getShortAddress();        // string(11) "12.34.56.78"
-$ip->getLongAddress();         // string(23) "0000:0000:0000:0000:0000:0000:0c22:384e"
+$ip = new IP('127.0.0.1');
+$ip->getShortAddress();        // string(11) "127.0.0.1"
+$ip->getLongAddress();         // string(23) "0000:0000:0000:0000:0000:0000:7f00:0001"
 $ip->getVersion();             // int(4)
 $ip->isVersion(IP::VERSION_6); // bool(false)
+$ip->isLinkLocal();            // bool(false)
+$ip->isLoopback();             // bool(true)
+$ip->isMulticast();            // bool(false)
+$ip->isPrivateUse();           // bool(false)
+$ip->isUnspecified();          // bool(false)
 
 // The IP address is stored inside the object as a 16-byte binary sequence. To access
 // that use either the getBinary() method, or the __toString() magic method.
@@ -157,7 +162,8 @@ which this project is licensed under.
 
 ## Authors
 
-- [Zander Baldwin](http://zanderbaldwin.com).
-- [Jaume Casado Ruiz](http://jau.cat).
+- [Zander Baldwin](http://zanderbaldwin.com)
+- [Jaume Casado Ruiz](http://jau.cat)
+- [Pascal Hofmann](http://pascalhofmann.de)
 
 If you make a contribution (submit a pull request), don't forget to add your name here!
