@@ -25,13 +25,11 @@ class IP
     const VERSION_6 = 6;
 
     /**
-     * @access private
      * @var string
      */
     private $ip;
 
     /**
-     * @access private
      * @var integer
      */
     private $version;
@@ -40,25 +38,10 @@ class IP
      * Constructor
      *
      * @access public
-     * @param string $ip
-     * @throws \InvalidArgumentException
+     * @param  string $ip
      * @throws \Darsyn\IP\InvalidIpAddressException
      */
     public function __construct($ip)
-    {
-        // Convert it to a 16-byte binary sequence.
-        $this->ip = $this->pton($ip);
-    }
-
-    /**
-     * Protocol to Number
-     *
-     * @access private
-     * @param string $ip
-     * @throws \Darsyn\IP\InvalidIpAddressException
-     * @return string
-     */
-    private function pton($ip)
     {
         // If the IP address has been given in protocol notation, convert it to
         // a 16-byte binary sequence.
@@ -68,16 +51,16 @@ class IP
         } elseif (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
             $ip = current(unpack('a16', inet_pton($ip)));
         }
-        if (is_string($ip) && $this->getIpLength($ip) === 16) {
-            return $ip;
+        if (!is_string($ip) || $this->getIpLength($ip) !== 16) {
+            // If the string was not 16-bytes long, then the IP supplied was neither
+            // in protocol notation or binary sequence notation. Throw an exception.
+            throw new InvalidIpAddressException($ip);
         }
-        // If the string was not 16-bytes long, then the IP supplied was neither
-        // in protocol notation or binary sequence notation. Throw an exception.
-        throw new InvalidIpAddressException($ip);
+        $this->ip = $ip;
     }
 
     /**
-     * @param string $ip
+     * @param  string $ip
      * @return int
      */
     private function getIpLength($ip)
@@ -91,7 +74,6 @@ class IP
      * Converts an IP address into the smallest protocol notation it can; dot-notation
      * for IPv4, and compacted (double colons) notation for IPv6.
      *
-     * @access public
      * @return string
      */
     public function getShortAddress()
@@ -106,9 +88,9 @@ class IP
     /**
      * Get Long Address
      *
-     * Converts an IP (regardless of version) address into a full IPv6 address (no double colons).
+     * Converts an IP (regardless of version) address into a full IPv6 address (no
+     * double colons).
      *
-     * @access public
      * @return string
      */
     public function getLongAddress()
@@ -123,7 +105,6 @@ class IP
     /**
      * Get Binary Representation
      *
-     * @access public
      * @return string
      */
     public function getBinary()
@@ -136,8 +117,7 @@ class IP
      *
      * Generates an IPv6 subnet mask for the CIDR value passed.
      *
-     * @access protected
-     * @param integer
+     * @param  integer $cidr
      * @throws \InvalidArgumentException
      * @return string
      */
@@ -169,10 +149,9 @@ class IP
     /**
      * Get Network Address of IP
      *
-     * @access public
-     * @param integer $cidr
+     * @param  integer $cidr
      * @throws \InvalidArgumentException
-     * @return IP
+     * @return \Darsyn\IP\IP
      */
     public function getNetworkIp($cidr)
     {
@@ -184,10 +163,9 @@ class IP
     /**
      * Get Broadcast Address
      *
-     * @access public
-     * @param integer $cidr
+     * @param  integer $cidr
      * @throws \InvalidArgumentException
-     * @return IP
+     * @return \Darsyn\IP\IP
      */
     public function getBroadcastIp($cidr)
     {
@@ -203,11 +181,10 @@ class IP
      * Returns a boolean value depending on whether the IP address in question
      * is within the range of the target IP/CIDR combination.
      *
-     * @access public
-     * @param \Darsyn\IP\IP $ip
-     * @param integer $cidr
+     * @param  \Darsyn\IP\IP $ip
+     * @param  integer $cidr
      * @throws \InvalidArgumentException
-     * @return boolean
+     * @return bool
      */
     public function inRange(IP $ip, $cidr)
     {
@@ -217,7 +194,6 @@ class IP
     /**
      * Get the IP version from the binary value
      *
-     * @access public
      * @return integer
      */
     public function getVersion()
@@ -228,16 +204,14 @@ class IP
                 ? self::VERSION_4
                 : self::VERSION_6;
         }
-
         return $this->version;
     }
 
     /**
      * Is Version?
      *
-     * @access public
-     * @param integer
-     * @return boolean
+     * @param  integer $version
+     * @return bool
      */
     public function isVersion($version)
     {
@@ -247,8 +221,7 @@ class IP
     /**
      * Whether the IP is version 4
      *
-     * @access public
-     * @return boolean
+     * @return bool
      */
     public function isVersion4()
     {
@@ -258,8 +231,7 @@ class IP
     /**
      * Whether the IP is version 6
      *
-     * @access public
-     * @return boolean
+     * @return bool
      */
     public function isVersion6()
     {
@@ -269,7 +241,6 @@ class IP
     /**
      * Whether the IP is reserved for link-local usage according to RFC 3927/RFC 4291 (IPv4/IPv6)
      *
-     * @access public
      * @return bool
      */
     public function isLinkLocal()
@@ -283,51 +254,41 @@ class IP
     /**
      * Whether the IP is a loopback address according to RFC 2373/RFC 3330 (IPv4/IPv6)
      *
-     * @access public
      * @return bool
      */
     public function isLoopback()
     {
-        return
-            $this->inRange(new IP('127.0.0.0'), 96 + 8) ||
-            $this->inRange(new IP('::1'), 128)
-        ;
+        return $this->inRange(new IP('127.0.0.0'), 96 + 8)
+            || $this->inRange(new IP('::1'), 128);
     }
 
     /**
      * Whether the IP is a multicast address according to RFC 3171/RFC 2373 (IPv4/IPv6)
      *
-     * @access public
      * @return bool
      */
     public function isMulticast()
     {
-        return
-            $this->inRange(new IP('224.0.0.0'), 96 + 4) ||
-            $this->inRange(new IP('ff00::'), 8)
-        ;
+        return $this->inRange(new IP('224.0.0.0'), 96 + 4)
+            || $this->inRange(new IP('ff00::'), 8);
     }
 
     /**
      * Whether the IP is for private use according to RFC 1918/RFC 4193 (IPv4/IPv6)
      *
-     * @access public
      * @return bool
      */
     public function isPrivateUse()
     {
-        return
-            $this->inRange(new IP('10.0.0.0'), 96 + 8) ||
-            $this->inRange(new IP('172.16.0.0'), 96 + 12) ||
-            $this->inRange(new IP('192.168.0.0'), 96 + 16) ||
-            $this->inRange(new IP('fd00::'), 8)
-        ;
+        return $this->inRange(new IP('10.0.0.0'), 96 + 8)
+            || $this->inRange(new IP('172.16.0.0'), 96 + 12)
+            || $this->inRange(new IP('192.168.0.0'), 96 + 16)
+            || $this->inRange(new IP('fd00::'), 8);
     }
 
     /**
      * Whether the IP is unspecified according to RFC 5735/RFC 2373 (IPv4/IPv6)
      *
-     * @access public
      * @return bool
      */
     public function isUnspecified()
@@ -338,7 +299,6 @@ class IP
     /**
      * To String (Magic Method)
      *
-     * @access public
      * @return string
      */
     public function __toString()
