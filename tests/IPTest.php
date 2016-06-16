@@ -512,4 +512,175 @@ class IPTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($version, $ip->getVersion());
         $this->assertTrue($ip->isVersion6());
     }
+
+    /**
+     * Data Provider: Link Local IP Addresses
+     *
+     * @access public
+     * @return array
+     */
+    public function linkLocalIpAddresses()
+    {
+        return array(
+            array('169.253.255.255', false),
+            array('169.254.0.0', true),
+            array('169.254.255.255', true),
+            array('169.255.0.0', false),
+            array('fe7f:ffff:ffff:ffff:ffff:ffff:ffff:ffff', false),
+            array('fe80::', true),
+            array('febf:ffff:ffff:ffff:ffff:ffff:ffff:ffff', true),
+            array('fec0::', false),
+        );
+    }
+
+    /**
+     * Test: Is link local
+     *
+     * @test
+     * @dataProvider linkLocalIpAddresses
+     * @param string $ip
+     * @param bool   $isLinkLocal
+     * @return array
+     */
+    public function isLinkLocal($ip, $isLinkLocal)
+    {
+        $ip = new IP($ip);
+        $this->assertEquals($isLinkLocal, $ip->isLinkLocal());
+    }
+
+    /**
+     * Data Provider: Loopback IP Addresses
+     *
+     * @access public
+     * @return array
+     */
+    public function loopbackIpAddresses()
+    {
+        return array(
+            array('126.255.255.255', false),
+            array('127.0.0.0', true),
+            array('127.255.255.255', true),
+            array('128.0.0.0', false),
+            array('::1', true),
+        );
+    }
+
+    /**
+     * Test: Is loopback
+     *
+     * @test
+     * @dataProvider loopbackIpAddresses
+     * @param string $ip
+     * @param bool   $isLoopback
+     * @return array
+     */
+    public function isLoopback($ip, $isLoopback)
+    {
+        $ip = new IP($ip);
+        $this->assertEquals($isLoopback, $ip->isLoopback());
+    }
+
+    /**
+     * Data Provider: Multicast IP Addresses
+     *
+     * @access public
+     * @return array
+     */
+    public function multiCastIpAddresses()
+    {
+        return array(
+            array('223.255.255.255', false),
+            array('224.0.0.0', true),
+            array('239.255.255.255', true),
+            array('240.0.0.0', false),
+            array('feff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', false),
+            array('ff00::', true),
+            array('ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', true),
+        );
+    }
+
+    /**
+     * Test: Is multicast
+     *
+     * @test
+     * @dataProvider multiCastIpAddresses
+     * @param string $ip
+     * @param bool   $isMulticast
+     * @return array
+     */
+    public function isMulticast($ip, $isMulticast)
+    {
+        $ip = new IP($ip);
+        $this->assertEquals($isMulticast, $ip->isMulticast());
+    }
+
+    /**
+     * Data Provider: Link Local IP Addresses
+     *
+     * @access public
+     * @return array
+     */
+    public function unspecifiedIpAddresses()
+    {
+        return array(
+            array('0.0.0.0'),
+            array('::0'),
+        );
+    }
+
+    /**
+     * Test: Is unspecified
+     *
+     * @test
+     * @dataProvider unspecifiedIpAddresses
+     * @param string $ip
+     * @return array
+     */
+    public function isUnspecified($ip)
+    {
+        $ip = new IP($ip);
+        $this->assertTrue($ip->isUnspecified());
+    }
+
+    /**
+     * Data Provider: Private-Use IP Addresses
+     *
+     * @access public
+     * @return array
+     */
+    public function privateUseIpAddresses()
+    {
+        return array(
+            array('9.255.255.255', false),
+            array('10.0.0.0', true),
+            array('10.255.255.255', true),
+            array('11.0.0.0', false),
+            array('172.15.255.255', false),
+            array('172.16.0.0', true),
+            array('172.31.255.255', true),
+            array('172.32.0.0', false),
+            array('192.167.255.255', false),
+            array('192.168.0.0', true),
+            array('192.168.255.255', true),
+            array('192.169.0.0', false),
+            array('fcff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', false),
+            array('fd00::', true),
+            array('fdff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', true),
+            array('fe00::', false),
+        );
+    }
+
+    /**
+     * Test: Is private use
+     *
+     * @test
+     * @dataProvider privateUseIpAddresses
+     * @param string $ip
+     * @param bool   $isPrivateUse
+     */
+    public function isPrivateUse($ip, $isPrivateUse)
+    {
+        $ip = new IP($ip);
+        $this->assertEquals($isPrivateUse, $ip->isPrivateUse());
+    }
 }
