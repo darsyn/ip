@@ -267,6 +267,75 @@ class IP
     }
 
     /**
+     * Whether the IP is reserved for link-local usage according to RFC 3927/RFC 4291 (IPv4/IPv6)
+     *
+     * @access public
+     * @return bool
+     */
+    public function isLinkLocal()
+    {
+        return
+            $this->inRange(new IP('169.254.0.0'), 96 + 16) ||
+            $this->inRange(new IP('fe80::'), 10)
+        ;
+    }
+
+    /**
+     * Whether the IP is a loopback address according to RFC 2373/RFC 3330 (IPv4/IPv6)
+     *
+     * @access public
+     * @return bool
+     */
+    public function isLoopback()
+    {
+        return
+            $this->inRange(new IP('127.0.0.0'), 96 + 8) ||
+            $this->inRange(new IP('::1'), 128)
+        ;
+    }
+
+    /**
+     * Whether the IP is a multicast address according to RFC 3171/RFC 2373 (IPv4/IPv6)
+     *
+     * @access public
+     * @return bool
+     */
+    public function isMulticast()
+    {
+        return
+            $this->inRange(new IP('224.0.0.0'), 96 + 4) ||
+            $this->inRange(new IP('ff00::'), 8)
+        ;
+    }
+
+    /**
+     * Whether the IP is for private use according to RFC 1918/RFC 4193 (IPv4/IPv6)
+     *
+     * @access public
+     * @return bool
+     */
+    public function isPrivateUse()
+    {
+        return
+            $this->inRange(new IP('10.0.0.0'), 96 + 8) ||
+            $this->inRange(new IP('172.16.0.0'), 96 + 12) ||
+            $this->inRange(new IP('192.168.0.0'), 96 + 16) ||
+            $this->inRange(new IP('fd00::'), 8)
+        ;
+    }
+
+    /**
+     * Whether the IP is unspecified according to RFC 5735/RFC 2373 (IPv4/IPv6)
+     *
+     * @access public
+     * @return bool
+     */
+    public function isUnspecified()
+    {
+        return $this->getShortAddress() === '0.0.0.0';
+    }
+
+    /**
      * To String (Magic Method)
      *
      * @access public
