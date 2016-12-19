@@ -199,8 +199,8 @@ class IP
     public function getVersion()
     {
         if ($this->version === null) {
-            $ip = preg_replace('/^\0{12}/', '', $this->getBinary());
-            $this->version = $this->getIpLength($ip) < 16
+            $this->version = strpos($binary = $this->getBinary(), str_repeat($nibble = "\0\0", 5)) === 0
+                && in_array(substr($binary, 10, 2), [$nibble, ~$nibble], true)
                 ? self::VERSION_4
                 : self::VERSION_6;
         }

@@ -114,7 +114,7 @@ class IPTest extends \PHPUnit_Framework_TestCase
     public function ptonInvalid($ipAddress)
     {
         try {
-            $ip = new IP($ipAddress);
+            new IP($ipAddress);
         } catch (InvalidIpAddressException $e) {
             $this->assertSame($ipAddress, $e->getIp());
             throw $e;
@@ -193,6 +193,7 @@ class IPTest extends \PHPUnit_Framework_TestCase
      * @dataProvider invalidCIDRs
      * @expectedException \InvalidArgumentException
      * @access public
+     * @param integer $cidr
      * @return void
      */
     public function invalidMasks($cidr)
@@ -229,6 +230,8 @@ class IPTest extends \PHPUnit_Framework_TestCase
      *
      * @test
      * @dataProvider validNetworkAddresses4
+     * @param string $expected
+     * @param integer $cidr
      * @return void
      */
     public function networkAddresses($expected, $cidr)
@@ -262,6 +265,8 @@ class IPTest extends \PHPUnit_Framework_TestCase
      * @test
      * @dataProvider validNetworkAddresses6
      * @access public
+     * @param string $expected
+     * @param int $cidr
      * @return void
      */
     public function v6networkAddresses($expected, $cidr)
@@ -329,6 +334,8 @@ class IPTest extends \PHPUnit_Framework_TestCase
      * @test
      * @dataProvider validBroadcastAddresses6
      * @access public
+     * @param string $expected
+     * @param integer $cidr
      * @return void
      */
     public function v6broadcastAddresses($expected, $cidr)
@@ -420,12 +427,12 @@ class IPTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Data Provider: IPs Version 4
+     * Data Provider: Example IP Addresses (Version 4)
      *
      * @access public
      * @return array
      */
-    public function ipsVersion4()
+    public function ipAddressesVersion4()
     {
         return array(
             array('12.34.56.78', IP::VERSION_4),
@@ -438,33 +445,40 @@ class IPTest extends \PHPUnit_Framework_TestCase
             // And finally, just check that it can properly detect a version 4
             // address in version 4/6 notation.
             array('::0:12.34.56.78', IP::VERSION_4),
+            array('::ffff:7f00:1', IP::VERSION_4),
         );
     }
 
     /**
-     * Data Provider: IPs Version 6
+     * Data Provider: Example IP Addresses (Version 6)
      *
      * @access public
      * @return array
      */
-    public function ipsVersion6()
+    public function ipAddressesVersion6()
     {
         return array(
             array('2001:4860:4860::8844', IP::VERSION_6),
             array('fd0a:238b:4a96::', IP::VERSION_6),
         );
     }
-
-    public function ipVersions()
+    
+    /**
+     * Data Provider: Example IP Addresses (Mixed Versions)
+     *
+     * @access public
+     * @return array
+     */
+    public function ipAddresses()
     {
-        return array_merge($this->ipsVersion4(), $this->ipsVersion6());
+        return array_merge($this->ipAddressesVersion4(), $this->ipAddressesVersion6());
     }
 
     /**
      * Test: Get and Is Version
      *
      * @test
-     * @dataProvider ipVersions
+     * @dataProvider ipAddresses
      * @access public
      * @param string $ip
      * @param integer $version
@@ -483,7 +497,7 @@ class IPTest extends \PHPUnit_Framework_TestCase
      * Test: Is Version 4
      *
      * @test
-     * @dataProvider ipsVersion4
+     * @dataProvider ipAddressesVersion4
      * @access public
      * @param string $ip
      * @param integer $version
@@ -500,7 +514,7 @@ class IPTest extends \PHPUnit_Framework_TestCase
      * Test: Is Version 6
      *
      * @test
-     * @dataProvider ipsVersion6
+     * @dataProvider ipAddressesVersion6
      * @access public
      * @param string $ip
      * @param integer $version
@@ -539,8 +553,8 @@ class IPTest extends \PHPUnit_Framework_TestCase
      * @test
      * @dataProvider linkLocalIpAddresses
      * @param string $ip
-     * @param bool   $isLinkLocal
-     * @return array
+     * @param bool $isLinkLocal
+     * @return void
      */
     public function isLinkLocal($ip, $isLinkLocal)
     {
@@ -571,8 +585,8 @@ class IPTest extends \PHPUnit_Framework_TestCase
      * @test
      * @dataProvider loopbackIpAddresses
      * @param string $ip
-     * @param bool   $isLoopback
-     * @return array
+     * @param bool $isLoopback
+     * @return void
      */
     public function isLoopback($ip, $isLoopback)
     {
@@ -605,8 +619,8 @@ class IPTest extends \PHPUnit_Framework_TestCase
      * @test
      * @dataProvider multiCastIpAddresses
      * @param string $ip
-     * @param bool   $isMulticast
-     * @return array
+     * @param bool $isMulticast
+     * @return void
      */
     public function isMulticast($ip, $isMulticast)
     {
@@ -634,7 +648,7 @@ class IPTest extends \PHPUnit_Framework_TestCase
      * @test
      * @dataProvider unspecifiedIpAddresses
      * @param string $ip
-     * @return array
+     * @return void
      */
     public function isUnspecified($ip)
     {
@@ -676,7 +690,8 @@ class IPTest extends \PHPUnit_Framework_TestCase
      * @test
      * @dataProvider privateUseIpAddresses
      * @param string $ip
-     * @param bool   $isPrivateUse
+     * @param bool $isPrivateUse
+     * @return void
      */
     public function isPrivateUse($ip, $isPrivateUse)
     {
