@@ -438,6 +438,7 @@ class IPTest extends \PHPUnit_Framework_TestCase
             // And finally, just check that it can properly detect a version 4
             // address in version 4/6 notation.
             array('::0:12.34.56.78', IP::VERSION_4),
+            array('::ffff:7f00:1', IP::VERSION_4),
         );
     }
 
