@@ -28,58 +28,6 @@ supported.
 Secondly, this library cannot handle IPv6 addresses on 32-bit systems due to a
 dependency on the in-built PHP functions `inet_pton` and `int_ntop`.
 
-# Doctrine Support
-
-This library can be used to support IP address as column types with Doctrine:
-
-```php
-<?php
-
-use Doctrine\DBAL\Types\Type;
-
-Type::addType('ip', 'Darsyn\IP\Doctrine\IpType');
-```
-
-If you are using [Symfony](http://symfony.com), then add the following to your
-main configuration:
-
-```yaml
-doctrine:
-    dbal:
-        types:
-            ip: Darsyn\IP\Doctrine\IpType
-```
-
-Now you can happily store IP addresses in your entites like nobody's business:
-
-```php
-<?php
-
-use Darsyn\IP\IP;
-use Doctrine\ORM\Mapping as ORM;
-
-/**
- * @ORM\Entity
- */
-class AnalyticsEntity
-{
-    /**
-     * @ORM\Column(type="ip")
-     */
-    protected $ipAddress;
-
-    public function getIpAddress()
-    {
-        return $this->ipAddress;
-    }
-
-    public function setIpAddress(IP $ip)
-    {
-        $this->ipAddress = $ip;
-    }
-}
-```
-
 # Documentation
 
 ## Instantiation
@@ -283,6 +231,58 @@ use Darsyn\IP\IP;
 
 $ip = new IP('127.0.0.1');
 $ip->isUnspecified(); // bool(false)
+```
+
+# Doctrine Support
+
+This library can be used to support IP address as column types with Doctrine:
+
+```php
+<?php
+
+use Doctrine\DBAL\Types\Type;
+
+Type::addType('ip', 'Darsyn\IP\Doctrine\IpType');
+```
+
+If you are using [Symfony](http://symfony.com), then add the following to your
+main configuration:
+
+```yaml
+doctrine:
+    dbal:
+        types:
+            ip: Darsyn\IP\Doctrine\IpType
+```
+
+Now you can happily store IP addresses in your entites like nobody's business:
+
+```php
+<?php
+
+use Darsyn\IP\IP;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ */
+class AnalyticsEntity
+{
+    /**
+     * @ORM\Column(type="ip")
+     */
+    protected $ipAddress;
+
+    public function getIpAddress()
+    {
+        return $this->ipAddress;
+    }
+
+    public function setIpAddress(IP $ip)
+    {
+        $this->ipAddress = $ip;
+    }
+}
 ```
 
 # License
