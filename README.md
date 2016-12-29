@@ -54,12 +54,17 @@ The IP address version can be checked with `getVersion()`, `isVersion()`,
 `isVersion4()`, and `isVersion6()`.
 The methods use the 16-byte binary sequence to determine the IP address version,
 *not* the protocol notation that it was in when supplied to the constructor.
-This may cause confusion when you supply some IPv6 addresses &mdash; such as
-`::1` (the IPv6 notation for localhost) which would be reported as a version 4
-address.
+This may cause confusion when you supply some addresses &mdash; such as `::1`
+(IPv6 localhost) which would be reported as a version 4 address, or
+`::ffff:7f00:1` (IPv4 localhost in IPv6 notation) which would also be reported
+as a version 4 address.
 
 The values for each IP version type can be found in the constants `VERSION_4`
 and `VERSION_6`.
+
+> Please be aware of the special `::ffff:xxxx:xxxx` addresses, these are
+> IPv4-mapped IPv6 addresses and are reported by the library as version 4
+> notation.
 
 ```php
 <?php
