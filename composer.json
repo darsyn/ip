@@ -26,7 +26,6 @@
         }
     },
     "require-dev": {
-        "phpunit/phpunit": "@stable",
         "doctrine/dbal": "~2.3"
     }
 }
