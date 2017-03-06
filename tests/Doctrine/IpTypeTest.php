@@ -1,11 +1,12 @@
 <?php
+
 namespace Darsyn\IP\Tests\Doctrine;
 
 use Darsyn\IP\IP;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\Tests\DBAL\Mocks\MockPlatform;
 
-class IpTypeTest extends \PHPUnit_Framework_TestCase
+class IpTypeTest extends \PHPUnit\Framework\TestCase
 {
     private $platform;
 
