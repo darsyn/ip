@@ -8,7 +8,7 @@ namespace Darsyn\IP;
  * IP is an immutable value object that provides several notations of the same IP
  * value, including some helper functions for broadcast and network addresses,
  * and whether its within the range of another IP address according to a CIDR
- * (subnet mask).
+ * (subnet mask), etc.
  * Although it deals with both IPv4 and IPv6 notations, it makes no distinction
  * between the two protocol formats as it converts both of them to a 16-byte
  * binary sequence for easy mathematical operations and consistency (for example,
@@ -21,6 +21,7 @@ namespace Darsyn\IP;
  */
 class IP
 {
+    const CIDR4TO6 = 96;
     const VERSION_4 = 4;
     const VERSION_6 = 6;
 
@@ -47,7 +48,8 @@ class IP
         // a 16-byte binary sequence.
         if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
             $ip = current(unpack('a4', inet_pton($ip)));
-            $ip = str_pad($ip, 16, "\0", STR_PAD_LEFT);
+            // Convert to IPv4-mapped IPv6 address.
+            $ip = pack('H*', '00000000000000000000ffff') . $ip;
         } elseif (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
             $ip = current(unpack('a16', inet_pton($ip)));
         }
@@ -65,6 +67,8 @@ class IP
      */
     private function getIpLength($ip)
     {
+        // Don't use strlen() directly to prevent incorrect lengths resulting
+        // from null bytes.
         return strlen(bin2hex($ip)) / 2;
     }
 
@@ -78,10 +82,12 @@ class IP
      */
     public function getShortAddress()
     {
-        // If the binary representation of the IP address begins with 12 zeros,
-        // it means it's an IPv4 address. Remove the zero's first so that PHP's
-        // in-built number-to-protocol function will convert it accordingly.
-        $ip = preg_replace('/^\0{12}/', '', $this->getBinary());
+        $ip = $this->getBinary();
+        if ($this->isMapped()) {
+            $ip = substr($ip, 12);
+        } elseif ($this->isDerived()) {
+            $ip = substr($ip, 2, 4);
+        }
         return inet_ntop(pack('A' . $this->getIpLength($ip), $ip));
     }
 
@@ -199,10 +205,7 @@ class IP
     public function getVersion()
     {
         if ($this->version === null) {
-            $this->version = strpos($binary = $this->getBinary(), str_repeat($nibble = "\0\0", 5)) === 0
-                && in_array(substr($binary, 10, 2), [$nibble, ~$nibble], true)
-                ? self::VERSION_4
-                : self::VERSION_6;
+            $this->version = $this->isMapped() || $this->isDerived() ? self::VERSION_4 : self::VERSION_6;
         }
         return $this->version;
     }
@@ -239,6 +242,27 @@ class IP
     }
 
     /**
+     * Whether the IP is an IPv4-mapped IPv6 address (::ffff:7f00:1).
+     *
+     * @return bool
+     */
+    public function isMapped()
+    {
+        return $this->inRange(new static('::ffff:0:0'), self::CIDR4TO6);
+    }
+
+    /**
+     * Whether the IP is a 6to4-derived address (2002:7f00:1::).
+     *
+     * @return bool
+     */
+    public function isDerived()
+    {
+        return substr($this->ip, 0, 2) === pack('H*', '2002')
+            && substr($this->ip, 6) === pack('H*', '00000000000000000000');
+    }
+
+    /**
      * Whether the IP is reserved for link-local usage according to RFC 3927/RFC 4291 (IPv4/IPv6)
      *
      * @return bool
@@ -246,8 +270,8 @@ class IP
     public function isLinkLocal()
     {
         return
-            $this->inRange(new IP('169.254.0.0'), 96 + 16) ||
-            $this->inRange(new IP('fe80::'), 10)
+            $this->inRange(new static('169.254.0.0'), self::CIDR4TO6 + 16) ||
+            $this->inRange(new static('fe80::'), 10)
         ;
     }
 
@@ -258,8 +282,8 @@ class IP
      */
     public function isLoopback()
     {
-        return $this->inRange(new IP('127.0.0.0'), 96 + 8)
-            || $this->inRange(new IP('::1'), 128);
+        return $this->inRange(new static('127.0.0.0'), self::CIDR4TO6 + 8)
+            || $this->inRange(new static('::1'), 128);
     }
 
     /**
@@ -269,8 +293,8 @@ class IP
      */
     public function isMulticast()
     {
-        return $this->inRange(new IP('224.0.0.0'), 96 + 4)
-            || $this->inRange(new IP('ff00::'), 8);
+        return $this->inRange(new static('224.0.0.0'), self::CIDR4TO6 + 4)
+            || $this->inRange(new static('ff00::'), 8);
     }
 
     /**
@@ -280,10 +304,10 @@ class IP
      */
     public function isPrivateUse()
     {
-        return $this->inRange(new IP('10.0.0.0'), 96 + 8)
-            || $this->inRange(new IP('172.16.0.0'), 96 + 12)
-            || $this->inRange(new IP('192.168.0.0'), 96 + 16)
-            || $this->inRange(new IP('fd00::'), 8);
+        return $this->inRange(new static('10.0.0.0'), self::CIDR4TO6 + 8)
+            || $this->inRange(new static('172.16.0.0'), self::CIDR4TO6 + 12)
+            || $this->inRange(new static('192.168.0.0'), self::CIDR4TO6 + 16)
+            || $this->inRange(new static('fd00::'), 8);
     }
 
     /**

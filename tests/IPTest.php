@@ -31,7 +31,7 @@ class IPTest extends \PHPUnit_Framework_TestCase
     {
         $ipv4 = new IP('12.34.56.78');
         $this->assertSame(16, strlen($ipv4->getBinary()));
-        $this->assertSame(pack('H*', '0000000000000000000000000c22384e'), $ipv4->getBinary());
+        $this->assertSame(pack('H*', '000000000000000000000ffffc22384e'), $ipv4->getBinary());
 
         $ipv6 = new IP('2001:db8::a60:8a2e:370:7334');
         $this->assertSame(16, strlen($ipv6->getBinary()));
@@ -54,10 +54,14 @@ class IPTest extends \PHPUnit_Framework_TestCase
         return array(
             array('12.34.56.78', 4),
             array('::12.34.56.78', 4),
-            array('::1', 4),
+            array('::1', 6),
             array('2001:db8::a60:8a2e:370:7334', 6),
             array('2001:0db8:0000:0000:0a60:8a2e:0370:7334', 6),
             array('1234567890123456', 6),
+            // IPv4-mapped IPv6 address
+            array('::ffff:1234:5678', 4),
+            // 6to4-derived address
+            array('2002:1234:5678::', 4),
         );
     }
 
@@ -462,7 +466,7 @@ class IPTest extends \PHPUnit_Framework_TestCase
             array('fd0a:238b:4a96::', IP::VERSION_6),
         );
     }
-    
+
     /**
      * Data Provider: Example IP Addresses (Mixed Versions)
      *
@@ -525,6 +529,59 @@ class IPTest extends \PHPUnit_Framework_TestCase
         $ip = new IP($ip);
         $this->assertSame($version, $ip->getVersion());
         $this->assertTrue($ip->isVersion6());
+    }
+
+    public function ipAddressesMapped()
+    {
+        return array(
+            array('::ffff:7f00:1', true),
+            array('::ffff:1234:5678', true),
+            array('0000:0000:0000:0000:0000:ffff:7f00:a001', true),
+            array('::fff:7f00:1', false),
+            array('a::ffff:7f00:1', false),
+            array('2001:db8::a60:8a2e:370:7334', false),
+        );
+    }
+
+    /**
+     * Test: Is Mapped?
+     *
+     * @test
+     * @dataProvider ipAddressesMapped
+     * @param string $ip
+     * @param bool $isMapped
+     */
+    public function isMapped($ip, $isMapped)
+    {
+        $ip = new IP($ip);
+        $this->assertSame($isMapped, $ip->isMapped());
+    }
+
+    public function ipAddressesDerived()
+    {
+        return array(
+            array('2002::', true),
+            array('2002:7f00:1::', true),
+            array('2002:1234:4321:0:00:000:0000::', true),
+            array('2001:7f00:1::', false),
+            array('2002:7f00:1::a', false),
+            array('127.0.0.1', false),
+        );
+    }
+
+    /**
+     * Test: Is Derived
+     *
+     * @test
+     * @dataProvider ipAddressesDerived
+     * @access public
+     * @param string $ip
+     * @param bool $isDerived
+     */
+    public function isDerived($ip, $isDerived)
+    {
+        $ip = new IP($ip);
+        $this->assertSame($isDerived, $ip->isDerived());
     }
 
     /**
