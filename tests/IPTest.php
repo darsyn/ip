@@ -462,7 +462,7 @@ class IPTest extends \PHPUnit_Framework_TestCase
             array('fd0a:238b:4a96::', IP::VERSION_6),
         );
     }
-    
+
     /**
      * Data Provider: Example IP Addresses (Mixed Versions)
      *
