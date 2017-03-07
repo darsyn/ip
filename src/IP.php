@@ -201,7 +201,7 @@ class IP
     {
         if ($this->version === null) {
             $this->version = strpos($binary = $this->getBinary(), str_repeat($nibble = "\0\0", 5)) === 0
-                && in_array(substr($binary, 10, 2), [$nibble, ~$nibble], true)
+            && in_array(substr($binary, 10, 2), [$nibble, ~$nibble], true)
                 ? self::VERSION_4
                 : self::VERSION_6;
         }
@@ -256,8 +256,29 @@ class IP
      */
     public function isDerived()
     {
-        return substr($this->ip, 0, 2) === pack('H*', '2002')
-            && substr($this->ip, 6) === "\0\0\0\0\0\0\0\0\0\0";
+        return substr($this->getBinary(), 0, 2) === pack('H*', '2002')
+            && substr($this->getBinary(), 6) === "\0\0\0\0\0\0\0\0\0\0";
+    }
+
+    /**
+     * Whether the IP is an IPv4-compatible IPv6 address (eg, `::7f00:1`).
+     *
+     * @return bool
+     */
+    public function isCompatible()
+    {
+        return substr($this->getBinary(), 0, 12) === "\0\0\0\0\0\0\0\0\0\0\0\0";
+    }
+
+    /**
+     * Whether the IP is an IPv4-embedded IPv6 address (either a mapped or
+     * compatible address).
+     *
+     * @return bool
+     */
+    public function isEmbedded()
+    {
+        return $this->isCompatible() || $this->isMapped();
     }
 
     /**
@@ -269,8 +290,7 @@ class IP
     {
         return
             $this->inRange(new IP('169.254.0.0'), self::CIDR4TO6 + 16) ||
-            $this->inRange(new IP('fe80::'), 10)
-        ;
+            $this->inRange(new IP('fe80::'), 10);
     }
 
     /**
