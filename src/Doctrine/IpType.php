@@ -4,9 +4,9 @@ namespace Darsyn\IP\Doctrine;
 
 use Darsyn\IP\InvalidIpAddressException;
 use Darsyn\IP\IP;
+use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\DBAL\Types\Type;
-use Doctrine\DBAL\Platforms\AbstractPlatform;
 
 /**
  * Field type mapping for the Doctrine Database Abstraction Layer (DBAL).

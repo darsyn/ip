@@ -5,7 +5,7 @@ use Darsyn\IP\IP;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\Tests\DBAL\Mocks\MockPlatform;
 
-class UuidTypeTest extends \PHPUnit_Framework_TestCase
+class IpTypeTest extends \PHPUnit_Framework_TestCase
 {
     private $platform;
 
@@ -57,8 +57,7 @@ class UuidTypeTest extends \PHPUnit_Framework_TestCase
         $this->platform
             ->expects($this->any())
             ->method('getBinaryTypeDeclarationSQL')
-            ->will($this->returnValue('DUMMYBINARY()'))
-        ;
+            ->will($this->returnValue('DUMMYBINARY()'));
         $this->type = Type::getType('ip');
     }
 
