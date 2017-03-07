@@ -5,14 +5,14 @@ namespace Darsyn\IP;
 /**
  * IP Address
  *
- * IP is an immutable value object that provides several notations of the same IP
- * value, including some helper functions for broadcast and network addresses,
- * and whether its within the range of another IP address according to a CIDR
- * (subnet mask).
+ * IP is an immutable value object that provides several notations of the same
+ * IP value, including some helper functions for broadcast and network
+ * addresses, and whether its within the range of another IP address according
+ * to a CIDR (subnet mask).
  * Although it deals with both IPv4 and IPv6 notations, it makes no distinction
  * between the two protocol formats as it converts both of them to a 16-byte
- * binary sequence for easy mathematical operations and consistency (for example,
- * storing both IPv4 and IPv6 in the same column in a database).
+ * binary sequence for easy mathematical operations and consistency (for
+ * example, storing both IPv4 and IPv6 in the same column in a database).
  *
  * @author      Zander Baldwin <hello@zanderbaldwin.com>
  * @link        https://github.com/darsyn/ip
@@ -53,8 +53,9 @@ class IP
             $ip = current(unpack('a16', inet_pton($ip)));
         }
         if (!is_string($ip) || $this->getIpLength($ip) !== 16) {
-            // If the string was not 16-bytes long, then the IP supplied was neither
-            // in protocol notation or binary sequence notation. Throw an exception.
+            // If the string was not 16-bytes long, then the IP supplied was
+            // neither in protocol notation or binary sequence notation. Throw
+            // an exception.
             throw new InvalidIpAddressException($ip);
         }
         $this->ip = $ip;
@@ -72,8 +73,8 @@ class IP
     /**
      * Get Short Address
      *
-     * Converts an IP address into the smallest protocol notation it can; dot-notation
-     * for IPv4, and compacted (double colons) notation for IPv6.
+     * Converts an IP address into the smallest protocol notation it can;
+     * dot-notation for IPv4, and compacted (double colons) notation for IPv6.
      *
      * @return string
      */
@@ -89,14 +90,15 @@ class IP
     /**
      * Get Long Address
      *
-     * Converts an IP (regardless of version) address into a full IPv6 address (no
-     * double colons).
+     * Converts an IP (regardless of version) address into a full IPv6 address
+     * (no double colons).
      *
      * @return string
      */
     public function getLongAddress()
     {
-        // Convert the 16-byte binary sequence into a hexadecimal-string representation.
+        // Convert the 16-byte binary sequence into a hexadecimal-string
+        // representation.
         $hex = unpack('H*hex', $this->getBinary());
         // Insert a colon between every block of 4 characters, and return the
         // resulting IP address in full IPv6 protocol notation.
@@ -127,20 +129,23 @@ class IP
         if (!is_int($cidr) || $cidr < 0 || $cidr > 128) {
             throw new \InvalidArgumentException('CIDR must be an integer between 0 and 128.');
         }
-        // Since it takes 4 bits per hexadecimal, how many sections of complete 1's do we have (f's)?
+        // Since it takes 4 bits per hexadecimal, how many sections of complete
+        // 1's do we have (f's)?
         $mask = str_repeat('f', floor($cidr / 4));
-        // Now we have less than four 1 bits left we need to determine what hexadecimal
-        // character should be added next. Of course, we should only add them in
-        // there are 1 bits leftover to prevent going over the 128-bit limit.
+        // Now we have less than four 1 bits left we need to determine what
+        // hexadecimal character should be added next. Of course, we should only
+        // add them in there are 1 bits leftover to prevent going over the
+        // 128-bit limit.
         if ($bits = $cidr % 4) {
-            // Create a string representation of a 4-bit binary sequence beginning
-            // with the amount of leftover 1's.
+            // Create a string representation of a 4-bit binary sequence
+            // beginning with the amount of leftover 1's.
             $bin = str_pad(str_repeat('1', $bits), 4, '0', STR_PAD_RIGHT);
             // Convert that 4-bit binary string into a hexadecimal character,
             // and append it to the mask.
             $mask .= dechex(bindec($bin));
         }
-        // Fill the rest of the string up with zero's to pad it out to the correct length.
+        // Fill the rest of the string up with zero's to pad it out to the
+        // correct length.
         $mask = str_pad($mask, 32, '0', STR_PAD_RIGHT);
         // Pack the hexadecimal sequence into a real, 16-byte binary sequence.
         $mask = pack('H*', $mask);
@@ -282,7 +287,8 @@ class IP
     }
 
     /**
-     * Whether the IP is reserved for link-local usage according to RFC 3927/RFC 4291 (IPv4/IPv6)
+     * Whether the IP is reserved for link-local usage according to
+     * RFC 3927/RFC 4291 (IPv4/IPv6).
      *
      * @return bool
      */
@@ -294,7 +300,8 @@ class IP
     }
 
     /**
-     * Whether the IP is a loopback address according to RFC 2373/RFC 3330 (IPv4/IPv6)
+     * Whether the IP is a loopback address according to RFC 2373/RFC 3330
+     * (IPv4/IPv6).
      *
      * @return bool
      */
@@ -305,7 +312,8 @@ class IP
     }
 
     /**
-     * Whether the IP is a multicast address according to RFC 3171/RFC 2373 (IPv4/IPv6)
+     * Whether the IP is a multicast address according to RFC 3171/RFC 2373
+     * (IPv4/IPv6).
      *
      * @return bool
      */
@@ -316,7 +324,8 @@ class IP
     }
 
     /**
-     * Whether the IP is for private use according to RFC 1918/RFC 4193 (IPv4/IPv6)
+     * Whether the IP is for private use according to RFC 1918/RFC 4193
+     * (IPv4/IPv6).
      *
      * @return bool
      */
@@ -329,7 +338,7 @@ class IP
     }
 
     /**
-     * Whether the IP is unspecified according to RFC 5735/RFC 2373 (IPv4/IPv6)
+     * Whether the IP is unspecified according to RFC 5735/RFC 2373 (IPv4/IPv6).
      *
      * @return bool
      */
