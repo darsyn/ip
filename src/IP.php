@@ -239,6 +239,27 @@ class IP
     }
 
     /**
+     * Whether the IP is an IPv4-mapped IPv6 address (eg, "::ffff:7f00:1").
+     *
+     * @return bool
+     */
+    public function isMapped()
+    {
+        return $this->inRange(new IP('::ffff:0:0'), 96);
+    }
+
+    /**
+     * Whether the IP is a 6to4-derived address (eg, "2002:7f00:1::").
+     *
+     * @return bool
+     */
+    public function isDerived()
+    {
+        return substr($this->ip, 0, 2) === pack('H*', '2002')
+            && substr($this->ip, 6) === "\0\0\0\0\0\0\0\0\0\0";
+    }
+
+    /**
      * Whether the IP is reserved for link-local usage according to RFC 3927/RFC 4291 (IPv4/IPv6)
      *
      * @return bool
