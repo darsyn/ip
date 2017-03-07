@@ -570,7 +570,6 @@ class IPTest extends \PHPUnit_Framework_TestCase
      *
      * @test
      * @dataProvider ipAddressesDerived
-     * @access public
      * @param string $ip
      * @param bool $isDerived
      */
@@ -578,6 +577,58 @@ class IPTest extends \PHPUnit_Framework_TestCase
     {
         $ip = new IP($ip);
         $this->assertSame($isDerived, $ip->isDerived());
+    }
+
+    public function ipAddressesCompatible()
+    {
+        return array(
+            array('::7f00:1', true),
+            array('127.0.0.1', true),
+            array('2002:7f00:1::', false),
+        );
+    }
+
+    /**
+     * Test: Is Compatible
+     *
+     * @test
+     * @dataProvider ipAddressesCompatible
+     * @param string $ip
+     * @param bool $isCompatible
+     */
+    public function isCompatible($ip, $isCompatible)
+    {
+        $ip = new IP($ip);
+        $this->assertSame($isCompatible, $ip->isCompatible());
+    }
+
+    public function ipAddressesEmbedded()
+    {
+        return array(
+            array('::ffff:7f00:1', true),
+            array('::ffff:1234:5678', true),
+            array('0000:0000:0000:0000:0000:ffff:7f00:a001', true),
+            array('::fff:7f00:1', false),
+            array('a::ffff:7f00:1', false),
+            array('2001:db8::a60:8a2e:370:7334', false),
+            array('::7f00:1', true),
+            array('127.0.0.1', true),
+            array('2002:7f00:1::', false),
+        );
+    }
+
+    /**
+     * Test: Is Embedded
+     *
+     * @test
+     * @dataProvider ipAddressesEmbedded
+     * @param $ip
+     * @param $isEmbedded
+     */
+    public function isEmbedded($ip, $isEmbedded)
+    {
+        $ip = new IP($ip, $isEmbedded);
+        $this->assertSame($isEmbedded, $ip->isEmbedded());
     }
 
     /**
