@@ -120,6 +120,9 @@ ranges from 0 to 128 instead. When working with IPv4 addresses, you must add 96
 to the IPv4 subnet mask (therefore making it an IPv6 subnet mask) to get the
 correct integer to pass to the following methods.
 
+A helper constant, `CIDR4TO6`, has been added to the library to assist with CIDR
+conversions.
+
 ### In Range
 
 ```php
@@ -129,8 +132,8 @@ use Darsyn\IP\IP;
 $hostIp = new IP('::c22:384e');
 $clientIp = new IP('12.48.183.1');
 
-$clientIp->inRange($ip, 96 + 11); // bool(true)
-$clientIp->inRange($ip, 96 + 24); // bool(false)
+$clientIp->inRange($ip, IP::CIDR4TO6 + 11); // bool(true)
+$clientIp->inRange($ip, IP::CIDR4TO6 + 24); // bool(false)
 ```
 
 ### Network IP
@@ -141,7 +144,7 @@ use Darsyn\IP\IP;
 
 $ip = new IP('12.34.56.78');
 // Get the network address of an IP address given a subnet mask.
-$networkIp = $ip->getNetworkIP(96 + 19);
+$networkIp = $ip->getNetworkIP(IP::CIDR4TO6 + 19);
 $networkIp->getShortAddress(); // string() "12.34.32.0"
 ```
 
@@ -153,7 +156,7 @@ use Darsyn\IP\IP;
 
 $ip = new IP('12.34.56.78');
 // Get the broadcast address of an IP address given a subnet mask.
-$broadcastIp = $ip->getBroadcastIp(96 + 19);
+$broadcastIp = $ip->getBroadcastIp(IP::CIDR4TO6 + 19);
 $broadcastIp->getShortAddress(); // string() "12.34.63.255"
 ```
 
