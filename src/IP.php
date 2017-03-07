@@ -67,6 +67,8 @@ class IP
      */
     private function getIpLength($ip)
     {
+        // Don't use strlen() directly to prevent incorrect lengths resulting
+        // from null bytes.
         return strlen(bin2hex($ip)) / 2;
     }
 
