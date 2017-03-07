@@ -21,6 +21,7 @@ namespace Darsyn\IP;
  */
 class IP
 {
+    const CIDR4TO6 = 96;
     const VERSION_4 = 4;
     const VERSION_6 = 6;
 
@@ -245,7 +246,7 @@ class IP
      */
     public function isMapped()
     {
-        return $this->inRange(new IP('::ffff:0:0'), 96);
+        return $this->inRange(new IP('::ffff:0:0'), self::CIDR4TO6);
     }
 
     /**
@@ -267,7 +268,7 @@ class IP
     public function isLinkLocal()
     {
         return
-            $this->inRange(new IP('169.254.0.0'), 96 + 16) ||
+            $this->inRange(new IP('169.254.0.0'), self::CIDR4TO6 + 16) ||
             $this->inRange(new IP('fe80::'), 10)
         ;
     }
@@ -279,7 +280,7 @@ class IP
      */
     public function isLoopback()
     {
-        return $this->inRange(new IP('127.0.0.0'), 96 + 8)
+        return $this->inRange(new IP('127.0.0.0'), self::CIDR4TO6 + 8)
             || $this->inRange(new IP('::1'), 128);
     }
 
@@ -290,7 +291,7 @@ class IP
      */
     public function isMulticast()
     {
-        return $this->inRange(new IP('224.0.0.0'), 96 + 4)
+        return $this->inRange(new IP('224.0.0.0'), self::CIDR4TO6 + 4)
             || $this->inRange(new IP('ff00::'), 8);
     }
 
@@ -301,9 +302,9 @@ class IP
      */
     public function isPrivateUse()
     {
-        return $this->inRange(new IP('10.0.0.0'), 96 + 8)
-            || $this->inRange(new IP('172.16.0.0'), 96 + 12)
-            || $this->inRange(new IP('192.168.0.0'), 96 + 16)
+        return $this->inRange(new IP('10.0.0.0'), self::CIDR4TO6 + 8)
+            || $this->inRange(new IP('172.16.0.0'), self::CIDR4TO6 + 12)
+            || $this->inRange(new IP('192.168.0.0'), self::CIDR4TO6 + 16)
             || $this->inRange(new IP('fd00::'), 8);
     }
 
