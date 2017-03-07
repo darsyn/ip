@@ -162,6 +162,65 @@ $broadcastIp->getShortAddress(); // string() "12.34.63.255"
 The type methods return a boolean value depending on whether the IP address is a
 certain type.
 
+#### Mapped
+
+Whether the IP is an IPv4-mapped IPv6 address (eg, `::ffff:7f00:1`) according to
+[RFC 4291](https://tools.ietf.org/html/rfc4291#section-2.5.5.2
+"IP Version 6 Addressing Architecture").
+
+```php
+<?php
+use Darsyn\IP\IP;
+
+$ip = new IP('::ffff:7f00:1');
+$ip->isMapped(); // bool(true)
+```
+
+#### Derived
+
+Whether the IP is an 6to4-derived IPv6 address (eg, `2002:7f00:1::`) according
+to [RFC 3056](https://tools.ietf.org/html/rfc3056
+"Connection of IPv6 Domains via IPv4 Clouds").
+
+```php
+<?php
+use Darsyn\IP\IP;
+
+$ip = new IP('2002:7f00:1::');
+$ip->isDerived(); // bool(true)
+```
+
+#### Compatible
+
+Whether the IP is an IPv4-compatible IPv6 address (eg, `::7f00:1`) according to
+[RFC 4291](https://tools.ietf.org/html/rfc4291.html#section-2.5.5.1]
+"IP Version 6 Addressing Architecture").
+
+> IPv4-compatible IPv6 addresses are deprecated in the RFC.
+
+```php
+<?php
+use Darsyn\IP\IP;
+
+$ip = new IP('::7f00:1');
+$ip->isCompatible(); // bool(true)
+```
+
+#### Embedded
+
+Whether the IP is an IPv4-embedded IPv6 address (either a mapped or compatible
+address) according to
+[RFC 4291](https://tools.ietf.org/html/rfc4291.html#section-2.5.5
+"IP Version 6 Addressing Architecture").
+
+```php
+<?php
+use Darsyn\IP\IP;
+
+$ip = new IP('::ffff:7f00:1');
+$ip->isEmbedded(); // bool(true)
+```
+
 #### Link Local
 
 Whether the IP is reserved for link-local usage according to
