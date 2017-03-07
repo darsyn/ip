@@ -79,7 +79,7 @@ $ip->isVersion4();             // bool(true)
 $ip->isVersion6();             // bool(false)
 ```
 
-## IP Return Formats.
+## IP Return Formats
 
 Once an object has been instantiated, the value can be returned as either long,
 short or binary notation.
@@ -181,7 +181,7 @@ $ip->isMapped(); // bool(true)
 
 #### Derived
 
-Whether the IP is an 6to4-derived IPv6 address (eg, `2002:7f00:1::`) according
+Whether the IP is a 6to4-derived IPv6 address (eg, `2002:7f00:1::`) according
 to [RFC 3056](https://tools.ietf.org/html/rfc3056
 "Connection of IPv6 Domains via IPv4 Clouds").
 
@@ -196,7 +196,7 @@ $ip->isDerived(); // bool(true)
 #### Compatible
 
 Whether the IP is an IPv4-compatible IPv6 address (eg, `::7f00:1`) according to
-[RFC 4291](https://tools.ietf.org/html/rfc4291.html#section-2.5.5.1]
+[RFC 4291](https://tools.ietf.org/html/rfc4291.html#section-2.5.5.1
 "IP Version 6 Addressing Architecture").
 
 > IPv4-compatible IPv6 addresses are deprecated in the RFC.
