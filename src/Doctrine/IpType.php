@@ -22,12 +22,7 @@ class IpType extends Type
     const NAME = 'ip';
 
     /**
-     * Get SQL Declaration
-     *
-     * @access public
-     * @param array $fieldDeclaration
-     * @param \Doctrine\DBAL\Platforms\AbstractPlatform $platform
-     * @return string
+     * {@inheritdoc}
      */
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
@@ -36,13 +31,7 @@ class IpType extends Type
     }
 
     /**
-     * Convert to PHP Value
-     *
-     * @access public
-     * @param string $value
-     * @param \Doctrine\DBAL\Platforms\AbstractPlatform $platform
-     * @throws \Doctrine\DBAL\Types\ConversationException
-     * @return \Darsyn\IP\IP
+     * {@inheritdoc}
      */
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
@@ -50,8 +39,8 @@ class IpType extends Type
             return $value;
         }
 
-        // PostgreSQL will return the binary data as a resource instead of
-        // a string (like MySQL).
+        // PostgreSQL will return the binary data as a resource instead of a
+        // string (like MySQL).
         if (is_resource($value) && get_resource_type($value) === 'stream') {
             $value = stream_get_contents($value);
         }
@@ -68,31 +57,24 @@ class IpType extends Type
     }
 
     /**
-     * Convert to Database Value
-     *
-     * @access public
-     * @param \Darsyn\IP\IP $value
-     * @param \Doctrine\DBAL\Platforms\AbstractPlatform $platform
-     * @throws \Doctrine\DBAL\Types\ConversationException
-     * @return void
+     * {@inheritdoc}
      */
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
         if (empty($value)) {
-            return;
+            return null;
         }
+
         try {
-            return (string) ($value instanceof IP ? $value : new IP($value));
+            $ip = $value instanceof IP ? $value : new IP($value);
+            return $ip->getBinary();
         } catch (InvalidIpAddressException $e) {
             throw ConversionException::conversionFailed($value, static::NAME);
         }
     }
 
     /**
-     * Get Type Name
-     *
-     * @access public
-     * @return string
+     * {@inheritdoc}
      */
     public function getName()
     {
@@ -100,11 +82,15 @@ class IpType extends Type
     }
 
     /**
-     * Requires SQL Comment Hint?
-     *
-     * @access public
-     * @param \Doctrine\DBAL\Platforms\AbstractPlatform $platform
-     * @return boolean
+     * {@inheritdoc}
+     */
+    public function getBindingType()
+    {
+        return \PDO::PARAM_LOB;
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function requiresSQLCommentHint(AbstractPlatform $platform)
     {
