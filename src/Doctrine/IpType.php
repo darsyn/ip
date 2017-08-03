@@ -46,12 +46,19 @@ class IpType extends Type
      */
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
-        if (empty($value)) {
-            return null;
-        }
         if ($value instanceof IP) {
             return $value;
         }
+
+        // PostgreSQL will return the binary data as a resource instead of
+        // a string (like MySQL).
+        if (is_resource($value) && get_resource_type($value) === 'stream') {
+            $value = stream_get_contents($value);
+        }
+        if (empty($value)) {
+            return null;
+        }
+
         try {
             $ip = new IP($value);
         } catch (InvalidIpAddressException $e) {
