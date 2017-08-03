@@ -132,8 +132,8 @@ use Darsyn\IP\IP;
 $hostIp = new IP('::c22:384e');
 $clientIp = new IP('12.48.183.1');
 
-$clientIp->inRange($ip, IP::CIDR4TO6 + 11); // bool(true)
-$clientIp->inRange($ip, IP::CIDR4TO6 + 24); // bool(false)
+$clientIp->inRange($hostIp, IP::CIDR4TO6 + 11); // bool(true)
+$clientIp->inRange($hostIp, IP::CIDR4TO6 + 24); // bool(false)
 ```
 
 ### Network IP
