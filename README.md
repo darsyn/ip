@@ -359,7 +359,7 @@ for a full copy of the MIT license, which this project is licensed under.
 
 # Authors
 
-- [Zander Baldwin](http://zanderbaldwin.com)
+- [Zan Baldwin](https://zanbaldwin.com)
 - [Jaume Casado Ruiz](http://jau.cat)
 - [Pascal Hofmann](http://pascalhofmann.de)
 
