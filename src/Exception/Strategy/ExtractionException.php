@@ -2,14 +2,15 @@
 
 namespace Darsyn\IP\Exception\Strategy;
 
+use Darsyn\IP\Exception\IpException;
 use Darsyn\IP\Strategy\EmbeddingStrategyInterface;
 
-class ExtractionException extends \LogicException
+class ExtractionException extends IpException
 {
     /** @var string $binary */
     private $binary;
 
-    /** @var EmbeddingStrategyInterface $embeddingStrategy */
+    /** @var \Darsyn\IP\Strategy\EmbeddingStrategyInterface $embeddingStrategy */
     private $embeddingStrategy;
 
     public function __construct($binary, EmbeddingStrategyInterface $embeddingStrategy, \Exception $previous = null)
