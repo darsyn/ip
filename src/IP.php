@@ -3,6 +3,8 @@
 namespace Darsyn\IP;
 
 use Darsyn\IP\Exception;
+use Darsyn\IP\Strategy\EmbeddingStrategyInterface;
+use Darsyn\IP\Strategy\Mapped as MappedEmbeddingStrategy;
 
 /**
  * IP Address
@@ -10,7 +12,7 @@ use Darsyn\IP\Exception;
  * IP is an immutable value object that provides several notations of the same
  * IP value, including some helper functions for broadcast and network
  * addresses, and whether its within the range of another IP address according
- * to a CIDR (subnet mask).
+ * to a CIDR (subnet mask), etc.
  * Although it deals with both IPv4 and IPv6 notations, it makes no distinction
  * between the two protocol formats as it converts both of them to a 16-byte
  * binary sequence for easy mathematical operations and consistency (for
@@ -27,15 +29,27 @@ class IP
     const VERSION_4 = 4;
     const VERSION_6 = 6;
 
-    /**
-     * @var string
-     */
-    private $ip;
+    /** @var \Darsyn\IP\Strategy\EmbeddingStrategyInterface $defaultEmbeddingStrategy */
+    private static $defaultEmbeddingStrategy;
 
-    /**
-     * @var integer
-     */
-    private $version;
+    /** @var \Darsyn\IP\Strategy\EmbeddingStrategyInterface $embeddingStrategy */
+    protected $embeddingStrategy;
+
+    /** @var string */
+    protected $ip;
+
+    /** @var integer */
+    protected $version;
+
+    public static function setDefaultEmbeddingStrategy(EmbeddingStrategyInterface $embeddingStrategy)
+    {
+        self::$defaultEmbeddingStrategy = $embeddingStrategy;
+    }
+
+    protected static function getDefaultEmbeddingStrategy()
+    {
+        return self::$defaultEmbeddingStrategy ?: new MappedEmbeddingStrategy;
+    }
 
     /**
      * Constructor
@@ -44,13 +58,14 @@ class IP
      * @param  string $ip
      * @throws \Darsyn\IP\Exception\InvalidIpAddressException
      */
-    public function __construct($ip)
+    public function __construct($ip, EmbeddingStrategyInterface $embeddingStrategy = null)
     {
+        $this->embeddingStrategy = $embeddingStrategy ?: static::getDefaultEmbeddingStrategy();
         // If the IP address has been given in protocol notation, convert it to
         // a 16-byte binary sequence.
         if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
             $ip = current(unpack('a4', inet_pton($ip)));
-            $ip = str_pad($ip, 16, "\0", STR_PAD_LEFT);
+            $ip = $this->embeddingStrategy->pack($ip);
         } elseif (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
             $ip = current(unpack('a16', inet_pton($ip)));
         }
@@ -75,38 +90,61 @@ class IP
     }
 
     /**
-     * Get Short Address
-     *
-     * Converts an IP address into the smallest protocol notation it can;
-     * dot-notation for IPv4, and compacted (double colons) notation for IPv6.
-     *
-     * @return string
-     */
-    public function getShortAddress()
-    {
-        // If the binary representation of the IP address begins with 12 zeros,
-        // it means it's an IPv4 address. Remove the zero's first so that PHP's
-        // in-built number-to-protocol function will convert it accordingly.
-        $ip = preg_replace('/^\0{12}/', '', $this->getBinary());
-        return inet_ntop(pack('A' . $this->getIpLength($ip), $ip));
-    }
-
-    /**
-     * Get Long Address
+     * Get Expanded Address
      *
      * Converts an IP (regardless of version) address into a full IPv6 address
      * (no double colons).
+     * IPv4 addresses will be returned in IPv6 format according to the embedding
+     * strategy used.
      *
      * @return string
      */
-    public function getLongAddress()
+    public function getExpandedAddress()
     {
         // Convert the 16-byte binary sequence into a hexadecimal-string
         // representation.
-        $hex = unpack('H*hex', $this->getBinary());
+        $hex = unpack('H*hex', $this->getBinary())['hex'];
         // Insert a colon between every block of 4 characters, and return the
         // resulting IP address in full IPv6 protocol notation.
-        return substr(preg_replace('/([a-fA-F0-9]{4})/', '$1:', $hex['hex']), 0, -1);
+        return substr(preg_replace('/([a-fA-F0-9]{4})/', '$1:', $hex), 0, -1);
+    }
+
+    /**
+     * Get Compacted Address
+     *
+     * Converts an IP (regardless of version) into a compacted IPv6 address
+     * (including double-colons if appropriate).
+     * IPv4 addresses will be returned in IPv6 format according to the embedding
+     * strategy used.
+     *
+     * @return string
+     */
+    public function getCompactedAddress()
+    {
+        return inet_ntop(pack('A16', $this->getBinary()));
+    }
+
+    /**
+     * Get Protocol-appropriate Address
+     *
+     * Converts an IP address into the smallest protocol notation it can;
+     * dot-notation for IPv4, and compacted (double colons) notation for IPv6.
+     * Only IPv4 addresses according to the embedding strategy used will be
+     * returned in dot-notation.
+     *
+     * @return string
+     */
+    public function getProtocolAppropriateAddress()
+    {
+        $ip = $this->getBinary();
+        // If the binary string contains an embedded IPv4 address, then extract
+        // it.
+        if ($this->embeddingStrategy->isEmbedded($ip)) {
+            $ip = $this->embeddingStrategy->extract($ip);
+        }
+        // Render the IP address in the correct notation according to its
+        // protocol (based on how long the binary string is).
+        return inet_ntop(pack('A' . $this->getIpLength($ip), $ip));
     }
 
     /**
@@ -125,7 +163,7 @@ class IP
      * Generates an IPv6 subnet mask for the CIDR value passed.
      *
      * @param  integer $cidr
-     * @throws \InvalidArgumentException
+     * @throws \Darsyn\IP\Exception\InvalidCidrException
      * @return string
      */
     protected function getMask($cidr)
@@ -160,21 +198,24 @@ class IP
      * Get Network Address of IP
      *
      * @param  integer $cidr
-     * @throws \InvalidArgumentException
+     * @throws \Darsyn\IP\Exception\InvalidCidrException
      * @return \Darsyn\IP\IP
      */
     public function getNetworkIp($cidr)
     {
         // Providing that the CIDR is valid, bitwise AND the IP address binary
         // sequence with the mask generated from the CIDR.
-        return new static($this->getBinary() & $this->getMask($cidr));
+        return new static(
+            $this->getBinary() & $this->getMask($cidr),
+            clone $this->embeddingStrategy
+        );
     }
 
     /**
      * Get Broadcast Address
      *
      * @param  integer $cidr
-     * @throws \InvalidArgumentException
+     * @throws \Darsyn\IP\Exception\InvalidCidrException
      * @return \Darsyn\IP\IP
      */
     public function getBroadcastIp($cidr)
@@ -182,7 +223,10 @@ class IP
         // Providing that the CIDR is valid, bitwise OR the IP address binary
         // sequence with the inverse of the mask generated from the CIDR.
         $mask = $this->getMask($cidr);
-        return new static($this->getBinary() | ~$mask);
+        return new static(
+            $this->getBinary() | ~$mask,
+            clone $this->embeddingStrategy
+        );
     }
 
     /**
@@ -193,7 +237,7 @@ class IP
      *
      * @param  \Darsyn\IP\IP $ip
      * @param  integer $cidr
-     * @throws \InvalidArgumentException
+     * @throws \Darsyn\IP\Exception\InvalidCidrException
      * @return bool
      */
     public function inRange(IP $ip, $cidr)
@@ -209,8 +253,7 @@ class IP
     public function getVersion()
     {
         if ($this->version === null) {
-            $this->version = strpos($binary = $this->getBinary(), str_repeat($nibble = "\0\0", 5)) === 0
-            && in_array(substr($binary, 10, 2), [$nibble, ~$nibble], true)
+            $this->version = $this->embeddingStrategy->isEmbedded($this->getBinary())
                 ? self::VERSION_4
                 : self::VERSION_6;
         }
@@ -255,7 +298,7 @@ class IP
      */
     public function isMapped()
     {
-        return $this->inRange(new static('::ffff:0:0'), self::CIDR4TO6);
+        return (new Strategy\Mapped)->isEmbedded($this->getBinary());
     }
 
     /**
@@ -265,8 +308,7 @@ class IP
      */
     public function isDerived()
     {
-        return substr($this->getBinary(), 0, 2) === pack('H*', '2002')
-            && substr($this->getBinary(), 6) === "\0\0\0\0\0\0\0\0\0\0";
+        return (new Strategy\Derived)->isEmbedded($this->getBinary());
     }
 
     /**
@@ -276,7 +318,7 @@ class IP
      */
     public function isCompatible()
     {
-        return substr($this->getBinary(), 0, 12) === "\0\0\0\0\0\0\0\0\0\0\0\0";
+        return (new Strategy\Compatible)->isEmbedded($this->getBinary());
     }
 
     /**
@@ -287,7 +329,7 @@ class IP
      */
     public function isEmbedded()
     {
-        return $this->isCompatible() || $this->isMapped();
+        return $this->embeddingStrategy->isEmbedded($this->getBinary());
     }
 
     /**
@@ -298,9 +340,8 @@ class IP
      */
     public function isLinkLocal()
     {
-        return
-            $this->inRange(new static('169.254.0.0'), self::CIDR4TO6 + 16) ||
-            $this->inRange(new static('fe80::'), 10);
+        return $this->inRange(new static('169.254.0.0', clone $this->embeddingStrategy), self::CIDR4TO6 + 16)
+            || $this->inRange(new static('fe80::', clone $this->embeddingStrategy), 10);
     }
 
     /**
@@ -311,8 +352,8 @@ class IP
      */
     public function isLoopback()
     {
-        return $this->inRange(new static('127.0.0.0'), self::CIDR4TO6 + 8)
-            || $this->inRange(new static('::1'), 128);
+        return $this->inRange(new static('127.0.0.0', clone $this->embeddingStrategy), self::CIDR4TO6 + 8)
+            || $this->inRange(new static('::1', clone $this->embeddingStrategy), 128);
     }
 
     /**
@@ -323,8 +364,8 @@ class IP
      */
     public function isMulticast()
     {
-        return $this->inRange(new static('224.0.0.0'), self::CIDR4TO6 + 4)
-            || $this->inRange(new static('ff00::'), 8);
+        return $this->inRange(new static('224.0.0.0', clone $this->embeddingStrategy), self::CIDR4TO6 + 4)
+            || $this->inRange(new static('ff00::', clone $this->embeddingStrategy), 8);
     }
 
     /**
@@ -335,10 +376,10 @@ class IP
      */
     public function isPrivateUse()
     {
-        return $this->inRange(new static('10.0.0.0'), self::CIDR4TO6 + 8)
-            || $this->inRange(new static('172.16.0.0'), self::CIDR4TO6 + 12)
-            || $this->inRange(new static('192.168.0.0'), self::CIDR4TO6 + 16)
-            || $this->inRange(new static('fd00::'), 8);
+        return $this->inRange(new static('10.0.0.0', clone $this->embeddingStrategy), self::CIDR4TO6 + 8)
+            || $this->inRange(new static('172.16.0.0', clone $this->embeddingStrategy), self::CIDR4TO6 + 12)
+            || $this->inRange(new static('192.168.0.0', clone $this->embeddingStrategy), self::CIDR4TO6 + 16)
+            || $this->inRange(new static('fd00::', clone $this->embeddingStrategy), 8);
     }
 
     /**
@@ -348,7 +389,7 @@ class IP
      */
     public function isUnspecified()
     {
-        return $this->getShortAddress() === '0.0.0.0';
+        return $this->getBinary() === "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
     }
 
     /**
