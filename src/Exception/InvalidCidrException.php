@@ -2,8 +2,9 @@
 
 namespace Darsyn\IP\Exception;
 
-class InvalidCidrException extends \InvalidArgumentException
+class InvalidCidrException extends IpException
 {
+    /** @var mixed $cidr */
     private $cidr;
 
     public function __construct($cidr, \Exception $previous = null)

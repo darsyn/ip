@@ -2,8 +2,9 @@
 
 namespace Darsyn\IP\Exception;
 
-class InvalidIpAddressException extends \InvalidArgumentException
+class InvalidIpAddressException extends IpException
 {
+    /** @var mixed $ip */
     private $ip;
 
     public function __construct($ip, \Exception $previous = null)
