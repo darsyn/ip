@@ -88,9 +88,10 @@ class IpTypeTest extends TestCase
     public function testIpConvertsToPHPValue()
     {
         $ip = new IP('12.34.56.78');
+        /** @var \Darsyn\IP\IP $dbIp */
         $dbIp = $this->type->convertToPHPValue($ip->getBinary(), $this->platform);
         $this->assertInstanceOf(IP::class, $dbIp);
-        $this->assertEquals('12.34.56.78', $dbIp->getShortAddress());
+        $this->assertEquals('12.34.56.78', $dbIp->getProtocolAppropriateAddress());
     }
 
     /**
@@ -100,6 +101,7 @@ class IpTypeTest extends TestCase
     public function testIpObjectConvertsToPHPValue()
     {
         $ip = new IP('12.34.56.78');
+        /** @var \Darsyn\IP\IP $dbIp */
         $dbIp = $this->type->convertToPHPValue($ip, $this->platform);
         $this->assertInstanceOf(IP::class, $dbIp);
         $this->assertSame($ip, $dbIp);
@@ -115,9 +117,10 @@ class IpTypeTest extends TestCase
         $stream = fopen('php://memory','r+');
         fwrite($stream, $ip->getBinary());
         rewind($stream);
+        /** @var \Darsyn\IP\IP $dbIp */
         $dbIp = $this->type->convertToPHPValue($stream, $this->platform);
         $this->assertInstanceOf(IP::class, $dbIp);
-        $this->assertEquals('12.34.56.78', $dbIp->getShortAddress());
+        $this->assertEquals('12.34.56.78', $dbIp->getProtocolAppropriateAddress());
     }
 
     /**
