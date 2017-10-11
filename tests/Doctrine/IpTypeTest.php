@@ -1,49 +1,36 @@
 <?php
+
 namespace Darsyn\IP\Tests\Doctrine;
 
 use Darsyn\IP\IP;
 use Doctrine\DBAL\Types\Type;
-use Doctrine\Tests\DBAL\Mocks\MockPlatform;
+use PDO;
+use PHPUnit_Framework_TestCase as TestCase;
 
-class IpTypeTest extends \PHPUnit_Framework_TestCase
+class IpTypeTest extends TestCase
 {
     private $platform;
 
-    /**
-     * @access private
-     * @var \Darsyn\IP\Doctrine\IpType
-     */
+    /** @var \Darsyn\IP\Doctrine\IpType $type */
     private $type;
 
     public static function setUpBeforeClass()
     {
-        if (class_exists('Doctrine\DBAL\Types\Type')) {
+        if (class_exists(Type::class)) {
             Type::addType('ip', 'Darsyn\IP\Doctrine\IpType');
         }
     }
 
-    /**
-     * Get Platform Mock
-     *
-     * @access private
-     * @return \PHPUnit_Framework_MockObject_MockObject
-     */
     private function getPlatformMock()
     {
+        // We have to use MySQL as the platform here, because the AbstractPlatform does not support BINARY types.
         return $this
-            // We have to use MySQL as the platform here, because the AbstractPlatform does not support BINARY types.
             ->getMockBuilder('Doctrine\DBAL\Platforms\MySqlPlatform')
-            ->setMethods(array('getBinaryTypeDeclarationSQL'))
+            ->setMethods(['getBinaryTypeDeclarationSQL'])
             ->getMockForAbstractClass()
         ;
     }
 
-    /**
-     * Test Setup
-     *
-     * @access protected
-     * @return void
-     */
     protected function setUp()
     {
         if (PHP_INT_SIZE == 4) {
@@ -62,14 +49,10 @@ class IpTypeTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * IP Converts to Database Value
-     *
      * @test
      * @covers \Darsyn\IP\Doctrine\IpType::convertToDatabaseValue
-     * @access public
-     * @return void
      */
-    public function ipConvertsToDatabaseValue()
+    public function testIpConvertsToDatabaseValue()
     {
         $ip = new IP('12.34.56.78');
 
@@ -80,85 +63,76 @@ class IpTypeTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Invalid IP Conversion to Database Value Results in Exception
-     *
      * @test
      * @covers \Darsyn\IP\Doctrine\IpType::convertToDatabaseValue
      * @expectedException \Doctrine\DBAL\Types\ConversionException
-     * @access public
-     * @return void
      */
-    public function invalidIpConversionForDatabaseValue()
+    public function testInvalidIpConversionForDatabaseValue()
     {
         $this->type->convertToDatabaseValue('abcdefg', $this->platform);
     }
 
     /**
-     * NULL Value Conversation to Database Value
-     *
      * @test
      * @covers \Darsyn\IP\Doctrine\IpType::convertToDatabaseValue
-     * @access public
-     * @return void
      */
-    public function nullConversionForDatabaseValue()
+    public function testNullConversionForDatabaseValue()
     {
         $this->assertNull($this->type->convertToDatabaseValue(null, $this->platform));
     }
 
     /**
-     * IP Converts to PHP Value
-     *
      * @test
      * @covers \Darsyn\IP\Doctrine\IpType::convertToPHPValue
-     * @access public
-     * @return void
      */
-    public function ipConvertsToPHPValue()
+    public function testIpConvertsToPHPValue()
     {
         $ip = new IP('12.34.56.78');
         $dbIp = $this->type->convertToPHPValue($ip->getBinary(), $this->platform);
-        $this->assertInstanceOf('Darsyn\IP\IP', $dbIp);
+        $this->assertInstanceOf(IP::class, $dbIp);
         $this->assertEquals('12.34.56.78', $dbIp->getShortAddress());
     }
 
     /**
-     * IP Object Converts to PHP Value
-     *
      * @test
      * @covers \Darsyn\IP\Doctrine\IpType::convertToPHPValue
-     * @access public
-     * @return void
      */
-    public function ipObjectConvertsToPHPValue()
+    public function testIpObjectConvertsToPHPValue()
     {
         $ip = new IP('12.34.56.78');
         $dbIp = $this->type->convertToPHPValue($ip, $this->platform);
-        $this->assertInstanceOf('Darsyn\IP\IP', $dbIp);
+        $this->assertInstanceOf(IP::class, $dbIp);
         $this->assertSame($ip, $dbIp);
     }
 
     /**
-     * Invalid IP Converstion for PHP Value Throws Exception
-     *
+     * @test
+     * @covers \Darsyn\IP\Doctrine\IpType::convertToPHPValue
+     */
+    public function testStreamConvertsToPHPValue()
+    {
+        $ip = new IP('12.34.56.78');
+        $stream = fopen('php://memory','r+');
+        fwrite($stream, $ip->getBinary());
+        rewind($stream);
+        $dbIp = $this->type->convertToPHPValue($stream, $this->platform);
+        $this->assertInstanceOf(IP::class, $dbIp);
+        $this->assertEquals('12.34.56.78', $dbIp->getShortAddress());
+    }
+
+    /**
      * @test
      * @covers \Darsyn\IP\Doctrine\IpType::convertToPHPValue
      * @expectedException \Doctrine\DBAL\Types\ConversionException
-     * @access public
-     * @return void
      */
-    public function testInvalidUuidConversionForPHPValue()
+    public function testInvalidIpConversionForPHPValue()
     {
         $this->type->convertToPHPValue('abcdefg', $this->platform);
     }
 
     /**
-     * NULL Value Converstion for PHP Value
-     *
      * @test
      * @covers \Darsyn\IP\Doctrine\IpType::convertToPHPValue
-     * @access public
-     * @return void
      */
     public function testNullConversionForPHPValue()
     {
@@ -166,12 +140,8 @@ class IpTypeTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Get Name
-     *
      * @test
      * @covers \Darsyn\IP\Doctrine\IpType::getName
-     * @access public
-     * @return void
      */
     public function testGetName()
     {
@@ -179,27 +149,39 @@ class IpTypeTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Get BINARY Type Declaration SQL
-     *
      * @test
      * @covers \Darsyn\IP\Doctrine\IpType::getSqlDeclaration
-     * @access public
-     * @return void
      */
-    public function getBinaryTypeDeclarationSQL()
+    public function testGetBinaryTypeDeclarationSQL()
     {
-        $this->assertEquals('DUMMYBINARY()', $this->type->getSqlDeclaration(array('length' => 16), $this->platform));
+        $this->assertEquals('DUMMYBINARY()', $this->type->getSqlDeclaration(['length' => 16], $this->platform));
     }
 
     /**
-     * Requires SQL Comment Hint
-     *
+     * @test
+     * @covers \Darsyn\IP\Doctrine\IpType::getBindingType()
+     */
+    public function testBindingTypeIsAValidPDOTypeConstant()
+    {
+        // Get all constants of the PDO class.
+        $constants = (new \ReflectionClass(PDO::class))->getConstants();
+        // Now filter out any constants that don't begin with "PARAM_".
+        $paramConstants = array_intersect_key(
+            $constants,
+            array_flip(array_filter(array_keys($constants), function ($key) {
+                return strpos($key, 'PARAM_') === 0;
+            }))
+        );
+        // Check that the return value of the Type's binding value is a valid
+        // PDO PARAM constant.
+        $this->assertContains($this->type->getBindingType(), $paramConstants);
+    }
+
+    /**
      * @test
      * @covers \Darsyn\IP\Doctrine\IpType::requiresSQLCommentHint
-     * @access public
-     * @return void
      */
-    public function requiresSQLCommentHint()
+    public function testRequiresSQLCommentHint()
     {
         $this->assertTrue($this->type->requiresSQLCommentHint($this->platform));
     }
