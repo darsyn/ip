@@ -4,15 +4,10 @@ namespace Darsyn\IP\Tests;
 
 use Darsyn\IP\InvalidIpAddressException;
 use Darsyn\IP\IP;
+use PHPUnit_Framework_TestCase as TestCase;
 
-class IPTest extends \PHPUnit_Framework_TestCase
+class IPTest extends TestCase
 {
-    /**
-     * Test Setup
-     *
-     * @access protected
-     * @return void
-     */
     protected function setUp()
     {
         if (PHP_INT_SIZE == 4) {
@@ -21,13 +16,9 @@ class IPTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test: Protocol to Number (Protocol Inputs)
-     *
      * @test
-     * @access public
-     * @return void
      */
-    public function pton()
+    public function testProtocolToNumber()
     {
         $ipv4 = new IP('12.34.56.78');
         $this->assertSame(16, strlen($ipv4->getBinary()));
@@ -43,75 +34,54 @@ class IPTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(pack('H*', '20010db8000000000a608a2e03707334'), $ip->getBinary());
     }
 
-    /**
-     * Data Provider: Valid IP Addresses
-     *
-     * @access public
-     * @return array
-     */
-    public function validIpAddresses()
+    public function dataProviderValidIpAddresses()
     {
-        return array(
-            array('12.34.56.78', 4),
-            array('::12.34.56.78', 4),
-            array('::1', 4),
-            array('2001:db8::a60:8a2e:370:7334', 6),
-            array('2001:0db8:0000:0000:0a60:8a2e:0370:7334', 6),
-            array('1234567890123456', 6),
-        );
+        return [
+            ['12.34.56.78', 4],
+            ['::12.34.56.78', 4],
+            ['::1', 4],
+            ['2001:db8::a60:8a2e:370:7334', 6],
+            ['2001:0db8:0000:0000:0a60:8a2e:0370:7334', 6],
+            ['1234567890123456', 6],
+        ];
     }
 
-    /**
-     * Data Provider: Invalid IP Addresses
-     *
-     * @access public
-     * @return array
-     */
-    public function invalidIpAddresses()
+    public function dataProviderInvalidIpAddresses()
     {
-        return array(
-            array('12.34.567.89'),
-            array('2001:db8::a60:8a2e:370g:7334'),
-            array('1.2.3'),
-            array('This one is completely wrong.'),
+        return [
+            ['12.34.567.89'],
+            ['2001:db8::a60:8a2e:370g:7334'],
+            ['1.2.3'],
+            ['This one is completely wrong.'],
             // 15 bytes instead of 16.
-            array(pack('H*', '20010db8000000000a608a2e037073')),
-            array(123),
-            array(1.3),
-            array(array()),
-            array((object) array()),
-            array(null),
-            array(true),
-            array('123456789012345'),
-            array('12345678901234567'),
-        );
+            [pack('H*', '20010db8000000000a608a2e037073')],
+            [123],
+            [1.3],
+            [array()],
+            [(object) array()],
+            [null],
+            [true],
+            ['123456789012345'],
+            ['12345678901234567'],
+        ];
     }
 
     /**
-     * Test: Validation Through Instantiation
-     *
      * @test
-     * @dataProvider validIpAddresses
-     * @param  string $ipAddress
-     * @param  integer $version
-     * @return void
+     * @dataProvider dataProviderValidIpAddresses
      */
-    public function validationThroughInstantiation($ipAddress, $version)
+    public function testValidationThroughInstantiation($ipAddress, $version)
     {
         $ip = new IP($ipAddress);
         $this->assertTrue($ip->isVersion($version));
     }
 
     /**
-     * Test: Invalid IP Addresses
-     *
      * @test
      * @expectedException \Darsyn\IP\InvalidIpAddressException
-     * @dataProvider invalidIpAddresses
-     * @param string $ipAddress
-     * @return void
+     * @dataProvider dataProviderInvalidIpAddresses
      */
-    public function ptonInvalid($ipAddress)
+    public function testExceptionThrownWhenInvalidIpSuppliedDuringInstantiation($ipAddress)
     {
         try {
             new IP($ipAddress);
@@ -123,13 +93,9 @@ class IPTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test: Number to Protocol (Protocol Inputs)
-     *
      * @test
-     * @access public
-     * @return void
      */
-    public function ntop()
+    public function testNumberToProtocol()
     {
         $ipv4 = new IP('12.34.56.78');
         $this->assertSame('12.34.56.78', $ipv4->getShortAddress());
@@ -140,38 +106,34 @@ class IPTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('2001:0db8:0000:0000:0a60:8a2e:0370:7334', $ipv6->getLongAddress());
     }
 
-    /**
-     * Test: CIDR Mask
-     *
-     * @test
-     * @access public
-     * @return void
-     */
-    public function masks()
+    public function dataProviderValidCidrMasks()
     {
-        $class = new \ReflectionClass('Darsyn\IP\IP');
-        $method = $class->getMethod('getMask');
-        $method->setAccessible(true);
-
-        $ip = new IP('12.34.56.78');
-
-        $this->assertSame(pack('H*', '00000000000000000000000000000000'), $method->invoke($ip, 0));
-        $this->assertSame(pack('H*', 'ffffffffffffffffffffffffffffffff'), $method->invoke($ip, 128));
-        $this->assertSame(pack('H*', 'ffffffffffffffff0000000000000000'), $method->invoke($ip, 64));
-        $this->assertSame(pack('H*', '80000000000000000000000000000000'), $method->invoke($ip, 1));
-        $this->assertSame(pack('H*', 'c0000000000000000000000000000000'), $method->invoke($ip, 2));
-        $this->assertSame(pack('H*', 'e0000000000000000000000000000000'), $method->invoke($ip, 3));
-        $this->assertSame(pack('H*', 'f0000000000000000000000000000000'), $method->invoke($ip, 4));
-        $this->assertSame(pack('H*', 'f8000000000000000000000000000000'), $method->invoke($ip, 5));
+        return [
+            ['00000000000000000000000000000000', 0],
+            ['ffffffffffffffffffffffffffffffff', 128],
+            ['ffffffffffffffff0000000000000000', 64],
+            ['80000000000000000000000000000000', 1],
+            ['c0000000000000000000000000000000', 2],
+            ['e0000000000000000000000000000000', 3],
+            ['f0000000000000000000000000000000', 4],
+            ['f8000000000000000000000000000000', 5],
+        ];
     }
 
     /**
-     * Data Provider: CIDRs
-     *
-     * @access public
-     * @return array
+     * @test
+     * @dataProvider dataProviderValidCidrMasks
      */
-    public function invalidCIDRs()
+    public function testCidrMasks($expectedMask, $cidr)
+    {
+        $class = new \ReflectionClass(IP::class);
+        $method = $class->getMethod('getMask');
+        $method->setAccessible(true);
+        $ip = new IP('12.34.56.78');
+        $this->assertSame(pack('H*', $expectedMask), $method->invoke($ip, $cidr));
+    }
+
+    public function dataProviderInvalidCidrValues()
     {
         return array(
             array(-1),
@@ -187,226 +149,146 @@ class IPTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test: CIDR Mask
-     *
      * @test
-     * @dataProvider invalidCIDRs
+     * @dataProvider dataProviderInvalidCidrValues
      * @expectedException \InvalidArgumentException
-     * @access public
-     * @param integer $cidr
-     * @return void
      */
-    public function invalidMasks($cidr)
+    public function testInvalidCidrValues($cidr)
     {
-        $class = new \ReflectionClass('Darsyn\IP\IP');
+        $class = new \ReflectionClass(IP::class);
         $method = $class->getMethod('getMask');
         $method->setAccessible(true);
-
         $ip = new IP('12.34.56.78');
-
         $method->invoke($ip, $cidr);
     }
 
-    /**
-     * Data Provider: Valid Network Addresses (V4)
-     *
-     * @access public
-     * @return array
-     */
-    public function validNetworkAddresses4()
+    public function dataProviderValidNetworkAddressesVersion4()
     {
-        return array(
-            array('12.34.56.78', 32),
-            array('12.34.56.0', 24),
-            array('12.34.48.0', 20),
-            array('12.34.0.0', 16),
-            array('12.32.0.0', 13),
-            array('12.0.0.0', 8),
-        );
+        return [
+            ['12.34.56.78', 32],
+            ['12.34.56.0', 24],
+            ['12.34.48.0', 20],
+            ['12.34.0.0', 16],
+            ['12.32.0.0', 13],
+            ['12.0.0.0', 8],
+        ];
     }
 
     /**
-     * Test: Network Addresses
-     *
      * @test
-     * @dataProvider validNetworkAddresses4
-     * @param string $expected
-     * @param integer $cidr
-     * @return void
+     * @dataProvider dataProviderValidNetworkAddressesVersion4
      */
-    public function networkAddresses($expected, $cidr)
+    public function testNetworkAddressesVersion4($expected, $cidr)
     {
         $ip = new IP('12.34.56.78');
         // Because we are working with IPv4 addresses, and the network CIDR is
         // for IPv6 we need to convert it by adding 96.
-        $this->assertSame($expected, $ip->getNetworkIp(96 + $cidr)->getShortAddress());
+        $this->assertSame($expected, $ip->getNetworkIp(IP::CIDR4TO6 + $cidr)->getShortAddress());
     }
 
-    /**
-     * Data Provider: Valid Network Addresses (V6)
-     *
-     * @access public
-     * @return array
-     */
-    public function validNetworkAddresses6()
+    public function dataProviderValidNetworkAddressesVersion6()
     {
-        return array(
-            array('2000::', 12),
-            array('2001:db8::', 59),
-            array('2001:db8:0:0:800::', 70),
-            array('2001:db8::a60:8a2e:0:0', 99),
-            array('2001:db8::a60:8a2e:370:7334', 128),
-        );
+        return [
+            ['2000::', 12],
+            ['2001:db8::', 59],
+            ['2001:db8:0:0:800::', 70],
+            ['2001:db8::a60:8a2e:0:0', 99],
+            ['2001:db8::a60:8a2e:370:7334', 128],
+        ];
     }
 
     /**
-     * Test: (V6) Network Addresses
-     *
      * @test
-     * @dataProvider validNetworkAddresses6
-     * @access public
-     * @param string $expected
-     * @param int $cidr
-     * @return void
+     * @dataProvider dataProviderValidNetworkAddressesVersion6
      */
-    public function v6networkAddresses($expected, $cidr)
+    public function testNetworkAddressesVersion6($expected, $cidr)
     {
         $ip = new IP('2001:db8::a60:8a2e:370:7334');
         $this->assertSame($expected, $ip->getNetworkIp($cidr)->getShortAddress());
     }
 
-    /**
-     * Data Provider: Valid Broadcast Addresses (V4)
-     *
-     * @access public
-     * @return array
-     */
-    public function validBroadcastAddresses4()
+    public function dataProviderValidBroadcastAddressesVersion4()
     {
-        return array(
-            array('12.34.56.78', 32),
-            array('12.34.56.255', 24),
-            array('12.34.63.255', 20),
-            array('12.34.255.255', 16),
-            array('12.39.255.255', 13),
-            array('12.255.255.255', 8),
-        );
+        return [
+            ['12.34.56.78', 32],
+            ['12.34.56.255', 24],
+            ['12.34.63.255', 20],
+            ['12.34.255.255', 16],
+            ['12.39.255.255', 13],
+            ['12.255.255.255', 8],
+        ];
     }
 
     /**
-     * Test: Broadcast Address
-     *
      * @test
-     * @dataProvider validBroadcastAddresses4
-     * @access public
-     * @param string $expected
-     * @param integer $cidr
-     * @return void
+     * @dataProvider dataProviderValidBroadcastAddressesVersion4
      */
-    public function broadcastAddress($expected, $cidr)
+    public function testBroadcastAddressesVersion4($expected, $cidr)
     {
         $ip = new IP('12.34.56.78');
         // Because we are working with IPv4 addresses, and the network CIDR is
         // for IPv6 we need to convert it by adding 96.
-        $this->assertSame($expected, $ip->getBroadcastIp(96 + $cidr)->getShortAddress());
+        $this->assertSame($expected, $ip->getBroadcastIp(IP::CIDR4TO6 + $cidr)->getShortAddress());
     }
 
-    /**
-     * Data Provider: Valid Broadcast Addresses (V6)
-     *
-     * @access public
-     * @return array
-     */
-    public function validBroadcastAddresses6()
+    public function dataProviderValidBroadcastAddressesVersion6()
     {
-        return array(
-            array('200f:ffff:ffff:ffff:ffff:ffff:ffff:ffff', 12),
-            array('2001:db8:0:1f:ffff:ffff:ffff:ffff', 59),
-            array('2001:db8::bff:ffff:ffff:ffff', 70),
-            array('2001:db8::a60:8a2e:1fff:ffff', 99),
-            array('2001:db8::a60:8a2e:370:7334', 128),
-        );
+        return [
+            ['200f:ffff:ffff:ffff:ffff:ffff:ffff:ffff', 12],
+            ['2001:db8:0:1f:ffff:ffff:ffff:ffff', 59],
+            ['2001:db8::bff:ffff:ffff:ffff', 70],
+            ['2001:db8::a60:8a2e:1fff:ffff', 99],
+            ['2001:db8::a60:8a2e:370:7334', 128],
+        ];
     }
 
     /**
-     * Test: (V6) Broadcast Addresses
-     *
      * @test
-     * @dataProvider validBroadcastAddresses6
-     * @access public
-     * @param string $expected
-     * @param integer $cidr
-     * @return void
+     * @dataProvider dataProviderValidBroadcastAddressesVersion6
      */
-    public function v6broadcastAddresses($expected, $cidr)
+    public function testBroadcastAddressesVersion6($expected, $cidr)
     {
         $ip = new IP('2001:db8::a60:8a2e:370:7334');
         $this->assertSame($expected, $ip->getBroadcastIp($cidr)->getShortAddress());
     }
 
-    /**
-     * Data Provider: In-Range IP Addresses
-     *
-     * @access public
-     * @return array
-     */
-    public function inRangeIPs()
+    public function dataProviderInRangeAddressesVersion4()
     {
-        return array(
-            array('12.34.56.78', '12.34.56.78', 32),
-            array('0.0.0.1', '255.255.255.254', 0),
-            array('12.34.143.96', '12.34.201.26', 16),
-            array('12.34.255.252', '12.34.255.255', 30),
-            array('::cff:103', '12.255.255.255', 5),
-        );
+        return [
+            ['12.34.56.78', '12.34.56.78', 32],
+            ['0.0.0.1', '255.255.255.254', 0],
+            ['12.34.143.96', '12.34.201.26', 16],
+            ['12.34.255.252', '12.34.255.255', 30],
+            ['::cff:103', '12.255.255.255', 5],
+        ];
     }
 
     /**
-     * Test: In Range
-     *
      * @test
-     * @dataProvider inRangeIPs
-     * @access public
-     * @param string $ip1
-     * @param string $ip2
-     * @param integer $cidr
-     * @return void
+     * @dataProvider dataProviderInRangeAddressesVersion4
      */
-    public function inRange($ip1, $ip2, $cidr)
+    public function testInRangeAddressesVersion4($ip1, $ip2, $cidr)
     {
         $ip1 = new IP($ip1);
         $ip2 = new IP($ip2);
-        $this->assertTrue($ip1->inRange($ip2, 96 + $cidr));
+        $this->assertTrue($ip1->inRange($ip2, IP::CIDR4TO6 + $cidr));
     }
 
-    /**
-     * Data Provider: Not In-Range IP Addresses
-     *
-     * @access public
-     * @return array
-     */
-    public function notInRangeIPs()
+    public function dataProviderNotInRangeAddressesVersion4()
     {
-        return array(
-            array('0.0.0.1', '255.255.255.254', 1),
-            array('12.34.143.96', '12.34.201.26', 18),
-            array('12.34.255.230', '12.34.255.255', 31),
-            array('::a8f2:103', '12.255.255.255', 5),
-        );
+        return [
+            ['0.0.0.1', '255.255.255.254', 1],
+            ['12.34.143.96', '12.34.201.26', 18],
+            ['12.34.255.230', '12.34.255.255', 31],
+            ['::a8f2:103', '12.255.255.255', 5],
+        ];
     }
 
     /**
-     * Test: Not In Range
-     *
      * @test
-     * @dataProvider notInRangeIPs
-     * @access public
-     * @param string $ip1
-     * @param string $ip2
-     * @param integer $cidr
-     * @return void
+     * @dataProvider dataProviderNotInRangeAddressesVersion4
      */
-    public function notInRange($ip1, $ip2, $cidr)
+    public function testNotInRangeAddressesVersion4($ip1, $ip2, $cidr)
     {
         $ip1 = new IP($ip1);
         $ip2 = new IP($ip2);
@@ -414,77 +296,51 @@ class IPTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test: To String
-     *
      * @test
-     * @access public
-     * @return void
      */
-    public function toString()
+    public function testIpObjectToString()
     {
         $ip = new IP('12.34.56.78');
-        $this->assertSame(pack('H*', '0000000000000000000000000c22384e'), (string) $ip);
+        $expected = pack('H*', '0000000000000000000000000c22384e');
+        $this->assertSame($expected, (string) $ip);
+        $this->assertSame($expected, $ip->__toString());
     }
 
-    /**
-     * Data Provider: Example IP Addresses (Version 4)
-     *
-     * @access public
-     * @return array
-     */
-    public function ipAddressesVersion4()
+    public function dataProviderIpAddressesVersion4()
     {
-        return array(
-            array('12.34.56.78', IP::VERSION_4),
-            array('192.168.33.10', IP::VERSION_4),
-            array('255.255.255.255', IP::VERSION_4),
-            array('8.8.8.8', IP::VERSION_4),
+        return [
+            ['12.34.56.78',     IP::VERSION_4],
+            ['192.168.33.10',   IP::VERSION_4],
+            ['255.255.255.255', IP::VERSION_4],
+            ['8.8.8.8',         IP::VERSION_4],
             // Double check that this is reported as version 4 rather than the version 6
             // it looks like (due to the way versions are determined internally).
-            array('::1', IP::VERSION_4),
+            ['::1',             IP::VERSION_4],
             // And finally, just check that it can properly detect a version 4
             // address in version 4/6 notation.
-            array('::0:12.34.56.78', IP::VERSION_4),
-            array('::ffff:7f00:1', IP::VERSION_4),
-        );
+            ['::0:12.34.56.78', IP::VERSION_4],
+            ['::ffff:7f00:1',   IP::VERSION_4],
+        ];
     }
 
-    /**
-     * Data Provider: Example IP Addresses (Version 6)
-     *
-     * @access public
-     * @return array
-     */
-    public function ipAddressesVersion6()
+    public function dataProviderIpAddressesVersion6()
     {
-        return array(
-            array('2001:4860:4860::8844', IP::VERSION_6),
-            array('fd0a:238b:4a96::', IP::VERSION_6),
-        );
+        return [
+            ['2001:4860:4860::8844', IP::VERSION_6],
+            ['fd0a:238b:4a96::',     IP::VERSION_6],
+        ];
     }
 
-    /**
-     * Data Provider: Example IP Addresses (Mixed Versions)
-     *
-     * @access public
-     * @return array
-     */
-    public function ipAddresses()
+    public function dataProviderIpAddressesMixedVersions()
     {
-        return array_merge($this->ipAddressesVersion4(), $this->ipAddressesVersion6());
+        return array_merge($this->dataProviderIpAddressesVersion4(), $this->dataProviderIpAddressesVersion6());
     }
 
     /**
-     * Test: Get and Is Version
-     *
      * @test
-     * @dataProvider ipAddresses
-     * @access public
-     * @param string $ip
-     * @param integer $version
-     * @return void
+     * @dataProvider dataProviderIpAddressesMixedVersions
      */
-    public function getAndIsVersion($ip, $version)
+    public function testDetectedVersionIsCorrect($ip, $version)
     {
         $ip = new IP($ip);
         $notVersion = $version === 4 ? 6 : 4;
@@ -494,16 +350,10 @@ class IPTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test: Is Version 4
-     *
      * @test
-     * @dataProvider ipAddressesVersion4
-     * @access public
-     * @param string $ip
-     * @param integer $version
-     * @return void
+     * @dataProvider dataProviderIpAddressesVersion4
      */
-    public function isVersion4($ip, $version)
+    public function testVersion4Detection($ip, $version)
     {
         $ip = new IP($ip);
         $this->assertSame($version, $ip->getVersion());
@@ -511,293 +361,217 @@ class IPTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test: Is Version 6
-     *
      * @test
-     * @dataProvider ipAddressesVersion6
-     * @access public
-     * @param string $ip
-     * @param integer $version
-     * @return void
+     * @dataProvider dataProviderIpAddressesVersion6
      */
-    public function isVersion6($ip, $version)
+    public function testVersion6Detection($ip, $version)
     {
         $ip = new IP($ip);
         $this->assertSame($version, $ip->getVersion());
         $this->assertTrue($ip->isVersion6());
     }
 
-    public function ipAddressesMapped()
+    public function dataProviderMappedIpAddresses()
     {
-        return array(
-            array('::ffff:7f00:1', true),
-            array('::ffff:1234:5678', true),
-            array('0000:0000:0000:0000:0000:ffff:7f00:a001', true),
-            array('::fff:7f00:1', false),
-            array('a::ffff:7f00:1', false),
-            array('2001:db8::a60:8a2e:370:7334', false),
-        );
+        return [
+            ['::ffff:7f00:1', true],
+            ['::ffff:1234:5678', true],
+            ['0000:0000:0000:0000:0000:ffff:7f00:a001', true],
+            ['::fff:7f00:1', false],
+            ['a::ffff:7f00:1', false],
+            ['2001:db8::a60:8a2e:370:7334', false],
+        ];
     }
 
     /**
-     * Test: Is Mapped?
-     *
      * @test
-     * @dataProvider ipAddressesMapped
-     * @param string $ip
-     * @param bool $isMapped
+     * @dataProvider dataProviderMappedIpAddresses
      */
-    public function isMapped($ip, $isMapped)
+    public function testIsMapped($ip, $isMapped)
     {
         $ip = new IP($ip);
         $this->assertSame($isMapped, $ip->isMapped());
     }
 
-    public function ipAddressesDerived()
+    public function dataProviderDerivedIppAddresses()
     {
-        return array(
-            array('2002::', true),
-            array('2002:7f00:1::', true),
-            array('2002:1234:4321:0:00:000:0000::', true),
-            array('2001:7f00:1::', false),
-            array('2002:7f00:1::a', false),
-            array('127.0.0.1', false),
-        );
+        return [
+            ['2002::', true],
+            ['2002:7f00:1::', true],
+            ['2002:1234:4321:0:00:000:0000::', true],
+            ['2001:7f00:1::', false],
+            ['2002:7f00:1::a', false],
+            ['127.0.0.1', false],
+        ];
     }
 
     /**
-     * Test: Is Derived
-     *
      * @test
-     * @dataProvider ipAddressesDerived
-     * @param string $ip
-     * @param bool $isDerived
+     * @dataProvider dataProviderDerivedIppAddresses
      */
-    public function isDerived($ip, $isDerived)
+    public function testIsDerived($ip, $isDerived)
     {
         $ip = new IP($ip);
         $this->assertSame($isDerived, $ip->isDerived());
     }
 
-    public function ipAddressesCompatible()
+    public function dataProviderCompatibleIpAddresses()
     {
-        return array(
-            array('::7f00:1', true),
-            array('127.0.0.1', true),
-            array('2002:7f00:1::', false),
-        );
+        return [
+            ['::7f00:1', true],
+            ['127.0.0.1', true],
+            ['2002:7f00:1::', false],
+        ];
     }
 
     /**
-     * Test: Is Compatible
-     *
      * @test
-     * @dataProvider ipAddressesCompatible
-     * @param string $ip
-     * @param bool $isCompatible
+     * @dataProvider dataProviderCompatibleIpAddresses
      */
-    public function isCompatible($ip, $isCompatible)
+    public function testIsCompatible($ip, $isCompatible)
     {
         $ip = new IP($ip);
         $this->assertSame($isCompatible, $ip->isCompatible());
     }
 
-    public function ipAddressesEmbedded()
+    public function dataProviderEmbeddedIpAddresses()
     {
-        return array(
-            array('::ffff:7f00:1', true),
-            array('::ffff:1234:5678', true),
-            array('0000:0000:0000:0000:0000:ffff:7f00:a001', true),
-            array('::fff:7f00:1', false),
-            array('a::ffff:7f00:1', false),
-            array('2001:db8::a60:8a2e:370:7334', false),
-            array('::7f00:1', true),
-            array('127.0.0.1', true),
-            array('2002:7f00:1::', false),
-        );
+        return [
+            ['::ffff:7f00:1', true],
+            ['::ffff:1234:5678', true],
+            ['0000:0000:0000:0000:0000:ffff:7f00:a001', true],
+            ['::fff:7f00:1', false],
+            ['a::ffff:7f00:1', false],
+            ['2001:db8::a60:8a2e:370:7334', false],
+            ['::7f00:1', true],
+            ['127.0.0.1', true],
+            ['2002:7f00:1::', false],
+        ];
     }
 
     /**
-     * Test: Is Embedded
-     *
      * @test
-     * @dataProvider ipAddressesEmbedded
-     * @param $ip
-     * @param $isEmbedded
+     * @dataProvider dataProviderEmbeddedIpAddresses
      */
-    public function isEmbedded($ip, $isEmbedded)
+    public function testIsEmbedded($ip, $isEmbedded)
     {
-        $ip = new IP($ip, $isEmbedded);
+        $ip = new IP($ip);
         $this->assertSame($isEmbedded, $ip->isEmbedded());
     }
 
-    /**
-     * Data Provider: Link Local IP Addresses
-     *
-     * @access public
-     * @return array
-     */
-    public function linkLocalIpAddresses()
+    public function dataProviderLinkLocalIpAddresses()
     {
-        return array(
-            array('169.253.255.255', false),
-            array('169.254.0.0', true),
-            array('169.254.255.255', true),
-            array('169.255.0.0', false),
-            array('fe7f:ffff:ffff:ffff:ffff:ffff:ffff:ffff', false),
-            array('fe80::', true),
-            array('febf:ffff:ffff:ffff:ffff:ffff:ffff:ffff', true),
-            array('fec0::', false),
-        );
+        return [
+            ['169.253.255.255', false],
+            ['169.254.0.0', true],
+            ['169.254.255.255', true],
+            ['169.255.0.0', false],
+            ['fe7f:ffff:ffff:ffff:ffff:ffff:ffff:ffff', false],
+            ['fe80::', true],
+            ['febf:ffff:ffff:ffff:ffff:ffff:ffff:ffff', true],
+            ['fec0::', false],
+        ];
     }
 
     /**
-     * Test: Is link local
-     *
      * @test
-     * @dataProvider linkLocalIpAddresses
-     * @param string $ip
-     * @param bool $isLinkLocal
-     * @return void
+     * @dataProvider dataProviderLinkLocalIpAddresses
      */
-    public function isLinkLocal($ip, $isLinkLocal)
+    public function testIsLinkLocal($ip, $isLinkLocal)
     {
         $ip = new IP($ip);
         $this->assertEquals($isLinkLocal, $ip->isLinkLocal());
     }
 
-    /**
-     * Data Provider: Loopback IP Addresses
-     *
-     * @access public
-     * @return array
-     */
-    public function loopbackIpAddresses()
+    public function dataProviderLoopbackIpAddresses()
     {
-        return array(
-            array('126.255.255.255', false),
-            array('127.0.0.0', true),
-            array('127.255.255.255', true),
-            array('128.0.0.0', false),
-            array('::1', true),
-        );
+        return [
+            ['126.255.255.255', false],
+            ['127.0.0.0', true],
+            ['127.255.255.255', true],
+            ['128.0.0.0', false],
+            ['::1', true],
+        ];
     }
 
     /**
-     * Test: Is loopback
-     *
      * @test
-     * @dataProvider loopbackIpAddresses
-     * @param string $ip
-     * @param bool $isLoopback
-     * @return void
+     * @dataProvider dataProviderLoopbackIpAddresses
      */
-    public function isLoopback($ip, $isLoopback)
+    public function testIsLoopback($ip, $isLoopback)
     {
         $ip = new IP($ip);
         $this->assertEquals($isLoopback, $ip->isLoopback());
     }
 
-    /**
-     * Data Provider: Multicast IP Addresses
-     *
-     * @access public
-     * @return array
-     */
-    public function multiCastIpAddresses()
+    public function dataProviderMultiCastIpAddresses()
     {
-        return array(
-            array('223.255.255.255', false),
-            array('224.0.0.0', true),
-            array('239.255.255.255', true),
-            array('240.0.0.0', false),
-            array('feff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', false),
-            array('ff00::', true),
-            array('ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', true),
-        );
+        return [
+            ['223.255.255.255', false],
+            ['224.0.0.0', true],
+            ['239.255.255.255', true],
+            ['240.0.0.0', false],
+            ['feff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', false],
+            ['ff00::', true],
+            ['ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', true],
+        ];
     }
 
     /**
-     * Test: Is multicast
-     *
      * @test
-     * @dataProvider multiCastIpAddresses
-     * @param string $ip
-     * @param bool $isMulticast
-     * @return void
+     * @dataProvider dataProviderMultiCastIpAddresses
      */
-    public function isMulticast($ip, $isMulticast)
+    public function testIsMulticast($ip, $isMulticast)
     {
         $ip = new IP($ip);
         $this->assertEquals($isMulticast, $ip->isMulticast());
     }
 
-    /**
-     * Data Provider: Link Local IP Addresses
-     *
-     * @access public
-     * @return array
-     */
-    public function unspecifiedIpAddresses()
+    public function dataProviderUnspecifiedIpAddresses()
     {
-        return array(
-            array('0.0.0.0'),
-            array('::0'),
-        );
+        return [
+            ['0.0.0.0'],
+            ['::0'],
+        ];
     }
 
     /**
-     * Test: Is unspecified
-     *
      * @test
-     * @dataProvider unspecifiedIpAddresses
-     * @param string $ip
-     * @return void
+     * @dataProvider dataProviderUnspecifiedIpAddresses
      */
-    public function isUnspecified($ip)
+    public function testIsUnspecified($ip)
     {
         $ip = new IP($ip);
         $this->assertTrue($ip->isUnspecified());
     }
 
-    /**
-     * Data Provider: Private-Use IP Addresses
-     *
-     * @access public
-     * @return array
-     */
-    public function privateUseIpAddresses()
+    public function dataProviderPrivateUseIpAddresses()
     {
-        return array(
-            array('9.255.255.255', false),
-            array('10.0.0.0', true),
-            array('10.255.255.255', true),
-            array('11.0.0.0', false),
-            array('172.15.255.255', false),
-            array('172.16.0.0', true),
-            array('172.31.255.255', true),
-            array('172.32.0.0', false),
-            array('192.167.255.255', false),
-            array('192.168.0.0', true),
-            array('192.168.255.255', true),
-            array('192.169.0.0', false),
-            array('fcff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', false),
-            array('fd00::', true),
-            array('fdff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', true),
-            array('fe00::', false),
-        );
+        return [
+            ['9.255.255.255', false],
+            ['10.0.0.0', true],
+            ['10.255.255.255', true],
+            ['11.0.0.0', false],
+            ['172.15.255.255', false],
+            ['172.16.0.0', true],
+            ['172.31.255.255', true],
+            ['172.32.0.0', false],
+            ['192.167.255.255', false],
+            ['192.168.0.0', true],
+            ['192.168.255.255', true],
+            ['192.169.0.0', false],
+            ['fcff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', false],
+            ['fd00::', true],
+            ['fdff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', true],
+            ['fe00::', false],
+        ];
     }
 
     /**
-     * Test: Is private use
-     *
      * @test
-     * @dataProvider privateUseIpAddresses
-     * @param string $ip
-     * @param bool $isPrivateUse
-     * @return void
+     * @dataProvider dataProviderPrivateUseIpAddresses
      */
-    public function isPrivateUse($ip, $isPrivateUse)
+    public function testIsPrivateUse($ip, $isPrivateUse)
     {
         $ip = new IP($ip);
         $this->assertEquals($isPrivateUse, $ip->isPrivateUse());
