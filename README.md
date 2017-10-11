@@ -33,7 +33,7 @@ dependency on the in-built PHP functions `inet_pton` and `int_ntop`.
 ## Instantiation
 
 IP addresses get automatically validated on object instantiation; if the IP
-address supplied is invalid, an [`InvalidIpAddressException`](src/InvalidIpAddressException.php)
+address supplied is invalid, an [`InvalidIpAddressException`](src/Exception/InvalidIpAddressException.php)
 will be thrown.
 
 ```php
