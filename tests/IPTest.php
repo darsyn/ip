@@ -2,7 +2,7 @@
 
 namespace Darsyn\IP\Tests;
 
-use Darsyn\IP\InvalidIpAddressException;
+use Darsyn\IP\Exception;
 use Darsyn\IP\IP;
 use PHPUnit_Framework_TestCase as TestCase;
 
@@ -78,15 +78,15 @@ class IPTest extends TestCase
 
     /**
      * @test
-     * @expectedException \Darsyn\IP\InvalidIpAddressException
+     * @expectedException \Darsyn\IP\Exception\InvalidIpAddressException
      * @dataProvider dataProviderInvalidIpAddresses
      */
     public function testExceptionThrownWhenInvalidIpSuppliedDuringInstantiation($ipAddress)
     {
         try {
             new IP($ipAddress);
-        } catch (InvalidIpAddressException $e) {
-            $this->assertSame($ipAddress, $e->getIp());
+        } catch (Exception\InvalidIpAddressException $e) {
+            $this->assertSame($ipAddress, $e->getSuppliedIp());
             throw $e;
         }
         $this->fail();
@@ -151,7 +151,7 @@ class IPTest extends TestCase
     /**
      * @test
      * @dataProvider dataProviderInvalidCidrValues
-     * @expectedException \InvalidArgumentException
+     * @expectedException \Darsyn\IP\Exception\InvalidCidrException
      */
     public function testInvalidCidrValues($cidr)
     {
@@ -159,7 +159,14 @@ class IPTest extends TestCase
         $method = $class->getMethod('getMask');
         $method->setAccessible(true);
         $ip = new IP('12.34.56.78');
-        $method->invoke($ip, $cidr);
+
+        try {
+            $method->invoke($ip, $cidr);
+        } catch (Exception\InvalidCidrException $e) {
+            $this->assertSame($cidr, $e->getSuppliedCidr());
+            throw $e;
+        }
+        $this->fail();
     }
 
     public function dataProviderValidNetworkAddressesVersion4()

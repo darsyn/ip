@@ -1,15 +1,11 @@
 <?php
 
-namespace Darsyn\IP;
+namespace Darsyn\IP\Exception;
 
 class InvalidIpAddressException extends \InvalidArgumentException
 {
     private $ip;
 
-    /**
-     * @param string $ip
-     * @param \Exception $previous
-     */
     public function __construct($ip, \Exception $previous = null)
     {
         $this->ip = $ip;
@@ -19,10 +15,7 @@ class InvalidIpAddressException extends \InvalidArgumentException
         parent::__construct($message, null, $previous);
     }
 
-    /**
-     * @return string
-     */
-    public function getIp()
+    public function getSuppliedIp()
     {
         return $this->ip;
     }

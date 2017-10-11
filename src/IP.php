@@ -2,6 +2,8 @@
 
 namespace Darsyn\IP;
 
+use Darsyn\IP\Exception;
+
 /**
  * IP Address
  *
@@ -40,7 +42,7 @@ class IP
      *
      * @access public
      * @param  string $ip
-     * @throws \Darsyn\IP\InvalidIpAddressException
+     * @throws \Darsyn\IP\Exception\InvalidIpAddressException
      */
     public function __construct($ip)
     {
@@ -56,7 +58,7 @@ class IP
             // If the string was not 16-bytes long, then the IP supplied was
             // neither in protocol notation or binary sequence notation. Throw
             // an exception.
-            throw new InvalidIpAddressException($ip);
+            throw new Exception\InvalidIpAddressException($ip);
         }
         $this->ip = $ip;
     }
@@ -129,7 +131,7 @@ class IP
     protected function getMask($cidr)
     {
         if (!is_int($cidr) || $cidr < 0 || $cidr > 128) {
-            throw new \InvalidArgumentException('CIDR must be an integer between 0 and 128.');
+            throw new Exception\InvalidCidrException($cidr);
         }
         // Since it takes 4 bits per hexadecimal, how many sections of complete
         // 1's do we have (f's)?

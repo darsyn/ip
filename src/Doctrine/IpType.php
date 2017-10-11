@@ -2,7 +2,7 @@
 
 namespace Darsyn\IP\Doctrine;
 
-use Darsyn\IP\InvalidIpAddressException;
+use Darsyn\IP\Exception\InvalidIpAddressException;
 use Darsyn\IP\IP;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\ConversionException;
