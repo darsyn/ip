@@ -4,6 +4,7 @@ namespace Darsyn\IP\Tests;
 
 use Darsyn\IP\Exception;
 use Darsyn\IP\IP;
+use Darsyn\IP\Strategy;
 use PHPUnit_Framework_TestCase as TestCase;
 
 class IPTest extends TestCase
@@ -22,7 +23,7 @@ class IPTest extends TestCase
     {
         $ipv4 = new IP('12.34.56.78');
         $this->assertSame(16, strlen($ipv4->getBinary()));
-        $this->assertSame(pack('H*', '0000000000000000000000000c22384e'), $ipv4->getBinary());
+        $this->assertSame(pack('H*', '00000000000000000000ffff0c22384e'), $ipv4->getBinary());
 
         $ipv6 = new IP('2001:db8::a60:8a2e:370:7334');
         $this->assertSame(16, strlen($ipv6->getBinary()));
@@ -99,7 +100,7 @@ class IPTest extends TestCase
     {
         $ipv4 = new IP('12.34.56.78');
         $this->assertSame('12.34.56.78', $ipv4->getShortAddress());
-        $this->assertSame('0000:0000:0000:0000:0000:0000:0c22:384e', $ipv4->getLongAddress());
+        $this->assertSame('0000:0000:0000:0000:0000:ffff:0c22:384e', $ipv4->getLongAddress());
 
         $ipv6 = new IP('2001:db8::a60:8a2e:370:7334');
         $this->assertSame('2001:db8::a60:8a2e:370:7334', $ipv6->getShortAddress());
@@ -266,7 +267,6 @@ class IPTest extends TestCase
             ['0.0.0.1', '255.255.255.254', 0],
             ['12.34.143.96', '12.34.201.26', 16],
             ['12.34.255.252', '12.34.255.255', 30],
-            ['::cff:103', '12.255.255.255', 5],
         ];
     }
 
@@ -308,7 +308,7 @@ class IPTest extends TestCase
     public function testIpObjectToString()
     {
         $ip = new IP('12.34.56.78');
-        $expected = pack('H*', '0000000000000000000000000c22384e');
+        $expected = pack('H*', '00000000000000000000ffff0c22384e');
         $this->assertSame($expected, (string) $ip);
         $this->assertSame($expected, $ip->__toString());
     }
