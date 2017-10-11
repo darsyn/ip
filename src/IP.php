@@ -33,14 +33,21 @@ class IP
     private static $defaultEmbeddingStrategy;
 
     /** @var \Darsyn\IP\Strategy\EmbeddingStrategyInterface $embeddingStrategy */
-    protected $embeddingStrategy;
+    private $embeddingStrategy;
 
-    /** @var string */
+    /** @var string $ip */
     protected $ip;
 
-    /** @var integer */
+    /** @var integer $version */
     protected $version;
 
+    /**
+     * Set the default embedding strategy to be used for all new instances of
+     * this class that do not specify their own embedding strategy.
+     *
+     * @static
+     * @param \Darsyn\IP\Strategy\EmbeddingStrategyInterface $embeddingStrategy
+     */
     public static function setDefaultEmbeddingStrategy(EmbeddingStrategyInterface $embeddingStrategy)
     {
         self::$defaultEmbeddingStrategy = $embeddingStrategy;
@@ -54,7 +61,6 @@ class IP
     /**
      * Constructor
      *
-     * @access public
      * @param  string $ip
      * @throws \Darsyn\IP\Exception\InvalidIpAddressException
      */
@@ -69,10 +75,10 @@ class IP
         } elseif (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
             $ip = current(unpack('a16', inet_pton($ip)));
         }
-        if (!is_string($ip) || $this->getIpLength($ip) !== 16) {
-            // If the string was not 16-bytes long, then the IP supplied was
-            // neither in protocol notation or binary sequence notation. Throw
-            // an exception.
+
+        // If the string was not 16-bytes long, then the IP supplied was neither
+        // in protocol notation or binary sequence notation. Throw an exception.
+        if (!is_string($ip) || $this->getBinaryLength($ip) !== 16) {
             throw new Exception\InvalidIpAddressException($ip);
         }
         $this->ip = $ip;
@@ -222,9 +228,8 @@ class IP
     {
         // Providing that the CIDR is valid, bitwise OR the IP address binary
         // sequence with the inverse of the mask generated from the CIDR.
-        $mask = $this->getMask($cidr);
         return new static(
-            $this->getBinary() | ~$mask,
+            $this->getBinary() | ~$this->getMask($cidr),
             clone $this->embeddingStrategy
         );
     }
