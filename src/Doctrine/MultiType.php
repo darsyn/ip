@@ -2,7 +2,7 @@
 
 namespace Darsyn\IP\Doctrine;
 
-use Darsyn\IP\Multi as IP;
+use Darsyn\IP\Version\Multi as IP;
 
 /**
  * {@inheritDoc}
