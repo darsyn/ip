@@ -1,6 +1,6 @@
 <?php
 
-namespace Darsyn\IP;
+namespace Darsyn\IP\Version;
 
 use Darsyn\IP\Strategy\EmbeddingStrategyInterface;
 

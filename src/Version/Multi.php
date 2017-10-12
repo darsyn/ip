@@ -1,7 +1,9 @@
 <?php
 
-namespace Darsyn\IP;
+namespace Darsyn\IP\Version;
 
+use Darsyn\IP\Exception;
+use Darsyn\IP\IpInterface;
 use Darsyn\IP\Strategy\EmbeddingStrategyInterface;
 use Darsyn\IP\Strategy\Mapped as MappedEmbeddingStrategy;
 
