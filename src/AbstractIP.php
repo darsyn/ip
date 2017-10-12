@@ -1,0 +1,166 @@
+<?php
+
+namespace Darsyn\IP;
+
+abstract class AbstractIP implements IpInterface
+{
+    /**
+     * Keep this private to prevent modification of object's main value from
+     * child classes.
+     * @var string $ip
+     */
+    private $ip;
+
+    /**
+     * Constructor
+     *
+     * @param string $ip
+     */
+    public function __construct($ip)
+    {
+        $this->ip = $ip;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    final public function getBinary()
+    {
+        return $this->ip;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isVersion($version)
+    {
+        return $this->getVersion() === $version;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isVersion4()
+    {
+        return $this->isVersion(4);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isVersion6()
+    {
+        return $this->isVersion(6);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getNetworkIp($cidr)
+    {
+        // Providing that the CIDR is valid, bitwise AND the IP address binary
+        // sequence with the mask generated from the CIDR.
+        return new static($this->getBinary() & $this->generateBinaryMask(
+            $cidr,
+            $this->getBinaryLength($this->getBinary())
+        ));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getBroadcastIp($cidr)
+    {
+        // Providing that the CIDR is valid, bitwise OR the IP address binary
+        // sequence with the inverse of the mask generated from the CIDR.
+        return new static($this->getBinary() | ~$this->generateBinaryMask(
+            $cidr,
+            $this->getBinaryLength($this->getBinary())
+        ));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function inRange(IpInterface $ip, $cidr)
+    {
+        try {
+            return $this->getNetworkIp($cidr)->getBinary() === $ip->getNetworkIp($cidr)->getBinary();
+        } catch (Exception\InvalidCidrException $e) {
+            return false;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isMapped()
+    {
+        return (new Strategy\Mapped)->isEmbedded($this->getBinary());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isDerived()
+    {
+        return (new Strategy\Derived)->isEmbedded($this->getBinary());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isCompatible()
+    {
+        return (new Strategy\Compatible)->isEmbedded($this->getBinary());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isEmbedded()
+    {
+        return false;
+    }
+
+    protected function getBinaryLength($ip)
+    {
+        // Don't use strlen() directly to prevent incorrect lengths resulting
+        // from null bytes being read as the end of the string.
+        return strlen(bin2hex($ip)) / 2;
+    }
+
+    protected function generateBinaryMask($cidr, $length)
+    {
+        if (!is_int($cidr)  || !is_int($length)
+            || $cidr < 0    || $length < 0
+            // CIDR is measured in bits, whilst we're describing the length
+            // in bytes.
+            || $cidr > $length * 8
+        ) {
+            throw new Exception\InvalidCidrException($cidr, $length);
+        }
+        // Since it takes 4 bits per hexadecimal, how many sections of complete
+        // 1's do we have (f's)?
+        $mask = str_repeat('f', floor($cidr / 4));
+        // Now we have less than four 1 bits left we need to determine what
+        // hexadecimal character should be added next. Of course, we should only
+        // add them in there are 1 bits leftover to prevent going over the
+        // 128-bit limit.
+        if (0 !== $bits = $cidr % 4) {
+            // Create a string representation of a 4-bit binary sequence
+            // beginning with the amount of leftover 1's.
+            $bin = str_pad(str_repeat('1', $bits), 4, '0', STR_PAD_RIGHT);
+            // Convert that 4-bit binary string into a hexadecimal character,
+            // and append it to the mask.
+            $mask .= dechex(bindec($bin));
+        }
+        // Fill the rest of the string up with zero's to pad it out to the
+        // correct length (one hex character is worth half a byte).
+        $mask = str_pad($mask, $length * 2, '0', STR_PAD_RIGHT);
+        // Pack the hexadecimal sequence into a real, 4 or 16-byte binary
+        // sequence.
+        $mask = pack('H*', $mask);
+        return $mask;
+    }
+}
