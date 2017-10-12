@@ -45,7 +45,7 @@ class IPv4 extends AbstractIP implements Version4Interface
     /**
      * {@inheritDoc}
      */
-    public function getSomethingAddress()
+    public function getDotAddress()
     {
         return inet_ntop(pack('A4', $this->getBinary()));
     }
