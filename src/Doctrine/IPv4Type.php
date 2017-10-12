@@ -2,7 +2,7 @@
 
 namespace Darsyn\IP\Doctrine;
 
-use Darsyn\IP\IPv4 as IP;
+use Darsyn\IP\Version\IPv4 as IP;
 
 /**
  * {@inheritDoc}

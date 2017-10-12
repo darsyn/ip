@@ -13,7 +13,7 @@ class Derived extends AbstractStrategy
     {
         return $this->getBinaryLength($binary) === 16
             && substr($binary, 0, 2) === $this->getBinaryFromHex('2002')
-            && substr($binary, 6, 10) === "\0\0\0\0\0\0\0\0\0\0\0\0";
+            && substr($binary, 6, 10) === "\0\0\0\0\0\0\0\0\0\0";
     }
 
     /**
