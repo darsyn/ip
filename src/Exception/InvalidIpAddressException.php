@@ -7,15 +7,21 @@ class InvalidIpAddressException extends IpException
     /** @var mixed $ip */
     private $ip;
 
+    /**
+     * Constructor
+     *
+     * @param string $ip
+     * @param \Exception|null $previous
+     */
     public function __construct($ip, \Exception $previous = null)
     {
         $this->ip = $ip;
-        $message = is_string($ip)
-            ? sprintf('The IP address supplied, "%s", is not valid.', $ip)
-            : 'The IP address supplied is not valid.';
-        parent::__construct($message, null, $previous);
+        parent::__construct('The IP address supplied is not valid.', null, $previous);
     }
 
+    /**
+     * @return mixed
+     */
     public function getSuppliedIp()
     {
         return $this->ip;
