@@ -1,6 +1,8 @@
 <?php
 
-namespace Darsyn\IP;
+namespace Darsyn\IP\Version;
+
+use Darsyn\IP\IpInterface;
 
 interface Version4Interface extends IpInterface
 {

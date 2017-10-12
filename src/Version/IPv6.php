@@ -1,6 +1,9 @@
 <?php
 
-namespace Darsyn\IP;
+namespace Darsyn\IP\Version;
+
+use Darsyn\IP\AbstractIP;
+use Darsyn\IP\Exception;
 
 /**
  * IPv6 Address
