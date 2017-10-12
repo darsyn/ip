@@ -95,7 +95,7 @@ class Multi extends IPv6 implements MultiVersionInterface
      * @return string
      * @throws \Darsyn\IP\Exception\WrongVersionException
      */
-    public function getSomethingAddress()
+    public function getDotAddress()
     {
         if ($this->isEmbedded()) {
             return inet_ntop(pack('A4', $this->embeddingStrategy->extract($this->getBinary())));
