@@ -71,7 +71,7 @@ class Multi extends IPv6 implements MultiVersionInterface
         }
         // If the IP address is a binary sequence of 4 bytes, then pack it into
         // a 16 byte IPv6 binary sequence according to the embedding strategy.
-        if ($this->getBinaryLength($ip) === 4) {
+        if (is_string($ip) && $this->getBinaryLength($ip) === 4) {
             $ip = $this->embeddingStrategy->pack($ip);
         }
         parent::__construct($ip);
@@ -84,7 +84,7 @@ class Multi extends IPv6 implements MultiVersionInterface
     {
         // If binary string contains an embedded IPv4 address, then extract it.
         $ip = $this->isEmbedded()
-            ? $this->embeddingStrategy->extract($this->getBinary())
+            ? $this->getShortBinary()
             : $this->getBinary();
         // Render the IP address in the correct notation according to its
         // protocol (based on how long the binary string is).
@@ -100,9 +100,7 @@ class Multi extends IPv6 implements MultiVersionInterface
     {
         if ($this->isEmbedded()) {
             try {
-                return self::getProtocolFormatter()->format(
-                    $this->embeddingStrategy->extract($this->getBinary())
-                );
+                return self::getProtocolFormatter()->format($this->getShortBinary());
             } catch (Exception\Formatter\FormatException $e) {
                 throw new Exception\IpException('An unknown error occured internally.', null, $e);
             }
@@ -123,13 +121,17 @@ class Multi extends IPv6 implements MultiVersionInterface
      */
     public function getNetworkIp($cidr)
     {
-        if ($this->isCidrVersion4Appropriate($cidr) && $this->isEmbedded()) {
-            return new static(
-                (new IPv4($this->embeddingStrategy->extract($this->getBinary())))
-                    ->getNetworkIp($cidr)
-                    ->getBinary(),
-                clone $this->embeddingStrategy
-            );
+        try {
+            if ($this->isCidrVersion4Appropriate($cidr) && $this->isEmbedded()) {
+                return new static(
+                    (new IPv4($this->getShortBinary()))
+                        ->getNetworkIp($cidr)
+                        ->getBinary(),
+                    clone $this->embeddingStrategy
+                );
+            }
+        } catch (Exception\Strategy\ExtractionException $e) {
+        } catch (Exception\InvalidIpAddressException $e) {
         }
         return parent::getNetworkIp($cidr);
     }
@@ -139,13 +141,17 @@ class Multi extends IPv6 implements MultiVersionInterface
      */
     public function getBroadcastIp($cidr)
     {
-        if ($this->isCidrVersion4Appropriate($cidr) && $this->isEmbedded()) {
-            return new static(
-                (new IPv4($this->embeddingStrategy->extract($this->getBinary())))
-                    ->getBroadcastIp($cidr)
-                    ->getBinary(),
-                clone $this->embeddingStrategy
-            );
+        try {
+            if ($this->isCidrVersion4Appropriate($cidr) && $this->isEmbedded()) {
+                return new static(
+                    (new IPv4($this->getShortBinary()))
+                        ->getBroadcastIp($cidr)
+                        ->getBinary(),
+                    clone $this->embeddingStrategy
+                );
+            }
+        } catch (Exception\Strategy\ExtractionException $e) {
+        } catch (Exception\InvalidIpAddressException $e) {
         }
         return parent::getBroadcastIp($cidr);
     }
@@ -163,17 +169,20 @@ class Multi extends IPv6 implements MultiVersionInterface
      */
     public function inRange(IpInterface $ip, $cidr)
     {
-        // If both IP's (ours and theirs) are version 4 then attempt to compare
-        // them as IPv4 ranges first (double checking that their IP address is
-        // using the same embedding strategy as we are).
+        // If both IP's (ours and theirs) are version 4 according to OUR
+        // embedding strategy then attempt to compare them as IPv4 ranges first.
         // This purposefully will not work with comparing IPv4 addresses with
         // IPv4-embedded IPv6 addresses.
-        if ($this->isVersion4() && $ip->isVersion4() && $this->embeddingStrategy->isEmbedded($ip->getBinary())) {
-            $ours   = $this->embeddingStrategy->extract($this->getBinary());
-            $theirs = $this->embeddingStrategy->extract($ip->getBinary());
-            if ((new IPv4($ours))->inRange(new IPv4($theirs), $cidr)) {
-                return true;
+        try {
+            if ($this->isVersion4() && $ip->isVersion4() && $this->embeddingStrategy->isEmbedded($ip->getBinary())) {
+                $ours = $this->getShortBinary();
+                $theirs = $this->embeddingStrategy->extract($ip->getBinary());
+                if ((new IPv4($ours))->inRange(new IPv4($theirs), $cidr)) {
+                    return true;
+                }
             }
+        } catch (Exception\Strategy\ExtractionException $e) {
+        } catch (Exception\InvalidIpAddressException $e) {
         }
         // If they are not in range as IPv4 addresses, then just carry on and
         // compare them as normal IPv6 addresses.
@@ -198,7 +207,7 @@ class Multi extends IPv6 implements MultiVersionInterface
     {
         return parent::isLinkLocal()
             || $this->isEmbedded()
-            && (new IPv4($this->getBinary()))->isLinkLocal();
+            && (new IPv4($this->getShortBinary()))->isLinkLocal();
     }
 
     /**
@@ -207,7 +216,8 @@ class Multi extends IPv6 implements MultiVersionInterface
     public function isLoopback()
     {
         return parent::isLoopback()
-            || (new IPv4($this->getBinary()))->isLoopback();
+            || $this->isEmbedded()
+            && (new IPv4($this->getShortBinary()))->isLoopback();
     }
 
     /**
@@ -217,7 +227,7 @@ class Multi extends IPv6 implements MultiVersionInterface
     {
         return parent::isMulticast()
             || $this->isEmbedded()
-            && (new IPv4($this->getBinary()))->isMulticast();
+            && (new IPv4($this->getShortBinary()))->isMulticast();
     }
 
     /**
@@ -227,7 +237,7 @@ class Multi extends IPv6 implements MultiVersionInterface
     {
         return parent::isPrivateUse()
             || $this->isEmbedded()
-            && (new IPv4($this->getBinary()))->isPrivateUse();
+            && (new IPv4($this->getShortBinary()))->isPrivateUse();
     }
 
     /**
@@ -237,7 +247,12 @@ class Multi extends IPv6 implements MultiVersionInterface
     {
         return parent::isUnspecified()
             || $this->isEmbedded()
-            && (new IPv4($this->getBinary()))->isUnspecified();
+            && (new IPv4($this->getShortBinary()))->isUnspecified();
+    }
+
+    private function getShortBinary()
+    {
+        return $this->embeddingStrategy->extract($this->getBinary());
     }
 
     /**
