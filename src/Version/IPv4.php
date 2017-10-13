@@ -47,7 +47,11 @@ class IPv4 extends AbstractIP implements Version4Interface
      */
     public function getDotAddress()
     {
-        return inet_ntop(pack('A4', $this->getBinary()));
+        try {
+            return self::getProtocolFormatter()->format($this->getBinary());
+        } catch (Exception\Formatter\FormatException $e) {
+            throw new Exception\IpException('An unknown error occured internally.', null, $e);
+        }
     }
 
     /**

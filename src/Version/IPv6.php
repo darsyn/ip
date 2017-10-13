@@ -4,6 +4,7 @@ namespace Darsyn\IP\Version;
 
 use Darsyn\IP\AbstractIP;
 use Darsyn\IP\Exception;
+use Darsyn\IP\Formatter\ProtocolFormatterInterface;
 
 /**
  * IPv6 Address
@@ -62,7 +63,11 @@ class IPv6 extends AbstractIP implements Version6Interface
      */
     public function getCompactedAddress()
     {
-        return inet_ntop(pack('A16', $this->getBinary()));
+        try {
+            return self::getProtocolFormatter()->format($this->getBinary());
+        } catch (Exception\Formatter\FormatException $e) {
+            throw new Exception\IpException('An unknown error occured internally.', null, $e);
+        }
     }
 
     /**
