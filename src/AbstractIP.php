@@ -42,6 +42,7 @@ abstract class AbstractIP implements IpInterface
      * Constructor
      *
      * @param string $ip
+     * @throws \Darsyn\IP\Exception\InvalidIpAddressException
      */
     public function __construct($ip)
     {
