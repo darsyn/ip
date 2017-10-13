@@ -245,36 +245,52 @@ class IPv6Test extends TestCase
 
     /**
      * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getLinkLocalIpAddresses()
      */
-    public function testIsLinkLocal()
+    public function testIsLinkLocal($value, $isLinkLocal)
     {
+        $ip = new IP($value);
+        $this->assertSame($isLinkLocal, $ip->isLinkLocal());
     }
 
     /**
      * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getLoopbackIpAddresses()
      */
-    public function testIsLoopback()
+    public function testIsLoopback($value, $isLoopback)
     {
+        $ip = new IP($value);
+        $this->assertSame($isLoopback, $ip->isLoopback());
     }
 
     /**
      * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getMulticastIpAddresses()
      */
-    public function testIsMulticast()
+    public function testIsMulticast($value, $isMulticast)
     {
+        $ip = new IP($value);
+        $this->assertSame($isMulticast, $ip->isMulticast());
+
     }
 
     /**
      * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getPrivateUseIpAddresses()
      */
-    public function testIsPrivateUse()
+    public function testIsPrivateUse($value, $isPrivateUse)
     {
+        $ip = new IP($value);
+        $this->assertSame($isPrivateUse, $ip->isPrivateUse());
     }
 
     /**
      * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getUnspecifiedIpAddresses()
      */
-    public function testIsUnspecified()
+    public function testIsUnspecified($value, $isUnspecified)
     {
+        $ip = new IP($value);
+        $this->assertSame($isUnspecified, $ip->isUnspecified());
     }
 }
