@@ -88,4 +88,61 @@ class IPv4
             [(object) []],
         ];
     }
+
+    public static function getLinkLocalIpAddresses()
+    {
+        return [
+            ['169.253.255.255', false],
+            ['169.254.0.0',     true ],
+            ['169.254.255.255', true ],
+            ['169.255.0.0',     false],
+        ];
+    }
+
+    public static function getLoopbackIpAddresses()
+    {
+        return [
+            ['126.255.255.255', false],
+            ['127.0.0.0',       true ],
+            ['127.255.255.255', true ],
+            ['128.0.0.0',       false],
+        ];
+    }
+
+    public static function getMulticastIpAddresses()
+    {
+        return [
+            ['223.255.255.255', false],
+            ['224.0.0.0',       true ],
+            ['239.255.255.255', true ],
+            ['240.0.0.0',       false],
+        ];
+    }
+
+    public static function getPrivateUseIpAddresses()
+    {
+        return [
+            ['9.255.255.255',   false],
+            ['10.0.0.0',        true ],
+            ['10.255.255.255',  true ],
+            ['11.0.0.0',        false],
+            ['172.15.255.255',  false],
+            ['172.16.0.0',      true ],
+            ['172.31.255.255',  true ],
+            ['172.32.0.0',      false],
+            ['192.167.255.255', false],
+            ['192.168.0.0',     true ],
+            ['192.168.255.255', true ],
+            ['192.169.0.0',     false],
+        ];
+    }
+
+    public static function getUnspecifiedIpAddresses()
+    {
+        return [
+            ['0.0.0.0',   true ],
+            ['0.0.0.1',   false],
+            ['127.0.0.1', false],
+        ];
+    }
 }
