@@ -88,7 +88,7 @@ class IPv6
         ];
     }
 
-    public function getMappedIpAddresses()
+    public static function getMappedIpAddresses()
     {
         return [
             ['::ffff:1:0',                              true ],
@@ -103,7 +103,7 @@ class IPv6
         ];
     }
 
-    public function getDerivedIpAddresses()
+    public static function getDerivedIpAddresses()
     {
         return [
             ['2002::',                          true ],
@@ -115,7 +115,7 @@ class IPv6
         ];
     }
 
-    public function getCompatibleIpAddresses()
+    public static function getCompatibleIpAddresses()
     {
         return  [
             ['::7f00:1',                                true ],
@@ -125,6 +125,54 @@ class IPv6
             ['2002:7f00:1::',                           false],
             ['9800:ea88:a5:cbcc:9d68:68f3:dc4a:ce01',   false],
             ['::',                                      true ],
+        ];
+    }
+
+    public static function getLinkLocalIpAddresses()
+    {
+        return [
+            ['fe7f:ffff:ffff:ffff:ffff:ffff:ffff:ffff', false],
+            ['fe80::',                                  true ],
+            ['febf:ffff:ffff:ffff:ffff:ffff:ffff:ffff', true ],
+            ['fec0::',                                  false],
+        ];
+    }
+
+    public static function getLoopbackIpAddresses()
+    {
+        return [
+            ['::1', true ],
+            ['::2', false],
+            ['1::', false],
+        ];
+    }
+
+    public static function getMulticastIpAddresses()
+    {
+        return [
+            ['feff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', false],
+            ['ff00::',                                  true ],
+            ['ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', true ],
+        ];
+    }
+
+    public static function getPrivateUseIpAddresses()
+    {
+        return [
+            ['fcff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', false],
+            ['fd00::',                                  true ],
+            ['fdff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', true ],
+            ['fe00::',                                  false],
+        ];
+    }
+
+    public static function getUnspecifiedIpAddresses()
+    {
+        return [
+            ['::0',             true ],
+            ['::',              true ],
+            ['::1',             false],
+            ['2002:7f00:1::',   false],
         ];
     }
 }
