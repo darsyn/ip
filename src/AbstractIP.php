@@ -2,14 +2,41 @@
 
 namespace Darsyn\IP;
 
+use Darsyn\IP\Formatter\ConsistentFormatter;
+use Darsyn\IP\Formatter\ProtocolFormatterInterface;
+
 abstract class AbstractIP implements IpInterface
 {
+    /** @var \Darsyn\IP\Formatter\ProtocolFormatterInterface $formatter */
+    protected static $formatter;
+
     /**
      * Keep this private to prevent modification of object's main value from
      * child classes.
      * @var string $ip
      */
     private $ip;
+
+    /**
+     * @static
+     * @param \Darsyn\IP\Formatter\ProtocolFormatterInterface $formatter
+     */
+    public static function setProtocolFormatter(ProtocolFormatterInterface $formatter)
+    {
+        self::$formatter = $formatter;
+    }
+
+    /**
+     * Get the protocol formatter set by the user, falling back to using our
+     * custom formatter for consistency by default if the user has not set one
+     * globally.
+     *
+     * @return \Darsyn\IP\Formatter\ProtocolFormatterInterface
+     */
+    protected function getProtocolFormatter()
+    {
+        return self::$formatter ?: new ConsistentFormatter;
+    }
 
     /**
      * Constructor

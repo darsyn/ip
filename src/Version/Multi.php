@@ -92,13 +92,20 @@ class Multi extends IPv6 implements MultiVersionInterface
     }
 
     /**
-     * @return string
      * @throws \Darsyn\IP\Exception\WrongVersionException
+     * @throws \Darsyn\IP\Exception\IpException
+     * @return string
      */
     public function getDotAddress()
     {
         if ($this->isEmbedded()) {
-            return inet_ntop(pack('A4', $this->embeddingStrategy->extract($this->getBinary())));
+            try {
+                return self::getProtocolFormatter()->format(
+                    $this->embeddingStrategy->extract($this->getBinary())
+                );
+            } catch (Exception\Formatter\FormatException $e) {
+                throw new Exception\IpException('An unknown error occured internally.', null, $e);
+            }
         }
         throw new Exception\WrongVersionException(4, 6, $this->getBinary());
     }
