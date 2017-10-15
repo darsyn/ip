@@ -8,6 +8,16 @@ use Doctrine\DBAL\Types\Type;
 
 class IpTypeTest extends TestCase
 {
+    protected function setUp()
+    {
+        if (PHP_INT_SIZE == 4) {
+            $this->markTestSkipped('Skipping test that can run only on a 64-bit build of PHP.');
+        }
+        if (!class_exists('Doctrine\DBAL\Types\Type')) {
+            $this->markTestSkipped('Skipping test that requires "doctrine/dbal".');
+        }
+    }
+
     /**
      * @test
      * @expectedException \PHPUnit_Framework_Error
