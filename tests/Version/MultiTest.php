@@ -50,6 +50,7 @@ class MultiTest extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getInvalidIpAddresses()
      * @expectedException \Darsyn\IP\Exception\InvalidIpAddressException
+     * @expectedExceptionMessage The IP address supplied is not valid.
      */
     public function testExceptionIsThrownOnInstantiationWithInvalidAddresses($value)
     {
