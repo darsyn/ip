@@ -47,6 +47,7 @@ class IPv6Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getInvalidIpAddresses()
      * @expectedException \Darsyn\IP\Exception\InvalidIpAddressException
+     * @expectedExceptionMessage The IP address supplied is not valid.
      */
     public function testExceptionIsThrownOnInstantiationWithInvalidAddresses($value)
     {
@@ -156,6 +157,7 @@ class IPv6Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getInvalidCidrValues()
      * @expectedException \Darsyn\IP\Exception\InvalidCidrException
+     * @expectedExceptionMessage The CIDR supplied is not valid; it must be an integer between 0 and 128.
      */
     public function testExceptionIsThrownFromInvalidCidrValues($cidr)
     {
