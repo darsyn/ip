@@ -26,14 +26,25 @@ class ConsistentFormatter implements ProtocolFormatterInterface
 
     private function formatVersion6($hex)
     {
-        $expanded = substr(preg_replace('/([a-fA-F0-9]{4})/', '$1:', $hex), 0, -1);
-        return preg_replace(
-            '/\:(?:0\:)+/', '::',
-            preg_replace_callback('/\:{2,}/', function (array $matches) {
-                return implode('0', str_split($matches[0]));
-            }, preg_replace('/(?:^0+|(\:)0+)/', '$1', $expanded)),
-            1
-        );
+        $parts = str_split($hex, 4);
+        $zeroes = array_map(function ($part) {
+            return $part === '0000';
+        }, $parts);
+        $length = $i = 0;
+        $sequences = [];
+        foreach ($zeroes as $zero) {
+            $length = $zero ? ++$length : 0;
+            $sequences[++$i] = $length;
+        }
+        $maxLength = max($sequences);
+        $position = array_search($maxLength, $sequences, true) - $maxLength;
+        $parts = array_map(function ($part) {
+            return ltrim($part, '0') ?: '0';
+        }, $parts);
+        if ($maxLength > 0) {
+            array_splice($parts, $position, $maxLength, ':');
+        }
+        return str_pad(preg_replace('/\:{2,}/', '::', implode(':', $parts)), 2, ':');
     }
 
     private function formatVersion4($hex)
