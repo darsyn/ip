@@ -16,6 +16,9 @@ class IpTypeTest extends TestCase
         if (!class_exists('Doctrine\DBAL\Types\Type')) {
             $this->markTestSkipped('Skipping test that requires "doctrine/dbal".');
         }
+        if (defined('HHVM_VERSION')) {
+            $this->markTestSkipped('Skipping deprecated error test on HHVM.');
+        }
     }
 
     /**
