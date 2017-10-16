@@ -10,9 +10,7 @@ class IpTypeTest extends TestCase
 {
     protected function setUp()
     {
-        if (PHP_INT_SIZE == 4) {
-            $this->markTestSkipped('Skipping test that can run only on a 64-bit build of PHP.');
-        }
+        parent::setUp();
         if (!class_exists('Doctrine\DBAL\Types\Type')) {
             $this->markTestSkipped('Skipping test that requires "doctrine/dbal".');
         }
