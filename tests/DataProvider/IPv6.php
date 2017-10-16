@@ -42,6 +42,8 @@ class IPv6
     public static function getInvalidIpAddresses()
     {
         return [
+            ['0.0.0.0'],
+            ['255.255.255.255'],
             ['12.34.56.78'],
             ['2001:db8::a60:8a2e:370g:7334'],
             ['1.2.3'],
