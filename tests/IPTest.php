@@ -7,6 +7,14 @@ use Darsyn\IP\Tests\TestCase;
 
 class IPTest extends TestCase
 {
+    public function setUp()
+    {
+        parent::setUp();
+        if (defined('HHVM_VERSION')) {
+            $this->markTestSkipped('Skipping deprecated error test on HHVM.');
+        }
+    }
+
     /**
      * @test
      * @expectedException \PHPUnit_Framework_Error
