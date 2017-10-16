@@ -30,19 +30,18 @@ class IPv6 extends AbstractIP implements Version6Interface
      */
     public function __construct($ip)
     {
-        // If the IP address has been given in protocol notation, convert it to
-        // a 16 byte binary sequence.
-        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
-            $ip = current(unpack('a16', inet_pton($ip)));
+        try {
+            // Convert from protocol notation to binary sequence.
+            $binary = self::getProtocolFormatter()->pton($ip);
+            // If the string was not 4 bytes long, then the IP supplied was neither
+            // in protocol notation or binary sequence notation. Throw an exception.
+            if ($this->getBinaryLength($binary) !== 16) {
+                throw new Exception\WrongVersionException(6, 4, $ip);
+            }
+        } catch (Exception\IpException $e) {
+            throw new Exception\InvalidIpAddressException($ip, $e);
         }
-
-        // If the string was not 16 bytes long, then the IP supplied was neither
-        // in protocol notation or binary sequence notation. Throw an exception.
-        if (!is_string($ip) || $this->getBinaryLength($ip) !== 16) {
-            throw new Exception\WrongVersionException(6, null, $ip);
-        }
-
-        parent::__construct($ip);
+        parent::__construct($binary);
     }
 
     /**
@@ -62,7 +61,7 @@ class IPv6 extends AbstractIP implements Version6Interface
     public function getCompactedAddress()
     {
         try {
-            return self::getProtocolFormatter()->format($this->getBinary());
+            return self::getProtocolFormatter()->ntop($this->getBinary());
         } catch (Exception\Formatter\FormatException $e) {
             throw new Exception\IpException('An unknown error occured internally.', null, $e);
         }

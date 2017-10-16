@@ -35,7 +35,10 @@ abstract class AbstractIP implements IpInterface
      */
     protected function getProtocolFormatter()
     {
-        return self::$formatter ?: new ConsistentFormatter;
+        if (null === self::$formatter) {
+            self::$formatter = new ConsistentFormatter;
+        }
+        return self::$formatter;
     }
 
     /**

@@ -4,27 +4,27 @@ namespace Darsyn\IP\Formatter;
 
 use Darsyn\IP\Exception\Formatter\FormatException;
 
-class ConsistentFormatter implements ProtocolFormatterInterface
+class ConsistentFormatter extends NativeFormatter
 {
     /**
      * {@inheritDoc}
      */
-    public function format($ip)
+    public function ntop($binary)
     {
-        if (is_string($ip)) {
-            $hex = bin2hex($ip);
+        if (is_string($binary)) {
+            $hex = bin2hex($binary);
             $length = strlen($hex) / 2;
             if ($length === 16) {
-                return $this->formatVersion6($hex);
+                return $this->ntopVersion6($hex);
             }
             if ($length === 4) {
-                return $this->formatVersion4($hex);
+                return $this->ntopVersion4($binary);
             }
         }
-        throw new FormatException($ip);
+        throw new FormatException($binary);
     }
 
-    private function formatVersion6($hex)
+    private function ntopVersion6($hex)
     {
         $parts = str_split($hex, 4);
         $zeroes = array_map(function ($part) {
@@ -47,10 +47,8 @@ class ConsistentFormatter implements ProtocolFormatterInterface
         return str_pad(preg_replace('/\:{2,}/', '::', implode(':', $parts)), 2, ':');
     }
 
-    private function formatVersion4($hex)
+    private function ntopVersion4($binary)
     {
-        return implode('.', array_map(function ($hex) {
-            return (string) hexdec($hex);
-        }, str_split($hex, 2)));
+        return inet_ntop(pack('A4', $binary));
     }
 }

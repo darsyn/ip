@@ -60,21 +60,25 @@ class Multi extends IPv6 implements MultiVersionInterface
      *
      * @param string $ip
      * @param \Darsyn\IP\Strategy\EmbeddingStrategyInterface $strategy
+     * @throws Exception\InvalidIpAddressException
      */
     public function __construct($ip, EmbeddingStrategyInterface $strategy = null)
     {
         $this->embeddingStrategy = $strategy ?: static::getDefaultEmbeddingStrategy();
-        // If the IP address has been given in protocol notation, convert it to
-        // a 4 byte binary sequence.
-        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-            $ip = current(unpack('a4', inet_pton($ip)));
+
+        try {
+            // Convert from protocol notation to binary sequence.
+            $binary = self::getProtocolFormatter()->pton($ip);
+
+            // If the IP address is a binary sequence of 4 bytes, then pack it into
+            // a 16 byte IPv6 binary sequence according to the embedding strategy.
+            if ($this->getBinaryLength($binary) === 4) {
+                $binary = $this->embeddingStrategy->pack($binary);
+            }
+        } catch (Exception\IpException $e) {
+            throw new Exception\InvalidIpAddressException($ip, $e);
         }
-        // If the IP address is a binary sequence of 4 bytes, then pack it into
-        // a 16 byte IPv6 binary sequence according to the embedding strategy.
-        if (is_string($ip) && $this->getBinaryLength($ip) === 4) {
-            $ip = $this->embeddingStrategy->pack($ip);
-        }
-        parent::__construct($ip);
+        parent::__construct($binary);
     }
 
     /**
@@ -100,7 +104,7 @@ class Multi extends IPv6 implements MultiVersionInterface
     {
         if ($this->isEmbedded()) {
             try {
-                return self::getProtocolFormatter()->format($this->getShortBinary());
+                return self::getProtocolFormatter()->ntop($this->getShortBinary());
             } catch (Exception\Formatter\FormatException $e) {
                 throw new Exception\IpException('An unknown error occured internally.', null, $e);
             }
