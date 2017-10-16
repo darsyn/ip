@@ -35,7 +35,10 @@ class IPv4 extends AbstractIP implements Version4Interface
             // If the string was not 4 bytes long, then the IP supplied was neither
             // in protocol notation or binary sequence notation. Throw an exception.
             if ($this->getBinaryLength($binary) !== 4) {
-                throw new Exception\WrongVersionException(4, 6, $ip);
+                if ($this->getBinaryLength($ip) !== 4) {
+                    throw new Exception\WrongVersionException(4, 6, $ip);
+                }
+                $binary = $ip;
             }
         } catch(Exception\IpException $e) {
             throw new Exception\InvalidIpAddressException($ip, $e);
