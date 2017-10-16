@@ -32,7 +32,7 @@ class ConsistentFormatterTest extends TestCase
      */
     public function testFormatterReturnsCorrectProtocolString($value, $expected)
     {
-        $this->assertSame($expected, $this->formatter->format($value));
+        $this->assertSame($expected, $this->formatter->ntop($value));
     }
 
     /**
@@ -43,7 +43,7 @@ class ConsistentFormatterTest extends TestCase
     public function testFormatterThrowsExceptionOnInvalidBinarySequences($value)
     {
         try {
-            $this->formatter->format($value);
+            $this->formatter->ntop($value);
         } catch (FormatException $e) {
             $this->assertSame($value, $e->getSuppliedBinary());
             throw $e;
