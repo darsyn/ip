@@ -29,7 +29,8 @@ class NativeFormatter implements ProtocolFormatterInterface
             if (filter_var($protocol, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
                 $sequence = unpack('a4', inet_pton($protocol));
                 return current($sequence);
-            } elseif (filter_var($protocol, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+            }
+            if (filter_var($protocol, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
                 $sequence = unpack('a16', inet_pton($protocol));
                 return current($sequence);
             }
