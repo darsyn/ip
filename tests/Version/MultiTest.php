@@ -122,17 +122,25 @@ class MultiTest extends TestCase
         $this->fail();
     }
 
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getNetworkIpAddresses()
+     */
+    public function testNetworkIp($initial, $expected, $cidr)
+    {
+        $ip = new IP($initial);
+        $this->assertSame($expected, $ip->getNetworkIp($cidr)->getProtocolAppropriateAddress());
+    }
 
-
-
-
-
-
-
-
-
-
-
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getBroadcastIpAddresses()
+     */
+    public function testBroadcastIp($initial, $expected, $cidr)
+    {
+        $ip = new IP($initial);
+        $this->assertSame($expected, $ip->getBroadcastIp($cidr)->getProtocolAppropriateAddress());
+    }
 
     /**
      * @test

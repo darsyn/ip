@@ -90,6 +90,40 @@ class IPv4
         ];
     }
 
+    public static function getNetworkIpAddresses()
+    {
+        return [
+            ['12.34.56.78', 32],
+            ['12.34.56.0',  24],
+            ['12.34.48.0',  20],
+            ['12.34.0.0',   16],
+            ['12.32.0.0',   13],
+            ['12.0.0.0',    8 ],
+        ];
+    }
+
+    public static function getBroadcastIpAddresses()
+    {
+        return [
+            ['12.34.56.78',     32],
+            ['12.34.56.255',    24],
+            ['12.34.63.255',    20],
+            ['12.34.255.255',   16],
+            ['12.39.255.255',   13],
+            ['12.255.255.255',  8 ],
+        ];
+    }
+
+    public static function getValidInRangeIpAddresses()
+    {
+        return [
+            ['12.34.56.78',     '12.34.56.78',      32],
+            ['0.0.0.1',         '255.255.255.254',  0 ],
+            ['12.34.143.96',    '12.34.201.26',     16],
+            ['12.34.255.252',   '12.34.255.255',    30],
+        ];
+    }
+
     public static function getLinkLocalIpAddresses()
     {
         return [
