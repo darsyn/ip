@@ -176,16 +176,22 @@ class IPv6Test extends TestCase
 
     /**
      * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getNetworkIpAddresses()
      */
-    public function testNetworkIp()
+    public function testNetworkIp($expected, $cidr)
     {
+        $ip = new IP('2001:db8::a60:8a2e:370:7334');
+        $this->assertSame($expected, $ip->getNetworkIp($cidr)->getCompactedAddress());
     }
 
     /**
      * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getBroadcastIpAddresses()
      */
-    public function testBroadcastIp()
+    public function testBroadcastIp($expected, $cidr)
     {
+        $ip = new IP('2001:db8::a60:8a2e:370:7334');
+        $this->assertSame($expected, $ip->getBroadcastIp($cidr)->getCompactedAddress());
     }
 
     /**

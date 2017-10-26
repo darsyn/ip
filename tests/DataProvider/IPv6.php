@@ -90,6 +90,28 @@ class IPv6
         ];
     }
 
+    public static function getNetworkIpAddresses()
+    {
+        return [
+            ['2000::',                      12 ],
+            ['2001:db8::',                  59 ],
+            ['2001:db8:0:0:800::',          70 ],
+            ['2001:db8::a60:8a2e:0:0',      99 ],
+            ['2001:db8::a60:8a2e:370:7334', 128],
+        ];
+    }
+
+    public static function getBroadcastIpAddresses()
+    {
+        return [
+            ['200f:ffff:ffff:ffff:ffff:ffff:ffff:ffff', 12 ],
+            ['2001:db8::1f:ffff:ffff:ffff:ffff',        59 ],
+            ['2001:db8::bff:ffff:ffff:ffff',            70 ],
+            ['2001:db8::a60:8a2e:1fff:ffff',            99 ],
+            ['2001:db8::a60:8a2e:370:7334',             128],
+        ];
+    }
+
     public static function getMappedIpAddresses()
     {
         return [

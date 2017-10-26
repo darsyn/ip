@@ -100,6 +100,36 @@ class Multi
         return IPv6::getInvalidCidrValues();
     }
 
+    public static function getNetworkIpAddresses()
+    {
+        return array_merge(
+            array_map(function ($row) {
+                array_unshift($row, '12.34.56.78');
+                return $row;
+            }, IPv4::getNetworkIpAddresses()),
+            array_map(function ($row) {
+                array_unshift($row, '2001:db8::a60:8a2e:370:7334');
+                return $row;
+            }, IPv6::getNetworkIpAddresses())
+
+        );
+    }
+
+    public static function getBroadcastIpAddresses()
+    {
+        return array_merge(
+            array_map(function ($row) {
+                array_unshift($row, '12.34.56.78');
+                return $row;
+            }, IPv4::getBroadcastIpAddresses()),
+            array_map(function ($row) {
+                array_unshift($row, '2001:db8::a60:8a2e:370:7334');
+                return $row;
+            }, IPv6::getBroadcastIpAddresses())
+
+        );
+    }
+
     public function getMappedIpAddresses()
     {
         return IPv6::getMappedIpAddresses();

@@ -166,23 +166,44 @@ class IPv4Test extends TestCase
 
     /**
      * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Ipv4::getNetworkIpAddresses()
      */
-    public function testNetworkIp()
+    public function testNetworkIp($expected, $cidr)
     {
+        $ip = new IP('12.34.56.78');
+        $this->assertSame($expected, $ip->getNetworkIp($cidr)->getDotAddress());
     }
 
     /**
      * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Ipv4::getBroadcastIpAddresses()
      */
-    public function testBroadcastIp()
+    public function testBroadcastIp($expected, $cidr)
     {
+        $ip = new IP('12.34.56.78');
+        $this->assertSame($expected, $ip->getBroadcastIp($cidr)->getDotAddress());
     }
 
     /**
      * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidInRangeIpAddresses()
      */
-    public function testInRange()
+    public function testInRange($first, $second, $cidr)
     {
+        $first = new IP($first);
+        $second = new IP($second);
+        $this->assertTrue($first->inRange($second, $cidr));
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getInvalidCidrValues()
+     */
+    public function testInRangeReturnsFalseInsteadOfExceptionOnInvalidCidr($cidr)
+    {
+        $first = new IP('12.34.56.78');
+        $second = new IP('12.34.56.78');
+        $this->assertFalse($first->inRange($second, $cidr));
     }
 
     /**
