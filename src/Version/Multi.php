@@ -92,7 +92,7 @@ class Multi extends IPv6 implements MultiVersionInterface
             : $this->getBinary();
         // Render the IP address in the correct notation according to its
         // protocol (based on how long the binary string is).
-        return inet_ntop(pack('A' . $this->getBinaryLength($ip), $ip));
+        return self::getProtocolFormatter()->ntop($ip);
     }
 
     /**
