@@ -27,6 +27,7 @@ class IPv6 extends AbstractIP implements Version6Interface
 {
     /**
      * {@inheritDoc}
+     * @throws \Darsyn\IP\Exception\WrongVersionException
      */
     public function __construct($ip)
     {

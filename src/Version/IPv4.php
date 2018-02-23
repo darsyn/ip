@@ -26,6 +26,7 @@ class IPv4 extends AbstractIP implements Version4Interface
 {
     /**
      * {@inheritDoc}
+     * @throws \Darsyn\IP\Exception\WrongVersionException
      */
     public function __construct($ip)
     {
