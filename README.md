@@ -11,7 +11,8 @@ intended for production. Please see the
 [`master` branch](https://github.com/darsyn/ip/tree/master) for the latest
 stable release and documentation.
 
-Full documentation will be written for the stable release of `4.0.0`.
+Full documentation will be written for the stable release of `4.0.0`. You can
+follow along with the progress of documentation in [`docs/`](docs/).
 
 ### Todo
 
