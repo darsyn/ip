@@ -14,7 +14,7 @@ Whether the IP is an IPv4-mapped IPv6 address (eg, `::ffff:7f00:1`) according to
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
-$ip = new IP('::ffff:7f00:1');
+$ip = IP::factory('::ffff:7f00:1');
 $ip->isMapped(); // bool(true)
 ```
 
@@ -29,7 +29,7 @@ to [RFC 3056](https://tools.ietf.org/html/rfc3056
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
-$ip = new IP('2002:7f00:1::');
+$ip = IP::factory('2002:7f00:1::');
 $ip->isDerived(); // bool(true)
 ```
 
@@ -46,7 +46,7 @@ Whether the IP is an IPv4-compatible IPv6 address (eg, `::7f00:1`) according to
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
-$ip = new IP('::7f00:1');
+$ip = IP::factory('::7f00:1');
 $ip->isCompatible(); // bool(true)
 ```
 
@@ -62,7 +62,7 @@ address) according to
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
-$ip = new IP('::ffff:7f00:1');
+$ip = IP::factory('::ffff:7f00:1');
 $ip->isEmbedded(); // bool(true)
 ```
 
@@ -77,7 +77,7 @@ Link-Local Addresses") (IPv4) or [RFC 4291](https://tools.ietf.org/html/rfc4291
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
-$ip = new IP('127.0.0.1');
+$ip = IP::factory('127.0.0.1');
 $ip->isLinkLocal(); // bool(false)
 ```
 
@@ -92,7 +92,7 @@ Whether the IP is a loopback address according to
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
-$ip = new IP('127.0.0.1');
+$ip = IP::factory('127.0.0.1');
 $ip->isLoopback(); // bool(true)
 ```
 
@@ -108,7 +108,7 @@ Architecture") (IPv6).
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
-$ip = new IP('127.0.0.1');
+$ip = IP::factory('127.0.0.1');
 $ip->isMulticast(); // bool(false)
 ```
 
@@ -123,7 +123,7 @@ Local IPv6 Unicast Addresses") (IPv6).
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
-$ip = new IP('127.0.0.1');
+$ip = IP::factory('127.0.0.1');
 $ip->isPrivateUse(); // bool(false)
 ```
 
@@ -138,6 +138,6 @@ Addressing Architecture") (IPv6).
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
-$ip = new IP('127.0.0.1');
+$ip = IP::factory('127.0.0.1');
 $ip->isUnspecified(); // bool(false)
 ```

@@ -19,6 +19,6 @@ use Darsyn\IP\Formatter\NativeFormatter;
 use Darsyn\IP\Version\Multi as IP;
 
 IP::setProtocolFormatter(new NativeFormatter);
-$ip = new IP('::ffff:c22:384e');
+$ip = IP::factory('::ffff:c22:384e');
 $ip->getCompactedAddress(); // string("::ffff:12.34.56.78")
 ```

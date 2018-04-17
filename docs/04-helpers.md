@@ -29,13 +29,13 @@ Instances of [`Multi`](../src/Version/Multi.php) will:
 use Darsyn\IP\Version\Multi as IP;
 
 // IP is version 4 address and CIDR is <= 32. Uses IPv4::getNetworkIp().
-(new IP('127.0.0.1'))->getNetworkIp(26);
+IP::factory('127.0.0.1')->getNetworkIp(26);
 
 // IP is version 4 address but CIDR is more than 32. Uses IPv6::getNetworkIp().
-(new IP('127.0.0.1'))->getNetworkIp(107);
+IP::factory('127.0.0.1')->getNetworkIp(107);
 
 // IP is version 6 address. Uses IPv6::getNetworkIp().
-(new IP('2001:db8::a60:8a2e:0:7334'))->getNetworkIp(50);
+IP::factory('2001:db8::a60:8a2e:0:7334')->getNetworkIp(50);
 ```
 
 Methods that deal with CIDRs throw an [`InvalidCidrException`](../src/Exception/InvalidCidrException.php)
@@ -50,7 +50,7 @@ when a CIDR value that is out of range is passed. Out of range values are any va
 use Darsyn\IP\Exception;
 use Darsyn\IP\Version\Multi as IP;
 
-$ip = new IP('127.0.0.1');
+$ip = IP::factory('127.0.0.1');
 try {
     $network = $ip->getNetworkIp(129);
 } catch (Exception\InvalidCidrException $e) {
@@ -69,8 +69,8 @@ try {
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
-$hostIp = new IP(':ffff:c22:384e');
-$clientIp = new IP('12.48.183.1');
+$hostIp = IP::factory(':ffff:c22:384e');
+$clientIp = IP::factory('12.48.183.1');
 
 $clientIp->inRange($hostIp, 11); // bool(true)
 $clientIp->inRange($hostIp, 24); // bool(false)
@@ -85,9 +85,9 @@ $clientIp->inRange($hostIp, 24); // bool(false)
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
-$ip = new IP('12.34.56.78');
+$ip = IP::factory('12.34.56.78');
 // Get the network address of an IP address given a subnet mask.
-$networkIp = $ip->getNetworkIP(19);
+$networkIp = $ip->getNetworkIp(19);
 $networkIp->getProtocolAppropriateAddress(); // string("12.34.32.0")
 
 $ip === $networkIp; // bool(false)
@@ -101,7 +101,7 @@ $ip === $networkIp; // bool(false)
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
-$ip = new IP('12.34.56.78');
+$ip = IP::factory('12.34.56.78');
 // Get the broadcast address of an IP address given a subnet mask.
 $broadcastIp = $ip->getBroadcastIp(19);
 $broadcastIp->getProtocolAppropriateAddress(); // string("12.34.63.255")

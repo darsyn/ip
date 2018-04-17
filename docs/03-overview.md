@@ -10,7 +10,7 @@ use Darsyn\IP\Version\IPv4;
 use Darsyn\IP\Exception;
 
 try {
-    $ip = new IPv4('127.0.0.1');
+    $ip = IPv4::factory('127.0.0.1');
 } catch (Exception\InvalidIpAddressException $e) {
     echo 'The IP address supplied is invalid!';
 }
@@ -38,7 +38,7 @@ use Darsyn\IP\Version\IPv4;
 use Darsyn\IP\Exception;
 
 try {
-    $ip = new IPv4('::1');
+    $ip = IPv4::factory('::1');
 } catch (Exception\WrongVersionException $e) {
     echo 'Only version 4 IP addresses are allowed!';
 } catch (Exception\InvalidIpAddressException $e) {
@@ -86,7 +86,7 @@ an instance of `Multi` that contains a version 6 address will result in a
 use Darsyn\IP\Version\Multi as IP;
 use Darsyn\IP\Exception;
 
-$ip = new IP('127.0.0.1');
+$ip = IP::factory('127.0.0.1');
 
 try {
     echo $ip->getDotAddress(); // string("127.0.0.1")
@@ -105,7 +105,7 @@ address being converted to a version 6 address according to the embedding strate
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
-$ip = new IP('127.0.0.1');
+$ip = IP::factory('127.0.0.1');
 echo $ip->getCompactedAddress(); // string("::ffff:7f00:1")
 ```
 
@@ -119,7 +119,7 @@ address being converted to a version 6 address according to the embedding strate
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
-$ip = new IP('127.0.0.1');
+$ip = IP::factory('127.0.0.1');
 $ip->getExpandedAddress(); // string("0000:0000:0000:0000:0000:ffff:7f00:0001")
 ```
 
@@ -133,7 +133,7 @@ compacted version 6 address.
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
-$ip = new IP('::ffff:7f00:1');
+$ip = IP::factory('::ffff:7f00:1');
 $ip->getProtocolAppropriateAddress(); // string("127.0.0.1")
 ```
 
@@ -147,7 +147,7 @@ for displaying.
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
-$ip = new IP('127.0.0.1');
+$ip = IP::factory('127.0.0.1');
 $binary = $ip->getBinary();
 ```
 
@@ -161,7 +161,7 @@ consistently available is all classes.
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
-$ip = new IP('127.0.0.1');
+$ip = IP::factory('127.0.0.1');
 $binary = (string) $ip;
 ```
 

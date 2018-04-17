@@ -37,5 +37,5 @@ use Darsyn\IP\Version\Multi as IP;
 IP::setDefaultEmbeddingStrategy(new Strategy\Compatible);
 
 // But for this specific instance use the 6to4-derived embedding strategy.
-$ip = new IP('127.0.0.1', new Strategy\Derived);
+$ip = IP::factory('127.0.0.1', new Strategy\Derived);
 ```
