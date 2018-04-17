@@ -24,7 +24,7 @@ interchangeably using the classes [`IPv4`](../src/Version/IPv4.php),
 
 All versions implement [`IpInterface`](../src/IpInterface.php), along with extra interfaces for each version:
 - `IPv4` implements [`Version4Interface`](../src/Version/Version4Interface.php),
-- `IPv6` implements [`Version4Interface`](../src/Version/Version4Interface.php),
+- `IPv6` implements [`Version6Interface`](../src/Version/Version6Interface.php),
 - `Multi` implements [`MultiVersionInterface`](../src/Version/MultiVersionInterface.php)
   (which in turn implements *both* `Version4Interface` and `Version6Interface`).
 
