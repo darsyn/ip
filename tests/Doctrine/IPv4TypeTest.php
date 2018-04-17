@@ -52,7 +52,7 @@ class IPv4TypeTest extends TestCase
      */
     public function testIpConvertsToDatabaseValue()
     {
-        $ip = new IP('12.34.56.78');
+        $ip = IP::factory('12.34.56.78');
 
         $expected = $ip->getBinary();
         $actual = $this->type->convertToDatabaseValue($ip, $this->platform);
@@ -82,7 +82,7 @@ class IPv4TypeTest extends TestCase
      */
     public function testIpConvertsToPHPValue()
     {
-        $ip = new IP('12.34.56.78');
+        $ip = IP::factory('12.34.56.78');
         /** @var IP $dbIp */
         $dbIp = $this->type->convertToPHPValue($ip->getBinary(), $this->platform);
         $this->assertInstanceOf(IP::class, $dbIp);
@@ -94,7 +94,7 @@ class IPv4TypeTest extends TestCase
      */
     public function testIpObjectConvertsToPHPValue()
     {
-        $ip = new IP('12.34.56.78');
+        $ip = IP::factory('12.34.56.78');
         /** @var IP $dbIp */
         $dbIp = $this->type->convertToPHPValue($ip, $this->platform);
         $this->assertInstanceOf(IP::class, $dbIp);
@@ -106,7 +106,7 @@ class IPv4TypeTest extends TestCase
      */
     public function testStreamConvertsToPHPValue()
     {
-        $ip = new IP('12.34.56.78');
+        $ip = IP::factory('12.34.56.78');
         $stream = fopen('php://memory','r+');
         fwrite($stream, $ip->getBinary());
         rewind($stream);

@@ -18,7 +18,7 @@ class IPv6Test extends TestCase
      */
     public function testInstantiationWithValidAddresses($value)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertInstanceOf(IpInterface::class, $ip);
         $this->assertInstanceOf(Version6Interface::class, $ip);
     }
@@ -29,7 +29,7 @@ class IPv6Test extends TestCase
      */
     public function testBinarySequenceIsTheSameOnceInstantiated($value)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertSame($value, $ip->getBinary());
     }
 
@@ -39,7 +39,7 @@ class IPv6Test extends TestCase
      */
     public function testProtocolNotationConvertsToCorrectBinarySequence($value, $hex)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertSame($hex, unpack('H*hex', $ip->getBinary())['hex']);
     }
 
@@ -52,7 +52,7 @@ class IPv6Test extends TestCase
     public function testExceptionIsThrownOnInstantiationWithInvalidAddresses($value)
     {
         try {
-            $ip = new IP($value);
+            $ip = IP::factory($value);
         } catch (InvalidIpAddressException $e) {
             $this->assertSame($value, $e->getSuppliedIp());
             throw $e;
@@ -66,7 +66,7 @@ class IPv6Test extends TestCase
      */
     public function testGetBinaryAlwaysReturnsA16ByteString($value)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertSame(16, strlen(bin2hex($ip->getBinary())) / 2);
     }
 
@@ -76,7 +76,7 @@ class IPv6Test extends TestCase
      */
     public function testGetCompactedAddressReturnsCorrectString($value, $hex, $expanded, $compacted)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertSame($compacted, $ip->getCompactedAddress());
     }
 
@@ -86,7 +86,7 @@ class IPv6Test extends TestCase
      */
     public function testGetExpandedAddressReturnsCorrectString($value, $hex, $expanded)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertSame($expanded, $ip->getExpandedAddress());
     }
 
@@ -96,7 +96,7 @@ class IPv6Test extends TestCase
      */
     public function testGetVersionAlwaysReturns6($value)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertSame(6, $ip->getVersion());
     }
 
@@ -106,7 +106,7 @@ class IPv6Test extends TestCase
      */
     public function testIsVersionOnlyReturnsTrueFor6($value)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertTrue($ip->isVersion(6));
     }
 
@@ -116,7 +116,7 @@ class IPv6Test extends TestCase
      */
     public function testIsVersionOnlyReturnsFalseFor4($value)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertFalse($ip->isVersion(4));
     }
 
@@ -126,7 +126,7 @@ class IPv6Test extends TestCase
      */
     public function testIsVersion6AlwaysReturnsTrue($value)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertTrue($ip->isVersion6());
     }
 
@@ -136,7 +136,7 @@ class IPv6Test extends TestCase
      */
     public function testIsVersion4AlwaysReturnsFalse($value)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertFalse($ip->isVersion4());
     }
 
@@ -146,7 +146,7 @@ class IPv6Test extends TestCase
      */
     public function testCidrMasks($cidr, $expectedMaskHex)
     {
-        $ip = new IP('::1');
+        $ip = IP::factory('::1');
         $reflect = new \ReflectionClass($ip);
         $method = $reflect->getMethod('generateBinaryMask');
         $method->setAccessible(true);
@@ -161,7 +161,7 @@ class IPv6Test extends TestCase
      */
     public function testExceptionIsThrownFromInvalidCidrValues($cidr)
     {
-        $ip = new IP('::1');
+        $ip = IP::factory('::1');
         $reflect = new \ReflectionClass($ip);
         $method = $reflect->getMethod('generateBinaryMask');
         $method->setAccessible(true);
@@ -180,7 +180,7 @@ class IPv6Test extends TestCase
      */
     public function testNetworkIp($expected, $cidr)
     {
-        $ip = new IP('2001:db8::a60:8a2e:370:7334');
+        $ip = IP::factory('2001:db8::a60:8a2e:370:7334');
         $this->assertSame($expected, $ip->getNetworkIp($cidr)->getCompactedAddress());
     }
 
@@ -190,7 +190,7 @@ class IPv6Test extends TestCase
      */
     public function testBroadcastIp($expected, $cidr)
     {
-        $ip = new IP('2001:db8::a60:8a2e:370:7334');
+        $ip = IP::factory('2001:db8::a60:8a2e:370:7334');
         $this->assertSame($expected, $ip->getBroadcastIp($cidr)->getCompactedAddress());
     }
 
@@ -206,8 +206,8 @@ class IPv6Test extends TestCase
      */
     public function testDifferentVersionsAreNotInRange()
     {
-        $ip = new IP('::12.34.56.78');
-        $other = new IPv4('12.34.56.78');
+        $ip = IP::factory('::12.34.56.78');
+        $other = IPv4::factory('12.34.56.78');
         $this->assertFalse($ip->inRange($other, 0));
     }
 
@@ -217,7 +217,7 @@ class IPv6Test extends TestCase
      */
     public function testIsMapped($value, $isMapped)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertSame($isMapped, $ip->isMapped());
     }
 
@@ -227,7 +227,7 @@ class IPv6Test extends TestCase
      */
     public function testIsDerived($value, $isDerived)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertSame($isDerived, $ip->isDerived());
     }
 
@@ -237,7 +237,7 @@ class IPv6Test extends TestCase
      */
     public function testIsCompatible($value, $isCompatible)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertSame($isCompatible, $ip->isCompatible());
     }
 
@@ -247,7 +247,7 @@ class IPv6Test extends TestCase
      */
     public function testIsEmbeddedAlwaysReturnsFalse($value)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertFalse($ip->isEmbedded());
     }
 
@@ -257,7 +257,7 @@ class IPv6Test extends TestCase
      */
     public function testIsLinkLocal($value, $isLinkLocal)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertSame($isLinkLocal, $ip->isLinkLocal());
     }
 
@@ -267,7 +267,7 @@ class IPv6Test extends TestCase
      */
     public function testIsLoopback($value, $isLoopback)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertSame($isLoopback, $ip->isLoopback());
     }
 
@@ -277,7 +277,7 @@ class IPv6Test extends TestCase
      */
     public function testIsMulticast($value, $isMulticast)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertSame($isMulticast, $ip->isMulticast());
 
     }
@@ -288,7 +288,7 @@ class IPv6Test extends TestCase
      */
     public function testIsPrivateUse($value, $isPrivateUse)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertSame($isPrivateUse, $ip->isPrivateUse());
     }
 
@@ -298,7 +298,7 @@ class IPv6Test extends TestCase
      */
     public function testIsUnspecified($value, $isUnspecified)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertSame($isUnspecified, $ip->isUnspecified());
     }
 }

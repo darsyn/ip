@@ -19,7 +19,7 @@ class MultiTest extends TestCase
      */
     public function testInstantiationWithValidAddresses($value)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertInstanceOf(IpInterface::class, $ip);
         $this->assertInstanceOf(Version4Interface::class, $ip);
         $this->assertInstanceOf(Version6Interface::class, $ip);
@@ -32,7 +32,7 @@ class MultiTest extends TestCase
      */
     public function testBinarySequenceIsTheSameOnceInstantiated($value)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertSame($value, $ip->getBinary());
     }
 
@@ -42,7 +42,7 @@ class MultiTest extends TestCase
      */
     public function testProtocolNotationConvertsToCorrectBinarySequence($value, $hex)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertSame($hex, unpack('H*hex', $ip->getBinary())['hex']);
     }
 
@@ -55,7 +55,7 @@ class MultiTest extends TestCase
     public function testExceptionIsThrownOnInstantiationWithInvalidAddresses($value)
     {
         try {
-            $ip = new IP($value);
+            $ip = IP::factory($value);
         } catch (InvalidIpAddressException $e) {
             $this->assertSame($value, $e->getSuppliedIp());
             throw $e;
@@ -69,7 +69,7 @@ class MultiTest extends TestCase
      */
     public function testGetBinaryAlwaysReturnsA16ByteString($value)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertSame(16, strlen(bin2hex($ip->getBinary())) / 2);
     }
 
@@ -79,7 +79,7 @@ class MultiTest extends TestCase
      */
     public function testGetCompactedAddressReturnsCorrectString($value, $hex, $expanded, $compacted)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertSame($compacted, $ip->getCompactedAddress());
     }
 
@@ -89,7 +89,7 @@ class MultiTest extends TestCase
      */
     public function testGetExpandedAddressReturnsCorrectString($value, $hex, $expanded)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertSame($expanded, $ip->getExpandedAddress());
     }
 
@@ -99,7 +99,7 @@ class MultiTest extends TestCase
      */
     public function testDotAddressReturnsCorrectString($value, $hex, $expanded, $compacted, $dot)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertSame($dot, $ip->getDotAddress());
     }
 
@@ -111,7 +111,7 @@ class MultiTest extends TestCase
     public function testDotAddressThrowsExceptionForNonVersion4Addresses($value)
     {
         try {
-            $ip = new IP($value);
+            $ip = IP::factory($value);
             $ip->getDotAddress();
         } catch (WrongVersionException $e) {
             $this->assertSame($ip->getBinary(), $e->getSuppliedIp());
@@ -128,7 +128,7 @@ class MultiTest extends TestCase
      */
     public function testNetworkIp($initial, $expected, $cidr)
     {
-        $ip = new IP($initial);
+        $ip = IP::factory($initial);
         $this->assertSame($expected, $ip->getNetworkIp($cidr)->getProtocolAppropriateAddress());
     }
 
@@ -138,7 +138,7 @@ class MultiTest extends TestCase
      */
     public function testBroadcastIp($initial, $expected, $cidr)
     {
-        $ip = new IP($initial);
+        $ip = IP::factory($initial);
         $this->assertSame($expected, $ip->getBroadcastIp($cidr)->getProtocolAppropriateAddress());
     }
 
@@ -148,7 +148,7 @@ class MultiTest extends TestCase
      */
     public function testIsLinkLocal($value, $isLinkLocal)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertSame($isLinkLocal, $ip->isLinkLocal());
     }
 
@@ -158,7 +158,7 @@ class MultiTest extends TestCase
      */
     public function testIsLoopback($value, $isLoopback)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertSame($isLoopback, $ip->isLoopback());
     }
 
@@ -168,7 +168,7 @@ class MultiTest extends TestCase
      */
     public function testIsMulticast($value, $isMulticast)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertSame($isMulticast, $ip->isMulticast());
 
     }
@@ -179,7 +179,7 @@ class MultiTest extends TestCase
      */
     public function testIsPrivateUse($value, $isPrivateUse)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertSame($isPrivateUse, $ip->isPrivateUse());
     }
 
@@ -189,7 +189,7 @@ class MultiTest extends TestCase
      */
     public function testIsUnspecified($value, $isUnspecified)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertSame($isUnspecified, $ip->isUnspecified());
     }
 }

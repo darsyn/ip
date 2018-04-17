@@ -18,7 +18,7 @@ class IPv4Test extends TestCase
      */
     public function testInstantiationWithValidAddresses($value)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertInstanceOf(IpInterface::class, $ip);
         $this->assertInstanceOf(Version4Interface::class, $ip);
     }
@@ -29,7 +29,7 @@ class IPv4Test extends TestCase
      */
     public function testBinarySequenceIsTheSameOnceInstantiated($value)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertSame($value, $ip->getBinary());
     }
 
@@ -39,7 +39,7 @@ class IPv4Test extends TestCase
      */
     public function testProtocolNotationConvertsToCorrectBinarySequence($value, $expectedHex)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertSame($expectedHex, unpack('H*hex', $ip->getBinary())['hex']);
     }
 
@@ -52,7 +52,7 @@ class IPv4Test extends TestCase
     public function testExceptionIsThrownOnInstantiationWithInvalidAddresses($value)
     {
         try {
-            new IP($value);
+            IP::factory($value);
         } catch (InvalidIpAddressException $e) {
             $this->assertSame($value, $e->getSuppliedIp());
             throw $e;
@@ -66,7 +66,7 @@ class IPv4Test extends TestCase
      */
     public function testGetBinaryAlwaysReturnsA4ByteString($value)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertSame(4, strlen(bin2hex($ip->getBinary())) / 2);
     }
 
@@ -76,7 +76,7 @@ class IPv4Test extends TestCase
      */
     public function testDotAddressReturnsCorrectString($value, $expectedHex, $expectedDot)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertSame($expectedDot, $ip->getDotAddress());
     }
 
@@ -86,7 +86,7 @@ class IPv4Test extends TestCase
      */
     public function testGetVersionAlwaysReturns4($value)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertSame(4, $ip->getVersion());
     }
 
@@ -96,7 +96,7 @@ class IPv4Test extends TestCase
      */
     public function testIsVersionOnlyReturnsTrueFor4($value)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertTrue($ip->isVersion(4));
     }
 
@@ -106,7 +106,7 @@ class IPv4Test extends TestCase
      */
     public function testIsVersionOnlyReturnsFalseFor6($value)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertFalse($ip->isVersion(6));
     }
 
@@ -116,7 +116,7 @@ class IPv4Test extends TestCase
      */
     public function testIsVersion4AlwaysReturnsTrue($value)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertTrue($ip->isVersion4());
     }
 
@@ -126,7 +126,7 @@ class IPv4Test extends TestCase
      */
     public function testIsVersion6AlwaysReturnsFalse($value)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertFalse($ip->isVersion6());
     }
 
@@ -136,7 +136,7 @@ class IPv4Test extends TestCase
      */
     public function testCidrMasks($cidr, $expectedMaskHex)
     {
-        $ip = new IP('12.34.56.78');
+        $ip = IP::factory('12.34.56.78');
         $reflect = new \ReflectionClass($ip);
         $method = $reflect->getMethod('generateBinaryMask');
         $method->setAccessible(true);
@@ -151,7 +151,7 @@ class IPv4Test extends TestCase
      */
     public function testExceptionIsThrownFromInvalidCidrValues($cidr)
     {
-        $ip = new IP('12.34.56.78');
+        $ip = IP::factory('12.34.56.78');
         $reflect = new \ReflectionClass($ip);
         $method = $reflect->getMethod('generateBinaryMask');
         $method->setAccessible(true);
@@ -170,7 +170,7 @@ class IPv4Test extends TestCase
      */
     public function testNetworkIp($expected, $cidr)
     {
-        $ip = new IP('12.34.56.78');
+        $ip = IP::factory('12.34.56.78');
         $this->assertSame($expected, $ip->getNetworkIp($cidr)->getDotAddress());
     }
 
@@ -180,7 +180,7 @@ class IPv4Test extends TestCase
      */
     public function testBroadcastIp($expected, $cidr)
     {
-        $ip = new IP('12.34.56.78');
+        $ip = IP::factory('12.34.56.78');
         $this->assertSame($expected, $ip->getBroadcastIp($cidr)->getDotAddress());
     }
 
@@ -190,8 +190,8 @@ class IPv4Test extends TestCase
      */
     public function testInRange($first, $second, $cidr)
     {
-        $first = new IP($first);
-        $second = new IP($second);
+        $first = IP::factory($first);
+        $second = IP::factory($second);
         $this->assertTrue($first->inRange($second, $cidr));
     }
 
@@ -201,8 +201,8 @@ class IPv4Test extends TestCase
      */
     public function testInRangeReturnsFalseInsteadOfExceptionOnInvalidCidr($cidr)
     {
-        $first = new IP('12.34.56.78');
-        $second = new IP('12.34.56.78');
+        $first = IP::factory('12.34.56.78');
+        $second = IP::factory('12.34.56.78');
         $this->assertFalse($first->inRange($second, $cidr));
     }
 
@@ -211,8 +211,8 @@ class IPv4Test extends TestCase
      */
     public function testDifferentVersionsAreNotInRange()
     {
-        $ip = new IP('12.34.56.78');
-        $other = new IPv6('::12.34.56.78');
+        $ip = IP::factory('12.34.56.78');
+        $other = IPv6::factory('::12.34.56.78');
         $this->assertFalse($ip->inRange($other, 0));
     }
 
@@ -222,7 +222,7 @@ class IPv4Test extends TestCase
      */
     public function testIsMappedAlwaysReturnsFalse($value)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertFalse($ip->isMapped());
     }
 
@@ -232,7 +232,7 @@ class IPv4Test extends TestCase
      */
     public function testIsDerivedAlwaysReturnsFalse($value)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertFalse($ip->isDerived());
     }
 
@@ -242,7 +242,7 @@ class IPv4Test extends TestCase
      */
     public function testIsCompatibleAlwaysReturnsFalse($value)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertFalse($ip->isCompatible());
     }
 
@@ -252,7 +252,7 @@ class IPv4Test extends TestCase
      */
     public function testIsEmbeddedAlwaysReturnsFalse($value)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertFalse($ip->isEmbedded());
     }
 
@@ -262,7 +262,7 @@ class IPv4Test extends TestCase
      */
     public function testIsLinkLocal($value, $isLinkLocal)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertSame($isLinkLocal, $ip->isLinkLocal());
     }
 
@@ -272,7 +272,7 @@ class IPv4Test extends TestCase
      */
     public function testIsLoopback($value, $isLoopback)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertSame($isLoopback, $ip->isLoopback());
     }
 
@@ -282,7 +282,7 @@ class IPv4Test extends TestCase
      */
     public function testIsMulticast($value, $isMulticast)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertSame($isMulticast, $ip->isMulticast());
 
     }
@@ -293,7 +293,7 @@ class IPv4Test extends TestCase
      */
     public function testIsPrivateUse($value, $isPrivateUse)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertSame($isPrivateUse, $ip->isPrivateUse());
     }
 
@@ -303,7 +303,7 @@ class IPv4Test extends TestCase
      */
     public function testIsUnspecified($value, $isUnspecified)
     {
-        $ip = new IP($value);
+        $ip = IP::factory($value);
         $this->assertSame($isUnspecified, $ip->isUnspecified());
     }
 }
