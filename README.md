@@ -6,34 +6,40 @@ masks, whether an IP is a certain type (defined by RFC's), etc.
 
 # Where's the documentation?
 
-This is the alpha release for `4.0.0` before the stable release. It is not
+This is the second beta release for `4.0.0` before the stable release. It is not
 intended for production. Please see the
-[`master` branch](https://github.com/darsyn/ip/tree/master) for the latest
-stable release and documentation.
+[`master` branch](https://github.com/darsyn/ip/tree/master) for the
+[latest documentation](https://github.com/darsyn/ip/blob/master/README.md) and
+[stable release](https://github.com/darsyn/ip/releases/tag/3.3.1).
 
-Full documentation will be written for the stable release of `4.0.0`. You can
-follow along with the progress of documentation in [`docs/`](docs/).
+Complete documentation has been written for the upcoming `4.0.0` release and
+[can be found in the `docs/` folder](docs/).
 
-### Todo
+# I want to test `4.0.0-beta2`!
 
-- [ ] Write complete documentation
-- [ ] Write more unit tests.
+The library is fairly similar to how it was in `3.3.1` with the following
+differences:
 
-# I want to test `4.0.0-alpha`!
+- Firstly, there are three main classes instead of one:
+  [`IPv4`](src/Version/IPv4.php), [`IPv6`](src/Version/IPv6.php), and
+  [`Multi`](src/Version/Multi.php) (for both version 4 and 6 addresses).
+- Secondly, objects are created using a static factory method instead of the
+  constructor.
+- A few methods have been renamed (see [the API reference](docs/09-api.md)).
+- Finally, the default for representing version 4 addresses internally has
+  changed from IPv4-compatible to IPv4-mapped.
 
-Use this library as you did with `3.3.1` using the class
-[`Darsyn\IP\IP`](src/IP.php) since the defaults should behave *mostly* the same
-(some methods have been renamed and the default for representing IPv4 addresses
-internally has changed to IPv4-mapped).
+```php
+<?php declare(strict_types=1);
+use Darsyn\IP\Version\Multi as IP;
+use Darsyn\IP\Exception;
 
-Otherwise, play around with the following classes:
-[`IPv4`](src/Version/IPv4.php), [`IPv6`](src/Version/IPv6.php), and
-[`Multi`](src/Version/Multi.php).
-
-And check out the classes in the following namespaces:
-
-- [`Darsyn\IP\Formatter`](src/Formatter)
-- [`Darsyn\IP\Strategy`](src/Strategy)
+try {
+    $ip = IP::factory('127.0.0.1');
+} catch (Exception\InvalidIpAddressException $e) {
+    echo 'The IP address supplied is invalid!';
+}
+```
 
 # License
 
