@@ -50,21 +50,19 @@ class Multi extends IPv6 implements MultiVersionInterface
      *
      * @return \Darsyn\IP\Strategy\EmbeddingStrategyInterface
      */
-    private function getDefaultEmbeddingStrategy()
+    private static function getDefaultEmbeddingStrategy()
     {
         return self::$defaultEmbeddingStrategy ?: new MappedEmbeddingStrategy;
     }
 
     /**
-     * Constructor
-     *
-     * @param string $ip
+     * {@inheritDoc}
      * @param \Darsyn\IP\Strategy\EmbeddingStrategyInterface $strategy
-     * @throws Exception\InvalidIpAddressException
      */
-    public function __construct($ip, EmbeddingStrategyInterface $strategy = null)
+    public static function factory($ip, EmbeddingStrategyInterface $strategy = null)
     {
-        $this->embeddingStrategy = $strategy ?: static::getDefaultEmbeddingStrategy();
+        // We need a strategy to pack version 4 addresses.
+        $strategy = $strategy ?: static::getDefaultEmbeddingStrategy();
 
         try {
             // Convert from protocol notation to binary sequence.
@@ -72,13 +70,25 @@ class Multi extends IPv6 implements MultiVersionInterface
 
             // If the IP address is a binary sequence of 4 bytes, then pack it into
             // a 16 byte IPv6 binary sequence according to the embedding strategy.
-            if ($this->getBinaryLength($binary) === 4) {
-                $binary = $this->embeddingStrategy->pack($binary);
+            if (static::getBinaryLength($binary) === 4) {
+                $binary = $strategy->pack($binary);
             }
         } catch (Exception\IpException $e) {
             throw new Exception\InvalidIpAddressException($ip, $e);
         }
-        parent::__construct($binary);
+        return new static($binary, $strategy);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @param \Darsyn\IP\Strategy\EmbeddingStrategyInterface|null $strategy
+     */
+    protected function __construct($ip, EmbeddingStrategyInterface $strategy = null)
+    {
+        // Fallback to default in case this instance was created from static in
+        // the abstract IP class.
+        $this->embeddingStrategy = $strategy ?: self::getDefaultEmbeddingStrategy();
+        parent::__construct($ip);
     }
 
     /**

@@ -33,7 +33,7 @@ abstract class AbstractIP implements IpInterface
      *
      * @return \Darsyn\IP\Formatter\ProtocolFormatterInterface
      */
-    protected function getProtocolFormatter()
+    protected static function getProtocolFormatter()
     {
         if (null === self::$formatter) {
             self::$formatter = new ConsistentFormatter;
@@ -45,9 +45,8 @@ abstract class AbstractIP implements IpInterface
      * Constructor
      *
      * @param string $ip
-     * @throws \Darsyn\IP\Exception\InvalidIpAddressException
      */
-    public function __construct($ip)
+    protected function __construct($ip)
     {
         $this->ip = $ip;
     }
@@ -154,11 +153,11 @@ abstract class AbstractIP implements IpInterface
         return false;
     }
 
-    protected function getBinaryLength($ip)
+    protected static function getBinaryLength($ip)
     {
         // Don't use strlen() directly to prevent incorrect lengths resulting
         // from null bytes being read as the end of the string.
-        return strlen(bin2hex($ip)) / 2;
+        return strlen($ip);
     }
 
     protected function generateBinaryMask($cidr, $length)

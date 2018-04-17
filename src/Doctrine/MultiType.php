@@ -22,6 +22,6 @@ class MultiType extends AbstractType
      */
     protected function createIpObject($ip)
     {
-        return new IP($ip);
+        return IP::factory($ip);
     }
 }

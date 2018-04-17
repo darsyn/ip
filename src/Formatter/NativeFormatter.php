@@ -26,7 +26,7 @@ class NativeFormatter implements ProtocolFormatterInterface
     public function pton($protocol)
     {
         if (is_string($protocol)) {
-            if (filter_var($protocol, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+            if (filter_var($protocol, \FILTER_VALIDATE_IP, \FILTER_FLAG_IPV4)) {
                 $sequence = unpack('a4', inet_pton($protocol));
                 return current($sequence);
             }
@@ -34,7 +34,7 @@ class NativeFormatter implements ProtocolFormatterInterface
                 $sequence = unpack('a16', inet_pton($protocol));
                 return current($sequence);
             }
-            $length = strlen(bin2hex($protocol)) / 2;
+            $length = strlen($protocol);
             if ($length === 4 || $length === 16) {
                 return $protocol;
             }

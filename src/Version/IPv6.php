@@ -27,22 +27,21 @@ class IPv6 extends AbstractIP implements Version6Interface
 {
     /**
      * {@inheritDoc}
-     * @throws \Darsyn\IP\Exception\WrongVersionException
      */
-    public function __construct($ip)
+    public static function factory($ip)
     {
         try {
             // Convert from protocol notation to binary sequence.
             $binary = self::getProtocolFormatter()->pton($ip);
             // If the string was not 4 bytes long, then the IP supplied was neither
             // in protocol notation or binary sequence notation. Throw an exception.
-            if ($this->getBinaryLength($binary) !== 16) {
+            if (static::getBinaryLength($binary) !== 16) {
                 throw new Exception\WrongVersionException(6, 4, $ip);
             }
         } catch (Exception\IpException $e) {
             throw new Exception\InvalidIpAddressException($ip, $e);
         }
-        parent::__construct($binary);
+        return new static($binary);
     }
 
     /**
@@ -81,7 +80,7 @@ class IPv6 extends AbstractIP implements Version6Interface
      */
     public function isLinkLocal()
     {
-        return $this->inRange(new static('fe80::'), 10);
+        return $this->inRange(new self(pack('H*', 'fe800000000000000000000000000000')), 10);
     }
 
     /**
@@ -89,7 +88,7 @@ class IPv6 extends AbstractIP implements Version6Interface
      */
     public function isLoopback()
     {
-        return $this->inRange(new static('::1'), 128);
+        return $this->inRange(new self(pack('H*', '00000000000000000000000000000001')), 128);
     }
 
     /**
@@ -97,7 +96,7 @@ class IPv6 extends AbstractIP implements Version6Interface
      */
     public function isMulticast()
     {
-        return $this->inRange(new static('ff00::'), 8);
+        return $this->inRange(new self(pack('H*', 'ff000000000000000000000000000000')), 8);
     }
 
     /**
@@ -105,7 +104,7 @@ class IPv6 extends AbstractIP implements Version6Interface
      */
     public function isPrivateUse()
     {
-        return $this->inRange(new static('fd00::'), 8);
+        return $this->inRange(new self(pack('H*', 'fd000000000000000000000000000000')), 8);
     }
 
     /**

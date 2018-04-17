@@ -5,6 +5,14 @@ namespace Darsyn\IP;
 interface IpInterface
 {
     /**
+     * @param string $ip
+     * @throws \Darsyn\IP\Exception\InvalidIpAddressException
+     * @throws \Darsyn\IP\Exception\WrongVersionException
+     * @return static
+     */
+    public static function factory($ip);
+
+    /**
      * Get Binary Representation
      *
      * @return string

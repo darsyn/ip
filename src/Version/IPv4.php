@@ -26,9 +26,8 @@ class IPv4 extends AbstractIP implements Version4Interface
 {
     /**
      * {@inheritDoc}
-     * @throws \Darsyn\IP\Exception\WrongVersionException
      */
-    public function __construct($ip)
+    public static function factory($ip)
     {
         try {
             // Convert from protocol notation to binary sequence.
@@ -36,8 +35,8 @@ class IPv4 extends AbstractIP implements Version4Interface
             // If the string was not 4 bytes long, then the IP supplied was
             // neither in protocol notation or binary sequence notation. Throw
             // an exception.
-            if ($this->getBinaryLength($binary) !== 4) {
-                if ($this->getBinaryLength($ip) !== 4) {
+            if (static::getBinaryLength($binary) !== 4) {
+                if (static::getBinaryLength($ip) !== 4) {
                     throw new Exception\WrongVersionException(4, 6, $ip);
                 }
                 $binary = $ip;
@@ -45,7 +44,7 @@ class IPv4 extends AbstractIP implements Version4Interface
         } catch(Exception\IpException $e) {
             throw new Exception\InvalidIpAddressException($ip, $e);
         }
-        parent::__construct($binary);
+        return new static($binary);
     }
 
     /**
@@ -73,7 +72,7 @@ class IPv4 extends AbstractIP implements Version4Interface
      */
     public function isLinkLocal()
     {
-        return $this->inRange(new static('169.254.0.0'), 16);
+        return $this->inRange(new static(pack('H*', 'a9fe0000')), 16);
     }
 
     /**
@@ -81,7 +80,7 @@ class IPv4 extends AbstractIP implements Version4Interface
      */
     public function isLoopback()
     {
-        return $this->inRange(new static('127.0.0.0'), 8);
+        return $this->inRange(new static(pack('H*', '7f000000')), 8);
     }
 
     /**
@@ -89,7 +88,7 @@ class IPv4 extends AbstractIP implements Version4Interface
      */
     public function isMulticast()
     {
-        return $this->inRange(new static('224.0.0.0'), 4);
+        return $this->inRange(new static(pack('H*', 'e0000000')), 4);
     }
 
     /**
@@ -97,9 +96,9 @@ class IPv4 extends AbstractIP implements Version4Interface
      */
     public function isPrivateUse()
     {
-        return $this->inRange(new static('10.0.0.0'), 8)
-            || $this->inRange(new static('172.16.0.0'), 12)
-            || $this->inRange(new static('192.168.0.0'), 16);
+        return $this->inRange(new static(pack('H*', '0a000000')), 8)
+            || $this->inRange(new static(pack('H*', 'ac100000')), 12)
+            || $this->inRange(new static(pack('H*', 'c0a80000')), 16);
     }
 
     /**
