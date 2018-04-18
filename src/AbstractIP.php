@@ -155,8 +155,6 @@ abstract class AbstractIP implements IpInterface
 
     protected static function getBinaryLength($ip)
     {
-        // Don't use strlen() directly to prevent incorrect lengths resulting
-        // from null bytes being read as the end of the string.
         return strlen($ip);
     }
 
