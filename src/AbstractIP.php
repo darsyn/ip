@@ -92,7 +92,7 @@ abstract class AbstractIP implements IpInterface
         // sequence with the mask generated from the CIDR.
         return new static($this->getBinary() & $this->generateBinaryMask(
             $cidr,
-            $this->getBinaryLength($this->getBinary())
+            static::getBinaryLength($this->getBinary())
         ));
     }
 
@@ -105,7 +105,7 @@ abstract class AbstractIP implements IpInterface
         // sequence with the inverse of the mask generated from the CIDR.
         return new static($this->getBinary() | ~$this->generateBinaryMask(
             $cidr,
-            $this->getBinaryLength($this->getBinary())
+            static::getBinaryLength($this->getBinary())
         ));
     }
 
