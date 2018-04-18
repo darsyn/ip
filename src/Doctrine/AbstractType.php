@@ -45,7 +45,7 @@ abstract class AbstractType extends Type
      */
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
-        if (is_a($value, $this->getIpClass())) {
+        if (is_a($value, $this->getIpClass(), true)) {
             return $value;
         }
 
@@ -78,11 +78,13 @@ abstract class AbstractType extends Type
 
         try {
             /** @var \Darsyn\IP\IpInterface $ip */
-            $ip = is_a($value, $this->getIpClass()) ? $value : $this->createIpObject($value);
-            return $ip->getBinary();
+            $ip = is_a($value, $this->getIpClass(), true)
+                ? $value
+                : $this->createIpObject($value);
         } catch (InvalidIpAddressException $e) {
             throw ConversionException::conversionFailed($value, static::NAME);
         }
+        return $ip->getBinary();
     }
 
     /**
