@@ -91,9 +91,7 @@ class Multi extends IPv6 implements MultiVersionInterface
         parent::__construct($ip);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function getProtocolAppropriateAddress()
     {
         // If binary string contains an embedded IPv4 address, then extract it.
@@ -122,17 +120,13 @@ class Multi extends IPv6 implements MultiVersionInterface
         throw new Exception\WrongVersionException(4, 6, $this->getBinary());
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function getVersion()
     {
         return $this->isEmbedded() ? 4 : 6;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function getNetworkIp($cidr)
     {
         try {
@@ -148,9 +142,7 @@ class Multi extends IPv6 implements MultiVersionInterface
         return parent::getNetworkIp($cidr);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function getBroadcastIp($cidr)
     {
         try {
@@ -166,17 +158,7 @@ class Multi extends IPv6 implements MultiVersionInterface
         return parent::getBroadcastIp($cidr);
     }
 
-    /**
-     * Is IP Address In Range?
-     *
-     * Returns a boolean value depending on whether the IP address in question
-     * is within the range of the target IP/CIDR combination.
-     *
-     * @param  \Darsyn\IP\IP $ip
-     * @param  integer $cidr
-     * @throws \Darsyn\IP\Exception\InvalidCidrException
-     * @return bool
-     */
+    /** {@inheritDoc} */
     public function inRange(IpInterface $ip, $cidr)
     {
         // If both IP's (ours and theirs) are version 4 according to OUR
@@ -199,9 +181,7 @@ class Multi extends IPv6 implements MultiVersionInterface
         return parent::inRange($ip, $cidr);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function isEmbedded()
     {
         if (null === $this->embedded) {
@@ -210,9 +190,7 @@ class Multi extends IPv6 implements MultiVersionInterface
         return $this->embedded;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function isLinkLocal()
     {
         return parent::isLinkLocal()
@@ -220,9 +198,7 @@ class Multi extends IPv6 implements MultiVersionInterface
             && (new IPv4($this->getShortBinary()))->isLinkLocal();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function isLoopback()
     {
         return parent::isLoopback()
@@ -230,9 +206,7 @@ class Multi extends IPv6 implements MultiVersionInterface
             && (new IPv4($this->getShortBinary()))->isLoopback();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** * {@inheritDoc} */
     public function isMulticast()
     {
         return parent::isMulticast()
@@ -240,9 +214,7 @@ class Multi extends IPv6 implements MultiVersionInterface
             && (new IPv4($this->getShortBinary()))->isMulticast();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function isPrivateUse()
     {
         return parent::isPrivateUse()
@@ -250,9 +222,7 @@ class Multi extends IPv6 implements MultiVersionInterface
             && (new IPv4($this->getShortBinary()))->isPrivateUse();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function isUnspecified()
     {
         return parent::isUnspecified()

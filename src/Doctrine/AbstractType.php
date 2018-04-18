@@ -24,7 +24,9 @@ abstract class AbstractType extends Type
     abstract protected function getIpClass();
 
     /**
-     * @param $ip
+     * @param string $ip
+     * @throws \Darsyn\IP\Exception\InvalidIpAddressException
+     * @throws \Darsyn\IP\Exception\WrongVersionException
      * @return \Darsyn\IP\IpInterface
      */
     abstract protected function createIpObject($ip);
@@ -39,6 +41,7 @@ abstract class AbstractType extends Type
 
     /**
      * {@inheritdoc}
+     * @throws \Doctrine\DBAL\Types\ConversionException
      */
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
@@ -65,6 +68,7 @@ abstract class AbstractType extends Type
 
     /**
      * {@inheritdoc}
+     * @throws \Doctrine\DBAL\Types\ConversionException
      */
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
@@ -73,6 +77,7 @@ abstract class AbstractType extends Type
         }
 
         try {
+            /** @var \Darsyn\IP\IpInterface $ip */
             $ip = is_a($value, $this->getIpClass()) ? $value : $this->createIpObject($value);
             return $ip->getBinary();
         } catch (InvalidIpAddressException $e) {

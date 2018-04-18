@@ -10,8 +10,6 @@ class FormatException extends IpException
     private $binary;
 
     /**
-     * Constructor
-     *
      * @param string $binary
      * @param \Exception|null $previous
      */
