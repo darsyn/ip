@@ -153,11 +153,25 @@ abstract class AbstractIP implements IpInterface
         return false;
     }
 
+    /**
+     * @param string $ip
+     * @return integer
+     */
     protected static function getBinaryLength($ip)
     {
         return strlen($ip);
     }
 
+    /**
+     * 128-bit masks can often evaluate to integers over PHP_MAX_INT, so we have
+     * to construct the bitmask as a string instead of doing any mathematical
+     * operations (such as base_convert).
+     *
+     * @param integer $cidr
+     * @param integer $length
+     * @throws \Darsyn\IP\Exception\InvalidCidrException
+     * @return string
+     */
     protected function generateBinaryMask($cidr, $length)
     {
         if (!is_int($cidr)  || !is_int($length)
