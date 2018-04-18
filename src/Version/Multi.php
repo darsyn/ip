@@ -137,15 +137,13 @@ class Multi extends IPv6 implements MultiVersionInterface
     {
         try {
             if ($this->isCidrVersion4Appropriate($cidr) && $this->isEmbedded()) {
+                $v4 = (new IPv4($this->getShortBinary()))->getNetworkIp($cidr)->getBinary();
                 return new static(
-                    (new IPv4($this->getShortBinary()))
-                        ->getNetworkIp($cidr)
-                        ->getBinary(),
+                    $this->embeddingStrategy->pack($v4),
                     clone $this->embeddingStrategy
                 );
             }
-        } catch (Exception\Strategy\ExtractionException $e) {
-        } catch (Exception\InvalidIpAddressException $e) {
+        } catch (Exception\IpException $e) {
         }
         return parent::getNetworkIp($cidr);
     }
@@ -157,15 +155,13 @@ class Multi extends IPv6 implements MultiVersionInterface
     {
         try {
             if ($this->isCidrVersion4Appropriate($cidr) && $this->isEmbedded()) {
+                $v4 = (new IPv4($this->getShortBinary()))->getBroadcastIp($cidr)->getBinary();
                 return new static(
-                    (new IPv4($this->getShortBinary()))
-                        ->getBroadcastIp($cidr)
-                        ->getBinary(),
+                    $this->embeddingStrategy->pack($v4),
                     clone $this->embeddingStrategy
                 );
             }
-        } catch (Exception\Strategy\ExtractionException $e) {
-        } catch (Exception\InvalidIpAddressException $e) {
+        } catch (Exception\IpException $e) {
         }
         return parent::getBroadcastIp($cidr);
     }
