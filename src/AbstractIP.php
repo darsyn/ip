@@ -159,7 +159,11 @@ abstract class AbstractIP implements IpInterface
      */
     protected static function getBinaryLength($ip)
     {
-        return strlen($ip);
+        if (\function_exists('mb_strlen')) {
+            return (int) \mb_strlen($ip, '8bit');
+        } else {
+            return (int) \strlen($ip);
+        }
     }
 
     /**
