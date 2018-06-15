@@ -2,6 +2,11 @@
 
 namespace Darsyn\IP;
 
+@trigger_error(
+    'This class is deprecated, upgrade to v4.0.0 and use "Darsyn\IP\Version\Multi" instead.',
+    E_USER_DEPRECATED
+);
+
 /**
  * IP Address
  *
