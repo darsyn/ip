@@ -4,8 +4,8 @@ IP is an immutable value object for (both version 4 and 6) IP addresses. Several
 helper methods are provided for ranges, broadcast and network addresses, subnet
 masks, whether an IP is a certain type (defined by RFC's), etc.
 
-This project aims for simplicity of use and any contribution towards that goal
-- whether a bug report, modifications to the codebase, or an improvement to the
+This project aims for simplicity of use and any contribution towards that goal -
+whether a bug report, modifications to the codebase, or an improvement to the
 accuracy or readability of the documentation - are always welcome.
 
 # Documentation
@@ -21,7 +21,7 @@ are:
   [`IPv6`](src/Version/IPv6.php), and [`Multi`](src/Version/Multi.php) (for both
   version 4 and 6 addresses).
 - Objects are created using a static factory method
-  ([`IpInterface::factory()`](src/IpInterface.php) instead of the constructor to
+  ([`IpInterface::factory()`](src/IpInterface.php)) instead of the constructor to
   speed up internal processes.
 - A few methods have been renamed (see [the API reference](docs/09-api.md)).
 - Finally, the default for representing version 4 addresses internally has
