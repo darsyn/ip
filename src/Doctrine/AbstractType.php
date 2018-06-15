@@ -2,8 +2,7 @@
 
 namespace Darsyn\IP\Doctrine;
 
-use Darsyn\IP\InvalidIpAddressException;
-use Darsyn\IP\IP;
+use Darsyn\IP\Exception\InvalidIpAddressException;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\DBAL\Types\Type;
@@ -11,31 +10,42 @@ use Doctrine\DBAL\Types\Type;
 /**
  * Field type mapping for the Doctrine Database Abstraction Layer (DBAL).
  *
- * UUID fields will be stored as a string in the database and converted back to
- * the Uuid value object when querying.
+ * IP fields will be stored as a string in the database and converted back to
+ * the IP value object when querying.
  */
-class IpType extends Type
+abstract class AbstractType extends Type
 {
-    /**
-     * @var string
-     */
     const NAME = 'ip';
+    const IP_LENGTH = 16;
+
+    /**
+     * @return string
+     */
+    abstract protected function getIpClass();
+
+    /**
+     * @param string $ip
+     * @throws \Darsyn\IP\Exception\InvalidIpAddressException
+     * @throws \Darsyn\IP\Exception\WrongVersionException
+     * @return \Darsyn\IP\IpInterface
+     */
+    abstract protected function createIpObject($ip);
 
     /**
      * {@inheritdoc}
      */
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
-        $fieldDeclaration['length'] = 16;
-        return $platform->getBinaryTypeDeclarationSQL($fieldDeclaration);
+        return $platform->getBinaryTypeDeclarationSQL(['length' => static::IP_LENGTH]);
     }
 
     /**
      * {@inheritdoc}
+     * @throws \Doctrine\DBAL\Types\ConversionException
      */
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
-        if ($value instanceof IP) {
+        if (is_a($value, $this->getIpClass(), true)) {
             return $value;
         }
 
@@ -49,7 +59,7 @@ class IpType extends Type
         }
 
         try {
-            $ip = new IP($value);
+            $ip = $this->createIpObject($value);
         } catch (InvalidIpAddressException $e) {
             throw ConversionException::conversionFailed($value, self::NAME);
         }
@@ -58,6 +68,7 @@ class IpType extends Type
 
     /**
      * {@inheritdoc}
+     * @throws \Doctrine\DBAL\Types\ConversionException
      */
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
@@ -66,11 +77,14 @@ class IpType extends Type
         }
 
         try {
-            $ip = $value instanceof IP ? $value : new IP($value);
-            return $ip->getBinary();
+            /** @var \Darsyn\IP\IpInterface $ip */
+            $ip = is_a($value, $this->getIpClass(), true)
+                ? $value
+                : $this->createIpObject($value);
         } catch (InvalidIpAddressException $e) {
             throw ConversionException::conversionFailed($value, static::NAME);
         }
+        return $ip->getBinary();
     }
 
     /**

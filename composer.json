@@ -7,9 +7,9 @@
     "homepage": "https://github.com/darsyn/ip",
     "authors": [
         {
-            "name": "Zander Baldwin",
-            "email": "hello@zanderbaldwin.com",
-            "homepage": "http://zanderbaldwin.com"
+            "name": "Zan Baldwin",
+            "email": "hello@zanbaldwin.com",
+            "homepage": "https://zanbaldwin.com"
         }
     ],
     "autoload": {
@@ -18,7 +18,8 @@
         }
     },
     "require": {
-        "php": ">=5.5"
+        "php-ipv6": ">=5.6",
+        "php-64bit": ">=5.6"
     },
     "autoload-dev": {
         "psr-4": {
