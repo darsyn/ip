@@ -4,40 +4,51 @@ IP is an immutable value object for (both version 4 and 6) IP addresses. Several
 helper methods are provided for ranges, broadcast and network addresses, subnet
 masks, whether an IP is a certain type (defined by RFC's), etc.
 
-# Where's the documentation?
+This project aims for simplicity of use and any contribution towards that goal
+- whether a bug report, modifications to the codebase, or an improvement to the
+accuracy or readability of the documentation - are always welcome.
 
-This is the second beta release for `4.0.0` before the stable release. It is not
-intended for production. Please see the
-[`master` branch](https://github.com/darsyn/ip/tree/master) for the
-[latest documentation](https://github.com/darsyn/ip/blob/master/README.md) and
-[stable release](https://github.com/darsyn/ip/releases/tag/3.3.1).
+# Documentation
 
-Complete documentation has been written for the upcoming `4.0.0` release and
-[can be found in the `docs/` folder](docs/).
+Full documentation is available in the [`docs/`](docs/) folder.
 
-# I want to test `4.0.0-beta2`!
+## Upgrading
 
-The library is fairly similar to how it was in `3.3.1` with the following
-differences:
+This library is fairly similar to how it was in `3.3.1`; the main differences
+are:
 
-- Firstly, there are three main classes instead of one:
-  [`IPv4`](src/Version/IPv4.php), [`IPv6`](src/Version/IPv6.php), and
-  [`Multi`](src/Version/Multi.php) (for both version 4 and 6 addresses).
-- Secondly, objects are created using a static factory method instead of the
-  constructor.
+- There are three main classes instead of one: [`IPv4`](src/Version/IPv4.php),
+  [`IPv6`](src/Version/IPv6.php), and [`Multi`](src/Version/Multi.php) (for both
+  version 4 and 6 addresses).
+- Objects are created using a static factory method
+  ([`IpInterface::factory()`](src/IpInterface.php) instead of the constructor to
+  speed up internal processes.
 - A few methods have been renamed (see [the API reference](docs/09-api.md)).
 - Finally, the default for representing version 4 addresses internally has
-  changed from IPv4-compatible to IPv4-mapped.
+  changed [from IPv4-compatible to IPv4-mapped](docs/05-strategies.md).
+
+## Brief Example
 
 ```php
-<?php declare(strict_types=1);
-use Darsyn\IP\Version\Multi as IP;
+<?php
+
 use Darsyn\IP\Exception;
+use Darsyn\IP\Version\IPv4;
 
 try {
-    $ip = IP::factory('127.0.0.1');
+    $ip = IPv4::factory('192.168.0.1');
 } catch (Exception\InvalidIpAddressException $e) {
-    echo 'The IP address supplied is invalid!';
+    exit('The IP address supplied is invalid!');
+}
+
+$companyNetwork = IPv4::factory('216.58.198.174');
+if (!$ip->inRange(IPv4::factory($companyNetwork), 25)) {
+    throw new \Exception('Request not from a known company IP address.');
+}
+
+// Is it coming from the local network?
+if (!$ip->isPrivateUse()) {
+    record_visit($ip->getBinary(), $_SERVER['HTTP_USER_AGENT']);
 }
 ```
 
