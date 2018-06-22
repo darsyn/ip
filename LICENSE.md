@@ -1,7 +1,7 @@
 The [MIT License](http://j.mp/mit-license)
 ==========================================
 
-Copyright (c) 2015 [Zander Baldwin](http://zanderbaldwin.com)
+Copyright (c) 2015 [Zan Baldwin](https://github.com/zanbaldwin)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in

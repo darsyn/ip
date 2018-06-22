@@ -21,7 +21,7 @@ are:
   [`IPv6`](src/Version/IPv6.php), and [`Multi`](src/Version/Multi.php) (for both
   version 4 and 6 addresses).
 - Objects are created using a static factory method
-  ([`IpInterface::factory()`](src/IpInterface.php)) instead of the constructor to
+  [`IpInterface::factory()`](src/IpInterface.php) instead of the constructor to
   speed up internal processes.
 - A few methods have been renamed (see [the API reference](docs/09-api.md)).
 - Finally, the default for representing version 4 addresses internally has
@@ -42,7 +42,7 @@ try {
 }
 
 $companyNetwork = IPv4::factory('216.58.198.174');
-if (!$ip->inRange(IPv4::factory($companyNetwork), 25)) {
+if (!$ip->inRange($companyNetwork, 25)) {
     throw new \Exception('Request not from a known company IP address.');
 }
 
