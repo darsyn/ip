@@ -92,7 +92,7 @@ abstract class AbstractIP implements IpInterface
         // sequence with the mask generated from the CIDR.
         return new static($this->getBinary() & $this->generateBinaryMask(
             $cidr,
-            static::getBinaryLength($this->getBinary())
+            Binary::getLength($this->getBinary())
         ));
     }
 
@@ -105,7 +105,7 @@ abstract class AbstractIP implements IpInterface
         // sequence with the inverse of the mask generated from the CIDR.
         return new static($this->getBinary() | ~$this->generateBinaryMask(
             $cidr,
-            static::getBinaryLength($this->getBinary())
+            Binary::getLength($this->getBinary())
         ));
     }
 
@@ -154,19 +154,6 @@ abstract class AbstractIP implements IpInterface
     }
 
     /**
-     * @param string $ip
-     * @return integer
-     */
-    protected static function getBinaryLength($ip)
-    {
-        if (\function_exists('mb_strlen')) {
-            return (int) \mb_strlen($ip, '8bit');
-        } else {
-            return (int) \strlen($ip);
-        }
-    }
-
-    /**
      * 128-bit masks can often evaluate to integers over PHP_MAX_INT, so we have
      * to construct the bitmask as a string instead of doing any mathematical
      * operations (such as base_convert).
@@ -206,7 +193,7 @@ abstract class AbstractIP implements IpInterface
         $mask = \str_pad($mask, $length * 2, '0', STR_PAD_RIGHT);
         // Pack the hexadecimal sequence into a real, 4 or 16-byte binary
         // sequence.
-        $mask = \pack('H*', $mask);
+        $mask = Binary::fromHex($mask);
         return $mask;
     }
 }
