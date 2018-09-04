@@ -3,6 +3,7 @@
 namespace Darsyn\IP\Version;
 
 use Darsyn\IP\AbstractIP;
+use Darsyn\IP\Binary;
 use Darsyn\IP\Exception;
 
 /**
@@ -35,8 +36,8 @@ class IPv4 extends AbstractIP implements Version4Interface
             // If the string was not 4 bytes long, then the IP supplied was
             // neither in protocol notation or binary sequence notation. Throw
             // an exception.
-            if (static::getBinaryLength($binary) !== 4) {
-                if (static::getBinaryLength($ip) !== 4) {
+            if (Binary::getLength($binary) !== 4) {
+                if (Binary::getLength($ip) !== 4) {
                     throw new Exception\WrongVersionException(4, 6, $ip);
                 }
                 $binary = $ip;
@@ -72,7 +73,7 @@ class IPv4 extends AbstractIP implements Version4Interface
      */
     public function isLinkLocal()
     {
-        return $this->inRange(new static(\pack('H*', 'a9fe0000')), 16);
+        return $this->inRange(new static(Binary::fromHex('a9fe0000')), 16);
     }
 
     /**
@@ -80,7 +81,7 @@ class IPv4 extends AbstractIP implements Version4Interface
      */
     public function isLoopback()
     {
-        return $this->inRange(new static(\pack('H*', '7f000000')), 8);
+        return $this->inRange(new static(Binary::fromHex('7f000000')), 8);
     }
 
     /**
@@ -88,7 +89,7 @@ class IPv4 extends AbstractIP implements Version4Interface
      */
     public function isMulticast()
     {
-        return $this->inRange(new static(\pack('H*', 'e0000000')), 4);
+        return $this->inRange(new static(Binary::fromHex('e0000000')), 4);
     }
 
     /**
@@ -96,9 +97,9 @@ class IPv4 extends AbstractIP implements Version4Interface
      */
     public function isPrivateUse()
     {
-        return $this->inRange(new static(\pack('H*', '0a000000')), 8)
-            || $this->inRange(new static(\pack('H*', 'ac100000')), 12)
-            || $this->inRange(new static(\pack('H*', 'c0a80000')), 16);
+        return $this->inRange(new static(Binary::fromHex('0a000000')), 8)
+            || $this->inRange(new static(Binary::fromHex('ac100000')), 12)
+            || $this->inRange(new static(Binary::fromHex('c0a80000')), 16);
     }
 
     /**

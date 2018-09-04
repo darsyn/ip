@@ -2,6 +2,7 @@
 
 namespace Darsyn\IP\Formatter;
 
+use Darsyn\IP\Binary;
 use Darsyn\IP\Exception\Formatter\FormatException;
 
 class ConsistentFormatter extends NativeFormatter
@@ -12,10 +13,9 @@ class ConsistentFormatter extends NativeFormatter
     public function ntop($binary)
     {
         if (\is_string($binary)) {
-            $hex = \bin2hex($binary);
-            $length = \strlen($hex) / 2;
+            $length = Binary::getLength($binary);
             if ($length === 16) {
-                return $this->ntopVersion6($hex);
+                return $this->ntopVersion6(Binary::toHex($binary));
             }
             if ($length === 4) {
                 return $this->ntopVersion4($binary);
