@@ -118,6 +118,18 @@ class IPv6
         ];
     }
 
+    public static function getValidInRangeIpAddresses()
+    {
+        return [
+            ['d6be:0583:71a4:aa6d:c77d:77dd:0cec:f897', 'd6be:0583:71a4:aa6d:9d68:68f3:dc4a:ce01', 64 ],
+            ['9800:ea88:00a5:cbcc:9d68:68f3:dc4a:ce01', '9800:ea88:00a5:cbcc:9d68:68f3:dc4a:ce01', 128],
+            ['2d7f:424d:c574:632e:8d9d:847d:9f30:b62a', '2d7f:424d:c574:632e:8d98:0d78:ba5a:bf44', 77 ],
+            ['10d4:ebf6:3401:e851:b3fd:0d78:ba5a:bf44', '7bf9:a81f:7047:b07a:f891:a849:25c7:52c8', 0  ],
+            ['7bf9:a81f:7047:b07a:f891:a849:25c7:c8',   '7bf9:a81f:7047:b07a:f891:a849::',         96 ],
+            ['c3f8:09b0:50c8:b06c:043c:ff4f:7f4a:e66d', 'c3f8:24d:c574:632e:8d9d:847d:9f30:b62a',  20 ],
+        ];
+    }
+
     public static function getMappedIpAddresses()
     {
         return [

@@ -144,6 +144,17 @@ class MultiTest extends TestCase
 
     /**
      * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidInRangeIpAddresses()
+     */
+    public function testInRange($first, $second, $cidr)
+    {
+        $first = IP::factory($first);
+        $second = IP::factory($second);
+        $this->assertTrue($first->inRange($second, $cidr));
+    }
+
+    /**
+     * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getLinkLocalIpAddresses()
      */
     public function testIsLinkLocal($value, $isLinkLocal)

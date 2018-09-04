@@ -196,9 +196,13 @@ class IPv6Test extends TestCase
 
     /**
      * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidInRangeIpAddresses()
      */
-    public function testInRange()
+    public function testInRange($first, $second, $cidr)
     {
+        $first = IP::factory($first);
+        $second = IP::factory($second);
+        $this->assertTrue($first->inRange($second, $cidr));
     }
 
     /**
