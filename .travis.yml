@@ -12,7 +12,6 @@ matrix:
 
 install:
     - composer install
-    - composer require --dev --prefer-dist doctrine/dbal:^2.3 phpunit/phpunit:^5.7
 script:
     - ./vendor/bin/phpunit
 

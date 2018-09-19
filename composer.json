@@ -12,21 +12,32 @@
             "homepage": "https://zanbaldwin.com"
         }
     ],
+    "require": {
+        "php-ipv6": ">=5.6",
+        "php-64bit": ">=5.6"
+    },
     "autoload": {
         "psr-4": {
             "Darsyn\\IP\\": "src/"
         }
     },
-    "require": {
-        "php-ipv6": ">=5.6",
-        "php-64bit": ">=5.6"
+    "require-dev": {
+        "doctrine/dbal": "^2.3",
+        "phpunit/phpunit": "^5.7",
+        "sensio/framework-extra-bundle": "^5.0",
+        "mockery/mockery": "^1.1"
     },
     "autoload-dev": {
         "psr-4": {
             "Darsyn\\IP\\Tests\\": "tests/"
         }
     },
+    "prefer-stable": true,
+    "config":{
+        "sort-packages": true
+    },
     "suggest": {
-        "doctrine/dbal": "to use IP as a column type"
+        "doctrine/dbal": "to use IP as a column type",
+        "sensio/framework-extra-bundle": "to use IP param conversion in Symfony"
     }
 }
