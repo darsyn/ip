@@ -38,7 +38,7 @@
 
 
 
-        <title>Embedding Strategies - Darsyn IP</title>
+        <title>Parameter Converter - Darsyn IP</title>
 
 
 
@@ -92,7 +92,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
 
-      <a href="#embedding-strategies" tabindex="1" class="md-skip">
+      <a href="#parameter-conversion" tabindex="1" class="md-skip">
         Skip to content
       </a>
 
@@ -118,7 +118,7 @@
                 Darsyn IP
               </span>
               <span class="md-header-nav__topic">
-                Embedding Strategies
+                Parameter Converter
               </span>
 
 
@@ -282,57 +282,10 @@
 
 
 
-
-
-  <li class="md-nav__item md-nav__item--active">
-
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-
-
-      <label class="md-nav__link md-nav__link--active" for="__toc">
-        Embedding Strategies
-      </label>
-
-    <a href="05-strategies.html" title="Embedding Strategies" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="05-strategies.html" title="Embedding Strategies" class="md-nav__link">
       Embedding Strategies
     </a>
-
-
-<nav class="md-nav md-nav--secondary">
-
-
-
-    <label class="md-nav__title" for="__toc">Table of contents</label>
-    <ul class="md-nav__list" data-md-scrollfix>
-
-        <li class="md-nav__item">
-  <a href="#embedding-strategies" title="Embedding Strategies" class="md-nav__link">
-    Embedding Strategies
-  </a>
-
-    <nav class="md-nav">
-      <ul class="md-nav__list">
-
-          <li class="md-nav__item">
-  <a href="#specifying-a-strategy" title="Specifying a Strategy" class="md-nav__link">
-    Specifying a Strategy
-  </a>
-
-</li>
-
-      </ul>
-    </nav>
-
-</li>
-
-
-
-
-
-    </ul>
-
-</nav>
-
   </li>
 
 
@@ -377,10 +330,44 @@
 
 
 
-  <li class="md-nav__item">
-    <a href="09-param-converter.html" title="Parameter Converter" class="md-nav__link">
+
+
+  <li class="md-nav__item md-nav__item--active">
+
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+
+
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Parameter Converter
+      </label>
+
+    <a href="09-param-converter.html" title="Parameter Converter" class="md-nav__link md-nav__link--active">
       Parameter Converter
     </a>
+
+
+<nav class="md-nav md-nav--secondary">
+
+
+
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+
+        <li class="md-nav__item">
+  <a href="#parameter-conversion" title="Parameter Conversion" class="md-nav__link">
+    Parameter Conversion
+  </a>
+
+</li>
+
+
+
+
+
+    </ul>
+
+</nav>
+
   </li>
 
 
@@ -415,22 +402,9 @@
     <ul class="md-nav__list" data-md-scrollfix>
 
         <li class="md-nav__item">
-  <a href="#embedding-strategies" title="Embedding Strategies" class="md-nav__link">
-    Embedding Strategies
+  <a href="#parameter-conversion" title="Parameter Conversion" class="md-nav__link">
+    Parameter Conversion
   </a>
-
-    <nav class="md-nav">
-      <ul class="md-nav__list">
-
-          <li class="md-nav__item">
-  <a href="#specifying-a-strategy" title="Specifying a Strategy" class="md-nav__link">
-    Specifying a Strategy
-  </a>
-
-</li>
-
-      </ul>
-    </nav>
 
 </li>
 
@@ -450,65 +424,26 @@
             <article class="md-content__inner md-typeset">
 
 
-                  <a href="https://github.com/darsyn/ip/blob/develop/docs/05-strategies.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                  <a href="https://github.com/darsyn/ip/blob/develop/docs/09-param-converter.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
 
 
-                  <h1>Embedding Strategies</h1>
+                  <h1>Parameter Converter</h1>
 
-                <h2 id="embedding-strategies">Embedding Strategies</h2>
-<p>When using version 4 and version 6 addresses interchangeably (via the
-<a href="https://github.com/darsyn/ip/blob/master/src/Version/Multi.php"><code>Multi</code></a> class), version 4 addresses are <em>embedded</em>
-into version 6 addresses so that both versions are stored as 16-byte binary
-sequences.</p>
-<p>Unfortunately there are several different strategies for embedding a version 4
-address into version 6, so this library offers various strategy implementations
-for the main three: </p>
-<table>
-<thead>
-<tr>
-<th>Strategy Name</th>
-<th>Implementation</th>
-<th>Format</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>6to4-derived</td>
-<td><a href="https://github.com/darsyn/ip/blob/master/src/Strategy/Derived.php"><code>Darsyn\IP\Strategy\Derived</code></a></td>
-<td><code>2002:XXXX:XXXX:0000:0000:0000:0000:0000</code></td>
-</tr>
-<tr>
-<td>IPv4-compatible</td>
-<td><a href="https://github.com/darsyn/ip/blob/master/src/Strategy/Compatible.php"><code>Darsyn\IP\Strategy\Compatible</code></a></td>
-<td><code>0000:0000:0000:0000:0000:0000:XXXX:XXXX</code></td>
-</tr>
-<tr>
-<td>IPv4-mapped</td>
-<td><a href="https://github.com/darsyn/ip/blob/master/src/Strategy/Mapped.php"><code>Darsyn\IP\Strategy\Mapped</code></a></td>
-<td><code>0000:0000:0000:0000:0000:ffff:XXXX:XXXX</code></td>
-</tr>
-</tbody>
-</table>
-<p>Each embedding strategy implements the
-<a href="https://github.com/darsyn/ip/blob/master/src/Strategy/EmbeddingStrategyInterface.php"><code>EmbeddingStrategyInterface</code></a>
-which defines methods to: detect whether a version 4 address is embedded into a
-version 6 address; extracting a version 4 address from a version 6 address; and
-packing a version 4 address into a version 6 address according to the given strategy.</p>
-<h3 id="specifying-a-strategy">Specifying a Strategy</h3>
-<blockquote>
-<p>This library will automatically use the <strong>IPv4-mapped</strong> embedding strategy
-unless otherwise instructed.</p>
-</blockquote>
-<p>An embedding strategy can be specified globally or on a per-instance basis.</p>
-<pre><code class="php">&lt;?php
-use Darsyn\IP\Strategy;
-use Darsyn\IP\Version\Multi as IP;
+                <h2 id="parameter-conversion">Parameter Conversion</h2>
+<p>If you are using Symfony's Framework Bundle, a parameter converter is included to
+automatically convert an IP string into an IP object.</p>
+<p>It's unlikely you'll ever need to get an IP address from the route instead of the
+<code>Request</code> object (aside from administration dashboards perhaps), but the option
+is there if you need it. </p>
+<p>To enabled it, make <code>Darsyn\IP\ParamConverter</code> a service in your container
+configuration and tag it with <code>request.param_converter</code>:</p>
+<pre><code class="yaml">services:
 
-// Set the IPv4-compatible embedding strategy to be used globally.
-IP::setDefaultEmbeddingStrategy(new Strategy\Compatible);
-
-// But for this specific instance use the 6to4-derived embedding strategy.
-$ip = IP::factory('127.0.0.1', new Strategy\Derived);
+    darsyn.ip.param_converter:
+        class: 'Darsyn\IP\ParamConverter'
+        tags:
+            - name: 'request.param_converter'
+              converter: 'darsyn_ip_converter'
 </code></pre>
 
 
@@ -530,7 +465,7 @@ $ip = IP::factory('127.0.0.1', new Strategy\Derived);
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
 
-          <a href="04-helpers.html" title="Helpers" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="08-doctrine.html" title="Doctrine Support" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -539,19 +474,19 @@ $ip = IP::factory('127.0.0.1', new Strategy\Derived);
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Helpers
+                Doctrine Support
               </span>
             </div>
           </a>
 
 
-          <a href="06-formatters.html" title="Formatters" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="10-api.html" title="API Reference" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Formatters
+                API Reference
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">
