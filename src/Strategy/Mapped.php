@@ -12,7 +12,7 @@ class Mapped extends AbstractStrategy
     public function isEmbedded($binary)
     {
         return $this->getBinaryLength($binary) === 16
-            && substr($binary, 0, 12) === pack('H*', '00000000000000000000ffff');
+            && \substr($binary, 0, 12) === \pack('H*', '00000000000000000000ffff');
     }
 
     /**
@@ -21,7 +21,7 @@ class Mapped extends AbstractStrategy
     public function extract($binary)
     {
         if ($this->getBinaryLength($binary) === 16) {
-            return substr($binary, 12, 4);
+            return \substr($binary, 12, 4);
         }
         throw new StrategyException\ExtractionException($binary, $this);
     }
@@ -32,7 +32,7 @@ class Mapped extends AbstractStrategy
     public function pack($binary)
     {
         if ($this->getBinaryLength($binary) === 4) {
-            return pack('H*', '00000000000000000000ffff') . $binary;
+            return \pack('H*', '00000000000000000000ffff') . $binary;
         }
         throw new StrategyException\PackingException($binary, $this);
     }

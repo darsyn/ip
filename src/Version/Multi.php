@@ -243,6 +243,6 @@ class Multi extends IPv6 implements MultiVersionInterface
      */
     private function isCidrVersion4Appropriate($cidr)
     {
-        return is_int($cidr) && $cidr <= 32;
+        return \is_int($cidr) && $cidr <= 32;
     }
 }

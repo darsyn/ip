@@ -52,7 +52,7 @@ class IPv6 extends AbstractIP implements Version6Interface
         // Convert the 16-byte binary sequence into a hexadecimal-string
         // representation, insert a colon between every block of 4 characters,
         // and return the resulting IP address in full IPv6 protocol notation.
-        return substr(preg_replace('/([a-fA-F0-9]{4})/', '$1:', bin2hex($this->getBinary())), 0, -1);
+        return \substr(\preg_replace('/([a-fA-F0-9]{4})/', '$1:', \bin2hex($this->getBinary())), 0, -1);
     }
 
     /**
@@ -80,7 +80,7 @@ class IPv6 extends AbstractIP implements Version6Interface
      */
     public function isLinkLocal()
     {
-        return $this->inRange(new self(pack('H*', 'fe800000000000000000000000000000')), 10);
+        return $this->inRange(new self(\pack('H*', 'fe800000000000000000000000000000')), 10);
     }
 
     /**
@@ -88,7 +88,7 @@ class IPv6 extends AbstractIP implements Version6Interface
      */
     public function isLoopback()
     {
-        return $this->inRange(new self(pack('H*', '00000000000000000000000000000001')), 128);
+        return $this->inRange(new self(\pack('H*', '00000000000000000000000000000001')), 128);
     }
 
     /**
@@ -96,7 +96,7 @@ class IPv6 extends AbstractIP implements Version6Interface
      */
     public function isMulticast()
     {
-        return $this->inRange(new self(pack('H*', 'ff000000000000000000000000000000')), 8);
+        return $this->inRange(new self(\pack('H*', 'ff000000000000000000000000000000')), 8);
     }
 
     /**
@@ -104,7 +104,7 @@ class IPv6 extends AbstractIP implements Version6Interface
      */
     public function isPrivateUse()
     {
-        return $this->inRange(new self(pack('H*', 'fd000000000000000000000000000000')), 8);
+        return $this->inRange(new self(\pack('H*', 'fd000000000000000000000000000000')), 8);
     }
 
     /**
