@@ -31,6 +31,9 @@
         "phpunit/phpunit": "^5.7"
     },
     "prefer-stable": true,
+    "config": {
+        "sort-packages": true
+    },
     "suggest": {
         "doctrine/dbal": "to use IP as a column type"
     }
