@@ -26,6 +26,11 @@
             "Darsyn\\IP\\Tests\\": "tests/"
         }
     },
+    "require-dev": {
+        "doctrine/dbal": "^2.3",
+        "phpunit/phpunit": "^5.7"
+    },
+    "prefer-stable": true,
     "suggest": {
         "doctrine/dbal": "to use IP as a column type"
     }
