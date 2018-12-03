@@ -12,8 +12,8 @@ class Derived extends AbstractStrategy
     public function isEmbedded($binary)
     {
         return $this->getBinaryLength($binary) === 16
-            && substr($binary, 0, 2) === $this->getBinaryFromHex('2002')
-            && substr($binary, 6, 10) === "\0\0\0\0\0\0\0\0\0\0";
+            && \substr($binary, 0, 2) === $this->getBinaryFromHex('2002')
+            && \substr($binary, 6, 10) === "\0\0\0\0\0\0\0\0\0\0";
     }
 
     /**
@@ -22,7 +22,7 @@ class Derived extends AbstractStrategy
     public function extract($binary)
     {
         if ($this->getBinaryLength($binary) === 16) {
-            return substr($binary, 2, 4);
+            return \substr($binary, 2, 4);
         }
         throw new StrategyException\ExtractionException($binary, $this);
     }

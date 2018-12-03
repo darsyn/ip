@@ -10,7 +10,7 @@ abstract class AbstractStrategy implements EmbeddingStrategyInterface
      */
     protected function getBinaryLength($binary)
     {
-        return strlen($binary);
+        return \strlen($binary);
     }
 
     /**
@@ -19,6 +19,6 @@ abstract class AbstractStrategy implements EmbeddingStrategyInterface
      */
     protected function getBinaryFromHex($hex)
     {
-        return pack('H*', $hex);
+        return \pack('H*', $hex);
     }
 }

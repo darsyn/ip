@@ -72,7 +72,7 @@ class IPv4 extends AbstractIP implements Version4Interface
      */
     public function isLinkLocal()
     {
-        return $this->inRange(new static(pack('H*', 'a9fe0000')), 16);
+        return $this->inRange(new static(\pack('H*', 'a9fe0000')), 16);
     }
 
     /**
@@ -80,7 +80,7 @@ class IPv4 extends AbstractIP implements Version4Interface
      */
     public function isLoopback()
     {
-        return $this->inRange(new static(pack('H*', '7f000000')), 8);
+        return $this->inRange(new static(\pack('H*', '7f000000')), 8);
     }
 
     /**
@@ -88,7 +88,7 @@ class IPv4 extends AbstractIP implements Version4Interface
      */
     public function isMulticast()
     {
-        return $this->inRange(new static(pack('H*', 'e0000000')), 4);
+        return $this->inRange(new static(\pack('H*', 'e0000000')), 4);
     }
 
     /**
@@ -96,9 +96,9 @@ class IPv4 extends AbstractIP implements Version4Interface
      */
     public function isPrivateUse()
     {
-        return $this->inRange(new static(pack('H*', '0a000000')), 8)
-            || $this->inRange(new static(pack('H*', 'ac100000')), 12)
-            || $this->inRange(new static(pack('H*', 'c0a80000')), 16);
+        return $this->inRange(new static(\pack('H*', '0a000000')), 8)
+            || $this->inRange(new static(\pack('H*', 'ac100000')), 12)
+            || $this->inRange(new static(\pack('H*', 'c0a80000')), 16);
     }
 
     /**

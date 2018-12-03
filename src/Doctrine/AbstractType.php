@@ -45,14 +45,14 @@ abstract class AbstractType extends Type
      */
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
-        if (is_a($value, $this->getIpClass(), true)) {
+        if (\is_a($value, $this->getIpClass(), true)) {
             return $value;
         }
 
         // PostgreSQL will return the binary data as a resource instead of a
         // string (like MySQL).
-        if (is_resource($value) && get_resource_type($value) === 'stream') {
-            $value = stream_get_contents($value);
+        if (\is_resource($value) && \get_resource_type($value) === 'stream') {
+            $value = \stream_get_contents($value);
         }
         if (empty($value)) {
             return null;
@@ -78,7 +78,7 @@ abstract class AbstractType extends Type
 
         try {
             /** @var \Darsyn\IP\IpInterface $ip */
-            $ip = is_a($value, $this->getIpClass(), true)
+            $ip = \is_a($value, $this->getIpClass(), true)
                 ? $value
                 : $this->createIpObject($value);
         } catch (InvalidIpAddressException $e) {

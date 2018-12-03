@@ -12,7 +12,7 @@ class Compatible extends AbstractStrategy
     public function isEmbedded($binary)
     {
         return $this->getBinaryLength($binary) === 16
-            && substr($binary, 0, 12) === "\0\0\0\0\0\0\0\0\0\0\0\0";
+            && \substr($binary, 0, 12) === "\0\0\0\0\0\0\0\0\0\0\0\0";
     }
 
     /**
@@ -21,7 +21,7 @@ class Compatible extends AbstractStrategy
     public function extract($binary)
     {
         if ($this->getBinaryLength($binary) === 16) {
-            return substr($binary, 12, 4);
+            return \substr($binary, 12, 4);
         }
         throw new StrategyException\ExtractionException($binary, $this);
     }
