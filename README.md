@@ -12,6 +12,11 @@ accuracy or readability of the documentation - are always welcome.
 
 Full documentation is available in the [`docs/`](docs/) folder.
 
+## Code of Conduct
+
+This project includes and adheres to the [Contributor Covenant as a Code of
+Conduct](CODE_OF_CONDUCT.md).
+
 ## Upgrading
 
 This library is fairly similar to how it was in `3.3.1`; the main differences
