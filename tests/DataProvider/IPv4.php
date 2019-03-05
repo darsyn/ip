@@ -1,10 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Darsyn\IP\Tests\DataProvider;
 
 class IPv4
 {
-    public static function getValidBinarySequences()
+    public static function getValidBinarySequences(): array
     {
         return [
             [pack('H*', '71637a89'), '71637a89', '113.99.122.137' ],
@@ -23,7 +23,7 @@ class IPv4
         ];
     }
 
-    public static function getValidProtocolIpAddresses()
+    public static function getValidProtocolIpAddresses(): array
     {
         return [
             ['119.14.113.44',   '770e712c', '119.14.113.44',   ],
@@ -41,12 +41,12 @@ class IPv4
         ];
     }
 
-    public static function getValidIpAddresses()
+    public static function getValidIpAddresses(): array
     {
         return array_merge(self::getValidBinarySequences(), self::getValidProtocolIpAddresses());
     }
 
-    public static function getInvalidIpAddresses()
+    public static function getInvalidIpAddresses(): array
     {
         return [
             ['::1'],
@@ -56,18 +56,12 @@ class IPv4
             ['This one is completely wrong.'],
             // 5 bytes instead of 4.
             [pack('H*', '20010db80')],
-            [123],
-            [1.3],
-            [array()],
-            [(object) array()],
-            [null],
-            [true],
             ['12345'],
             ['123'],
         ];
     }
 
-    public static function getValidCidrValues()
+    public static function getValidCidrValues(): array
     {
         return [
             [32, 'ffffffff'],
@@ -82,22 +76,15 @@ class IPv4
         ];
     }
 
-    public static function getInvalidCidrValues()
+    public static function getInvalidCidrValues(): array
     {
         return [
             [-1],
             [33],
-            ['0'],
-            ['128'],
-            [12.3],
-            [true],
-            [null],
-            [[]],
-            [(object) []],
         ];
     }
 
-    public static function getNetworkIpAddresses()
+    public static function getNetworkIpAddresses(): array
     {
         return [
             ['12.34.56.78', 32],
@@ -109,7 +96,7 @@ class IPv4
         ];
     }
 
-    public static function getBroadcastIpAddresses()
+    public static function getBroadcastIpAddresses(): array
     {
         return [
             ['12.34.56.78',     32],
@@ -121,7 +108,7 @@ class IPv4
         ];
     }
 
-    public static function getValidInRangeIpAddresses()
+    public static function getValidInRangeIpAddresses(): array
     {
         return [
             ['12.34.56.78',     '12.34.56.78',      32],
@@ -131,7 +118,7 @@ class IPv4
         ];
     }
 
-    public static function getLinkLocalIpAddresses()
+    public static function getLinkLocalIpAddresses(): array
     {
         return [
             ['169.253.255.255', false],
@@ -141,7 +128,7 @@ class IPv4
         ];
     }
 
-    public static function getLoopbackIpAddresses()
+    public static function getLoopbackIpAddresses(): array
     {
         return [
             ['126.255.255.255', false],
@@ -151,7 +138,7 @@ class IPv4
         ];
     }
 
-    public static function getMulticastIpAddresses()
+    public static function getMulticastIpAddresses(): array
     {
         return [
             ['223.255.255.255', false],
@@ -161,7 +148,7 @@ class IPv4
         ];
     }
 
-    public static function getPrivateUseIpAddresses()
+    public static function getPrivateUseIpAddresses(): array
     {
         return [
             ['9.255.255.255',   false],
@@ -179,7 +166,7 @@ class IPv4
         ];
     }
 
-    public static function getUnspecifiedIpAddresses()
+    public static function getUnspecifiedIpAddresses(): array
     {
         return [
             ['0.0.0.0',   true ],

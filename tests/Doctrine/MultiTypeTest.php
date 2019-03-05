@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Darsyn\IP\Tests\Doctrine;
 
@@ -16,14 +16,14 @@ class MultiTypeTest extends TestCase
     /** @var \Darsyn\IP\Doctrine\MultiType $type */
     private $type;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         if (class_exists(Type::class)) {
             Type::addType('ip_multi', MultiType::class);
         }
     }
 
-    private function getPlatformMock()
+    private function getPlatformMock(): \PHPUnit_Framework_MockObject_MockObject
     {
         // We have to use MySQL as the platform here, because the AbstractPlatform does not support BINARY types.
         return $this
@@ -32,7 +32,7 @@ class MultiTypeTest extends TestCase
             ->getMockForAbstractClass();
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         if (!class_exists('Doctrine\DBAL\Types\Type')) {
@@ -50,7 +50,7 @@ class MultiTypeTest extends TestCase
     /**
      * @test
      */
-    public function testIpConvertsToDatabaseValue()
+    public function testIpConvertsToDatabaseValue(): void
     {
         $ip = IP::factory('12.34.56.78');
 
@@ -64,7 +64,7 @@ class MultiTypeTest extends TestCase
      * @test
      * @expectedException \Doctrine\DBAL\Types\ConversionException
      */
-    public function testInvalidIpConversionForDatabaseValue()
+    public function testInvalidIpConversionForDatabaseValue(): void
     {
         $this->type->convertToDatabaseValue('abcdefg', $this->platform);
     }
@@ -72,7 +72,7 @@ class MultiTypeTest extends TestCase
     /**
      * @test
      */
-    public function testNullConversionForDatabaseValue()
+    public function testNullConversionForDatabaseValue(): void
     {
         $this->assertNull($this->type->convertToDatabaseValue(null, $this->platform));
     }
@@ -80,7 +80,7 @@ class MultiTypeTest extends TestCase
     /**
      * @test
      */
-    public function testIpConvertsToPHPValue()
+    public function testIpConvertsToPHPValue(): void
     {
         $ip = IP::factory('12.34.56.78');
         /** @var IP $dbIp */
@@ -92,7 +92,7 @@ class MultiTypeTest extends TestCase
     /**
      * @test
      */
-    public function testIpObjectConvertsToPHPValue()
+    public function testIpObjectConvertsToPHPValue(): void
     {
         $ip = IP::factory('12.34.56.78');
         /** @var IP $dbIp */
@@ -104,7 +104,7 @@ class MultiTypeTest extends TestCase
     /**
      * @test
      */
-    public function testStreamConvertsToPHPValue()
+    public function testStreamConvertsToPHPValue(): void
     {
         $ip = IP::factory('12.34.56.78');
         $stream = fopen('php://memory','r+');
@@ -120,7 +120,7 @@ class MultiTypeTest extends TestCase
      * @test
      * @expectedException \Doctrine\DBAL\Types\ConversionException
      */
-    public function testInvalidIpConversionForPHPValue()
+    public function testInvalidIpConversionForPHPValue(): void
     {
         $this->type->convertToPHPValue('abcdefg', $this->platform);
     }
@@ -128,7 +128,7 @@ class MultiTypeTest extends TestCase
     /**
      * @test
      */
-    public function testNullConversionForPHPValue()
+    public function testNullConversionForPHPValue(): void
     {
         $this->assertNull($this->type->convertToPHPValue(null, $this->platform));
     }
@@ -136,7 +136,7 @@ class MultiTypeTest extends TestCase
     /**
      * @test
      */
-    public function testGetName()
+    public function testGetName(): void
     {
         $this->assertEquals('ip', $this->type->getName());
     }
@@ -144,7 +144,7 @@ class MultiTypeTest extends TestCase
     /**
      * @test
      */
-    public function testGetBinaryTypeDeclarationSQL()
+    public function testGetBinaryTypeDeclarationSQL(): void
     {
         $this->assertEquals('DUMMYBINARY()', $this->type->getSqlDeclaration(['length' => 16], $this->platform));
     }
@@ -152,7 +152,7 @@ class MultiTypeTest extends TestCase
     /**
      * @test
      */
-    public function testBindingTypeIsAValidPDOTypeConstant()
+    public function testBindingTypeIsAValidPDOTypeConstant(): void
     {
         // Get all constants of the PDO class.
         $constants = (new \ReflectionClass(PDO::class))->getConstants();
@@ -171,7 +171,7 @@ class MultiTypeTest extends TestCase
     /**
      * @test
      */
-    public function testRequiresSQLCommentHint()
+    public function testRequiresSQLCommentHint(): void
     {
         $this->assertTrue($this->type->requiresSQLCommentHint($this->platform));
     }

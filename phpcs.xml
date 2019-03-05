@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset name="Darsyn IP Coding Standards">
+    <rule ref="PSR2" />
+    <config name="installed_paths" value="../../slevomat/coding-standard"/>
+    <rule ref="SlevomatCodingStandard.TypeHints.DeclareStrictTypes">
+        <properties>
+            <property name="newlinesCountBetweenOpenTagAndDeclare" value="0" />
+            <property name="newlinesCountAfterDeclare" value="2" />
+            <property name="spacesCountAroundEqualsSign" value="0" />
+        </properties>
+    </rule>
+    <rule ref="SlevomatCodingStandard.ControlStructures.DisallowEqualOperators" />
+    <rule ref="SlevomatCodingStandard.Arrays.TrailingArrayComma" />
+    <rule ref="SlevomatCodingStandard.Namespaces.AlphabeticallySortedUses" />
+    <rule ref="SlevomatCodingStandard.Namespaces.DisallowGroupUse" />
+    <rule ref="SlevomatCodingStandard.Namespaces.MultipleUsesPerLine" />
+    <rule ref="SlevomatCodingStandard.Namespaces.UseDoesNotStartWithBackslash" />
+    <rule ref="SlevomatCodingStandard.Namespaces.UnusedUses">
+        <properties>
+            <property name="searchAnnotations" value="true" />
+        </properties>
+    </rule>
+    <rule ref="SlevomatCodingStandard.PHP.TypeCast" />
+    <rule ref="SlevomatCodingStandard.Classes.ClassConstantVisibility" />
+    <rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHintSpacing" />
+    <rule ref="SlevomatCodingStandard.TypeHints.NullableTypeForNullDefaultValue" />
+    <rule ref="SlevomatCodingStandard.TypeHints.ParameterTypeHintSpacing" />
+</ruleset>

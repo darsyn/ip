@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Darsyn\IP\Tests\Version;
 
@@ -17,7 +17,7 @@ class MultiTest extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidIpAddresses()
      */
-    public function testInstantiationWithValidAddresses($value)
+    public function testInstantiationWithValidAddresses($value): void
     {
         $ip = IP::factory($value);
         $this->assertInstanceOf(IpInterface::class, $ip);
@@ -30,7 +30,7 @@ class MultiTest extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidBinarySequences()
      */
-    public function testBinarySequenceIsTheSameOnceInstantiated($value)
+    public function testBinarySequenceIsTheSameOnceInstantiated($value): void
     {
         $ip = IP::factory($value);
         $this->assertSame($value, $ip->getBinary());
@@ -40,7 +40,7 @@ class MultiTest extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidProtocolIpAddresses()
      */
-    public function testProtocolNotationConvertsToCorrectBinarySequence($value, $hex)
+    public function testProtocolNotationConvertsToCorrectBinarySequence($value, $hex): void
     {
         $ip = IP::factory($value);
         $this->assertSame($hex, unpack('H*hex', $ip->getBinary())['hex']);
@@ -52,7 +52,7 @@ class MultiTest extends TestCase
      * @expectedException \Darsyn\IP\Exception\InvalidIpAddressException
      * @expectedExceptionMessage The IP address supplied is not valid.
      */
-    public function testExceptionIsThrownOnInstantiationWithInvalidAddresses($value)
+    public function testExceptionIsThrownOnInstantiationWithInvalidAddresses($value): void
     {
         try {
             $ip = IP::factory($value);
@@ -67,7 +67,7 @@ class MultiTest extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidIpAddresses()
      */
-    public function testGetBinaryAlwaysReturnsA16ByteString($value)
+    public function testGetBinaryAlwaysReturnsA16ByteString($value): void
     {
         $ip = IP::factory($value);
         $this->assertSame(16, strlen(bin2hex($ip->getBinary())) / 2);
@@ -77,7 +77,7 @@ class MultiTest extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidIpAddresses()
      */
-    public function testGetCompactedAddressReturnsCorrectString($value, $hex, $expanded, $compacted)
+    public function testGetCompactedAddressReturnsCorrectString($value, $hex, $expanded, $compacted): void
     {
         $ip = IP::factory($value);
         $this->assertSame($compacted, $ip->getCompactedAddress());
@@ -87,7 +87,7 @@ class MultiTest extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidProtocolIpAddresses()
      */
-    public function testGetExpandedAddressReturnsCorrectString($value, $hex, $expanded)
+    public function testGetExpandedAddressReturnsCorrectString($value, $hex, $expanded): void
     {
         $ip = IP::factory($value);
         $this->assertSame($expanded, $ip->getExpandedAddress());
@@ -97,7 +97,7 @@ class MultiTest extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidIpVersion4Addresses()
      */
-    public function testDotAddressReturnsCorrectString($value, $hex, $expanded, $compacted, $dot)
+    public function testDotAddressReturnsCorrectString($value, $hex, $expanded, $compacted, $dot): void
     {
         $ip = IP::factory($value);
         $this->assertSame($dot, $ip->getDotAddress());
@@ -108,7 +108,7 @@ class MultiTest extends TestCase
      * @expectedException \Darsyn\IP\Exception\WrongVersionException
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidIpVersion6Addresses()
      */
-    public function testDotAddressThrowsExceptionForNonVersion4Addresses($value)
+    public function testDotAddressThrowsExceptionForNonVersion4Addresses($value): void
     {
         try {
             $ip = IP::factory($value);
@@ -126,7 +126,7 @@ class MultiTest extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getNetworkIpAddresses()
      */
-    public function testNetworkIp($initial, $expected, $cidr)
+    public function testNetworkIp($initial, $expected, $cidr): void
     {
         $ip = IP::factory($initial);
         $this->assertSame($expected, $ip->getNetworkIp($cidr)->getProtocolAppropriateAddress());
@@ -136,7 +136,7 @@ class MultiTest extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getBroadcastIpAddresses()
      */
-    public function testBroadcastIp($initial, $expected, $cidr)
+    public function testBroadcastIp($initial, $expected, $cidr): void
     {
         $ip = IP::factory($initial);
         $this->assertSame($expected, $ip->getBroadcastIp($cidr)->getProtocolAppropriateAddress());
@@ -146,7 +146,7 @@ class MultiTest extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidInRangeIpAddresses()
      */
-    public function testInRange($first, $second, $cidr)
+    public function testInRange($first, $second, $cidr): void
     {
         $first = IP::factory($first);
         $second = IP::factory($second);
@@ -157,7 +157,7 @@ class MultiTest extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getLinkLocalIpAddresses()
      */
-    public function testIsLinkLocal($value, $isLinkLocal)
+    public function testIsLinkLocal($value, $isLinkLocal): void
     {
         $ip = IP::factory($value);
         $this->assertSame($isLinkLocal, $ip->isLinkLocal());
@@ -167,7 +167,7 @@ class MultiTest extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getLoopbackIpAddresses()
      */
-    public function testIsLoopback($value, $isLoopback)
+    public function testIsLoopback($value, $isLoopback): void
     {
         $ip = IP::factory($value);
         $this->assertSame($isLoopback, $ip->isLoopback());
@@ -177,7 +177,7 @@ class MultiTest extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getMulticastIpAddresses()
      */
-    public function testIsMulticast($value, $isMulticast)
+    public function testIsMulticast($value, $isMulticast): void
     {
         $ip = IP::factory($value);
         $this->assertSame($isMulticast, $ip->isMulticast());
@@ -188,7 +188,7 @@ class MultiTest extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getPrivateUseIpAddresses()
      */
-    public function testIsPrivateUse($value, $isPrivateUse)
+    public function testIsPrivateUse($value, $isPrivateUse): void
     {
         $ip = IP::factory($value);
         $this->assertSame($isPrivateUse, $ip->isPrivateUse());
@@ -198,7 +198,7 @@ class MultiTest extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getUnspecifiedIpAddresses()
      */
-    public function testIsUnspecified($value, $isUnspecified)
+    public function testIsUnspecified($value, $isUnspecified): void
     {
         $ip = IP::factory($value);
         $this->assertSame($isUnspecified, $ip->isUnspecified());

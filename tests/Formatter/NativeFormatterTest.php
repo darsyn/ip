@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Darsyn\IP\Tests\Formatter;
 
@@ -12,7 +12,7 @@ class NativeFormatterTest extends TestCase
     /** @var \Darsyn\IP\Formatter\ProtocolFormatterInterface $formatter */
     private $formatter;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->formatter = new Formatter;
@@ -21,7 +21,7 @@ class NativeFormatterTest extends TestCase
     /**
      * @test
      */
-    public function testFormatterIsInstanceOfInterface()
+    public function testFormatterIsInstanceOfInterface(): void
     {
         $this->assertInstanceOf(ProtocolFormatterInterface::class, $this->formatter);
     }
@@ -30,7 +30,7 @@ class NativeFormatterTest extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Formatter\NativeFormatter::getValidBinarySequences()
      */
-    public function testFormatterReturnsCorrectProtocolString($value, $expected)
+    public function testFormatterReturnsCorrectProtocolString($value, $expected): void
     {
         $this->assertSame($expected, $this->formatter->ntop($value));
     }
@@ -40,7 +40,7 @@ class NativeFormatterTest extends TestCase
      * @expectedException \Darsyn\IP\Exception\Formatter\FormatException
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Formatter\NativeFormatter::getInvalidBinarySequences()
      */
-    public function testFormatterThrowsExceptionOnInvalidBinarySequences($value)
+    public function testFormatterThrowsExceptionOnInvalidBinarySequences($value): void
     {
         try {
             $this->formatter->ntop($value);

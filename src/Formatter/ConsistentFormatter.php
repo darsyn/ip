@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Darsyn\IP\Formatter;
 
@@ -7,10 +7,8 @@ use Darsyn\IP\Exception\Formatter\FormatException;
 
 class ConsistentFormatter extends NativeFormatter
 {
-    /**
-     * {@inheritDoc}
-     */
-    public function ntop($binary)
+    /** {@inheritdoc} */
+    public function ntop(string $binary): string
     {
         if (\is_string($binary)) {
             $length = Binary::getLength($binary);
@@ -24,7 +22,7 @@ class ConsistentFormatter extends NativeFormatter
         throw new FormatException($binary);
     }
 
-    private function ntopVersion6($hex)
+    private function ntopVersion6(string $hex): string
     {
         $parts = \str_split($hex, 4);
         $zeroes = \array_map(function ($part) {
@@ -47,8 +45,13 @@ class ConsistentFormatter extends NativeFormatter
         return \str_pad(\preg_replace('/\:{2,}/', '::', \implode(':', $parts)), 2, ':');
     }
 
-    private function ntopVersion4($binary)
+    /** @throws \Darsyn\IP\Exception\Formatter\FormatException */
+    private function ntopVersion4(string $binary): string
     {
-        return \inet_ntop(\pack('A4', $binary));
+        $protocol = \inet_ntop(\pack('A4', $binary));
+        if (!\is_string($protocol)) {
+            throw new FormatException($binary);
+        }
+        return $protocol;
     }
 }

@@ -1,11 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Darsyn\IP\Version;
 
 use Darsyn\IP\AbstractIP;
 use Darsyn\IP\Binary;
 use Darsyn\IP\Exception;
-use Darsyn\IP\Formatter\ProtocolFormatterInterface;
 
 /**
  * IPv6 Address
@@ -28,8 +27,9 @@ class IPv6 extends AbstractIP implements Version6Interface
 {
     /**
      * {@inheritDoc}
+     * @return \Darsyn\IP\Version\Version6Interface
      */
-    public static function factory($ip)
+    public static function factory(string $ip)
     {
         try {
             // Convert from protocol notation to binary sequence.
@@ -45,10 +45,8 @@ class IPv6 extends AbstractIP implements Version6Interface
         return new static($binary);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getExpandedAddress()
+    /** {@inheritDoc} */
+    public function getExpandedAddress(): string
     {
         // Convert the 16-byte binary sequence into a hexadecimal-string
         // representation, insert a colon between every block of 4 characters,
@@ -56,62 +54,58 @@ class IPv6 extends AbstractIP implements Version6Interface
         return \substr(\preg_replace('/([a-fA-F0-9]{4})/', '$1:', Binary::toHex($this->getBinary())), 0, -1);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getCompactedAddress()
+    /** {@inheritDoc} */
+    public function getCompactedAddress(): string
     {
         try {
             return self::getProtocolFormatter()->ntop($this->getBinary());
         } catch (Exception\Formatter\FormatException $e) {
-            throw new Exception\IpException('An unknown error occured internally.', null, $e);
+            throw new Exception\IpException('An unknown error occured internally.', 0, $e);
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getVersion()
+    public function getVersion(): int
     {
         return 6;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function isLinkLocal()
+    public function isLinkLocal(): bool
     {
-        return $this->inRange(new self(Binary::fromHex('fe800000000000000000000000000000')), 10);
+        try {
+            return $this->inRange(new self(Binary::fromHex('fe800000000000000000000000000000')), 10);
+        } catch (Exception\InvalidCidrException $e) {
+            return false;
+        }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function isLoopback()
+    public function isLoopback(): bool
     {
-        return $this->inRange(new self(Binary::fromHex('00000000000000000000000000000001')), 128);
+        try {
+            return $this->inRange(new self(Binary::fromHex('00000000000000000000000000000001')), 128);
+        } catch (Exception\InvalidCidrException $e) {
+            return false;
+        }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function isMulticast()
+    public function isMulticast(): bool
     {
-        return $this->inRange(new self(Binary::fromHex('ff000000000000000000000000000000')), 8);
+        try {
+            return $this->inRange(new self(Binary::fromHex('ff000000000000000000000000000000')), 8);
+        } catch (Exception\InvalidCidrException $e) {
+            return false;
+        }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function isPrivateUse()
+    public function isPrivateUse(): bool
     {
-        return $this->inRange(new self(Binary::fromHex('fd000000000000000000000000000000')), 8);
+        try {
+            return $this->inRange(new self(Binary::fromHex('fd000000000000000000000000000000')), 8);
+        } catch (Exception\InvalidCidrException $e) {
+            return false;
+        }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function isUnspecified()
+    public function isUnspecified(): bool
     {
         return $this->getBinary() === "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
     }

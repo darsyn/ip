@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Darsyn\IP\Exception\Strategy;
 
@@ -13,13 +13,11 @@ class PackingException extends IpException
     /** @var \Darsyn\IP\Strategy\EmbeddingStrategyInterface $embeddingStrategy */
     private $embeddingStrategy;
 
-    /**
-     * @param string $binary
-     * @param EmbeddingStrategyInterface $embeddingStrategy
-     * @param \Exception|null $previous
-     */
-    public function __construct($binary, EmbeddingStrategyInterface $embeddingStrategy, \Exception $previous = null)
-    {
+    public function __construct(
+        string $binary,
+        EmbeddingStrategyInterface $embeddingStrategy,
+        ?\Throwable $previous = null
+    ) {
         $this->binary = $binary;
         $this->embeddingStrategy = $embeddingStrategy;
         parent::__construct(\sprintf(
@@ -28,18 +26,12 @@ class PackingException extends IpException
         ), 0, $previous);
     }
 
-    /**
-     * @return string
-     */
-    public function getSuppliedBinary()
+    public function getSuppliedBinary(): string
     {
         return $this->binary;
     }
 
-    /**
-     * @return \Darsyn\IP\Strategy\EmbeddingStrategyInterface
-     */
-    public function getEmbeddingStrategy()
+    public function getEmbeddingStrategy(): EmbeddingStrategyInterface
     {
         return $this->embeddingStrategy;
     }

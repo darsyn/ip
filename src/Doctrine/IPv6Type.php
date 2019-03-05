@@ -1,7 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Darsyn\IP\Doctrine;
 
+use Darsyn\IP\IpInterface;
 use Darsyn\IP\Version\IPv6 as IP;
 
 /**
@@ -9,18 +10,12 @@ use Darsyn\IP\Version\IPv6 as IP;
  */
 class IPv6Type extends AbstractType
 {
-    /**
-     * {@inheritDoc}
-     */
-    protected function getIpClass()
+    protected function getIpClass(): string
     {
         return IP::class;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    protected function createIpObject($ip)
+    protected function createIpObject(string $ip): IpInterface
     {
         return IP::factory($ip);
     }

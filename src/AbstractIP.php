@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Darsyn\IP;
 
@@ -17,11 +17,7 @@ abstract class AbstractIP implements IpInterface
      */
     private $ip;
 
-    /**
-     * @static
-     * @param \Darsyn\IP\Formatter\ProtocolFormatterInterface $formatter
-     */
-    public static function setProtocolFormatter(ProtocolFormatterInterface $formatter)
+    public static function setProtocolFormatter(ProtocolFormatterInterface $formatter): void
     {
         self::$formatter = $formatter;
     }
@@ -30,10 +26,8 @@ abstract class AbstractIP implements IpInterface
      * Get the protocol formatter set by the user, falling back to using our
      * custom formatter for consistency by default if the user has not set one
      * globally.
-     *
-     * @return \Darsyn\IP\Formatter\ProtocolFormatterInterface
      */
-    protected static function getProtocolFormatter()
+    protected static function getProtocolFormatter(): ProtocolFormatterInterface
     {
         if (null === self::$formatter) {
             self::$formatter = new ConsistentFormatter;
@@ -41,52 +35,33 @@ abstract class AbstractIP implements IpInterface
         return self::$formatter;
     }
 
-    /**
-     * Constructor
-     *
-     * @param string $ip
-     */
-    protected function __construct($ip)
+    protected function __construct(string $ip)
     {
         $this->ip = $ip;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    final public function getBinary()
+    final public function getBinary(): string
     {
         return $this->ip;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function isVersion($version)
+    public function isVersion(int $version): bool
     {
         return $this->getVersion() === $version;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function isVersion4()
+    public function isVersion4(): bool
     {
         return $this->isVersion(4);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function isVersion6()
+    public function isVersion6(): bool
     {
         return $this->isVersion(6);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getNetworkIp($cidr)
+    /** {@inheritDoc} */
+    public function getNetworkIp(int $cidr): IpInterface
     {
         // Providing that the CIDR is valid, bitwise AND the IP address binary
         // sequence with the mask generated from the CIDR.
@@ -96,10 +71,8 @@ abstract class AbstractIP implements IpInterface
         ));
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getBroadcastIp($cidr)
+    /** {@inheritDoc} */
+    public function getBroadcastIp(int $cidr): IpInterface
     {
         // Providing that the CIDR is valid, bitwise OR the IP address binary
         // sequence with the inverse of the mask generated from the CIDR.
@@ -109,10 +82,8 @@ abstract class AbstractIP implements IpInterface
         ));
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function inRange(IpInterface $ip, $cidr)
+    /** {@inheritDoc} */
+    public function inRange(IpInterface $ip, int $cidr): bool
     {
         try {
             return $this->getNetworkIp($cidr)->getBinary() === $ip->getNetworkIp($cidr)->getBinary();
@@ -121,34 +92,22 @@ abstract class AbstractIP implements IpInterface
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function isMapped()
+    public function isMapped(): bool
     {
         return (new Strategy\Mapped)->isEmbedded($this->getBinary());
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function isDerived()
+    public function isDerived(): bool
     {
         return (new Strategy\Derived)->isEmbedded($this->getBinary());
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function isCompatible()
+    public function isCompatible(): bool
     {
         return (new Strategy\Compatible)->isEmbedded($this->getBinary());
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function isEmbedded()
+    public function isEmbedded(): bool
     {
         return false;
     }
@@ -158,24 +117,17 @@ abstract class AbstractIP implements IpInterface
      * to construct the bitmask as a string instead of doing any mathematical
      * operations (such as base_convert).
      *
-     * @param integer $cidr
-     * @param integer $length
      * @throws \Darsyn\IP\Exception\InvalidCidrException
-     * @return string
      */
-    protected function generateBinaryMask($cidr, $length)
+    protected function generateBinaryMask(int $cidr, int $length): string
     {
-        if (!\is_int($cidr)  || !\is_int($length)
-            || $cidr < 0    || $length < 0
-            // CIDR is measured in bits, whilst we're describing the length
-            // in bytes.
-            || $cidr > $length * 8
-        ) {
+        // CIDR is measured in bits, we're describing the length in bytes.
+        if ($cidr < 0 || $length < 0 || $cidr > $length * 8) {
             throw new Exception\InvalidCidrException($cidr, $length);
         }
         // Since it takes 4 bits per hexadecimal, how many sections of complete
         // 1's do we have (f's)?
-        $mask = \str_repeat('f', \floor($cidr / 4));
+        $mask = \str_repeat('f', (int) \floor($cidr / 4));
         // Now we have less than four 1 bits left we need to determine what
         // hexadecimal character should be added next. Of course, we should only
         // add them in there are 1 bits leftover to prevent going over the

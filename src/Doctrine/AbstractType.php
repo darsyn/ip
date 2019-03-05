@@ -1,8 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Darsyn\IP\Doctrine;
 
 use Darsyn\IP\Exception\InvalidIpAddressException;
+use Darsyn\IP\IpInterface;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\DBAL\Types\Type;
@@ -15,37 +16,28 @@ use Doctrine\DBAL\Types\Type;
  */
 abstract class AbstractType extends Type
 {
-    const NAME = 'ip';
-    const IP_LENGTH = 16;
+    protected const NAME = 'ip';
+    protected const IP_LENGTH = 16;
+
+    abstract protected function getIpClass(): string;
 
     /**
-     * @return string
-     */
-    abstract protected function getIpClass();
-
-    /**
-     * @param string $ip
      * @throws \Darsyn\IP\Exception\InvalidIpAddressException
      * @throws \Darsyn\IP\Exception\WrongVersionException
-     * @return \Darsyn\IP\IpInterface
      */
-    abstract protected function createIpObject($ip);
+    abstract protected function createIpObject(string $ip): IpInterface;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform): string
     {
         return $platform->getBinaryTypeDeclarationSQL(['length' => static::IP_LENGTH]);
     }
 
     /**
-     * {@inheritdoc}
      * @throws \Doctrine\DBAL\Types\ConversionException
      */
-    public function convertToPHPValue($value, AbstractPlatform $platform)
+    public function convertToPHPValue($value, AbstractPlatform $platform): ?IpInterface
     {
-        if (\is_a($value, $this->getIpClass(), true)) {
+        if (\is_a($value, $this->getIpClass(), false)) {
             return $value;
         }
 
@@ -67,10 +59,9 @@ abstract class AbstractType extends Type
     }
 
     /**
-     * {@inheritdoc}
      * @throws \Doctrine\DBAL\Types\ConversionException
      */
-    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    public function convertToDatabaseValue($value, AbstractPlatform $platform): ?string
     {
         if (empty($value)) {
             return null;
@@ -87,26 +78,17 @@ abstract class AbstractType extends Type
         return $ip->getBinary();
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getName()
+    public function getName(): string
     {
         return self::NAME;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getBindingType()
+    public function getBindingType(): int
     {
         return \PDO::PARAM_LOB;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function requiresSQLCommentHint(AbstractPlatform $platform)
+    public function requiresSQLCommentHint(AbstractPlatform $platform): bool
     {
         return true;
     }

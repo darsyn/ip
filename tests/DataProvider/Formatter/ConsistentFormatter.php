@@ -1,10 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Darsyn\IP\Tests\DataProvider\Formatter;
 
 class ConsistentFormatter
 {
-    public static function getValidBinarySequences()
+    public static function getValidBinarySequences(): array
     {
         return [
             [pack('H*', '00000000'),                         '0.0.0.0'                         ],
@@ -33,7 +33,7 @@ class ConsistentFormatter
         ];
     }
 
-    public static function getInvalidBinarySequences()
+    public static function getInvalidBinarySequences(): array
     {
         return [
             ['123'],
@@ -41,13 +41,6 @@ class ConsistentFormatter
             ['123456789012345'],
             ['12345678901234567'],
             ['This one is completely wrong.'],
-            // 5 bytes instead of 4.
-            [123],
-            [1.3],
-            [array()],
-            [(object) array()],
-            [null],
-            [true],
         ];
     }
 }

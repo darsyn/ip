@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Darsyn\IP\Version;
 
@@ -28,19 +28,16 @@ use Darsyn\IP\Strategy\Mapped as MappedEmbeddingStrategy;
  */
 class Multi extends IPv6 implements MultiVersionInterface
 {
-    /** @var \Darsyn\IP\Strategy\EmbeddingStrategyInterface $defaultEmbeddingStrategy */
+    /** @var \Darsyn\IP\Strategy\EmbeddingStrategyInterface|null $defaultEmbeddingStrategy */
     private static $defaultEmbeddingStrategy;
 
     /** @var \Darsyn\IP\Strategy\EmbeddingStrategyInterface $embeddingStrategy */
     private $embeddingStrategy;
 
-    /** @var bool $embedded */
+    /** @var boolean $embedded */
     private $embedded;
 
-    /**
-     * {@inheritDoc}
-     */
-    public static function setDefaultEmbeddingStrategy(EmbeddingStrategyInterface $strategy)
+    public static function setDefaultEmbeddingStrategy(EmbeddingStrategyInterface $strategy): void
     {
         self::$defaultEmbeddingStrategy = $strategy;
     }
@@ -48,22 +45,20 @@ class Multi extends IPv6 implements MultiVersionInterface
     /**
      * Get the default embedding strategy set. Default to the IPv4-mapped IPv6
      * embedding strategy if the user has not set one globally.
-     *
-     * @return \Darsyn\IP\Strategy\EmbeddingStrategyInterface
      */
-    private static function getDefaultEmbeddingStrategy()
+    private static function getDefaultEmbeddingStrategy(): EmbeddingStrategyInterface
     {
-        return self::$defaultEmbeddingStrategy ?: new MappedEmbeddingStrategy;
+        return self::$defaultEmbeddingStrategy ?? new MappedEmbeddingStrategy;
     }
 
     /**
      * {@inheritDoc}
-     * @param \Darsyn\IP\Strategy\EmbeddingStrategyInterface $strategy
+     * @return \Darsyn\IP\Version\MultiVersionInterface
      */
-    public static function factory($ip, EmbeddingStrategyInterface $strategy = null)
+    public static function factory(string $ip, ?EmbeddingStrategyInterface $strategy = null): MultiVersionInterface
     {
         // We need a strategy to pack version 4 addresses.
-        $strategy = $strategy ?: static::getDefaultEmbeddingStrategy();
+        $strategy = $strategy ?? static::getDefaultEmbeddingStrategy();
 
         try {
             // Convert from protocol notation to binary sequence.
@@ -80,20 +75,15 @@ class Multi extends IPv6 implements MultiVersionInterface
         return new static($binary, $strategy);
     }
 
-    /**
-     * {@inheritDoc}
-     * @param \Darsyn\IP\Strategy\EmbeddingStrategyInterface|null $strategy
-     */
-    protected function __construct($ip, EmbeddingStrategyInterface $strategy = null)
+    protected function __construct(string $ip, ?EmbeddingStrategyInterface $strategy = null)
     {
         // Fallback to default in case this instance was created from static in
         // the abstract IP class.
-        $this->embeddingStrategy = $strategy ?: self::getDefaultEmbeddingStrategy();
+        $this->embeddingStrategy = $strategy ?? self::getDefaultEmbeddingStrategy();
         parent::__construct($ip);
     }
 
-    /** {@inheritDoc} */
-    public function getProtocolAppropriateAddress()
+    public function getProtocolAppropriateAddress(): string
     {
         // If binary string contains an embedded IPv4 address, then extract it.
         $ip = $this->isEmbedded()
@@ -104,31 +94,26 @@ class Multi extends IPv6 implements MultiVersionInterface
         return self::getProtocolFormatter()->ntop($ip);
     }
 
-    /**
-     * @throws \Darsyn\IP\Exception\WrongVersionException
-     * @throws \Darsyn\IP\Exception\IpException
-     * @return string
-     */
-    public function getDotAddress()
+    /** {@inheritdoc} */
+    public function getDotAddress(): string
     {
         if ($this->isEmbedded()) {
             try {
                 return self::getProtocolFormatter()->ntop($this->getShortBinary());
             } catch (Exception\Formatter\FormatException $e) {
-                throw new Exception\IpException('An unknown error occured internally.', null, $e);
+                throw new Exception\IpException('An unknown error occured internally.', 0, $e);
             }
         }
         throw new Exception\WrongVersionException(4, 6, $this->getBinary());
     }
 
-    /** {@inheritDoc} */
-    public function getVersion()
+    public function getVersion(): int
     {
         return $this->isEmbedded() ? 4 : 6;
     }
 
     /** {@inheritDoc} */
-    public function getNetworkIp($cidr)
+    public function getNetworkIp(int $cidr): IpInterface
     {
         try {
             if ($this->isCidrVersion4Appropriate($cidr) && $this->isEmbedded()) {
@@ -144,7 +129,7 @@ class Multi extends IPv6 implements MultiVersionInterface
     }
 
     /** {@inheritDoc} */
-    public function getBroadcastIp($cidr)
+    public function getBroadcastIp(int $cidr): IpInterface
     {
         try {
             if ($this->isCidrVersion4Appropriate($cidr) && $this->isEmbedded()) {
@@ -160,7 +145,7 @@ class Multi extends IPv6 implements MultiVersionInterface
     }
 
     /** {@inheritDoc} */
-    public function inRange(IpInterface $ip, $cidr)
+    public function inRange(IpInterface $ip, int $cidr): bool
     {
         // If both IP's (ours and theirs) are version 4 according to OUR
         // embedding strategy then attempt to compare them as IPv4 ranges first.
@@ -182,8 +167,7 @@ class Multi extends IPv6 implements MultiVersionInterface
         return parent::inRange($ip, $cidr);
     }
 
-    /** {@inheritDoc} */
-    public function isEmbedded()
+    public function isEmbedded(): bool
     {
         if (null === $this->embedded) {
             $this->embedded = $this->embeddingStrategy->isEmbedded($this->getBinary());
@@ -191,58 +175,69 @@ class Multi extends IPv6 implements MultiVersionInterface
         return $this->embedded;
     }
 
-    /** {@inheritDoc} */
-    public function isLinkLocal()
+    public function isLinkLocal(): bool
     {
-        return parent::isLinkLocal()
-            || $this->isEmbedded()
-            && (new IPv4($this->getShortBinary()))->isLinkLocal();
+        try {
+            return parent::isLinkLocal()
+                || $this->isEmbedded()
+                && (new IPv4($this->getShortBinary()))->isLinkLocal();
+        } catch (Exception\Strategy\ExtractionException $e) {
+            return false;
+        }
     }
 
-    /** {@inheritDoc} */
-    public function isLoopback()
+    public function isLoopback(): bool
     {
-        return parent::isLoopback()
-            || $this->isEmbedded()
-            && (new IPv4($this->getShortBinary()))->isLoopback();
+        try {
+            return parent::isLoopback()
+                || $this->isEmbedded()
+                && (new IPv4($this->getShortBinary()))->isLoopback();
+        } catch (Exception\Strategy\ExtractionException $e) {
+            return false;
+        }
     }
 
-    /** * {@inheritDoc} */
-    public function isMulticast()
+    public function isMulticast(): bool
     {
-        return parent::isMulticast()
-            || $this->isEmbedded()
-            && (new IPv4($this->getShortBinary()))->isMulticast();
+        try {
+            return parent::isMulticast()
+                || $this->isEmbedded()
+                && (new IPv4($this->getShortBinary()))->isMulticast();
+        } catch (Exception\Strategy\ExtractionException $e) {
+            return false;
+        }
     }
 
-    /** {@inheritDoc} */
-    public function isPrivateUse()
+    public function isPrivateUse(): bool
     {
-        return parent::isPrivateUse()
-            || $this->isEmbedded()
-            && (new IPv4($this->getShortBinary()))->isPrivateUse();
+        try {
+            return parent::isPrivateUse()
+                || $this->isEmbedded()
+                && (new IPv4($this->getShortBinary()))->isPrivateUse();
+        } catch (Exception\Strategy\ExtractionException $e) {
+            return false;
+        }
     }
 
-    /** {@inheritDoc} */
-    public function isUnspecified()
+    public function isUnspecified(): bool
     {
-        return parent::isUnspecified()
-            || $this->isEmbedded()
-            && (new IPv4($this->getShortBinary()))->isUnspecified();
+        try {
+            return parent::isUnspecified()
+                || $this->isEmbedded()
+                && (new IPv4($this->getShortBinary()))->isUnspecified();
+        } catch (Exception\Strategy\ExtractionException $e) {
+            return false;
+        }
     }
 
-    private function getShortBinary()
+    /** @throws \Darsyn\IP\Exception\Strategy\ExtractionException */
+    private function getShortBinary(): string
     {
         return $this->embeddingStrategy->extract($this->getBinary());
     }
 
-    /**
-     * Is the CIDR provided appropriate for use with IPv4 addresses?
-     *
-     * @param int $cidr
-     * @return bool
-     */
-    private function isCidrVersion4Appropriate($cidr)
+    /** Is the CIDR provided appropriate for use with IPv4 addresses? */
+    private function isCidrVersion4Appropriate(int $cidr): bool
     {
         return \is_int($cidr) && $cidr <= 32;
     }

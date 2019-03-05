@@ -1,10 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Darsyn\IP\Tests\DataProvider\Strategy;
 
 class Mapped
 {
-    public static function getValidIpAddresses()
+    public static function getValidIpAddresses(): array
     {
         $valid = array_map(function (array $row) {
             $row[1] = true;
@@ -17,18 +17,17 @@ class Mapped
         return array_merge($valid, $invalid);
     }
 
-    public static function getInvalidIpAddresses()
+    public static function getInvalidIpAddresses(): array
     {
         return [
             [pack('H*', '20010db8000000000a608a2e037073')],
             [pack('H*', '20010db8000000000a608a2e0370734556')],
-            [123],
             ['12345678901234567'],
             ['123456789012345'],
         ];
     }
 
-    public static function getValidSequences()
+    public static function getValidSequences(): array
     {
         return [
             [pack('H*', '00000000000000000000ffff00010000'), pack('H*', '00010000')],
@@ -38,7 +37,7 @@ class Mapped
         ];
     }
 
-    public static function getInvalidSequences()
+    public static function getInvalidSequences(): array
     {
         return [
             [pack('H*', '000000000000000000000fff00010000')],

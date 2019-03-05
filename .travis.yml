@@ -1,18 +1,15 @@
 language: php
 php:
-    - '5.6'
-    - '7.0'
     - '7.1'
     - '7.2'
+    - '7.3'
     - 'hhvm'
 
 matrix:
     allow_failures:
         - php: hhvm
 
-install:
-    - composer install
 script:
-    - ./vendor/bin/phpunit
+    - make test
 
 sudo: false

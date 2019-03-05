@@ -1,10 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Darsyn\IP\Tests\DataProvider;
 
 class Multi
 {
-    public static function getValidBinarySequences()
+    public static function getValidBinarySequences(): array
     {
         return [
             // [ constructor value, expected hex, expected expanded address, expected compacted address, dot notation ].
@@ -28,7 +28,7 @@ class Multi
         ];
     }
 
-    public static function getValidProtocolIpAddresses()
+    public static function getValidProtocolIpAddresses(): array
     {
         return [
             // [ constructor value, expected hex, expected expanded address, expected compacted address, dot notation ].
@@ -51,26 +51,26 @@ class Multi
         ];
     }
 
-    public static function getValidIpAddresses()
+    public static function getValidIpAddresses(): array
     {
         return array_merge(self::getValidBinarySequences(), self::getValidProtocolIpAddresses());
     }
 
-    public static function getValidIpVersion4Addresses()
+    public static function getValidIpVersion4Addresses(): array
     {
         return array_filter(self::getValidIpAddresses(), function (array $row) {
             return is_string($row[4]);
         });
     }
 
-    public static function getValidIpVersion6Addresses()
+    public static function getValidIpVersion6Addresses(): array
     {
         return array_filter(self::getValidIpAddresses(), function (array $row) {
             return !is_string($row[4]);
         });
     }
 
-    public static function getInvalidIpAddresses()
+    public static function getInvalidIpAddresses(): array
     {
         return [
             ['2001:db8::a60:8a2e:370g:7334'],
@@ -79,28 +79,22 @@ class Multi
             ['This one is completely wrong.'],
             // 15 bytes instead of 16.
             [pack('H*', '20010db8000000000a608a2e037073')],
-            [123],
-            [1.3],
-            [array()],
-            [(object) array()],
-            [null],
-            [true],
             ['12345678901234567'],
             ['123456789012345'],
         ];
     }
 
-    public static function getValidCidrValues()
+    public static function getValidCidrValues(): array
     {
         return IPv6::getValidCidrValues();
     }
 
-    public static function getInvalidCidrValues()
+    public static function getInvalidCidrValues(): array
     {
         return IPv6::getInvalidCidrValues();
     }
 
-    public static function getNetworkIpAddresses()
+    public static function getNetworkIpAddresses(): array
     {
         return array_merge(
             array_map(function ($row) {
@@ -115,7 +109,7 @@ class Multi
         );
     }
 
-    public static function getBroadcastIpAddresses()
+    public static function getBroadcastIpAddresses(): array
     {
         return array_merge(
             array_map(function ($row) {
@@ -129,7 +123,7 @@ class Multi
         );
     }
 
-    public static function getValidInRangeIpAddresses()
+    public static function getValidInRangeIpAddresses(): array
     {
         return array_merge(
             array_map(function ($row) {
@@ -147,42 +141,42 @@ class Multi
         );
     }
 
-    public function getMappedIpAddresses()
+    public function getMappedIpAddresses(): array
     {
         return IPv6::getMappedIpAddresses();
     }
 
-    public function getDerivedIpAddresses()
+    public function getDerivedIpAddresses(): array
     {
         return IPv6::getDerivedIpAddresses();
     }
 
-    public function getCompatibleIpAddresses()
+    public function getCompatibleIpAddresses(): array
     {
         return  IPv6::getCompatibleIpAddresses();
     }
 
-    public static function getLinkLocalIpAddresses()
+    public static function getLinkLocalIpAddresses(): array
     {
         return array_merge(IPv4::getLinkLocalIpAddresses(), IPv6::getLinkLocalIpAddresses());
     }
 
-    public static function getLoopbackIpAddresses()
+    public static function getLoopbackIpAddresses(): array
     {
         return array_merge(IPv4::getLoopbackIpAddresses(), IPv6::getLoopbackIpAddresses());
     }
 
-    public static function getMulticastIpAddresses()
+    public static function getMulticastIpAddresses(): array
     {
         return array_merge(IPv4::getMulticastIpAddresses(), IPv6::getMulticastIpAddresses());
     }
 
-    public static function getPrivateUseIpAddresses()
+    public static function getPrivateUseIpAddresses(): array
     {
         return array_merge(IPv4::getPrivateUseIpAddresses(), IPv6::getPrivateUseIpAddresses());
     }
 
-    public static function getUnspecifiedIpAddresses()
+    public static function getUnspecifiedIpAddresses(): array
     {
         return array_merge(IPv4::getUnspecifiedIpAddresses(), IPv6::getUnspecifiedIpAddresses());
     }

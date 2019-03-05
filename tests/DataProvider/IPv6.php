@@ -1,10 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Darsyn\IP\Tests\DataProvider;
 
 class IPv6
 {
-    public static function getValidBinarySequences()
+    public static function getValidBinarySequences(): array
     {
         return [
             // [ constructor value, expected hex, expected expanded address, expected compacted address ].
@@ -23,7 +23,7 @@ class IPv6
         ];
     }
 
-    public static function getValidProtocolIpAddresses()
+    public static function getValidProtocolIpAddresses(): array
     {
         return [
             ['::b12:cab',                       '0000000000000000000000000b120cab', '0000:0000:0000:0000:0000:0000:0b12:0cab', '::b12:cab'                  ],
@@ -40,12 +40,12 @@ class IPv6
         ];
     }
 
-    public static function getValidIpAddresses()
+    public static function getValidIpAddresses(): array
     {
         return array_merge(self::getValidBinarySequences(), self::getValidProtocolIpAddresses());
     }
 
-    public static function getInvalidIpAddresses()
+    public static function getInvalidIpAddresses(): array
     {
         return [
             ['0.0.0.0'],
@@ -56,18 +56,12 @@ class IPv6
             ['This one is completely wrong.'],
             // 15 bytes instead of 16.
             [pack('H*', '20010db8000000000a608a2e037073')],
-            [123],
-            [1.3],
-            [array()],
-            [(object) array()],
-            [null],
-            [true],
             ['12345678901234567'],
             ['123456789012345'],
         ];
     }
 
-    public static function getValidCidrValues()
+    public static function getValidCidrValues(): array
     {
         return [
             [0,   '00000000000000000000000000000000'],
@@ -81,7 +75,7 @@ class IPv6
         ];
     }
 
-    public static function getInvalidCidrValues()
+    public static function getInvalidCidrValues(): array
     {
         return [
             [-1],
@@ -96,7 +90,7 @@ class IPv6
         ];
     }
 
-    public static function getNetworkIpAddresses()
+    public static function getNetworkIpAddresses(): array
     {
         return [
             ['2000::',                      12 ],
@@ -107,7 +101,7 @@ class IPv6
         ];
     }
 
-    public static function getBroadcastIpAddresses()
+    public static function getBroadcastIpAddresses(): array
     {
         return [
             ['200f:ffff:ffff:ffff:ffff:ffff:ffff:ffff', 12 ],
@@ -118,7 +112,7 @@ class IPv6
         ];
     }
 
-    public static function getValidInRangeIpAddresses()
+    public static function getValidInRangeIpAddresses(): array
     {
         return [
             ['d6be:0583:71a4:aa6d:c77d:77dd:0cec:f897', 'd6be:0583:71a4:aa6d:9d68:68f3:dc4a:ce01', 64 ],
@@ -130,7 +124,7 @@ class IPv6
         ];
     }
 
-    public static function getMappedIpAddresses()
+    public static function getMappedIpAddresses(): array
     {
         return [
             ['::ffff:1:0',                              true ],
@@ -145,7 +139,7 @@ class IPv6
         ];
     }
 
-    public static function getDerivedIpAddresses()
+    public static function getDerivedIpAddresses(): array
     {
         return [
             ['2002::',                          true ],
@@ -157,7 +151,7 @@ class IPv6
         ];
     }
 
-    public static function getCompatibleIpAddresses()
+    public static function getCompatibleIpAddresses(): array
     {
         return  [
             ['::7f00:1',                                true ],
@@ -170,7 +164,7 @@ class IPv6
         ];
     }
 
-    public static function getLinkLocalIpAddresses()
+    public static function getLinkLocalIpAddresses(): array
     {
         return [
             ['fe7f:ffff:ffff:ffff:ffff:ffff:ffff:ffff', false],
@@ -180,7 +174,7 @@ class IPv6
         ];
     }
 
-    public static function getLoopbackIpAddresses()
+    public static function getLoopbackIpAddresses(): array
     {
         return [
             ['::1', true ],
@@ -189,7 +183,7 @@ class IPv6
         ];
     }
 
-    public static function getMulticastIpAddresses()
+    public static function getMulticastIpAddresses(): array
     {
         return [
             ['feff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', false],
@@ -198,7 +192,7 @@ class IPv6
         ];
     }
 
-    public static function getPrivateUseIpAddresses()
+    public static function getPrivateUseIpAddresses(): array
     {
         return [
             ['fcff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', false],
@@ -208,7 +202,7 @@ class IPv6
         ];
     }
 
-    public static function getUnspecifiedIpAddresses()
+    public static function getUnspecifiedIpAddresses(): array
     {
         return [
             ['::0',             true ],
