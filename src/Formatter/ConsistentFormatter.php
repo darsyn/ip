@@ -24,7 +24,7 @@ class ConsistentFormatter extends NativeFormatter
         throw new FormatException($binary);
     }
 
-    private function ntopVersion6($hex)
+    protected function ntopVersion6($hex)
     {
         $parts = \str_split($hex, 4);
         $zeroes = \array_map(function ($part) {
