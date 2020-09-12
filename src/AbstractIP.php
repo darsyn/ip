@@ -65,7 +65,7 @@ abstract class AbstractIP implements IpInterface
     }
 
     /** @inheritDoc */
-    public function getNetworkIp(int $cidr): IpInterface
+    public function getNetworkIp(int $cidr)
     {
         // Providing that the CIDR is valid, bitwise AND the IP address binary
         // sequence with the mask generated from the CIDR.

@@ -75,7 +75,7 @@ class IPv6 extends AbstractIP implements Version6Interface
      * @inheritDoc
      * @return \Darsyn\IP\Version\IPv6
      */
-    public function getNetworkIp(int $cidr): IPv6
+    public function getNetworkIp(int $cidr)
     {
         return parent::getNetworkIp($cidr);
     }
