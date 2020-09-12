@@ -19,6 +19,7 @@ class IPv6Type extends AbstractType
 
     /**
      * {@inheritDoc}
+     * @return \Darsyn\IP\Version\IPv6
      */
     protected function createIpObject($ip)
     {

@@ -28,6 +28,7 @@ class IPv6 extends AbstractIP implements Version6Interface
 {
     /**
      * {@inheritDoc}
+     * @return \Darsyn\IP\Version\IPv6
      */
     public static function factory($ip)
     {
@@ -74,6 +75,24 @@ class IPv6 extends AbstractIP implements Version6Interface
     public function getVersion()
     {
         return 6;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @return \Darsyn\IP\Version\IPv6
+     */
+    public function getNetworkIp($cidr)
+    {
+        return parent::getNetworkIp($cidr);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @return \Darsyn\IP\Version\IpV6
+     */
+    public function getBroadcastIp($cidr)
+    {
+        return parent::getBroadcastIp($cidr);
     }
 
     /**

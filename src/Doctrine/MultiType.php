@@ -19,6 +19,7 @@ class MultiType extends AbstractType
 
     /**
      * {@inheritDoc}
+     * @return \Darsyn\IP\Version\Multi
      */
     protected function createIpObject($ip)
     {

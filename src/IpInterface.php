@@ -8,7 +8,7 @@ interface IpInterface
      * @param string $ip
      * @throws \Darsyn\IP\Exception\InvalidIpAddressException
      * @throws \Darsyn\IP\Exception\WrongVersionException
-     * @return static
+     * @return \Darsyn\IP\IpInterface
      */
     public static function factory($ip);
 
@@ -55,7 +55,7 @@ interface IpInterface
      *
      * @param int $cidr
      * @throws \Darsyn\IP\Exception\InvalidCidrException
-     * @return static
+     * @return \Darsyn\IP\IpInterface
      */
     public function getNetworkIp($cidr);
 
@@ -66,7 +66,7 @@ interface IpInterface
      *
      * @param int $cidr
      * @throws \Darsyn\IP\Exception\InvalidCidrException
-     * @return static
+     * @return \Darsyn\IP\IpInterface
      */
     public function getBroadcastIp($cidr);
 

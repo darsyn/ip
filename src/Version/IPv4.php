@@ -27,6 +27,7 @@ class IPv4 extends AbstractIP implements Version4Interface
 {
     /**
      * {@inheritDoc}
+     * @return \Darsyn\IP\Version\IPv4
      */
     public static function factory($ip)
     {
@@ -66,6 +67,24 @@ class IPv4 extends AbstractIP implements Version4Interface
     public function getVersion()
     {
         return 4;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @return \Darsyn\IP\Version\IPv4
+     */
+    public function getNetworkIp($cidr)
+    {
+        return parent::getNetworkIp($cidr);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @return \Darsyn\IP\Version\IpV4
+     */
+    public function getBroadcastIp($cidr)
+    {
+        return parent::getBroadcastIp($cidr);
     }
 
     /**

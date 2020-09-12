@@ -59,6 +59,7 @@ class Multi extends IPv6 implements MultiVersionInterface
     /**
      * {@inheritDoc}
      * @param \Darsyn\IP\Strategy\EmbeddingStrategyInterface $strategy
+     * @return \Darsyn\IP\Version\Multi
      */
     public static function factory($ip, EmbeddingStrategyInterface $strategy = null)
     {
@@ -127,7 +128,10 @@ class Multi extends IPv6 implements MultiVersionInterface
         return $this->isEmbedded() ? 4 : 6;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     * @return \Darsyn\IP\Version\Multi
+     */
     public function getNetworkIp($cidr)
     {
         try {
@@ -143,7 +147,10 @@ class Multi extends IPv6 implements MultiVersionInterface
         return parent::getNetworkIp($cidr);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     * @return \Darsyn\IP\Version\Multi
+     */
     public function getBroadcastIp($cidr)
     {
         try {

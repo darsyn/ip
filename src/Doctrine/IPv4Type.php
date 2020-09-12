@@ -21,6 +21,7 @@ class IPv4Type extends AbstractType
 
     /**
      * {@inheritDoc}
+     * @return \Darsyn\IP\Version\IPv4
      */
     protected function createIpObject($ip)
     {
