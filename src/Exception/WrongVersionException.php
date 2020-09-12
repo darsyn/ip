@@ -10,31 +10,19 @@ class WrongVersionException extends InvalidIpAddressException
     /** @var int $actual */
     private $actual;
 
-    /**
-     * @param int $expected
-     * @param int $actual
-     * @param string $ip
-     * @param \Exception|null $previous
-     */
-    public function __construct($expected, $actual, $ip, \Exception $previous = null)
+    public function __construct(int $expected, int $actual, string $ip, ?\Exception $previous = null)
     {
         $this->expected = $expected;
         $this->actual = $actual;
         parent::__construct($ip, $previous);
     }
 
-    /**
-     * @return int
-     */
-    public function getExpectedVersion()
+    public function getExpectedVersion(): int
     {
         return $this->expected;
     }
 
-    /**
-     * @return int
-     */
-    public function getActualVersion()
+    public function getActualVersion(): int
     {
         return $this->actual;
     }

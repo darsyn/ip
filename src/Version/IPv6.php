@@ -30,7 +30,7 @@ class IPv6 extends AbstractIP implements Version6Interface
      * @inheritDoc
      * @return \Darsyn\IP\Version\IPv6
      */
-    public static function factory($ip)
+    public static function factory(string $ip)
     {
         try {
             // Convert from protocol notation to binary sequence.
@@ -47,7 +47,7 @@ class IPv6 extends AbstractIP implements Version6Interface
     }
 
     /** @inheritDoc */
-    public function getExpandedAddress()
+    public function getExpandedAddress(): string
     {
         // Convert the 16-byte binary sequence into a hexadecimal-string
         // representation, insert a colon between every block of 4 characters,
@@ -56,7 +56,7 @@ class IPv6 extends AbstractIP implements Version6Interface
     }
 
     /** @inheritDoc */
-    public function getCompactedAddress()
+    public function getCompactedAddress(): string
     {
         try {
             return self::getProtocolFormatter()->ntop($this->getBinary());
@@ -66,7 +66,7 @@ class IPv6 extends AbstractIP implements Version6Interface
     }
 
     /** @inheritDoc */
-    public function getVersion()
+    public function getVersion(): int
     {
         return 6;
     }
@@ -75,7 +75,7 @@ class IPv6 extends AbstractIP implements Version6Interface
      * @inheritDoc
      * @return \Darsyn\IP\Version\IPv6
      */
-    public function getNetworkIp($cidr)
+    public function getNetworkIp(int $cidr): IPv6
     {
         return parent::getNetworkIp($cidr);
     }
@@ -84,37 +84,37 @@ class IPv6 extends AbstractIP implements Version6Interface
      * @inheritDoc
      * @return \Darsyn\IP\Version\IpV6
      */
-    public function getBroadcastIp($cidr)
+    public function getBroadcastIp(int $cidr)
     {
         return parent::getBroadcastIp($cidr);
     }
 
     /** @inheritDoc */
-    public function isLinkLocal()
+    public function isLinkLocal(): bool
     {
         return $this->inRange(new self(Binary::fromHex('fe800000000000000000000000000000')), 10);
     }
 
     /** @inheritDoc */
-    public function isLoopback()
+    public function isLoopback(): bool
     {
         return $this->inRange(new self(Binary::fromHex('00000000000000000000000000000001')), 128);
     }
 
     /** @inheritDoc */
-    public function isMulticast()
+    public function isMulticast(): bool
     {
         return $this->inRange(new self(Binary::fromHex('ff000000000000000000000000000000')), 8);
     }
 
     /** @inheritDoc */
-    public function isPrivateUse()
+    public function isPrivateUse(): bool
     {
         return $this->inRange(new self(Binary::fromHex('fd000000000000000000000000000000')), 8);
     }
 
     /** @inheritDoc */
-    public function isUnspecified()
+    public function isUnspecified(): bool
     {
         return $this->getBinary() === "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
     }

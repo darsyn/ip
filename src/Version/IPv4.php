@@ -29,7 +29,7 @@ class IPv4 extends AbstractIP implements Version4Interface
      * @inheritDoc
      * @return \Darsyn\IP\Version\IPv4
      */
-    public static function factory($ip)
+    public static function factory(string $ip)
     {
         try {
             // Convert from protocol notation to binary sequence.
@@ -50,7 +50,7 @@ class IPv4 extends AbstractIP implements Version4Interface
     }
 
     /** @inheritDoc */
-    public function getDotAddress()
+    public function getDotAddress(): string
     {
         try {
             return self::getProtocolFormatter()->ntop($this->getBinary());
@@ -60,7 +60,7 @@ class IPv4 extends AbstractIP implements Version4Interface
     }
 
     /** @inheritDoc */
-    public function getVersion()
+    public function getVersion(): int
     {
         return 4;
     }
@@ -69,7 +69,7 @@ class IPv4 extends AbstractIP implements Version4Interface
      * @inheritDoc
      * @return \Darsyn\IP\Version\IPv4
      */
-    public function getNetworkIp($cidr)
+    public function getNetworkIp(int $cidr)
     {
         return parent::getNetworkIp($cidr);
     }
@@ -78,31 +78,31 @@ class IPv4 extends AbstractIP implements Version4Interface
      * @inheritDoc
      * @return \Darsyn\IP\Version\IpV4
      */
-    public function getBroadcastIp($cidr)
+    public function getBroadcastIp(int $cidr)
     {
         return parent::getBroadcastIp($cidr);
     }
 
     /** @inheritDoc */
-    public function isLinkLocal()
+    public function isLinkLocal(): bool
     {
         return $this->inRange(new static(Binary::fromHex('a9fe0000')), 16);
     }
 
     /** @inheritDoc */
-    public function isLoopback()
+    public function isLoopback(): bool
     {
         return $this->inRange(new static(Binary::fromHex('7f000000')), 8);
     }
 
     /** @inheritDoc */
-    public function isMulticast()
+    public function isMulticast(): bool
     {
         return $this->inRange(new static(Binary::fromHex('e0000000')), 4);
     }
 
     /** @inheritDoc */
-    public function isPrivateUse()
+    public function isPrivateUse(): bool
     {
         return $this->inRange(new static(Binary::fromHex('0a000000')), 8)
             || $this->inRange(new static(Binary::fromHex('ac100000')), 12)
@@ -110,7 +110,7 @@ class IPv4 extends AbstractIP implements Version4Interface
     }
 
     /** @inheritDoc */
-    public function isUnspecified()
+    public function isUnspecified(): bool
     {
         return $this->getBinary() === "\0\0\0\0";
     }

@@ -9,20 +9,17 @@ class FormatException extends IpException
     /** @var string $binary */
     private $binary;
 
-    /**
-     * @param string $binary
-     * @param \Exception|null $previous
-     */
-    public function __construct($binary, \Exception $previous = null)
+    public function __construct(string $binary, ?\Exception $previous = null)
     {
         $this->binary = $binary;
-        parent::__construct('Cannot format invalid binary sequence; must be a string either 4 or 16 bytes long.', null, $previous);
+        parent::__construct(
+            'Cannot format invalid binary sequence; must be a string either 4 or 16 bytes long.',
+            0,
+            $previous
+        );
     }
 
-    /**
-     * @return string
-     */
-    public function getSuppliedBinary()
+    public function getSuppliedBinary(): string
     {
         return $this->binary;
     }

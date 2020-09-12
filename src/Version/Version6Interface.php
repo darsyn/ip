@@ -13,9 +13,8 @@ interface Version6Interface extends IpInterface
      * (including double-colons if appropriate).
      *
      * @throws \Darsyn\IP\Exception\IpException
-     * @return string
      */
-    public function getCompactedAddress();
+    public function getCompactedAddress(): string;
 
     /**
      * Get Expanded Address
@@ -24,7 +23,6 @@ interface Version6Interface extends IpInterface
      * (no double colons).
      *
      * @throws \Darsyn\IP\Exception\IpException
-     * @return string
      */
-    public function getExpandedAddress();
+    public function getExpandedAddress(): string;
 }

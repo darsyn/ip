@@ -7,19 +7,14 @@ interface ProtocolFormatterInterface
     /**
      * Protocol to Binary
      *
-     * @param string $binary
      * @throws \Darsyn\IP\Exception\Formatter\FormatException
-     * @return string
      */
-    public function pton($binary);
+    public function pton(string $binary): string;
 
     /**
      * Binary to Protocol
      *
-     * Convert
-     * @param string $binary
      * @throws \Darsyn\IP\Exception\Formatter\FormatException
-     * @return string
      */
-    public function ntop($binary);
+    public function ntop(string $binary): string;
 }

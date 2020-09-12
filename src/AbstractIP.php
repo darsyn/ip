@@ -17,11 +17,7 @@ abstract class AbstractIP implements IpInterface
      */
     private $ip;
 
-    /**
-     * @static
-     * @param \Darsyn\IP\Formatter\ProtocolFormatterInterface $formatter
-     */
-    public static function setProtocolFormatter(ProtocolFormatterInterface $formatter)
+    public static function setProtocolFormatter(ProtocolFormatterInterface $formatter): void
     {
         self::$formatter = $formatter;
     }
@@ -30,10 +26,8 @@ abstract class AbstractIP implements IpInterface
      * Get the protocol formatter set by the user, falling back to using our
      * custom formatter for consistency by default if the user has not set one
      * globally.
-     *
-     * @return \Darsyn\IP\Formatter\ProtocolFormatterInterface
      */
-    protected static function getProtocolFormatter()
+    protected static function getProtocolFormatter(): ProtocolFormatterInterface
     {
         if (null === self::$formatter) {
             self::$formatter = new ConsistentFormatter;
@@ -41,12 +35,7 @@ abstract class AbstractIP implements IpInterface
         return self::$formatter;
     }
 
-    /**
-     * Constructor
-     *
-     * @param string $ip
-     */
-    protected function __construct($ip)
+    protected function __construct(string $ip)
     {
         $this->ip = $ip;
     }
@@ -136,15 +125,11 @@ abstract class AbstractIP implements IpInterface
      * to construct the bitmask as a string instead of doing any mathematical
      * operations (such as base_convert).
      *
-     * @param integer $cidr
-     * @param integer $length
      * @throws \Darsyn\IP\Exception\InvalidCidrException
-     * @return string
      */
-    protected function generateBinaryMask($cidr, $length)
+    protected function generateBinaryMask(int $cidr, int $length): string
     {
-        if (!\is_int($cidr)  || !\is_int($length)
-            || $cidr < 0    || $length < 0
+        if ($cidr < 0 || $length < 0
             // CIDR is measured in bits, whilst we're describing the length
             // in bytes.
             || $cidr > $length * 8
@@ -153,7 +138,7 @@ abstract class AbstractIP implements IpInterface
         }
         // Since it takes 4 bits per hexadecimal, how many sections of complete
         // 1's do we have (f's)?
-        $mask = \str_repeat('f', \floor($cidr / 4));
+        $mask = \str_repeat('f', (int) \floor($cidr / 4));
         // Now we have less than four 1 bits left we need to determine what
         // hexadecimal character should be added next. Of course, we should only
         // add them in there are 1 bits leftover to prevent going over the

@@ -8,14 +8,14 @@ use Darsyn\IP\Exception\Strategy as StrategyException;
 class Compatible implements EmbeddingStrategyInterface
 {
     /** @inheritDoc */
-    public function isEmbedded($binary)
+    public function isEmbedded(string $binary): bool
     {
         return Binary::getLength($binary) === 16
             && Binary::subString($binary, 0, 12) === "\0\0\0\0\0\0\0\0\0\0\0\0";
     }
 
     /** @inheritDoc */
-    public function extract($binary)
+    public function extract(string $binary): string
     {
         if (Binary::getLength($binary) === 16) {
             return Binary::subString($binary, 12, 4);
@@ -24,7 +24,7 @@ class Compatible implements EmbeddingStrategyInterface
     }
 
     /** @inheritDoc */
-    public function pack($binary)
+    public function pack(string $binary): string
     {
         if (Binary::getLength($binary) === 4) {
             return "\0\0\0\0\0\0\0\0\0\0\0\0" . $binary;

@@ -8,7 +8,7 @@ class IPv4Type extends AbstractType
 {
     const IP_LENGTH = 4;
 
-    protected function getIpClass()
+    protected function getIpClass(): string
     {
         return IP::class;
     }
@@ -17,7 +17,7 @@ class IPv4Type extends AbstractType
      * @inheritDoc
      * @return \Darsyn\IP\Version\IPv4
      */
-    protected function createIpObject($ip)
+    protected function createIpObject(string $ip)
     {
         return IP::factory($ip);
     }

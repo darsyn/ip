@@ -13,12 +13,7 @@ class ExtractionException extends IpException
     /** @var \Darsyn\IP\Strategy\EmbeddingStrategyInterface $embeddingStrategy */
     private $embeddingStrategy;
 
-    /**
-     * @param string $binary
-     * @param \Darsyn\IP\Strategy\EmbeddingStrategyInterface $embeddingStrategy
-     * @param \Exception|null $previous
-     */
-    public function __construct($binary, EmbeddingStrategyInterface $embeddingStrategy, \Exception $previous = null)
+    public function __construct(string $binary, EmbeddingStrategyInterface $embeddingStrategy, ?\Exception $previous = null)
     {
         $this->binary = $binary;
         $this->embeddingStrategy = $embeddingStrategy;
@@ -28,18 +23,12 @@ class ExtractionException extends IpException
         ), 0, $previous);
     }
 
-    /**
-     * @return string
-     */
-    public function getSuppliedBinary()
+    public function getSuppliedBinary(): string
     {
         return $this->binary;
     }
 
-    /**
-     * @return \Darsyn\IP\Strategy\EmbeddingStrategyInterface
-     */
-    public function getEmbeddingStrategy()
+    public function getEmbeddingStrategy(): EmbeddingStrategyInterface
     {
         return $this->embeddingStrategy;
     }

@@ -8,7 +8,7 @@ use Darsyn\IP\Exception\Formatter\FormatException;
 class NativeFormatter implements ProtocolFormatterInterface
 {
     /** @inheritDoc */
-    public function ntop($binary)
+    public function ntop(string $binary): string
     {
         if (\is_string($binary)) {
             $length = Binary::getLength($binary);
@@ -20,7 +20,7 @@ class NativeFormatter implements ProtocolFormatterInterface
     }
 
     /** @inheritDoc */
-    public function pton($protocol)
+    public function pton(string $protocol): string
     {
         if (\is_string($protocol)) {
             if (\filter_var($protocol, \FILTER_VALIDATE_IP, \FILTER_FLAG_IPV4)) {

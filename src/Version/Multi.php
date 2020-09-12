@@ -38,7 +38,7 @@ class Multi extends IPv6 implements MultiVersionInterface
     private $embedded;
 
     /** @inheritDoc */
-    public static function setDefaultEmbeddingStrategy(EmbeddingStrategyInterface $strategy)
+    public static function setDefaultEmbeddingStrategy(EmbeddingStrategyInterface $strategy): void
     {
         self::$defaultEmbeddingStrategy = $strategy;
     }
@@ -46,20 +46,17 @@ class Multi extends IPv6 implements MultiVersionInterface
     /**
      * Get the default embedding strategy set. Default to the IPv4-mapped IPv6
      * embedding strategy if the user has not set one globally.
-     *
-     * @return \Darsyn\IP\Strategy\EmbeddingStrategyInterface
      */
-    private static function getDefaultEmbeddingStrategy()
+    private static function getDefaultEmbeddingStrategy(): EmbeddingStrategyInterface
     {
         return self::$defaultEmbeddingStrategy ?: new MappedEmbeddingStrategy;
     }
 
     /**
      * @inheritDoc
-     * @param \Darsyn\IP\Strategy\EmbeddingStrategyInterface $strategy
      * @return \Darsyn\IP\Version\Multi
      */
-    public static function factory($ip, EmbeddingStrategyInterface $strategy = null)
+    public static function factory(string $ip, EmbeddingStrategyInterface $strategy = null)
     {
         // We need a strategy to pack version 4 addresses.
         $strategy = $strategy ?: static::getDefaultEmbeddingStrategy();
@@ -79,10 +76,7 @@ class Multi extends IPv6 implements MultiVersionInterface
         return new static($binary, $strategy);
     }
 
-    /**
-     * @param \Darsyn\IP\Strategy\EmbeddingStrategyInterface|null $strategy
-     */
-    protected function __construct($ip, EmbeddingStrategyInterface $strategy = null)
+    protected function __construct(string $ip, ?EmbeddingStrategyInterface $strategy = null)
     {
         // Fallback to default in case this instance was created from static in
         // the abstract IP class.
@@ -91,7 +85,7 @@ class Multi extends IPv6 implements MultiVersionInterface
     }
 
     /** @inheritDoc */
-    public function getProtocolAppropriateAddress()
+    public function getProtocolAppropriateAddress(): string
     {
         // If binary string contains an embedded IPv4 address, then extract it.
         $ip = $this->isEmbedded()
@@ -103,7 +97,7 @@ class Multi extends IPv6 implements MultiVersionInterface
     }
 
     /** @inheritDoc */
-    public function getDotAddress()
+    public function getDotAddress(): string
     {
         if ($this->isEmbedded()) {
             try {
@@ -116,7 +110,7 @@ class Multi extends IPv6 implements MultiVersionInterface
     }
 
     /** @inheritDoc */
-    public function getVersion()
+    public function getVersion(): int
     {
         return $this->isEmbedded() ? 4 : 6;
     }
@@ -125,7 +119,7 @@ class Multi extends IPv6 implements MultiVersionInterface
      * @inheritDoc
      * @return \Darsyn\IP\Version\Multi
      */
-    public function getNetworkIp($cidr)
+    public function getNetworkIp(int $cidr)
     {
         try {
             if ($this->isCidrVersion4Appropriate($cidr) && $this->isEmbedded()) {
@@ -144,7 +138,7 @@ class Multi extends IPv6 implements MultiVersionInterface
      * @inheritDoc
      * @return \Darsyn\IP\Version\Multi
      */
-    public function getBroadcastIp($cidr)
+    public function getBroadcastIp(int $cidr)
     {
         try {
             if ($this->isCidrVersion4Appropriate($cidr) && $this->isEmbedded()) {
@@ -160,7 +154,7 @@ class Multi extends IPv6 implements MultiVersionInterface
     }
 
     /** @inheritDoc */
-    public function inRange(IpInterface $ip, $cidr)
+    public function inRange(IpInterface $ip, int $cidr): bool
     {
         // If both IP's (ours and theirs) are version 4 according to OUR
         // embedding strategy then attempt to compare them as IPv4 ranges first.
@@ -183,7 +177,7 @@ class Multi extends IPv6 implements MultiVersionInterface
     }
 
     /** @inheritDoc */
-    public function isEmbedded()
+    public function isEmbedded(): bool
     {
         if (null === $this->embedded) {
             $this->embedded = $this->embeddingStrategy->isEmbedded($this->getBinary());
@@ -192,7 +186,7 @@ class Multi extends IPv6 implements MultiVersionInterface
     }
 
     /** @inheritDoc */
-    public function isLinkLocal()
+    public function isLinkLocal(): bool
     {
         return parent::isLinkLocal()
             || $this->isEmbedded()
@@ -200,7 +194,7 @@ class Multi extends IPv6 implements MultiVersionInterface
     }
 
     /** @inheritDoc */
-    public function isLoopback()
+    public function isLoopback(): bool
     {
         return parent::isLoopback()
             || $this->isEmbedded()
@@ -208,7 +202,7 @@ class Multi extends IPv6 implements MultiVersionInterface
     }
 
     /** * @inheritDoc */
-    public function isMulticast()
+    public function isMulticast(): bool
     {
         return parent::isMulticast()
             || $this->isEmbedded()
@@ -216,7 +210,7 @@ class Multi extends IPv6 implements MultiVersionInterface
     }
 
     /** @inheritDoc */
-    public function isPrivateUse()
+    public function isPrivateUse(): bool
     {
         return parent::isPrivateUse()
             || $this->isEmbedded()
@@ -224,25 +218,22 @@ class Multi extends IPv6 implements MultiVersionInterface
     }
 
     /** @inheritDoc */
-    public function isUnspecified()
+    public function isUnspecified(): bool
     {
         return parent::isUnspecified()
             || $this->isEmbedded()
             && (new IPv4($this->getShortBinary()))->isUnspecified();
     }
 
-    private function getShortBinary()
+    private function getShortBinary(): string
     {
         return $this->embeddingStrategy->extract($this->getBinary());
     }
 
     /**
      * Is the CIDR provided appropriate for use with IPv4 addresses?
-     *
-     * @param int $cidr
-     * @return bool
      */
-    private function isCidrVersion4Appropriate($cidr)
+    private function isCidrVersion4Appropriate(int $cidr): bool
     {
         return \is_int($cidr) && $cidr <= 32;
     }

@@ -8,7 +8,7 @@ use Darsyn\IP\Exception\Formatter\FormatException;
 class ConsistentFormatter extends NativeFormatter
 {
     /** @inheritDoc */
-    public function ntop($binary)
+    public function ntop(string $binary): string
     {
         if (\is_string($binary)) {
             $length = Binary::getLength($binary);
@@ -22,7 +22,7 @@ class ConsistentFormatter extends NativeFormatter
         throw new FormatException($binary);
     }
 
-    private function ntopVersion6($hex)
+    private function ntopVersion6(string $hex): string
     {
         $parts = \str_split($hex, 4);
         $zeroes = \array_map(function ($part) {

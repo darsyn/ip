@@ -6,7 +6,7 @@ use Darsyn\IP\Version\IPv6 as IP;
 
 class IPv6Type extends AbstractType
 {
-    protected function getIpClass()
+    protected function getIpClass(): string
     {
         return IP::class;
     }
@@ -15,7 +15,7 @@ class IPv6Type extends AbstractType
      * @inheritDoc
      * @return \Darsyn\IP\Version\IPv6
      */
-    protected function createIpObject($ip)
+    protected function createIpObject(string $ip)
     {
         return IP::factory($ip);
     }

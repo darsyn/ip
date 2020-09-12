@@ -14,7 +14,6 @@ interface Version4Interface extends IpInterface
      *
      * @throws \Darsyn\IP\Exception\IpException
      * @throws \Darsyn\IP\Exception\WrongVersionException
-     * @return string
      */
-    public function getDotAddress();
+    public function getDotAddress(): string;
 }

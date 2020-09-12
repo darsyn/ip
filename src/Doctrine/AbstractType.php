@@ -3,6 +3,7 @@
 namespace Darsyn\IP\Doctrine;
 
 use Darsyn\IP\Exception\InvalidIpAddressException;
+use Darsyn\IP\IpInterface;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\DBAL\Types\Type;
@@ -18,21 +19,17 @@ abstract class AbstractType extends Type
     const NAME = 'ip';
     const IP_LENGTH = 16;
 
-    /**
-     * @return string
-     */
-    abstract protected function getIpClass();
+    abstract protected function getIpClass(): string;
 
     /**
-     * @param string $ip
      * @throws \Darsyn\IP\Exception\InvalidIpAddressException
      * @throws \Darsyn\IP\Exception\WrongVersionException
      * @return \Darsyn\IP\IpInterface
      */
-    abstract protected function createIpObject($ip);
+    abstract protected function createIpObject(string $ip);
 
     /** @inheritDoc */
-    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform): string
     {
         return $platform->getBinaryTypeDeclarationSQL(['length' => static::IP_LENGTH]);
     }
@@ -41,7 +38,7 @@ abstract class AbstractType extends Type
      * @inheritDoc
      * @throws \Doctrine\DBAL\Types\ConversionException
      */
-    public function convertToPHPValue($value, AbstractPlatform $platform)
+    public function convertToPHPValue($value, AbstractPlatform $platform): ?IpInterface
     {
         if (\is_a($value, $this->getIpClass(), true)) {
             return $value;
@@ -68,7 +65,7 @@ abstract class AbstractType extends Type
      * @inheritDoc
      * @throws \Doctrine\DBAL\Types\ConversionException
      */
-    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    public function convertToDatabaseValue($value, AbstractPlatform $platform): ?string
     {
         if (empty($value)) {
             return null;
