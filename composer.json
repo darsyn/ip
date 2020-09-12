@@ -18,8 +18,8 @@
         }
     },
     "require": {
-        "php-ipv6": ">=5.6",
-        "php-64bit": ">=5.6"
+        "php-ipv6": ">=7.2",
+        "php-64bit": ">=7.2"
     },
     "autoload-dev": {
         "psr-4": {
@@ -35,6 +35,7 @@
         "sort-packages": true
     },
     "suggest": {
-        "doctrine/dbal": "to use IP as a column type"
+        "doctrine/dbal": "to use IP as a column type",
+        "ext-mbstring": "we live in a unicode world now"
     }
 }
