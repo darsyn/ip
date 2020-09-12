@@ -12,7 +12,7 @@ matrix:
         - php: 'nightly'
 
 install:
-    - 'composer install'
+    - 'composer install --ignore-platform-reqs'
 script:
     - './vendor/bin/phpunit'
 
