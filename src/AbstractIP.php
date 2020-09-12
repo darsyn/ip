@@ -51,42 +51,32 @@ abstract class AbstractIP implements IpInterface
         $this->ip = $ip;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    final public function getBinary()
+    /** @inheritDoc */
+    final public function getBinary(): string
     {
         return $this->ip;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function isVersion($version)
+    /** @inheritDoc */
+    public function isVersion(int $version): bool
     {
         return $this->getVersion() === $version;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function isVersion4()
+    /** @inheritDoc */
+    public function isVersion4(): bool
     {
         return $this->isVersion(4);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function isVersion6()
+    /** @inheritDoc */
+    public function isVersion6(): bool
     {
         return $this->isVersion(6);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getNetworkIp($cidr)
+    /** @inheritDoc */
+    public function getNetworkIp(int $cidr): IpInterface
     {
         // Providing that the CIDR is valid, bitwise AND the IP address binary
         // sequence with the mask generated from the CIDR.
@@ -96,10 +86,8 @@ abstract class AbstractIP implements IpInterface
         ));
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getBroadcastIp($cidr)
+    /** @inheritDoc */
+    public function getBroadcastIp(int $cidr)
     {
         // Providing that the CIDR is valid, bitwise OR the IP address binary
         // sequence with the inverse of the mask generated from the CIDR.
@@ -109,10 +97,8 @@ abstract class AbstractIP implements IpInterface
         ));
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function inRange(IpInterface $ip, $cidr)
+    /** @inheritDoc */
+    public function inRange(IpInterface $ip, int $cidr): bool
     {
         try {
             return $this->getNetworkIp($cidr)->getBinary() === $ip->getNetworkIp($cidr)->getBinary();
@@ -121,34 +107,26 @@ abstract class AbstractIP implements IpInterface
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function isMapped()
+    /** @inheritDoc */
+    public function isMapped(): bool
     {
         return (new Strategy\Mapped)->isEmbedded($this->getBinary());
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function isDerived()
+    /** @inheritDoc */
+    public function isDerived(): bool
     {
         return (new Strategy\Derived)->isEmbedded($this->getBinary());
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function isCompatible()
+    /** @inheritDoc */
+    public function isCompatible(): bool
     {
         return (new Strategy\Compatible)->isEmbedded($this->getBinary());
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function isEmbedded()
+    /** @inheritDoc */
+    public function isEmbedded(): bool
     {
         return false;
     }

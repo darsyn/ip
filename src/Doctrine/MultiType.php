@@ -4,21 +4,15 @@ namespace Darsyn\IP\Doctrine;
 
 use Darsyn\IP\Version\Multi as IP;
 
-/**
- * {@inheritDoc}
- */
 class MultiType extends AbstractType
 {
-    /**
-     * {@inheritDoc}
-     */
     protected function getIpClass()
     {
         return IP::class;
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      * @return \Darsyn\IP\Version\Multi
      */
     protected function createIpObject($ip)

@@ -37,9 +37,7 @@ class Multi extends IPv6 implements MultiVersionInterface
     /** @var bool $embedded */
     private $embedded;
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritDoc */
     public static function setDefaultEmbeddingStrategy(EmbeddingStrategyInterface $strategy)
     {
         self::$defaultEmbeddingStrategy = $strategy;
@@ -57,7 +55,7 @@ class Multi extends IPv6 implements MultiVersionInterface
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      * @param \Darsyn\IP\Strategy\EmbeddingStrategyInterface $strategy
      * @return \Darsyn\IP\Version\Multi
      */
@@ -82,7 +80,6 @@ class Multi extends IPv6 implements MultiVersionInterface
     }
 
     /**
-     * {@inheritDoc}
      * @param \Darsyn\IP\Strategy\EmbeddingStrategyInterface|null $strategy
      */
     protected function __construct($ip, EmbeddingStrategyInterface $strategy = null)
@@ -93,7 +90,7 @@ class Multi extends IPv6 implements MultiVersionInterface
         parent::__construct($ip);
     }
 
-    /** {@inheritDoc} */
+    /** @inheritDoc */
     public function getProtocolAppropriateAddress()
     {
         // If binary string contains an embedded IPv4 address, then extract it.
@@ -105,11 +102,7 @@ class Multi extends IPv6 implements MultiVersionInterface
         return self::getProtocolFormatter()->ntop($ip);
     }
 
-    /**
-     * @throws \Darsyn\IP\Exception\WrongVersionException
-     * @throws \Darsyn\IP\Exception\IpException
-     * @return string
-     */
+    /** @inheritDoc */
     public function getDotAddress()
     {
         if ($this->isEmbedded()) {
@@ -122,14 +115,14 @@ class Multi extends IPv6 implements MultiVersionInterface
         throw new Exception\WrongVersionException(4, 6, $this->getBinary());
     }
 
-    /** {@inheritDoc} */
+    /** @inheritDoc */
     public function getVersion()
     {
         return $this->isEmbedded() ? 4 : 6;
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      * @return \Darsyn\IP\Version\Multi
      */
     public function getNetworkIp($cidr)
@@ -148,7 +141,7 @@ class Multi extends IPv6 implements MultiVersionInterface
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      * @return \Darsyn\IP\Version\Multi
      */
     public function getBroadcastIp($cidr)
@@ -166,7 +159,7 @@ class Multi extends IPv6 implements MultiVersionInterface
         return parent::getBroadcastIp($cidr);
     }
 
-    /** {@inheritDoc} */
+    /** @inheritDoc */
     public function inRange(IpInterface $ip, $cidr)
     {
         // If both IP's (ours and theirs) are version 4 according to OUR
@@ -189,7 +182,7 @@ class Multi extends IPv6 implements MultiVersionInterface
         return parent::inRange($ip, $cidr);
     }
 
-    /** {@inheritDoc} */
+    /** @inheritDoc */
     public function isEmbedded()
     {
         if (null === $this->embedded) {
@@ -198,7 +191,7 @@ class Multi extends IPv6 implements MultiVersionInterface
         return $this->embedded;
     }
 
-    /** {@inheritDoc} */
+    /** @inheritDoc */
     public function isLinkLocal()
     {
         return parent::isLinkLocal()
@@ -206,7 +199,7 @@ class Multi extends IPv6 implements MultiVersionInterface
             && (new IPv4($this->getShortBinary()))->isLinkLocal();
     }
 
-    /** {@inheritDoc} */
+    /** @inheritDoc */
     public function isLoopback()
     {
         return parent::isLoopback()
@@ -214,7 +207,7 @@ class Multi extends IPv6 implements MultiVersionInterface
             && (new IPv4($this->getShortBinary()))->isLoopback();
     }
 
-    /** * {@inheritDoc} */
+    /** * @inheritDoc */
     public function isMulticast()
     {
         return parent::isMulticast()
@@ -222,7 +215,7 @@ class Multi extends IPv6 implements MultiVersionInterface
             && (new IPv4($this->getShortBinary()))->isMulticast();
     }
 
-    /** {@inheritDoc} */
+    /** @inheritDoc */
     public function isPrivateUse()
     {
         return parent::isPrivateUse()
@@ -230,7 +223,7 @@ class Multi extends IPv6 implements MultiVersionInterface
             && (new IPv4($this->getShortBinary()))->isPrivateUse();
     }
 
-    /** {@inheritDoc} */
+    /** @inheritDoc */
     public function isUnspecified()
     {
         return parent::isUnspecified()

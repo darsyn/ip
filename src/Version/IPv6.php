@@ -27,7 +27,7 @@ use Darsyn\IP\Formatter\ProtocolFormatterInterface;
 class IPv6 extends AbstractIP implements Version6Interface
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      * @return \Darsyn\IP\Version\IPv6
      */
     public static function factory($ip)
@@ -46,9 +46,7 @@ class IPv6 extends AbstractIP implements Version6Interface
         return new static($binary);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritDoc */
     public function getExpandedAddress()
     {
         // Convert the 16-byte binary sequence into a hexadecimal-string
@@ -57,9 +55,7 @@ class IPv6 extends AbstractIP implements Version6Interface
         return \substr(\preg_replace('/([a-fA-F0-9]{4})/', '$1:', Binary::toHex($this->getBinary())), 0, -1);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritDoc */
     public function getCompactedAddress()
     {
         try {
@@ -69,16 +65,14 @@ class IPv6 extends AbstractIP implements Version6Interface
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritDoc */
     public function getVersion()
     {
         return 6;
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      * @return \Darsyn\IP\Version\IPv6
      */
     public function getNetworkIp($cidr)
@@ -87,7 +81,7 @@ class IPv6 extends AbstractIP implements Version6Interface
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      * @return \Darsyn\IP\Version\IpV6
      */
     public function getBroadcastIp($cidr)
@@ -95,41 +89,31 @@ class IPv6 extends AbstractIP implements Version6Interface
         return parent::getBroadcastIp($cidr);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritDoc */
     public function isLinkLocal()
     {
         return $this->inRange(new self(Binary::fromHex('fe800000000000000000000000000000')), 10);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritDoc */
     public function isLoopback()
     {
         return $this->inRange(new self(Binary::fromHex('00000000000000000000000000000001')), 128);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritDoc */
     public function isMulticast()
     {
         return $this->inRange(new self(Binary::fromHex('ff000000000000000000000000000000')), 8);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritDoc */
     public function isPrivateUse()
     {
         return $this->inRange(new self(Binary::fromHex('fd000000000000000000000000000000')), 8);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritDoc */
     public function isUnspecified()
     {
         return $this->getBinary() === "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";

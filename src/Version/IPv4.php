@@ -26,7 +26,7 @@ use Darsyn\IP\Exception;
 class IPv4 extends AbstractIP implements Version4Interface
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      * @return \Darsyn\IP\Version\IPv4
      */
     public static function factory($ip)
@@ -49,9 +49,7 @@ class IPv4 extends AbstractIP implements Version4Interface
         return new static($binary);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritDoc */
     public function getDotAddress()
     {
         try {
@@ -61,16 +59,14 @@ class IPv4 extends AbstractIP implements Version4Interface
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritDoc */
     public function getVersion()
     {
         return 4;
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      * @return \Darsyn\IP\Version\IPv4
      */
     public function getNetworkIp($cidr)
@@ -79,7 +75,7 @@ class IPv4 extends AbstractIP implements Version4Interface
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      * @return \Darsyn\IP\Version\IpV4
      */
     public function getBroadcastIp($cidr)
@@ -87,33 +83,25 @@ class IPv4 extends AbstractIP implements Version4Interface
         return parent::getBroadcastIp($cidr);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritDoc */
     public function isLinkLocal()
     {
         return $this->inRange(new static(Binary::fromHex('a9fe0000')), 16);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritDoc */
     public function isLoopback()
     {
         return $this->inRange(new static(Binary::fromHex('7f000000')), 8);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritDoc */
     public function isMulticast()
     {
         return $this->inRange(new static(Binary::fromHex('e0000000')), 4);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritDoc */
     public function isPrivateUse()
     {
         return $this->inRange(new static(Binary::fromHex('0a000000')), 8)
@@ -121,9 +109,7 @@ class IPv4 extends AbstractIP implements Version4Interface
             || $this->inRange(new static(Binary::fromHex('c0a80000')), 16);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritDoc */
     public function isUnspecified()
     {
         return $this->getBinary() === "\0\0\0\0";

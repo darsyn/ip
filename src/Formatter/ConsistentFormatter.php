@@ -7,9 +7,7 @@ use Darsyn\IP\Exception\Formatter\FormatException;
 
 class ConsistentFormatter extends NativeFormatter
 {
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritDoc */
     public function ntop($binary)
     {
         if (\is_string($binary)) {

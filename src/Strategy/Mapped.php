@@ -7,18 +7,14 @@ use Darsyn\IP\Exception\Strategy as StrategyException;
 
 class Mapped implements EmbeddingStrategyInterface
 {
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritDoc */
     public function isEmbedded($binary)
     {
         return Binary::getLength($binary) === 16
             && Binary::subString($binary, 0, 12) === Binary::fromHex('00000000000000000000ffff');
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritDoc */
     public function extract($binary)
     {
         if (Binary::getLength($binary) === 16) {
@@ -27,9 +23,7 @@ class Mapped implements EmbeddingStrategyInterface
         throw new StrategyException\ExtractionException($binary, $this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritDoc */
     public function pack($binary)
     {
         if (Binary::getLength($binary) === 4) {
