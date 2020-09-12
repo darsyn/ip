@@ -15,7 +15,6 @@
 
     <!-- Logging. -->
     <logging>
-        <log type="coverage-html" target="build/coverage/" charset="UTF-8" highlight="true" lowUpperBound="60" highLowerBound="85" />
         <log type="coverage-clover" target="build/coverage.xml" />
     </logging>
 
