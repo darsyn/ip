@@ -79,12 +79,6 @@ class Multi
             ['This one is completely wrong.'],
             // 15 bytes instead of 16.
             [pack('H*', '20010db8000000000a608a2e037073')],
-            [123],
-            [1.3],
-            [array()],
-            [(object) array()],
-            [null],
-            [true],
             ['12345678901234567'],
             ['123456789012345'],
         ];

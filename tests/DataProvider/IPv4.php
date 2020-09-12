@@ -56,12 +56,6 @@ class IPv4
             ['This one is completely wrong.'],
             // 5 bytes instead of 4.
             [pack('H*', '20010db80')],
-            [123],
-            [1.3],
-            [array()],
-            [(object) array()],
-            [null],
-            [true],
             ['12345'],
             ['123'],
         ];
@@ -87,13 +81,7 @@ class IPv4
         return [
             [-1],
             [33],
-            ['0'],
-            ['128'],
-            [12.3],
-            [true],
-            [null],
-            [[]],
-            [(object) []],
+            [128],
         ];
     }
 
