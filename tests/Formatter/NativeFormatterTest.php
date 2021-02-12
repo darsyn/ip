@@ -18,9 +18,7 @@ class NativeFormatterTest extends TestCase
         $this->formatter = new Formatter;
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function testFormatterIsInstanceOfInterface()
     {
         $this->assertInstanceOf(ProtocolFormatterInterface::class, $this->formatter);
@@ -37,11 +35,11 @@ class NativeFormatterTest extends TestCase
 
     /**
      * @test
-     * @expectedException \Darsyn\IP\Exception\Formatter\FormatException
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Formatter\NativeFormatter::getInvalidBinarySequences()
      */
     public function testFormatterThrowsExceptionOnInvalidBinarySequences($value)
     {
+        $this->expectException(\Darsyn\IP\Exception\Formatter\FormatException::class);
         try {
             $this->formatter->ntop($value);
         } catch (FormatException $e) {

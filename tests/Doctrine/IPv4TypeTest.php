@@ -47,9 +47,7 @@ class IPv4TypeTest extends TestCase
         $this->type = Type::getType('ipv4');
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function testIpConvertsToDatabaseValue()
     {
         $ip = IP::factory('12.34.56.78');
@@ -60,26 +58,20 @@ class IPv4TypeTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    /**
-     * @test
-     * @expectedException \Doctrine\DBAL\Types\ConversionException
-     */
+    /** @test */
     public function testInvalidIpConversionForDatabaseValue()
     {
+        $this->expectException(\Doctrine\DBAL\Types\ConversionException::class);
         $this->type->convertToDatabaseValue('abcdefg', $this->platform);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function testNullConversionForDatabaseValue()
     {
         $this->assertNull($this->type->convertToDatabaseValue(null, $this->platform));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function testIpConvertsToPHPValue()
     {
         $ip = IP::factory('12.34.56.78');
@@ -89,9 +81,7 @@ class IPv4TypeTest extends TestCase
         $this->assertEquals('12.34.56.78', $dbIp->getDotAddress());
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function testIpObjectConvertsToPHPValue()
     {
         $ip = IP::factory('12.34.56.78');
@@ -101,9 +91,7 @@ class IPv4TypeTest extends TestCase
         $this->assertSame($ip, $dbIp);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function testStreamConvertsToPHPValue()
     {
         $ip = IP::factory('12.34.56.78');
@@ -116,46 +104,36 @@ class IPv4TypeTest extends TestCase
         $this->assertEquals('12.34.56.78', $dbIp->getDotAddress());
     }
 
-    /**
-     * @test
-     * @expectedException \Doctrine\DBAL\Types\ConversionException
-     */
+    /** @test */
     public function testInvalidIpConversionForPHPValue()
     {
+        $this->expectException(\Doctrine\DBAL\Types\ConversionException::class);
         $this->type->convertToPHPValue('abcdefg', $this->platform);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function testNullConversionForPHPValue()
     {
         $this->assertNull($this->type->convertToPHPValue(null, $this->platform));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function testGetName()
     {
         $this->assertEquals('ip', $this->type->getName());
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function testGetBinaryTypeDeclarationSQL()
     {
         $this->assertEquals('DUMMYBINARY()', $this->type->getSqlDeclaration(['length' => 4], $this->platform));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function testBindingTypeIsAValidPDOTypeConstant()
     {
         // Get all constants of the PDO class.
-        $constants = (new \ReflectionClass(PDO::class))->getConstants();
+        $constants = (new \ReflectionClass(\PDO::class))->getConstants();
         // Now filter out any constants that don't begin with "PARAM_".
         $paramConstants = array_intersect_key(
             $constants,
@@ -168,9 +146,7 @@ class IPv4TypeTest extends TestCase
         $this->assertContains($this->type->getBindingType(), $paramConstants);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function testRequiresSQLCommentHint()
     {
         $this->assertTrue($this->type->requiresSQLCommentHint($this->platform));
