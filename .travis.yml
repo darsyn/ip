@@ -10,7 +10,11 @@ php:
 install:
     - composer install
 script:
-    - ./vendor/bin/phpunit --bootstrap="vendor/autoload.php" tests
+    - find src/ -type f -name '*.php' -print0 | xargs -0 -n1 -P4 php -l -n | (! grep -v "No syntax errors detected" )
+    - |
+      if [[ php -r "exit(version_compare(PHP_VERSION, '7.1.0', '>') ? 0 : 1);" ]]; then
+          ./vendor/bin/phpunit --bootstrap="vendor/autoload.php" tests
+      fi
 
 os: linux
 dist: xenial
