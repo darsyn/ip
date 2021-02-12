@@ -27,8 +27,9 @@
         }
     },
     "require-dev": {
+        "ext-pdo": "*",
         "doctrine/dbal": "^2.3",
-        "phpunit/phpunit": "^5.7"
+        "phpunit/phpunit": "@stable"
     },
     "prefer-stable": true,
     "config": {

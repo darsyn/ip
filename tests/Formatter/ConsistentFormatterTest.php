@@ -12,7 +12,7 @@ class ConsistentFormatterTest extends TestCase
     /** @var \Darsyn\IP\Formatter\ProtocolFormatterInterface $formatter */
     private $formatter;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->formatter = new Formatter;

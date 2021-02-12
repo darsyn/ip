@@ -10,7 +10,7 @@ class MappedTest extends TestCase
     /** @var \Darsyn\IP\Strategy\EmbeddingStrategyInterface $strategy */
     private $strategy;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->strategy = new Mapped;

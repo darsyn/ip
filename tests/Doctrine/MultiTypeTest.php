@@ -16,7 +16,7 @@ class MultiTypeTest extends TestCase
     /** @var \Darsyn\IP\Doctrine\MultiType $type */
     private $type;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         if (class_exists(Type::class)) {
             Type::addType('ip_multi', MultiType::class);
@@ -32,7 +32,7 @@ class MultiTypeTest extends TestCase
             ->getMockForAbstractClass();
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         if (!class_exists('Doctrine\DBAL\Types\Type')) {

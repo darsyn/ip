@@ -1,6 +1,5 @@
 language: php
 php:
-    - '5.6'
     - '7.0'
     - '7.1'
     - '7.2'
@@ -11,6 +10,7 @@ php:
 install:
     - composer install
 script:
-    - ./vendor/bin/phpunit
+    - ./vendor/bin/phpunit --bootstrap="vendor/autoload.php" tests
 
-sudo: false
+os: linux
+dist: focal
