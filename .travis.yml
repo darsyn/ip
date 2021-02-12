@@ -13,4 +13,4 @@ script:
     - ./vendor/bin/phpunit --bootstrap="vendor/autoload.php" tests
 
 os: linux
-dist: focal
+dist: xenial
