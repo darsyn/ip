@@ -153,16 +153,19 @@ $binary = $ip->getBinary();
 
 #### String Casting
 
-Casting the IP object to a string is the equivalent of calling `getBinary()`. Whilst
-this may not be the most useful when dumping the object, it's the only method that
-consistently available is all classes.
+Previous versions of this documentation specified that string casting for IP objects
+was enabled to get the binary string, but that was unfortunately untrue. Now, string
+casting is enabled for all version classes and the `__toString()` method is promised
+in `Darsyn\IP\IpInterface`:
+
+- String casting in `Darsyn\IP\Version\IPv4` is the equivalent of `$ip->getDotAddress()`.
+- String casting in `Darsyn\IP\Version\IPv6` is the equivalent of `$ip->getCompactedAddress()`.
+- String casting in `Darsyn\IP\Version\Multi` is the equivalent of `$ip->getProtocolAppropriateAddress()`.
 
 ```php
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
 $ip = IP::factory('127.0.0.1');
-$binary = (string) $ip;
+$printableString = (string) $ip;
 ```
-
-
