@@ -2,7 +2,7 @@
 
 namespace Darsyn\IP\Tests;
 
-use PHPUnit_Framework_TestCase as BaseTestCase;
+use PHPUnit\Framework\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase
 {
