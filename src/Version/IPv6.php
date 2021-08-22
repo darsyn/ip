@@ -115,4 +115,12 @@ class IPv6 extends AbstractIP implements Version6Interface
     {
         return $this->getBinary() === "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function __toString()
+    {
+        return $this->getCompactedAddress();
+    }
 }

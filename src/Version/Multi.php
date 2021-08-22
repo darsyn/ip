@@ -246,4 +246,12 @@ class Multi extends IPv6 implements MultiVersionInterface
     {
         return \is_int($cidr) && $cidr <= 32;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function __toString()
+     {
+         return $this->getProtocolAppropriateAddress();
+     }
 }

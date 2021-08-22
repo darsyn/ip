@@ -109,4 +109,12 @@ class IPv4 extends AbstractIP implements Version4Interface
     {
         return $this->getBinary() === "\0\0\0\0";
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function __toString()
+    {
+        return $this->getDotAddress();
+    }
 }
