@@ -27,8 +27,7 @@
         }
     },
     "require-dev": {
-        "doctrine/dbal": "^2.3",
-        "phpunit/phpunit": "^5.7"
+        "doctrine/dbal": "^2.3"
     },
     "prefer-stable": true,
     "config": {

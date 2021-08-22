@@ -1,16 +1,35 @@
 language: php
-php:
-    - '5.6'
-    - '7.0'
-    - '7.1'
-    - '7.2'
-    - '7.3'
-    - '7.4'
-    - '8.0'
+os: 'linux'
+
+matrix:
+    include:
+        -   name: '5.6'
+            php: '5.6'
+            env: 'PHPUNIT=5.7'
+        -   name: '7.0'
+            php: '7.0'
+            env: 'PHPUNIT=6.5'
+        -   name: '7.1'
+            php: '7.1'
+            env: 'PHPUNIT=6.5'
+        -   name: '7.2'
+            php: '7.2'
+            env: 'PHPUNIT=6.5'
+        -   name: '7.3'
+            php: '7.3'
+            env: 'PHPUNIT=6.5'
+        -   name: '7.4'
+            php: '7.4'
+            env: 'PHPUNIT=6.5'
+        -   name: '8.0'
+            php: '8.0'
+            env: 'PHPUNIT=9.5'
+        -   name: '8.1'
+            php: '8.1'
+            env: 'PHPUNIT=9.5'
 
 install:
     - composer install
+    - composer require "phpunit/phpunit:^${PHPUNIT}"
 script:
-    - ./vendor/bin/phpunit
-
-sudo: false
+    - ./vendor/bin/phpunit --bootstrap="tests/bootstrap.php" --test-suffix="Test.php" tests
