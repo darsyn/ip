@@ -203,4 +203,16 @@ class MultiTest extends TestCase
         $ip = IP::factory($value);
         $this->assertSame($isUnspecified, $ip->isUnspecified());
     }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidIpAddresses()
+     */
+    public function testStringCasting($value, $hex, $expanded, $compacted, $dot)
+    {
+        $ip = IP::factory($value);
+        $dot !== null
+            ? $this->assertSame($dot, (string) $ip)
+            : $this->assertSame($compacted, (string) $ip);
+    }
 }

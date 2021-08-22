@@ -306,4 +306,14 @@ class IPv4Test extends TestCase
         $ip = IP::factory($value);
         $this->assertSame($isUnspecified, $ip->isUnspecified());
     }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidIpAddresses()
+     */
+    public function testStringCasting($value, $expectedHex, $expectedDot)
+    {
+        $ip = IP::factory($value);
+        $this->assertSame($expectedDot, (string) $ip);
+    }
 }
