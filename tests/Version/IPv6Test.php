@@ -46,11 +46,11 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getInvalidIpAddresses()
-     * @expectedException \Darsyn\IP\Exception\InvalidIpAddressException
-     * @expectedExceptionMessage The IP address supplied is not valid.
      */
     public function testExceptionIsThrownOnInstantiationWithInvalidAddresses($value)
     {
+        $this->expectException(\Darsyn\IP\Exception\InvalidIpAddressException::class);
+        $this->expectExceptionMessage('The IP address supplied is not valid.');
         try {
             $ip = IP::factory($value);
         } catch (InvalidIpAddressException $e) {
@@ -156,11 +156,11 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getInvalidCidrValues()
-     * @expectedException \Darsyn\IP\Exception\InvalidCidrException
-     * @expectedExceptionMessage The CIDR supplied is not valid; it must be an integer between 0 and 128.
      */
     public function testExceptionIsThrownFromInvalidCidrValues($cidr)
     {
+        $this->expectException(\Darsyn\IP\Exception\InvalidCidrException::class);
+        $this->expectExceptionMessage('The CIDR supplied is not valid; it must be an integer between 0 and 128.');
         $ip = IP::factory('::1');
         $reflect = new \ReflectionClass($ip);
         $method = $reflect->getMethod('generateBinaryMask');

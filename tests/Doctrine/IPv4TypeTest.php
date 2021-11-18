@@ -63,10 +63,10 @@ class IPv4TypeTest extends TestCase
 
     /**
      * @test
-     * @expectedException \Doctrine\DBAL\Types\ConversionException
      */
     public function testInvalidIpConversionForDatabaseValue()
     {
+        $this->expectException(\Doctrine\DBAL\Types\ConversionException::class);
         $this->type->convertToDatabaseValue('abcdefg', $this->platform);
     }
 
@@ -119,10 +119,10 @@ class IPv4TypeTest extends TestCase
 
     /**
      * @test
-     * @expectedException \Doctrine\DBAL\Types\ConversionException
      */
     public function testInvalidIpConversionForPHPValue()
     {
+        $this->expectException(\Doctrine\DBAL\Types\ConversionException::class);
         $this->type->convertToPHPValue('abcdefg', $this->platform);
     }
 
