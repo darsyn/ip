@@ -36,7 +36,6 @@ class IPv6TypeTest extends TestCase
     /** @before */
     protected function setUpWithoutReturnDeclaration()
     {
-        parent::setUp();
         if (!class_exists('Doctrine\DBAL\Types\Type')) {
             $this->markTestSkipped('Skipping test that requires "doctrine/dbal".');
         }
