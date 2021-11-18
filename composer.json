@@ -18,8 +18,8 @@
         }
     },
     "require": {
-        "php-ipv6": ">=5.6",
-        "php-64bit": ">=5.6"
+        "php-64bit": ">=5.6",
+        "php-ipv6": ">=5.6"
     },
     "autoload-dev": {
         "psr-4": {
@@ -27,6 +27,7 @@
         }
     },
     "require-dev": {
+        "ext-pdo": "*",
         "doctrine/dbal": "^2.3"
     },
     "prefer-stable": true,
