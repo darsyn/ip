@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/darsyn/ip.svg?branch=master)](https://travis-ci.org/darsyn/ip)
+[![Build Status](https://app.travis-ci.com/darsyn/ip.svg?branch=develop "Build Status Badge")](https://app.travis-ci.com/darsyn/ip)
 
 IP is an immutable value object for (both version 4 and 6) IP addresses. Several
 helper methods are provided for ranges, broadcast and network addresses, subnet
