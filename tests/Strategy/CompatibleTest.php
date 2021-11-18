@@ -12,9 +12,9 @@ class CompatibleTest extends TestCase
     /** @var \Darsyn\IP\Strategy\EmbeddingStrategyInterface $strategy */
     private $strategy;
 
-    protected function setUp()
+    /** @before */
+    protected function setUpWithoutReturnDeclaration()
     {
-        parent::setUp();
         $this->strategy = new Compatible;
     }
 
