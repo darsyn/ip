@@ -39,10 +39,10 @@ class CompatibleTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Compatible::getInvalidIpAddresses()
-     * @expectedException \Darsyn\IP\Exception\Strategy\ExtractionException
      */
     public function testExceptionIsThrownWhenTryingToExtractFromStringsNot16Bytes($value)
     {
+        $this->expectException(\Darsyn\IP\Exception\Strategy\ExtractionException::class);
         try {
             $this->strategy->extract($value);
         } catch (ExtractionException $e) {
@@ -65,10 +65,10 @@ class CompatibleTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Compatible::getInvalidIpAddresses()
-     * @expectedException \Darsyn\IP\Exception\Strategy\PackingException
      */
     public function testExceptionIsThrownWhenTryingToPackStringsNot4Bytes($value)
     {
+        $this->expectException(\Darsyn\IP\Exception\Strategy\PackingException::class);
         try {
             $this->strategy->pack($value);
         } catch (PackingException $e) {

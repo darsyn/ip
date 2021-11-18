@@ -49,11 +49,11 @@ class MultiTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getInvalidIpAddresses()
-     * @expectedException \Darsyn\IP\Exception\InvalidIpAddressException
-     * @expectedExceptionMessage The IP address supplied is not valid.
      */
     public function testExceptionIsThrownOnInstantiationWithInvalidAddresses($value)
     {
+        $this->expectException(\Darsyn\IP\Exception\InvalidIpAddressException::class);
+        $this->expectExceptionMessage('The IP address supplied is not valid.');
         try {
             $ip = IP::factory($value);
         } catch (InvalidIpAddressException $e) {
@@ -105,11 +105,11 @@ class MultiTest extends TestCase
 
     /**
      * @test
-     * @expectedException \Darsyn\IP\Exception\WrongVersionException
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidIpVersion6Addresses()
      */
     public function testDotAddressThrowsExceptionForNonVersion4Addresses($value)
     {
+        $this->expectException(\Darsyn\IP\Exception\WrongVersionException::class);
         try {
             $ip = IP::factory($value);
             $ip->getDotAddress();

@@ -37,11 +37,11 @@ class NativeFormatterTest extends TestCase
 
     /**
      * @test
-     * @expectedException \Darsyn\IP\Exception\Formatter\FormatException
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Formatter\NativeFormatter::getInvalidBinarySequences()
      */
     public function testFormatterThrowsExceptionOnInvalidBinarySequences($value)
     {
+        $this->expectException(\Darsyn\IP\Exception\Formatter\FormatException::class);
         try {
             $this->formatter->ntop($value);
         } catch (FormatException $e) {
