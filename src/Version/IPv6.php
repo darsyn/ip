@@ -3,6 +3,7 @@
 namespace Darsyn\IP\Version;
 
 use Darsyn\IP\AbstractIP;
+use Darsyn\IP\Binary;
 use Darsyn\IP\Exception;
 use Darsyn\IP\Formatter\ProtocolFormatterInterface;
 
@@ -35,7 +36,7 @@ class IPv6 extends AbstractIP implements Version6Interface
             $binary = self::getProtocolFormatter()->pton($ip);
             // If the string was not 4 bytes long, then the IP supplied was neither
             // in protocol notation or binary sequence notation. Throw an exception.
-            if (static::getBinaryLength($binary) !== 16) {
+            if (Binary::getLength($binary) !== 16) {
                 throw new Exception\WrongVersionException(6, 4, $ip);
             }
         } catch (Exception\IpException $e) {
@@ -52,7 +53,7 @@ class IPv6 extends AbstractIP implements Version6Interface
         // Convert the 16-byte binary sequence into a hexadecimal-string
         // representation, insert a colon between every block of 4 characters,
         // and return the resulting IP address in full IPv6 protocol notation.
-        return substr(preg_replace('/([a-fA-F0-9]{4})/', '$1:', bin2hex($this->getBinary())), 0, -1);
+        return \substr(\preg_replace('/([a-fA-F0-9]{4})/', '$1:', Binary::toHex($this->getBinary())), 0, -1);
     }
 
     /**
@@ -80,7 +81,7 @@ class IPv6 extends AbstractIP implements Version6Interface
      */
     public function isLinkLocal()
     {
-        return $this->inRange(new self(pack('H*', 'fe800000000000000000000000000000')), 10);
+        return $this->inRange(new self(Binary::fromHex('fe800000000000000000000000000000')), 10);
     }
 
     /**
@@ -88,7 +89,7 @@ class IPv6 extends AbstractIP implements Version6Interface
      */
     public function isLoopback()
     {
-        return $this->inRange(new self(pack('H*', '00000000000000000000000000000001')), 128);
+        return $this->inRange(new self(Binary::fromHex('00000000000000000000000000000001')), 128);
     }
 
     /**
@@ -96,7 +97,7 @@ class IPv6 extends AbstractIP implements Version6Interface
      */
     public function isMulticast()
     {
-        return $this->inRange(new self(pack('H*', 'ff000000000000000000000000000000')), 8);
+        return $this->inRange(new self(Binary::fromHex('ff000000000000000000000000000000')), 8);
     }
 
     /**
@@ -104,7 +105,7 @@ class IPv6 extends AbstractIP implements Version6Interface
      */
     public function isPrivateUse()
     {
-        return $this->inRange(new self(pack('H*', 'fd000000000000000000000000000000')), 8);
+        return $this->inRange(new self(Binary::fromHex('fd000000000000000000000000000000')), 8);
     }
 
     /**
@@ -113,5 +114,13 @@ class IPv6 extends AbstractIP implements Version6Interface
     public function isUnspecified()
     {
         return $this->getBinary() === "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function __toString()
+    {
+        return $this->getCompactedAddress();
     }
 }

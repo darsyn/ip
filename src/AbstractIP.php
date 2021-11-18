@@ -92,7 +92,7 @@ abstract class AbstractIP implements IpInterface
         // sequence with the mask generated from the CIDR.
         return new static($this->getBinary() & $this->generateBinaryMask(
             $cidr,
-            static::getBinaryLength($this->getBinary())
+            Binary::getLength($this->getBinary())
         ));
     }
 
@@ -105,7 +105,7 @@ abstract class AbstractIP implements IpInterface
         // sequence with the inverse of the mask generated from the CIDR.
         return new static($this->getBinary() | ~$this->generateBinaryMask(
             $cidr,
-            static::getBinaryLength($this->getBinary())
+            Binary::getLength($this->getBinary())
         ));
     }
 
@@ -154,15 +154,6 @@ abstract class AbstractIP implements IpInterface
     }
 
     /**
-     * @param string $ip
-     * @return integer
-     */
-    protected static function getBinaryLength($ip)
-    {
-        return strlen($ip);
-    }
-
-    /**
      * 128-bit masks can often evaluate to integers over PHP_MAX_INT, so we have
      * to construct the bitmask as a string instead of doing any mathematical
      * operations (such as base_convert).
@@ -174,7 +165,7 @@ abstract class AbstractIP implements IpInterface
      */
     protected function generateBinaryMask($cidr, $length)
     {
-        if (!is_int($cidr)  || !is_int($length)
+        if (!\is_int($cidr)  || !\is_int($length)
             || $cidr < 0    || $length < 0
             // CIDR is measured in bits, whilst we're describing the length
             // in bytes.
@@ -184,7 +175,7 @@ abstract class AbstractIP implements IpInterface
         }
         // Since it takes 4 bits per hexadecimal, how many sections of complete
         // 1's do we have (f's)?
-        $mask = str_repeat('f', floor($cidr / 4));
+        $mask = \str_repeat('f', \floor($cidr / 4));
         // Now we have less than four 1 bits left we need to determine what
         // hexadecimal character should be added next. Of course, we should only
         // add them in there are 1 bits leftover to prevent going over the
@@ -192,17 +183,17 @@ abstract class AbstractIP implements IpInterface
         if (0 !== $bits = $cidr % 4) {
             // Create a string representation of a 4-bit binary sequence
             // beginning with the amount of leftover 1's.
-            $bin = str_pad(str_repeat('1', $bits), 4, '0', STR_PAD_RIGHT);
+            $bin = \str_pad(\str_repeat('1', $bits), 4, '0', STR_PAD_RIGHT);
             // Convert that 4-bit binary string into a hexadecimal character,
             // and append it to the mask.
-            $mask .= dechex(bindec($bin));
+            $mask .= \dechex(\bindec($bin));
         }
         // Fill the rest of the string up with zero's to pad it out to the
         // correct length (one hex character is worth half a byte).
-        $mask = str_pad($mask, $length * 2, '0', STR_PAD_RIGHT);
+        $mask = \str_pad($mask, $length * 2, '0', STR_PAD_RIGHT);
         // Pack the hexadecimal sequence into a real, 4 or 16-byte binary
         // sequence.
-        $mask = pack('H*', $mask);
+        $mask = Binary::fromHex($mask);
         return $mask;
     }
 }

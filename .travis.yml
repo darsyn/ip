@@ -1,19 +1,37 @@
 language: php
-php:
-    - '5.6'
-    - '7.0'
-    - '7.1'
-    - '7.2'
-    - 'hhvm'
+os: 'linux'
 
 matrix:
+    include:
+        -   name: '5.6'
+            php: '5.6'
+            env: 'PHPUNIT=5.7'
+        -   name: '7.0'
+            php: '7.0'
+            env: 'PHPUNIT=6.5'
+        -   name: '7.1'
+            php: '7.1'
+            env: 'PHPUNIT=6.5'
+        -   name: '7.2'
+            php: '7.2'
+            env: 'PHPUNIT=6.5'
+        -   name: '7.3'
+            php: '7.3'
+            env: 'PHPUNIT=6.5'
+        -   name: '7.4'
+            php: '7.4'
+            env: 'PHPUNIT=7.0'
+        -   name: '8.0'
+            php: '8.0'
+            env: 'PHPUNIT=9.5'
     allow_failures:
-        - php: hhvm
+        -   name: '8.1'
+            php: '8.1'
+            env: 'PHPUNIT=9.5'
 
 install:
     - composer install
-    - composer require --dev --prefer-dist doctrine/dbal:^2.3 phpunit/phpunit:^5.7
+    - composer require --dev "phpunit/phpunit:^${PHPUNIT}"
 script:
-    - ./vendor/bin/phpunit
-
-sudo: false
+    - find src/ -type f -name '*.php' -print0 | xargs -0 -n1 -P4 php -l -n | (! grep -v "No syntax errors detected" )
+    - ./vendor/bin/phpunit --bootstrap="tests/bootstrap.php" --test-suffix="Test.php" tests

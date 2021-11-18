@@ -5,10 +5,10 @@ namespace Darsyn\IP\Tests\Version;
 use Darsyn\IP\Exception\InvalidCidrException;
 use Darsyn\IP\Exception\InvalidIpAddressException;
 use Darsyn\IP\IpInterface;
-use Darsyn\IP\Tests\TestCase;
 use Darsyn\IP\Version\IPv4;
 use Darsyn\IP\Version\IPv6 as IP;
 use Darsyn\IP\Version\Version6Interface;
+use PHPUnit\Framework\TestCase;
 
 class IPv6Test extends TestCase
 {
@@ -46,11 +46,11 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getInvalidIpAddresses()
-     * @expectedException \Darsyn\IP\Exception\InvalidIpAddressException
-     * @expectedExceptionMessage The IP address supplied is not valid.
      */
     public function testExceptionIsThrownOnInstantiationWithInvalidAddresses($value)
     {
+        $this->expectException(\Darsyn\IP\Exception\InvalidIpAddressException::class);
+        $this->expectExceptionMessage('The IP address supplied is not valid.');
         try {
             $ip = IP::factory($value);
         } catch (InvalidIpAddressException $e) {
@@ -156,11 +156,11 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getInvalidCidrValues()
-     * @expectedException \Darsyn\IP\Exception\InvalidCidrException
-     * @expectedExceptionMessage The CIDR supplied is not valid; it must be an integer between 0 and 128.
      */
     public function testExceptionIsThrownFromInvalidCidrValues($cidr)
     {
+        $this->expectException(\Darsyn\IP\Exception\InvalidCidrException::class);
+        $this->expectExceptionMessage('The CIDR supplied is not valid; it must be an integer between 0 and 128.');
         $ip = IP::factory('::1');
         $reflect = new \ReflectionClass($ip);
         $method = $reflect->getMethod('generateBinaryMask');
@@ -196,9 +196,13 @@ class IPv6Test extends TestCase
 
     /**
      * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidInRangeIpAddresses()
      */
-    public function testInRange()
+    public function testInRange($first, $second, $cidr)
     {
+        $first = IP::factory($first);
+        $second = IP::factory($second);
+        $this->assertTrue($first->inRange($second, $cidr));
     }
 
     /**
@@ -300,5 +304,15 @@ class IPv6Test extends TestCase
     {
         $ip = IP::factory($value);
         $this->assertSame($isUnspecified, $ip->isUnspecified());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidIpAddresses()
+     */
+    public function testStringCasting($value, $hex, $expanded, $compacted)
+    {
+        $ip = IP::factory($value);
+        $this->assertSame($compacted, (string) $ip);
     }
 }

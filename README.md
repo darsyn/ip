@@ -1,16 +1,21 @@
-[![Build Status](https://travis-ci.org/darsyn/ip.svg?branch=master)](https://travis-ci.org/darsyn/ip)
+[![Build Status](https://app.travis-ci.com/darsyn/ip.svg?branch=develop "Build Status Badge")](https://app.travis-ci.com/darsyn/ip)
 
 IP is an immutable value object for (both version 4 and 6) IP addresses. Several
 helper methods are provided for ranges, broadcast and network addresses, subnet
 masks, whether an IP is a certain type (defined by RFC's), etc.
 
-This project aims for simplicity of use and any contribution towards that goal
-- whether a bug report, modifications to the codebase, or an improvement to the
+This project aims for simplicity of use and any contribution towards that goal -
+whether a bug report, modifications to the codebase, or an improvement to the
 accuracy or readability of the documentation - are always welcome.
 
 # Documentation
 
 Full documentation is available in the [`docs/`](docs/) folder.
+
+## Code of Conduct
+
+This project includes and adheres to the [Contributor Covenant as a Code of
+Conduct](CODE_OF_CONDUCT.md).
 
 ## Upgrading
 
@@ -21,7 +26,7 @@ are:
   [`IPv6`](src/Version/IPv6.php), and [`Multi`](src/Version/Multi.php) (for both
   version 4 and 6 addresses).
 - Objects are created using a static factory method
-  ([`IpInterface::factory()`](src/IpInterface.php) instead of the constructor to
+  [`IpInterface::factory()`](src/IpInterface.php) instead of the constructor to
   speed up internal processes.
 - A few methods have been renamed (see [the API reference](docs/09-api.md)).
 - Finally, the default for representing version 4 addresses internally has
@@ -42,7 +47,7 @@ try {
 }
 
 $companyNetwork = IPv4::factory('216.58.198.174');
-if (!$ip->inRange(IPv4::factory($companyNetwork), 25)) {
+if (!$ip->inRange($companyNetwork, 25)) {
     throw new \Exception('Request not from a known company IP address.');
 }
 

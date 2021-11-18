@@ -3,10 +3,10 @@
 namespace Darsyn\IP\Tests\Doctrine;
 
 use Darsyn\IP\Doctrine\MultiType;
-use Darsyn\IP\Tests\TestCase;
 use Darsyn\IP\Version\Multi as IP;
 use Doctrine\DBAL\Types\Type;
 use PDO;
+use PHPUnit\Framework\TestCase;
 
 class MultiTypeTest extends TestCase
 {
@@ -16,7 +16,8 @@ class MultiTypeTest extends TestCase
     /** @var \Darsyn\IP\Doctrine\MultiType $type */
     private $type;
 
-    public static function setUpBeforeClass()
+    /** @beforeClass */
+    public static function setUpBeforeClassWithoutReturnDeclaration()
     {
         if (class_exists(Type::class)) {
             Type::addType('ip_multi', MultiType::class);
@@ -32,9 +33,9 @@ class MultiTypeTest extends TestCase
             ->getMockForAbstractClass();
     }
 
-    protected function setUp()
+    /** @before */
+    protected function setUpWithoutReturnDeclaration()
     {
-        parent::setUp();
         if (!class_exists('Doctrine\DBAL\Types\Type')) {
             $this->markTestSkipped('Skipping test that requires "doctrine/dbal".');
         }
@@ -62,10 +63,10 @@ class MultiTypeTest extends TestCase
 
     /**
      * @test
-     * @expectedException \Doctrine\DBAL\Types\ConversionException
      */
     public function testInvalidIpConversionForDatabaseValue()
     {
+        $this->expectException(\Doctrine\DBAL\Types\ConversionException::class);
         $this->type->convertToDatabaseValue('abcdefg', $this->platform);
     }
 
@@ -118,10 +119,10 @@ class MultiTypeTest extends TestCase
 
     /**
      * @test
-     * @expectedException \Doctrine\DBAL\Types\ConversionException
      */
     public function testInvalidIpConversionForPHPValue()
     {
+        $this->expectException(\Doctrine\DBAL\Types\ConversionException::class);
         $this->type->convertToPHPValue('abcdefg', $this->platform);
     }
 

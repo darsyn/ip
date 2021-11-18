@@ -5,11 +5,11 @@ namespace Darsyn\IP\Tests\Version;
 use Darsyn\IP\Exception\InvalidIpAddressException;
 use Darsyn\IP\Exception\WrongVersionException;
 use Darsyn\IP\IpInterface;
-use Darsyn\IP\Tests\TestCase;
 use Darsyn\IP\Version\Multi as IP;
 use Darsyn\IP\Version\MultiVersionInterface;
 use Darsyn\IP\Version\Version4Interface;
 use Darsyn\IP\Version\Version6Interface;
+use PHPUnit\Framework\TestCase;
 
 class MultiTest extends TestCase
 {
@@ -49,11 +49,11 @@ class MultiTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getInvalidIpAddresses()
-     * @expectedException \Darsyn\IP\Exception\InvalidIpAddressException
-     * @expectedExceptionMessage The IP address supplied is not valid.
      */
     public function testExceptionIsThrownOnInstantiationWithInvalidAddresses($value)
     {
+        $this->expectException(\Darsyn\IP\Exception\InvalidIpAddressException::class);
+        $this->expectExceptionMessage('The IP address supplied is not valid.');
         try {
             $ip = IP::factory($value);
         } catch (InvalidIpAddressException $e) {
@@ -105,11 +105,11 @@ class MultiTest extends TestCase
 
     /**
      * @test
-     * @expectedException \Darsyn\IP\Exception\WrongVersionException
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidIpVersion6Addresses()
      */
     public function testDotAddressThrowsExceptionForNonVersion4Addresses($value)
     {
+        $this->expectException(\Darsyn\IP\Exception\WrongVersionException::class);
         try {
             $ip = IP::factory($value);
             $ip->getDotAddress();
@@ -140,6 +140,17 @@ class MultiTest extends TestCase
     {
         $ip = IP::factory($initial);
         $this->assertSame($expected, $ip->getBroadcastIp($cidr)->getProtocolAppropriateAddress());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidInRangeIpAddresses()
+     */
+    public function testInRange($first, $second, $cidr)
+    {
+        $first = IP::factory($first);
+        $second = IP::factory($second);
+        $this->assertTrue($first->inRange($second, $cidr));
     }
 
     /**
@@ -191,5 +202,17 @@ class MultiTest extends TestCase
     {
         $ip = IP::factory($value);
         $this->assertSame($isUnspecified, $ip->isUnspecified());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidIpAddresses()
+     */
+    public function testStringCasting($value, $hex, $expanded, $compacted, $dot)
+    {
+        $ip = IP::factory($value);
+        $dot !== null
+            ? $this->assertSame($dot, (string) $ip)
+            : $this->assertSame($compacted, (string) $ip);
     }
 }

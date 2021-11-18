@@ -126,7 +126,24 @@ class Multi
                 array_unshift($row, '2001:db8::a60:8a2e:370:7334');
                 return $row;
             }, IPv6::getBroadcastIpAddresses())
+        );
+    }
 
+    public static function getValidInRangeIpAddresses()
+    {
+        return array_merge(
+            array_map(function ($row) {
+                array_push($row, true);
+                return $row;
+            }, IPv4::getValidInRangeIpAddresses()),
+            array_map(function ($row) {
+                array_push($row, true);
+                return $row;
+            }, IPv6::getValidInRangeIpAddresses()),
+            [
+                // Mix IPv6 and IPv4 addresses together.
+                ['::ffff:12.34.56.78', '12.34.56.78', 30],
+            ]
         );
     }
 

@@ -22,9 +22,9 @@ class PackingException extends IpException
     {
         $this->binary = $binary;
         $this->embeddingStrategy = $embeddingStrategy;
-        parent::__construct(sprintf(
+        parent::__construct(\sprintf(
             'Could not pack IPv4 address into IPv6 binary string using the "%s" strategy.',
-            get_class($embeddingStrategy)
+            \get_class($embeddingStrategy)
         ), 0, $previous);
     }
 

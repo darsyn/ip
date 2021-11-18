@@ -151,4 +151,11 @@ interface IpInterface
      * @return bool
      */
     public function isUnspecified();
+
+    /**
+     * Implement string casting for IP objects.
+     *
+     * @return string
+     */
+    public function __toString();
 }

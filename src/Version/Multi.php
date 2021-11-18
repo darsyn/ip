@@ -2,6 +2,7 @@
 
 namespace Darsyn\IP\Version;
 
+use Darsyn\IP\Binary;
 use Darsyn\IP\Exception;
 use Darsyn\IP\IpInterface;
 use Darsyn\IP\Strategy\EmbeddingStrategyInterface;
@@ -70,7 +71,7 @@ class Multi extends IPv6 implements MultiVersionInterface
 
             // If the IP address is a binary sequence of 4 bytes, then pack it into
             // a 16 byte IPv6 binary sequence according to the embedding strategy.
-            if (static::getBinaryLength($binary) === 4) {
+            if (Binary::getLength($binary) === 4) {
                 $binary = $strategy->pack($binary);
             }
         } catch (Exception\IpException $e) {
@@ -243,6 +244,14 @@ class Multi extends IPv6 implements MultiVersionInterface
      */
     private function isCidrVersion4Appropriate($cidr)
     {
-        return is_int($cidr) && $cidr <= 32;
+        return \is_int($cidr) && $cidr <= 32;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function __toString()
+     {
+         return $this->getProtocolAppropriateAddress();
+     }
 }

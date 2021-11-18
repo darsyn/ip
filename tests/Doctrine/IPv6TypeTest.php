@@ -3,10 +3,10 @@
 namespace Darsyn\IP\Tests\Doctrine;
 
 use Darsyn\IP\Doctrine\IPv6Type;
-use Darsyn\IP\Tests\TestCase;
 use Darsyn\IP\Version\IPv6 as IP;
 use Doctrine\DBAL\Types\Type;
 use PDO;
+use PHPUnit\Framework\TestCase;
 
 class IPv6TypeTest extends TestCase
 {
@@ -16,7 +16,8 @@ class IPv6TypeTest extends TestCase
     /** @var \Darsyn\IP\Doctrine\IPv6Type $type */
     private $type;
 
-    public static function setUpBeforeClass()
+    /** @beforeClass */
+    public static function setUpBeforeClassWithoutReturnDeclaration()
     {
         if (class_exists(Type::class)) {
             Type::addType('ipv6', IPv6Type::class);
@@ -32,9 +33,9 @@ class IPv6TypeTest extends TestCase
             ->getMockForAbstractClass();
     }
 
-    protected function setUp()
+    /** @before */
+    protected function setUpWithoutReturnDeclaration()
     {
-        parent::setUp();
         if (!class_exists('Doctrine\DBAL\Types\Type')) {
             $this->markTestSkipped('Skipping test that requires "doctrine/dbal".');
         }
@@ -62,10 +63,10 @@ class IPv6TypeTest extends TestCase
 
     /**
      * @test
-     * @expectedException \Doctrine\DBAL\Types\ConversionException
      */
     public function testInvalidIpConversionForDatabaseValue()
     {
+        $this->expectException(\Doctrine\DBAL\Types\ConversionException::class);
         $this->type->convertToDatabaseValue('abcdefg', $this->platform);
     }
 
@@ -118,10 +119,10 @@ class IPv6TypeTest extends TestCase
 
     /**
      * @test
-     * @expectedException \Doctrine\DBAL\Types\ConversionException
      */
     public function testInvalidIpConversionForPHPValue()
     {
+        $this->expectException(\Doctrine\DBAL\Types\ConversionException::class);
         $this->type->convertToPHPValue('abcdefg', $this->platform);
     }
 

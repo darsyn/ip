@@ -3,16 +3,16 @@
 namespace Darsyn\IP\Tests\Strategy;
 
 use Darsyn\IP\Strategy\Derived;
-use Darsyn\IP\Tests\TestCase;
+use PHPUnit\Framework\TestCase;
 
 class DerivedTest extends TestCase
 {
     /** @var \Darsyn\IP\Strategy\EmbeddingStrategyInterface $strategy */
     private $strategy;
 
-    protected function setUp()
+    /** @before */
+    protected function setUpWithoutReturnDeclaration()
     {
-        parent::setUp();
         $this->strategy = new Derived;
     }
 
@@ -37,10 +37,10 @@ class DerivedTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Derived::getInvalidIpAddresses()
-     * @expectedException \Darsyn\IP\Exception\Strategy\ExtractionException
      */
     public function testExceptionIsThrownWhenTryingToExtractFromStringsNot16Bytes($value)
     {
+        $this->expectException(\Darsyn\IP\Exception\Strategy\ExtractionException::class);
         $this->strategy->extract($value);
     }
 
@@ -56,10 +56,10 @@ class DerivedTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Derived::getInvalidIpAddresses()
-     * @expectedException \Darsyn\IP\Exception\Strategy\PackingException
      */
     public function testExceptionIsThrownWhenTryingToPackStringsNot4Bytes($value)
     {
+        $this->expectException(\Darsyn\IP\Exception\Strategy\PackingException::class);
         $this->strategy->pack($value);
     }
 

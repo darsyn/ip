@@ -5,16 +5,16 @@ namespace Darsyn\IP\Tests\Formatter;
 use Darsyn\IP\Exception\Formatter\FormatException;
 use Darsyn\IP\Formatter\NativeFormatter as Formatter;
 use Darsyn\IP\Formatter\ProtocolFormatterInterface;
-use Darsyn\IP\Tests\TestCase;
+use PHPUnit\Framework\TestCase;
 
 class NativeFormatterTest extends TestCase
 {
     /** @var \Darsyn\IP\Formatter\ProtocolFormatterInterface $formatter */
     private $formatter;
 
-    protected function setUp()
+    /** @before */
+    protected function setUpWithoutReturnDeclaration()
     {
-        parent::setUp();
         $this->formatter = new Formatter;
     }
 
@@ -37,11 +37,11 @@ class NativeFormatterTest extends TestCase
 
     /**
      * @test
-     * @expectedException \Darsyn\IP\Exception\Formatter\FormatException
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Formatter\NativeFormatter::getInvalidBinarySequences()
      */
     public function testFormatterThrowsExceptionOnInvalidBinarySequences($value)
     {
+        $this->expectException(\Darsyn\IP\Exception\Formatter\FormatException::class);
         try {
             $this->formatter->ntop($value);
         } catch (FormatException $e) {

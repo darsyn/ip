@@ -22,9 +22,9 @@ class ExtractionException extends IpException
     {
         $this->binary = $binary;
         $this->embeddingStrategy = $embeddingStrategy;
-        parent::__construct(sprintf(
+        parent::__construct(\sprintf(
             'Could not extract IPv4 address from IPv6 binary string using the "%s" strategy.',
-            get_class($embeddingStrategy)
+            \get_class($embeddingStrategy)
         ), 0, $previous);
     }
 
