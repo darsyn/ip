@@ -5,10 +5,10 @@ namespace Darsyn\IP\Tests\Version;
 use Darsyn\IP\Exception\InvalidCidrException;
 use Darsyn\IP\Exception\InvalidIpAddressException;
 use Darsyn\IP\IpInterface;
-use Darsyn\IP\Tests\TestCase;
 use Darsyn\IP\Version\IPv4;
 use Darsyn\IP\Version\IPv6 as IP;
 use Darsyn\IP\Version\Version6Interface;
+use PHPUnit\Framework\TestCase;
 
 class IPv6Test extends TestCase
 {

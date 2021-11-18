@@ -3,10 +3,10 @@
 namespace Darsyn\IP\Tests\Doctrine;
 
 use Darsyn\IP\Doctrine\MultiType;
-use Darsyn\IP\Tests\TestCase;
 use Darsyn\IP\Version\Multi as IP;
 use Doctrine\DBAL\Types\Type;
 use PDO;
+use PHPUnit\Framework\TestCase;
 
 class MultiTypeTest extends TestCase
 {

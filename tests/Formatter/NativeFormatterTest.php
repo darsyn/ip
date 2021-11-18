@@ -5,7 +5,7 @@ namespace Darsyn\IP\Tests\Formatter;
 use Darsyn\IP\Exception\Formatter\FormatException;
 use Darsyn\IP\Formatter\NativeFormatter as Formatter;
 use Darsyn\IP\Formatter\ProtocolFormatterInterface;
-use Darsyn\IP\Tests\TestCase;
+use PHPUnit\Framework\TestCase;
 
 class NativeFormatterTest extends TestCase
 {

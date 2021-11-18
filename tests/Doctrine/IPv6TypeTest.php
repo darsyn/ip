@@ -3,10 +3,10 @@
 namespace Darsyn\IP\Tests\Doctrine;
 
 use Darsyn\IP\Doctrine\IPv6Type;
-use Darsyn\IP\Tests\TestCase;
 use Darsyn\IP\Version\IPv6 as IP;
 use Doctrine\DBAL\Types\Type;
 use PDO;
+use PHPUnit\Framework\TestCase;
 
 class IPv6TypeTest extends TestCase
 {
