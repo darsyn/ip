@@ -16,7 +16,8 @@ class IPv4TypeTest extends TestCase
     /** @var \Darsyn\IP\Doctrine\IPv4Type $type */
     private $type;
 
-    public static function setUpBeforeClass()
+    /** @beforeClass */
+    public static function setUpBeforeClassWithoutReturnDeclaration()
     {
         if (class_exists(Type::class)) {
             Type::addType('ipv4', IPv4Type::class);
@@ -32,7 +33,8 @@ class IPv4TypeTest extends TestCase
             ->getMockForAbstractClass();
     }
 
-    protected function setUp()
+    /** @before */
+    protected function setUpWithoutReturnDeclaration()
     {
         parent::setUp();
         if (!class_exists('Doctrine\DBAL\Types\Type')) {

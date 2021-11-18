@@ -16,7 +16,8 @@ class IPv6TypeTest extends TestCase
     /** @var \Darsyn\IP\Doctrine\IPv6Type $type */
     private $type;
 
-    public static function setUpBeforeClass()
+    /** @beforeClass */
+    public static function setUpBeforeClassWithoutReturnDeclaration()
     {
         if (class_exists(Type::class)) {
             Type::addType('ipv6', IPv6Type::class);
@@ -32,7 +33,8 @@ class IPv6TypeTest extends TestCase
             ->getMockForAbstractClass();
     }
 
-    protected function setUp()
+    /** @before */
+    protected function setUpWithoutReturnDeclaration()
     {
         parent::setUp();
         if (!class_exists('Doctrine\DBAL\Types\Type')) {
