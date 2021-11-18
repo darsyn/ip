@@ -24,6 +24,7 @@ matrix:
         -   name: '8.0'
             php: '8.0'
             env: 'PHPUNIT=9.5'
+    allow_failures:
         -   name: '8.1'
             php: '8.1'
             env: 'PHPUNIT=9.5'
