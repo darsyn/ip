@@ -20,7 +20,7 @@ matrix:
             env: 'PHPUNIT=6.5'
         -   name: '7.4'
             php: '7.4'
-            env: 'PHPUNIT=6.5'
+            env: 'PHPUNIT=7.0'
         -   name: '8.0'
             php: '8.0'
             env: 'PHPUNIT=9.5'
