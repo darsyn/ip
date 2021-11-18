@@ -3,10 +3,10 @@
 namespace Darsyn\IP\Tests\Doctrine;
 
 use Darsyn\IP\Doctrine\IPv4Type;
-use Darsyn\IP\Tests\TestCase;
 use Darsyn\IP\Version\IPv4 as IP;
 use Doctrine\DBAL\Types\Type;
 use PDO;
+use PHPUnit\Framework\TestCase;
 
 class IPv4TypeTest extends TestCase
 {

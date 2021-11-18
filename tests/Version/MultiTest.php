@@ -5,11 +5,11 @@ namespace Darsyn\IP\Tests\Version;
 use Darsyn\IP\Exception\InvalidIpAddressException;
 use Darsyn\IP\Exception\WrongVersionException;
 use Darsyn\IP\IpInterface;
-use Darsyn\IP\Tests\TestCase;
 use Darsyn\IP\Version\Multi as IP;
 use Darsyn\IP\Version\MultiVersionInterface;
 use Darsyn\IP\Version\Version4Interface;
 use Darsyn\IP\Version\Version6Interface;
+use PHPUnit\Framework\TestCase;
 
 class MultiTest extends TestCase
 {

@@ -3,7 +3,7 @@
 namespace Darsyn\IP\Tests\Strategy;
 
 use Darsyn\IP\Strategy\Mapped;
-use Darsyn\IP\Tests\TestCase;
+use PHPUnit\Framework\TestCase;
 
 class MappedTest extends TestCase
 {

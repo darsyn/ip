@@ -5,7 +5,7 @@ namespace Darsyn\IP\Tests\Strategy;
 use Darsyn\IP\Exception\Strategy\ExtractionException;
 use Darsyn\IP\Exception\Strategy\PackingException;
 use Darsyn\IP\Strategy\Compatible;
-use Darsyn\IP\Tests\TestCase;
+use PHPUnit\Framework\TestCase;
 
 class CompatibleTest extends TestCase
 {
