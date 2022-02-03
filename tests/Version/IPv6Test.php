@@ -5,8 +5,10 @@ namespace Darsyn\IP\Tests\Version;
 use Darsyn\IP\Exception\InvalidCidrException;
 use Darsyn\IP\Exception\InvalidIpAddressException;
 use Darsyn\IP\IpInterface;
+use Darsyn\IP\Strategy\Mapped;
 use Darsyn\IP\Version\IPv4;
 use Darsyn\IP\Version\IPv6 as IP;
+use Darsyn\IP\Version\Multi;
 use Darsyn\IP\Version\Version6Interface;
 use PHPUnit\Framework\TestCase;
 
@@ -58,6 +60,27 @@ class IPv6Test extends TestCase
             throw $e;
         }
         $this->fail();
+    }
+
+    public function testInstantiationFromEmbeddedIpAddress()
+    {
+        try {
+            $ip = IP::factory('12.34.56.78');
+            $this->fail('IPv6 factory should not accept IPv4 addresses.');
+        } catch (InvalidIpAddressException $e) {
+        }
+
+        // IPv4 address can be embedded into IPv6 objects using the fromEmbedded() static instantiator.
+        $embedded = IP::fromEmbedded('12.34.56.78', new Mapped);
+        // But IPv6 objects should ignore the fact that it's embedded and only work with the full IPv6 address.
+        $this->assertSame('0000:1fff:ffff:ffff:ffff:ffff:ffff:ffff', $embedded->getBroadcastIp(19)->getExpandedAddress());
+
+        // Multi objects understand both IPv4 and IPv6 addresses.
+        $multi = Multi::factory('12.34.56.78', new Mapped);
+        // So therefore, if a Multi object detects that it holds an embedded IPv4 address it will attempt to work with
+        // the IPv4 address before falling back on the full IPv6 address.
+        $this->assertSame('0000:0000:0000:0000:0000:ffff:0c22:3fff', $multi->getBroadcastIp(19)->getExpandedAddress());
+        $this->assertSame('12.34.63.255', $multi->getBroadcastIp(19)->getDotAddress());
     }
 
     /**
