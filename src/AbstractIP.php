@@ -160,41 +160,22 @@ abstract class AbstractIP implements IpInterface
      * operations (such as base_convert).
      *
      * @param int $cidr
-     * @param int $length
+     * @param int $lengthInBytes
      * @throws \Darsyn\IP\Exception\InvalidCidrException
      * @return string
      */
-    protected function generateBinaryMask($cidr, $length)
+    protected function generateBinaryMask($cidr, $lengthInBytes)
     {
-        if (!\is_int($cidr)  || !\is_int($length)
-            || $cidr < 0    || $length < 0
+        if (!\is_int($cidr) || !\is_int($lengthInBytes)
+            || $cidr < 0    || $lengthInBytes < 0
             // CIDR is measured in bits, whilst we're describing the length
             // in bytes.
-            || $cidr > $length * 8
+            || $cidr > $lengthInBytes * 8
         ) {
-            throw new Exception\InvalidCidrException($cidr, $length);
+            throw new Exception\InvalidCidrException($cidr, $lengthInBytes);
         }
-        // Since it takes 4 bits per hexadecimal, how many sections of complete
-        // 1's do we have (f's)?
-        $mask = \str_repeat('f', (int) \floor($cidr / 4));
-        // Now we have less than four 1 bits left we need to determine what
-        // hexadecimal character should be added next. Of course, we should only
-        // add them in there are 1 bits leftover to prevent going over the
-        // 128-bit limit.
-        if (0 !== $bits = $cidr % 4) {
-            // Create a string representation of a 4-bit binary sequence
-            // beginning with the amount of leftover 1's.
-            $bin = \str_pad(\str_repeat('1', $bits), 4, '0', STR_PAD_RIGHT);
-            // Convert that 4-bit binary string into a hexadecimal character,
-            // and append it to the mask.
-            $mask .= \dechex((int) \bindec($bin));
-        }
-        // Fill the rest of the string up with zero's to pad it out to the
-        // correct length (one hex character is worth half a byte).
-        $mask = \str_pad($mask, $length * 2, '0', STR_PAD_RIGHT);
-        // Pack the hexadecimal sequence into a real, 4 or 16-byte binary
-        // sequence.
-        $mask = Binary::fromHex($mask);
-        return $mask;
+        // Eg, a CIDR of 24 and length of 4 bytes (IPv4) would make a mask of: 11111111111111111111111100000000.
+        $asciiBinarySequence = \str_pad(\str_repeat('1', $cidr), $lengthInBytes * 8, '0', \STR_PAD_RIGHT);
+        return Binary::fromHumanReadable($asciiBinarySequence);
     }
 }
