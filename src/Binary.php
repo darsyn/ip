@@ -32,6 +32,23 @@ class Binary
     }
 
     /**
+     * PHP doesn't have a function for multibyte string padding. This should suffice in case
+     * PHP's internal string functions have been overloaded by the mbstring extension.
+     *
+     * @param string $input
+     * @param int $paddingLength
+     * @param string $padding
+     * @param integer $type
+     * @param string $encoding
+     * @return string
+     */
+    public static function padString($input, $paddingLength, $padding = ' ', $type = \STR_PAD_RIGHT, $encoding = 'UTF-8')
+    {
+        $diff = \strlen($input) - (\function_exists('mb_strlen') ? \mb_strlen($input, $encoding) : \strlen($input));
+        return \str_pad($input, $paddingLength + $diff, $padding, $type);
+    }
+
+    /**
     * @param string $hex
     * @throws \InvalidArgumentException
     * @return string
@@ -46,6 +63,7 @@ class Binary
 
     /**
     * @param string $binary
+     * @throws \InvalidArgumentException
     * @return string
     */
     public static function toHex($binary)
@@ -55,5 +73,39 @@ class Binary
         }
         $data = \unpack('H*', $binary);
         return \is_array($data) ? \reset($data) : '';
+    }
+
+    /**
+     * @param string $asciiBinarySequence
+     * @throws \InvalidArgumentException
+     * @return string
+     */
+    public static function fromHumanReadable($asciiBinarySequence)
+    {
+        if (!\is_string($asciiBinarySequence)
+            || !\preg_match('/^[01]*$/', $asciiBinarySequence)
+            || static::getLength($asciiBinarySequence) % 8 !== 0
+        ) {
+            throw new \InvalidArgumentException('Valid (ASCII) binary sequence not provided.');
+        }
+        return static::fromHex(\implode('', \array_map(function ($byteRepresentation) {
+            return static::padString(\dechex(\bindec($byteRepresentation)), 2, '0', \STR_PAD_LEFT, '8bit');
+        }, \function_exists('mb_str_split') ? \mb_str_split($asciiBinarySequence, 8, '8bit') : \str_split($asciiBinarySequence, 8))));
+    }
+
+    /**
+     * @param string $binary
+     * @throws \InvalidArgumentException
+     * @return string
+     */
+    public static function toHumanReadable($binary)
+    {
+        if (!\is_string($binary)) {
+            throw new \InvalidArgumentException('Cannot convert non-string to  (ASCII) binary sequence.');
+        }
+        $hex = static::toHex($binary);
+        return \implode('', \array_map(function ($character) {
+            return static::padString(\decbin(\hexdec($character)), 8, '0', \STR_PAD_LEFT, '8bit');
+        }, \function_exists('mb_str_split') ? \mb_str_split($hex, 2, '8bit') : \str_split($hex, 2)));
     }
 }
