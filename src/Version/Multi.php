@@ -170,9 +170,7 @@ class Multi extends IPv6 implements MultiVersionInterface
             if ($this->isVersion4() && $ip->isVersion4() && $this->embeddingStrategy->isEmbedded($ip->getBinary())) {
                 $ours = $this->getShortBinary();
                 $theirs = $this->embeddingStrategy->extract($ip->getBinary());
-                if ((new IPv4($ours))->inRange(new IPv4($theirs), $cidr)) {
-                    return true;
-                }
+                return (new IPv4($ours))->inRange(new IPv4($theirs), $cidr);
             }
         } catch (Exception\Strategy\ExtractionException $e) {
         } catch (Exception\InvalidIpAddressException $e) {
@@ -180,6 +178,22 @@ class Multi extends IPv6 implements MultiVersionInterface
         // If they are not in range as IPv4 addresses, then just carry on and
         // compare them as normal IPv6 addresses.
         return parent::inRange($ip, $cidr);
+    }
+
+    /** {@inheritDoc} */
+    public function getCommonCidr(IpInterface $ip)
+    {
+        try {
+            if ($this->isVersion4() && $ip->isVersion4() && $this->embeddingStrategy->isEmbedded($ip->getBinary())) {
+                $ours = $this->getShortBinary();
+                $theirs = $this->embeddingStrategy->extract($ip->getBinary());
+                return (new IPv4($ours))->getCommonCidr(new IPv4($theirs));
+            }
+        } catch (Exception\WrongVersionException $e) {
+        } catch (Exception\Strategy\ExtractionException $e) {
+        } catch (Exception\InvalidIpAddressException $e) {
+        }
+        return parent::getCommonCidr($ip);
     }
 
     /** {@inheritDoc} */

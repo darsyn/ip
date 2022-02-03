@@ -85,6 +85,17 @@ interface IpInterface
     public function inRange(IpInterface $ip, $cidr);
 
     /**
+     * Get Common CIDR Between IP Addresses
+     *
+     * Returns the highest common CIDR between the current IP address and another
+     *
+     * @param \Darsyn\IP\IpInterface $ip
+     * @throws \Darsyn\IP\Exception\WrongVersionException
+     * @return integer
+     */
+    public function getCommonCidr(IpInterface $ip);
+
+    /**
      * Whether the IP is an IPv4-mapped IPv6 address (eg, "::ffff:7f00:1").
      *
      * @return bool

@@ -2,6 +2,7 @@
 
 namespace Darsyn\IP;
 
+use Darsyn\IP\Exception\WrongVersionException;
 use Darsyn\IP\Formatter\ConsistentFormatter;
 use Darsyn\IP\Formatter\ProtocolFormatterInterface;
 
@@ -120,6 +121,24 @@ abstract class AbstractIP implements IpInterface
         } catch (Exception\InvalidCidrException $e) {
             return false;
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCommonCidr(IpInterface $ip)
+    {
+        if ($this->getVersion() !== $ip->getVersion()
+            || Binary::getLength($this->getBinary()) !== Binary::getLength($ip->getBinary())
+        ) {
+            // Cannot calculate the greatest common CIDR between an IPv4 and IPv6 address, they are fundamentally
+            // incompatible. Furthermore, the greatest common CIDR cannot be calculated between an IPv4 address and an
+            // IPv4 address embedded into an IPv6 address.
+            throw new WrongVersionException($this->getVersion(), $ip->getVersion(), $ip);
+        }
+        $mask = $this->getBinary() ^ $ip->getBinary();
+        $parts = explode('1', Binary::toHumanReadable($mask), 2);
+        return Binary::getLength($parts[0]);
     }
 
     /**

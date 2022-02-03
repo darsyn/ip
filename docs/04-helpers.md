@@ -110,6 +110,33 @@ $broadcastIp = $ip->getBroadcastIp(19);
 $broadcastIp->getProtocolAppropriateAddress(); // string("12.34.63.255")
 ```
 
+### `getCommonCidr()`
+
+> `getCommonCidr(IpInterface $ip): int`
+
+Supplied IP address must be of the same version as the current IP address; a
+pure IPv4 address does not count as the same version as an IPv4 address embedded
+into IPv6.
+
+```php
+<?php
+use Darsyn\IP\Version\Multi as IP;
+
+$hostIp = IP::factory('d6be:583:71a4:aa6d:c77d:77dd:cec:f897');
+$clientIp = IP::factory('d6be:583:71a4:aa67:b07a::c7');
+// Get the greatest common CIDR between the current IP address and another.
+$hostIp->getCommonCidr($clientIp); // int(60)
+
+$embedded = IP::factory('12.34.56.78');
+$pure = IPv4::factory('12.34.56.78');
+try {
+    $embedded->getCommonCidr($pure);
+} catch (\Darsyn\IP\Exception\WrongVersionException $e) {
+    // An exception is thrown because a pure IPv4 address is 4
+    // bytes, and an IPv4 address embedded into IPv6 is 16 bytes.
+}
+```
+
 ## `IPv6` vs `Multi`?
 
 The `Multi` class tries to deal with both IPv4 and IPv6 interchangeably which
