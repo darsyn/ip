@@ -6,6 +6,7 @@ use Darsyn\IP\AbstractIP;
 use Darsyn\IP\Binary;
 use Darsyn\IP\Exception;
 use Darsyn\IP\Formatter\ProtocolFormatterInterface;
+use Darsyn\IP\Strategy\EmbeddingStrategyInterface;
 
 /**
  * IPv6 Address
@@ -43,6 +44,18 @@ class IPv6 extends AbstractIP implements Version6Interface
             throw new Exception\InvalidIpAddressException($ip, $e);
         }
         return new static($binary);
+    }
+
+    /**
+     * @param string $ip
+     * @param \Darsyn\IP\Strategy\EmbeddingStrategyInterface|null $strategy
+     * @throws \Darsyn\IP\Exception\InvalidIpAddressException
+     * @throws \Darsyn\IP\Exception\WrongVersionException
+     * @return static
+     */
+    public static function fromEmbedded($ip, EmbeddingStrategyInterface $strategy = null)
+    {
+        return new self((Multi::factory($ip, $strategy))->getBinary());
     }
 
     /**

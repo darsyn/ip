@@ -179,3 +179,59 @@ use Darsyn\IP\Version\Multi as IP;
 $ip = IP::factory('::ffff:7f00:1');
 $printableString = (string) $ip; // string("127.0.0.1")
 ```
+
+## What's Wrong with `Multi`?
+
+The `Multi` class tries to deal with both IPv4 and IPv6 interchangeably which
+can lead to some unexpected results. For example, if you embed the IPv4 address
+`12.34.56.78` into an IPv6 address you get `::ffff:c22:384e` (using the [Mapped
+strategy](./05-strategies.md)).
+
+If you want to get the broadcast address using a CIDR of 19, the result
+completely depends on whether you view this IP address to be IPv4 or IPv6. If
+assuming IPv4, then the resulting broadcast address will be `::ffff:c22:3fff`
+(the internal representation of the embedded IPv4 address `12.34.63.255`).
+However, if assuming IPv6 then the resulting broadcast address will be
+`::1fff:ffff:ffff:ffff:ffff:ffff:ffff`.
+
+Several methods of `Multi` detect if an IPv4 address has been embedded, they
+will then attempt to perform the actions on the embedded IPv4 address first
+(returning the IPv4 result embedded into another IPv6), and only then default to
+working on the entire IPv6 address if that fails.
+
+The following methods of `Multi` are all affected by the presence of an embedded
+IPv4 address:
+
+- `getNetworkIp()` (if CIDR is 32 or below).
+- `getBroadcastIp()` (if CIDR is 32 or below).
+- `inRange()` (if CIDR is 32 or below, and the other IP is also an _embedded_
+  IPv4).
+- `getCommonCidr()` (if the other IP is also an _embedded_ IPv4).
+
+### `IPv6::fromEmbedded()`
+
+If you want to embed IPv4 addresses into IPv6, but do not want `Multi` to return
+varying results depending on whether an IPv4 address is embedded or not, then
+use `IPv6::fromEmbedded()`.
+
+It accepts both IPv4 and IPv6 addresses, embeds IPv4 addresses into IPv6
+according to the embedding strategy, and from that point on treats it purely as
+an IPv6 address.
+
+```php
+<?php
+use Darsyn\IP\Strategy\Mapped;
+use Darsyn\IP\Version\Ipv6;
+
+// Strategy is optional; defaults to Mapped unless
+// Multi::setDefaultEmbeddingStrategy() called previously.
+$ip = IPv6::fromEmbedded('127.0.0.1', new Mapped);
+$ip->getCompactedAddress(); // string("::ffff:7f00:1")
+
+try {
+    $ip->getDotAddress();
+} catch (\Error $e) {
+    // IPv6 addresses are not considered IPv4 addresses and
+    // therefore do not have the method getDotAddress().
+}
+```
