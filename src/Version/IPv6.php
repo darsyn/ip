@@ -55,7 +55,7 @@ class IPv6 extends AbstractIP implements Version6Interface
      */
     public static function fromEmbedded($ip, EmbeddingStrategyInterface $strategy = null)
     {
-        return new self((Multi::factory($ip, $strategy))->getBinary());
+        return new self(Multi::factory($ip, $strategy)->getBinary());
     }
 
     /**
