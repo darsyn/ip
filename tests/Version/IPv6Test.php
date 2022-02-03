@@ -62,6 +62,12 @@ class IPv6Test extends TestCase
         $this->fail();
     }
 
+    /**
+     * @test
+     * @covers \Darsyn\IP\Version\IPv6::fromEmbedded()
+     * @covers \Darsyn\IP\Version\Multi::factory()
+     * @covers \Darsyn\IP\Version\Multi::getBinary()
+     */
     public function testInstantiationFromEmbeddedIpAddress()
     {
         try {
