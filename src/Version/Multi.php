@@ -140,7 +140,7 @@ class Multi extends IPv6 implements MultiVersionInterface
             }
         } catch (Exception\IpException $e) {
         }
-        return parent::getNetworkIp($cidr);
+        return new static(parent::getNetworkIp($cidr)->getBinary(), clone $this->embeddingStrategy);
     }
 
     /** {@inheritDoc} */
@@ -156,7 +156,7 @@ class Multi extends IPv6 implements MultiVersionInterface
             }
         } catch (Exception\IpException $e) {
         }
-        return parent::getBroadcastIp($cidr);
+        return new static(parent::getBroadcastIp($cidr)->getBinary(), clone $this->embeddingStrategy);
     }
 
     /** {@inheritDoc} */
