@@ -5,6 +5,7 @@ namespace Darsyn\IP\Tests\Version;
 use Darsyn\IP\Exception\InvalidIpAddressException;
 use Darsyn\IP\Exception\WrongVersionException;
 use Darsyn\IP\IpInterface;
+use Darsyn\IP\Strategy\Mapped;
 use Darsyn\IP\Version\Multi as IP;
 use Darsyn\IP\Version\MultiVersionInterface;
 use Darsyn\IP\Version\Version4Interface;
@@ -13,6 +14,12 @@ use PHPUnit\Framework\TestCase;
 
 class MultiTest extends TestCase
 {
+    /** @before */
+    public function resetDefaultEmbeddingStrategy()
+    {
+        IP::setDefaultEmbeddingStrategy(new Mapped);
+    }
+
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidIpAddresses()
@@ -24,6 +31,27 @@ class MultiTest extends TestCase
         $this->assertInstanceOf(Version4Interface::class, $ip);
         $this->assertInstanceOf(Version6Interface::class, $ip);
         $this->assertInstanceOf(MultiVersionInterface::class, $ip);
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getEmbeddingStrategyIpAddresses()
+     */
+    public function testEmbeddingStrategy($strategyClass, $expandedAddress, $v4address)
+    {
+        $ip = IP::factory($v4address, new $strategyClass);
+        $this->assertSame($expandedAddress, $ip->getExpandedAddress());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getEmbeddingStrategyIpAddresses()
+     */
+    public function testDefaufltEmbeddingStrategy($strategyClass, $expandedAddress, $v4address)
+    {
+        IP::setDefaultEmbeddingStrategy(new $strategyClass);
+        $ip = IP::factory($v4address);
+        $this->assertSame($expandedAddress, $ip->getExpandedAddress());
     }
 
     /**
@@ -120,6 +148,16 @@ class MultiTest extends TestCase
             throw $e;
         }
         $this->fail();
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getIpAddressVersions()
+     */
+    public function testVersion($value, $version)
+    {
+        $ip = IP::factory($value);
+        $this->assertSame($version, $ip->getVersion());
     }
 
     /**

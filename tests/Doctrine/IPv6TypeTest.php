@@ -27,10 +27,13 @@ class IPv6TypeTest extends TestCase
     private function getPlatformMock()
     {
         // We have to use MySQL as the platform here, because the AbstractPlatform does not support BINARY types.
-        return $this
-            ->getMockBuilder('Doctrine\DBAL\Platforms\MySqlPlatform')
-            ->setMethods(['getBinaryTypeDeclarationSQL'])
-            ->getMockForAbstractClass();
+        $mockBuilder = $this->getMockBuilder('Doctrine\DBAL\Platforms\MySqlPlatform');
+        $mockedMethods = ['getBinaryTypeDeclarationSQL'];
+        // MockBuilder::setMethods() was deprecated in favour of MockBuilder::onlyMethods() in PHPUnit v7.5.x
+        method_exists($mockBuilder, 'onlyMethods')
+            ? $mockBuilder->onlyMethods($mockedMethods)
+            : $mockBuilder->setMethods($mockedMethods);
+        return $mockBuilder->getMockForAbstractClass();
     }
 
     /** @before */
