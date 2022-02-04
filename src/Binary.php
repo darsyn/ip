@@ -6,7 +6,7 @@ class Binary
 {
     /**
     * @param string $str
-    * @return integer
+    * @return int
     */
     public static function getLength($str)
     {
@@ -17,9 +17,9 @@ class Binary
 
     /**
      * @param string $str
-     * @param integer $start
-     * @param integer|null $length
-     * @return boolean|string
+     * @param int $start
+     * @param int|null $length
+     * @return string
      */
     public static function subString($str, $start, $length = null)
     {

@@ -24,6 +24,10 @@ class ConsistentFormatter extends NativeFormatter
         throw new FormatException($binary);
     }
 
+    /**
+     * @param string $hex
+     * @return string
+     */
     private function ntopVersion6($hex)
     {
         $parts = \str_split($hex, 4);
@@ -47,6 +51,10 @@ class ConsistentFormatter extends NativeFormatter
         return \str_pad(\preg_replace('/\:{2,}/', '::', \implode(':', $parts)), 2, ':');
     }
 
+    /**
+     * @param string $binary
+     * @return string
+     */
     private function ntopVersion4($binary)
     {
         return \inet_ntop(\pack('A4', $binary));
