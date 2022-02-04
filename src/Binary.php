@@ -12,7 +12,7 @@ class Binary
     {
         return \function_exists('\\mb_strlen')
             ? (int) \mb_strlen($str, '8bit')
-            : \strlen(\bin2hex($str)) / 2;
+            : (int) (\strlen(\bin2hex($str)) / 2);
     }
 
     /**
@@ -23,9 +23,12 @@ class Binary
      */
     public static function subString($str, $start, $length = null)
     {
-        return \function_exists('\\mb_substr')
-            ? \mb_substr($str, $start, $length, '8bit')
-            : \substr($str, $start, $length);
+        if (\function_exists('\\mb_substr')) {
+            return \mb_substr($str, $start, $length, '8bit');
+        }
+        $substr = \substr($str, $start, is_int($length) ? $length : self::getLength($str) - $start);
+        // Native PHP function substr() might contain false if there was an error.
+        return \is_string($substr) ? $substr : '';
     }
 
     /**
@@ -51,6 +54,6 @@ class Binary
             throw new \InvalidArgumentException('Cannot convert non-string to hexidecimal.');
         }
         $data = \unpack('H*', $binary);
-        return \reset($data);
+        return \is_array($data) ? \reset($data) : '';
     }
 }

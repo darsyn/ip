@@ -66,7 +66,8 @@ class IPv6 extends AbstractIP implements Version6Interface
         // Convert the 16-byte binary sequence into a hexadecimal-string
         // representation, insert a colon between every block of 4 characters,
         // and return the resulting IP address in full IPv6 protocol notation.
-        return \substr(\preg_replace('/([a-fA-F0-9]{4})/', '$1:', Binary::toHex($this->getBinary())), 0, -1);
+        $expanded = \preg_replace('/([a-fA-F0-9]{4})/', '$1:', Binary::toHex($this->getBinary()));
+        return Binary::subString(\is_string($expanded) ? $expanded : '', 0, -1);
     }
 
     /**
