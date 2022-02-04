@@ -109,3 +109,46 @@ $ip = IP::factory('12.34.56.78');
 $broadcastIp = $ip->getBroadcastIp(19);
 $broadcastIp->getProtocolAppropriateAddress(); // string("12.34.63.255")
 ```
+
+## `IPv6` vs `Multi`?
+
+The `Multi` class tries to deal with both IPv4 and IPv6 interchangeably which
+can lead to some unexpected results if an IPv6 address is detected as an
+embedded IPv4 address. Valid CIDR values can be either 0-32 or 0-128 depending
+on internal state and the embedding strategy used.
+
+All the helper methods of `Multi` are affected by this.
+
+The `IPv6` class, however, gives consistent results regardless of embedding
+strategy and always deals with CIDR values from 0 to 128.
+
+### `IPv6::fromEmbedded()`
+
+If you want to embed IPv4 addresses into IPv6, but do not want `Multi` to return
+varying results depending on whether an IPv4 address is embedded or not, then
+use `IPv6::fromEmbedded()`.
+
+It accepts both IPv4 and IPv6 addresses, embeds IPv4 addresses into IPv6
+according to the embedding strategy, and from that point on treats it purely as
+an IPv6 address.
+
+```php
+<?php
+use Darsyn\IP\Strategy\Mapped;
+use Darsyn\IP\Version\Ipv6;
+
+// Strategy is optional; defaults to Mapped unless
+// Multi::setDefaultEmbeddingStrategy() called previously.
+$ip = IPv6::fromEmbedded('127.0.0.1', new Mapped);
+$ip->getCompactedAddress(); // string("::ffff:7f00:1")
+
+try {
+    $ip->getDotAddress();
+} catch (\Error $e) {
+    // IPv6 addresses are not considered IPv4 addresses and
+    // therefore do not have the method getDotAddress().
+}
+```
+
+> Please note that calling `Multi::fromEmbedded()` returns an instance of
+> `Multi` and effectively is the same as calling the factory method.
