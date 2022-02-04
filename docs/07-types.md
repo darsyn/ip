@@ -3,11 +3,40 @@
 The type methods return a boolean value depending on whether the IP address is a
 certain type.
 
-## Mapped
+## Detecting Embedding Strategies
+
+### Embedded?
+
+Whether the IP is an IPv4 address embedded into an IPv6 address, according to
+the embedding strategy used when creating the IP object.
+
+```php
+<?php
+use Darsyn\IP\Version\Multi as IP;
+
+$ip = IP::factory('::ffff:7f00:1');
+$ip->isEmbedded(); // bool(true)
+```
+
+If you would like to detect if the IP is an IPv4-embedded IPv6 address according
+to [RFC 4291](https://tools.ietf.org/html/rfc4291.html#section-2.5.5
+"IP Version 6 Addressing Architecture"), please use the following conditional
+statement:
+
+```php
+<?php
+use Darsyn\IP\Strategy\Derived;
+use Darsyn\IP\Version\Multi as IP;
+
+$ip = IP::factory('127.0.0.1', new Derived);
+$rfc4291 = $ip->isMapped() || $ip->isCompatible(); // bool(false)
+```
+
+### Mapped
 
 Whether the IP is an IPv4-mapped IPv6 address (eg, `::ffff:7f00:1`) according to
 [RFC 4291](https://tools.ietf.org/html/rfc4291#section-2.5.5.2
-"IP Version 6 Addressing Architecture"). The `IPV4` class will always return
+"IP Version 6 Addressing Architecture"). The `IPv4` class will always return
 `bool(false)` for this method.
 
 ```php
@@ -18,11 +47,11 @@ $ip = IP::factory('::ffff:7f00:1');
 $ip->isMapped(); // bool(true)
 ```
 
-## Derived
+### Derived
 
 Whether the IP is a 6to4-derived IPv6 address (eg, `2002:7f00:1::`) according
 to [RFC 3056](https://tools.ietf.org/html/rfc3056
-"Connection of IPv6 Domains via IPv4 Clouds"). The `IPV4` class will always return
+"Connection of IPv6 Domains via IPv4 Clouds"). The `IPv4` class will always return
 `bool(false)` for this method.
 
 ```php
@@ -33,11 +62,11 @@ $ip = IP::factory('2002:7f00:1::');
 $ip->isDerived(); // bool(true)
 ```
 
-## Compatible
+### Compatible
 
 Whether the IP is an IPv4-compatible IPv6 address (eg, `::7f00:1`) according to
 [RFC 4291](https://tools.ietf.org/html/rfc4291.html#section-2.5.5.1
-"IP Version 6 Addressing Architecture"). The `IPV4` class will always return
+"IP Version 6 Addressing Architecture"). The `IPv4` class will always return
 `bool(false)` for this method.
 
 > IPv4-compatible IPv6 addresses are deprecated in the RFC.
@@ -50,23 +79,9 @@ $ip = IP::factory('::7f00:1');
 $ip->isCompatible(); // bool(true)
 ```
 
-## Embedded
+## Detecting Address Types
 
-Whether the IP is an IPv4-embedded IPv6 address (either a mapped or compatible
-address) according to
-[RFC 4291](https://tools.ietf.org/html/rfc4291.html#section-2.5.5
-"IP Version 6 Addressing Architecture"). The `IPV4` class will always return
-`bool(false)` for this method.
-
-```php
-<?php
-use Darsyn\IP\Version\Multi as IP;
-
-$ip = IP::factory('::ffff:7f00:1');
-$ip->isEmbedded(); // bool(true)
-```
-
-## Link Local
+### Link Local
 
 Whether the IP is reserved for link-local usage according to
 [RFC 3927](https://tools.ietf.org/html/rfc3927 "Dynamic Configuration of IPv4
@@ -81,7 +96,7 @@ $ip = IP::factory('127.0.0.1');
 $ip->isLinkLocal(); // bool(false)
 ```
 
-## Loopback
+### Loopback
 
 Whether the IP is a loopback address according to
 [RFC 3330](https://tools.ietf.org/html/rfc3330 "Special-Use IPv4 Addresses")
@@ -96,7 +111,7 @@ $ip = IP::factory('127.0.0.1');
 $ip->isLoopback(); // bool(true)
 ```
 
-## Multicast
+### Multicast
 
 Whether the IP is a multicast address according to
 [RFC 3171](https://tools.ietf.org/html/rfc3171 "IANA Guidelines for IPv4
@@ -112,7 +127,7 @@ $ip = IP::factory('127.0.0.1');
 $ip->isMulticast(); // bool(false)
 ```
 
-## Private Use
+### Private Use
 
 Whether the IP is for private use according to
 [RFC 1918](https://tools.ietf.org/html/rfc1918 "Address Allocation for Private
@@ -127,7 +142,7 @@ $ip = IP::factory('127.0.0.1');
 $ip->isPrivateUse(); // bool(false)
 ```
 
-## Unspecified
+### Unspecified
 
 Whether the IP is unspecified according to
 [RFC 5735](https://tools.ietf.org/html/rfc5735 "Special Use IPv4 Addresses")
