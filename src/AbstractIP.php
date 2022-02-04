@@ -176,7 +176,7 @@ abstract class AbstractIP implements IpInterface
         }
         // Since it takes 4 bits per hexadecimal, how many sections of complete
         // 1's do we have (f's)?
-        $mask = \str_repeat('f', \floor($cidr / 4));
+        $mask = \str_repeat('f', (int) \floor($cidr / 4));
         // Now we have less than four 1 bits left we need to determine what
         // hexadecimal character should be added next. Of course, we should only
         // add them in there are 1 bits leftover to prevent going over the
@@ -187,7 +187,7 @@ abstract class AbstractIP implements IpInterface
             $bin = \str_pad(\str_repeat('1', $bits), 4, '0', STR_PAD_RIGHT);
             // Convert that 4-bit binary string into a hexadecimal character,
             // and append it to the mask.
-            $mask .= \dechex(\bindec($bin));
+            $mask .= \dechex((int) \bindec($bin));
         }
         // Fill the rest of the string up with zero's to pad it out to the
         // correct length (one hex character is worth half a byte).

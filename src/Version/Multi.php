@@ -63,7 +63,7 @@ class Multi extends IPv6 implements MultiVersionInterface
     public static function factory($ip, EmbeddingStrategyInterface $strategy = null)
     {
         // We need a strategy to pack version 4 addresses.
-        $strategy = $strategy ?: static::getDefaultEmbeddingStrategy();
+        $strategy = $strategy ?: self::getDefaultEmbeddingStrategy();
 
         try {
             // Convert from protocol notation to binary sequence.
