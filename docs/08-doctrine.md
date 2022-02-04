@@ -1,11 +1,11 @@
-## Doctrine Support
+# Doctrine Support
 
 This library can be used to support IP address as column types with Doctrine.
 Three Doctrine types are provided to match the three version classes:
 
-- [`IPV4Type`](../src/Doctrine/IPv4Type.php) supports [`IPv4`](../src/Version/IPv4.php).
-- [`IPV6Type`](../src/Doctrine/IPv6Type.php) supports [`IPv6`](../src/Version/IPv6.php).
-- [`MultiType`](../src/Doctrine/MultiType.php) supports [`Multi`](../src/Version/Multi.php).
+- `Darsyn\IP\Doctrine\IPV4Type` supports the `IPv4` class.
+- `Darsyn\IP\Doctrine\IPV6Type` supports the `IPv6` class.
+- `Darsyn\IP\Doctrine\MultiType` supports the `Multi` class.
 
 ```php
 <?php

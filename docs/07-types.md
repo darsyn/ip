@@ -1,9 +1,9 @@
-## Type Methods
+# Type Methods
 
 The type methods return a boolean value depending on whether the IP address is a
 certain type.
 
-### Mapped
+## Mapped
 
 Whether the IP is an IPv4-mapped IPv6 address (eg, `::ffff:7f00:1`) according to
 [RFC 4291](https://tools.ietf.org/html/rfc4291#section-2.5.5.2
@@ -18,7 +18,7 @@ $ip = IP::factory('::ffff:7f00:1');
 $ip->isMapped(); // bool(true)
 ```
 
-### Derived
+## Derived
 
 Whether the IP is a 6to4-derived IPv6 address (eg, `2002:7f00:1::`) according
 to [RFC 3056](https://tools.ietf.org/html/rfc3056
@@ -33,7 +33,7 @@ $ip = IP::factory('2002:7f00:1::');
 $ip->isDerived(); // bool(true)
 ```
 
-### Compatible
+## Compatible
 
 Whether the IP is an IPv4-compatible IPv6 address (eg, `::7f00:1`) according to
 [RFC 4291](https://tools.ietf.org/html/rfc4291.html#section-2.5.5.1
@@ -50,7 +50,7 @@ $ip = IP::factory('::7f00:1');
 $ip->isCompatible(); // bool(true)
 ```
 
-### Embedded
+## Embedded
 
 Whether the IP is an IPv4-embedded IPv6 address (either a mapped or compatible
 address) according to
@@ -66,7 +66,7 @@ $ip = IP::factory('::ffff:7f00:1');
 $ip->isEmbedded(); // bool(true)
 ```
 
-### Link Local
+## Link Local
 
 Whether the IP is reserved for link-local usage according to
 [RFC 3927](https://tools.ietf.org/html/rfc3927 "Dynamic Configuration of IPv4
@@ -81,7 +81,7 @@ $ip = IP::factory('127.0.0.1');
 $ip->isLinkLocal(); // bool(false)
 ```
 
-### Loopback
+## Loopback
 
 Whether the IP is a loopback address according to
 [RFC 3330](https://tools.ietf.org/html/rfc3330 "Special-Use IPv4 Addresses")
@@ -96,7 +96,7 @@ $ip = IP::factory('127.0.0.1');
 $ip->isLoopback(); // bool(true)
 ```
 
-### Multicast
+## Multicast
 
 Whether the IP is a multicast address according to
 [RFC 3171](https://tools.ietf.org/html/rfc3171 "IANA Guidelines for IPv4
@@ -112,7 +112,7 @@ $ip = IP::factory('127.0.0.1');
 $ip->isMulticast(); // bool(false)
 ```
 
-### Private Use
+## Private Use
 
 Whether the IP is for private use according to
 [RFC 1918](https://tools.ietf.org/html/rfc1918 "Address Allocation for Private
@@ -127,7 +127,7 @@ $ip = IP::factory('127.0.0.1');
 $ip->isPrivateUse(); // bool(false)
 ```
 
-### Unspecified
+## Unspecified
 
 Whether the IP is unspecified according to
 [RFC 5735](https://tools.ietf.org/html/rfc5735 "Special Use IPv4 Addresses")

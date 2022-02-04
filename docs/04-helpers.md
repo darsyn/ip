@@ -1,27 +1,30 @@
-## Helper Methods
+# Helper Methods
 
 Helper methods are for working with IP address and CIDR subnet masks.
 
-Since IP objects are meant to be immutable, whenever an IP is returned it is returned
-as a *new* instance of [`IpInterface`](../src/IpInterface.php) rather than modifying
-the existing object - they are also returned as a static instance meaning an `IPv4`
-object would return a new `IPv4` object, an `IPv6` returns `IPv6`, etc.
+Since IP objects are meant to be immutable, whenever an IP is returned it is
+returned as a *new* instance of `Darsyn\IP\IpInterface` rather than modifying
+the existing object - they are also returned as a static instance meaning an
+`IPv4` object would return a new `IPv4` object, an `IPv6` returns `IPv6`, etc.
 
-### CIDR (Subnet Mask)
+## CIDR (Subnet Mask)
 
 All the helper methods require a CIDR value. Anyone who has worked with CIDR
-notation before will most likely be used to a subnet mask between 0 and 32. However,
-since this library deals with both IPv4 and IPv6 the CIDR values can range up to 128.
+notation before will most likely be used to a subnet mask between 0 and 32.
+However, since this library deals with both IPv4 and IPv6 the CIDR values can
+range up to 128.
 
-Instances of [`IPv4`](../src/Version/IPv4.php) will always deal with CIDR values between 0 and 32.
+Instances of `IPv4` will always deal with CIDR values between 0 and 32.
 
-Instances of [`IPv6`](../src/Version/IPv6.php) will always deal with CIDR values between 0 and 128.
+Instances of `IPv6` will always deal with CIDR values between 0 and 128.
 
-Instances of [`Multi`](../src/Version/Multi.php) will:
-- Detect if the IP address is a version 4 address (according to the embedding strategy).
+Instances of `Multi` will:
+
+- Detect if the IP address is a version 4 address (according to the embedding
+  strategy).
 - If version 4 and the CIDR is less or equal to 32, attempt the method as if it
   was called from an `IPv4` instance.
-- Otherwise (or the previous step resulted in an error/exception) attempt the
+- Otherwise, (or the previous step resulted in an error/exception) attempt the
   method as if it was called from an `IPv6` instance.
 
 ```php
@@ -38,8 +41,10 @@ IP::factory('127.0.0.1')->getNetworkIp(107);
 IP::factory('2001:db8::a60:8a2e:0:7334')->getNetworkIp(50);
 ```
 
-Methods that deal with CIDRs throw an [`InvalidCidrException`](../src/Exception/InvalidCidrException.php)
-when a CIDR value that is out of range is passed. Out of range values are any value that is:
+Methods that deal with CIDRs throw an `Darsyn\IP\ExceptionInvalidCidrException`
+when a CIDR value that is out of range is passed. Out of range values are any
+value that is:
+
 - Not an integer,
 - Below zero,
 - Above 32 (for `IPv4`), or
@@ -89,8 +94,6 @@ $ip = IP::factory('12.34.56.78');
 // Get the network address of an IP address given a subnet mask.
 $networkIp = $ip->getNetworkIp(19);
 $networkIp->getProtocolAppropriateAddress(); // string("12.34.32.0")
-
-$ip === $networkIp; // bool(false)
 ```
 
 ### `getBroadcastIp()`
@@ -105,6 +108,4 @@ $ip = IP::factory('12.34.56.78');
 // Get the broadcast address of an IP address given a subnet mask.
 $broadcastIp = $ip->getBroadcastIp(19);
 $broadcastIp->getProtocolAppropriateAddress(); // string("12.34.63.255")
-
-$ip === $broadcastIp; // bool(false)
 ```
