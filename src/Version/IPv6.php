@@ -77,7 +77,7 @@ class IPv6 extends AbstractIP implements Version6Interface
         try {
             return self::getProtocolFormatter()->ntop($this->getBinary());
         } catch (Exception\Formatter\FormatException $e) {
-            throw new Exception\IpException('An unknown error occured internally.', null, $e);
+            throw new Exception\IpException('An unknown error occured internally.', 0, $e);
         }
     }
 

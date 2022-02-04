@@ -115,7 +115,7 @@ class Multi extends IPv6 implements MultiVersionInterface
             try {
                 return self::getProtocolFormatter()->ntop($this->getShortBinary());
             } catch (Exception\Formatter\FormatException $e) {
-                throw new Exception\IpException('An unknown error occured internally.', null, $e);
+                throw new Exception\IpException('An unknown error occured internally.', 0, $e);
             }
         }
         throw new Exception\WrongVersionException(4, 6, $this->getBinary());
