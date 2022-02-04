@@ -1,6 +1,6 @@
-# `4.0.0` Documentation
+# Documentation
 
-- [Introduction](./01-introduction.md)
+- [Introduction](./index.md)
 - [Installation](./02-installation.md)
 - [Overview](./03-overview.md)
 - [Helpers](./04-helpers.md)
