@@ -78,9 +78,9 @@ interface IpInterface
      * Comparing two IP's of different versions will *always* return false.
      *
      * @param \Darsyn\IP\IpInterface $ip
-     * @param integer $cidr
+     * @param int $cidr
      * @throws \Darsyn\IP\Exception\InvalidCidrException
-     * @return boolean
+     * @return bool
      */
     public function inRange(IpInterface $ip, $cidr);
 

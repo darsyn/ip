@@ -20,6 +20,7 @@ abstract class AbstractIP implements IpInterface
     /**
      * @static
      * @param \Darsyn\IP\Formatter\ProtocolFormatterInterface $formatter
+     * @return void
      */
     public static function setProtocolFormatter(ProtocolFormatterInterface $formatter)
     {
@@ -158,8 +159,8 @@ abstract class AbstractIP implements IpInterface
      * to construct the bitmask as a string instead of doing any mathematical
      * operations (such as base_convert).
      *
-     * @param integer $cidr
-     * @param integer $length
+     * @param int $cidr
+     * @param int $length
      * @throws \Darsyn\IP\Exception\InvalidCidrException
      * @return string
      */

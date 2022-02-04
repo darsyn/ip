@@ -9,7 +9,7 @@ interface EmbeddingStrategyInterface
      * according to the implemented embedding strategy.
      *
      * @param string $binary
-     * @return boolean
+     * @return bool
      */
     public function isEmbedded($binary);
 

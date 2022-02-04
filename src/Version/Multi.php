@@ -28,7 +28,7 @@ use Darsyn\IP\Strategy\Mapped as MappedEmbeddingStrategy;
  */
 class Multi extends IPv6 implements MultiVersionInterface
 {
-    /** @var \Darsyn\IP\Strategy\EmbeddingStrategyInterface $defaultEmbeddingStrategy */
+    /** @var \Darsyn\IP\Strategy\EmbeddingStrategyInterface|null $defaultEmbeddingStrategy */
     private static $defaultEmbeddingStrategy;
 
     /** @var \Darsyn\IP\Strategy\EmbeddingStrategyInterface $embeddingStrategy */
@@ -231,6 +231,10 @@ class Multi extends IPv6 implements MultiVersionInterface
             && (new IPv4($this->getShortBinary()))->isUnspecified();
     }
 
+    /**
+     * @throws \Darsyn\IP\Exception\Strategy\ExtractionException
+     * @return string
+     */
     private function getShortBinary()
     {
         return $this->embeddingStrategy->extract($this->getBinary());
