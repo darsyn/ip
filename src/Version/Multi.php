@@ -170,6 +170,15 @@ class Multi extends IPv6 implements MultiVersionInterface
             if ($this->isVersion4() && $ip->isVersion4() && $this->embeddingStrategy->isEmbedded($ip->getBinary())) {
                 $ours = $this->getShortBinary();
                 $theirs = $this->embeddingStrategy->extract($ip->getBinary());
+                // Always return at this point (don't fall back to IPv6),
+                // otherwise two IPv4 addresses will be compared as IPv6
+                // addresses using a CIDR of less than 32 which would always
+                // return true (except Derived strategy). Eg, comparing 127.0.0.1
+                // and 129.0.0.1 with CIDR 23 would:
+                // 0000:0000:0000:0000:0000:ffff:7f00:0001
+                // 0000:0000:0000:0000:0000:ffff:8100:0001
+                // \-----/
+                // CIDR 23
                 return (new IPv4($ours))->inRange(new IPv4($theirs), $cidr);
             }
         } catch (Exception\Strategy\ExtractionException $e) {
