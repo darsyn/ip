@@ -36,12 +36,11 @@ class MbString
      * @param int $paddingLength
      * @param string $padding
      * @param integer $type
-     * @param string $encoding
      * @return string
      */
-    public static function padString($input, $paddingLength, $padding = ' ', $type = \STR_PAD_RIGHT, $encoding = 'UTF-8')
+    public static function padString($input, $paddingLength, $padding = ' ', $type = \STR_PAD_RIGHT)
     {
-        $diff = \strlen($input) - (\function_exists('mb_strlen') ? \mb_strlen($input, $encoding) : \strlen($input));
+        $diff = \strlen($input) - static::getLength($input);
         return \str_pad($input, $paddingLength + $diff, $padding, $type);
     }
 }

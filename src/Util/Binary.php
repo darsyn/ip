@@ -11,7 +11,7 @@ class Binary
     */
     public static function fromHex($hex)
     {
-        if (!\is_string($hex) || !\ctype_xdigit($hex) || MbString::getLength($hex) % 2 !== 0) {
+        if (!\is_string($hex) || !(\ctype_xdigit($hex) || $hex === '') || MbString::getLength($hex) % 2 !== 0) {
             throw new \InvalidArgumentException('Valid hexadecimal string not provided.');
         }
         return \pack('H*', \strtolower($hex));
@@ -44,7 +44,7 @@ class Binary
         ) {
             throw new \InvalidArgumentException('Valid (ASCII) binary sequence not provided.');
         }
-        return static::fromHex(\implode('', \array_map(function ($byteRepresentation) {
+        return $asciiBinarySequence === '' ? '' : static::fromHex(\implode('', \array_map(function ($byteRepresentation) {
             return MbString::padString(\dechex(\bindec($byteRepresentation)), 2, '0', \STR_PAD_LEFT, '8bit');
         }, \function_exists('mb_str_split') ? \mb_str_split($asciiBinarySequence, 8, '8bit') : \str_split($asciiBinarySequence, 8))));
     }
