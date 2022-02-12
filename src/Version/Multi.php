@@ -2,11 +2,11 @@
 
 namespace Darsyn\IP\Version;
 
-use Darsyn\IP\Binary;
 use Darsyn\IP\Exception;
 use Darsyn\IP\IpInterface;
 use Darsyn\IP\Strategy\EmbeddingStrategyInterface;
 use Darsyn\IP\Strategy\Mapped as MappedEmbeddingStrategy;
+use Darsyn\IP\Util\MbString;
 
 /**
  * Multi-version IP Address
@@ -71,7 +71,7 @@ class Multi extends IPv6 implements MultiVersionInterface
 
             // If the IP address is a binary sequence of 4 bytes, then pack it into
             // a 16 byte IPv6 binary sequence according to the embedding strategy.
-            if (Binary::getLength($binary) === 4) {
+            if (MbString::getLength($binary) === 4) {
                 $binary = $strategy->pack($binary);
             }
         } catch (Exception\IpException $e) {

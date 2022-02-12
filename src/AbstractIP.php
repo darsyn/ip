@@ -5,6 +5,8 @@ namespace Darsyn\IP;
 use Darsyn\IP\Exception\WrongVersionException;
 use Darsyn\IP\Formatter\ConsistentFormatter;
 use Darsyn\IP\Formatter\ProtocolFormatterInterface;
+use Darsyn\IP\Util\Binary;
+use Darsyn\IP\Util\MbString;
 
 abstract class AbstractIP implements IpInterface
 {
@@ -94,7 +96,7 @@ abstract class AbstractIP implements IpInterface
         // sequence with the mask generated from the CIDR.
         return new static($this->getBinary() & $this->generateBinaryMask(
             $cidr,
-            Binary::getLength($this->getBinary())
+            MbString::getLength($this->getBinary())
         ));
     }
 
@@ -107,7 +109,7 @@ abstract class AbstractIP implements IpInterface
         // sequence with the inverse of the mask generated from the CIDR.
         return new static($this->getBinary() | ~$this->generateBinaryMask(
             $cidr,
-            Binary::getLength($this->getBinary())
+            MbString::getLength($this->getBinary())
         ));
     }
 
@@ -129,7 +131,7 @@ abstract class AbstractIP implements IpInterface
     public function getCommonCidr(IpInterface $ip)
     {
         if ($this->getVersion() !== $ip->getVersion()
-            || Binary::getLength($this->getBinary()) !== Binary::getLength($ip->getBinary())
+            || MbString::getLength($this->getBinary()) !== MbString::getLength($ip->getBinary())
         ) {
             // Cannot calculate the greatest common CIDR between an IPv4 and IPv6 address, they are fundamentally
             // incompatible. Furthermore, the greatest common CIDR cannot be calculated between an IPv4 address and an
@@ -138,7 +140,7 @@ abstract class AbstractIP implements IpInterface
         }
         $mask = $this->getBinary() ^ $ip->getBinary();
         $parts = explode('1', Binary::toHumanReadable($mask), 2);
-        return Binary::getLength($parts[0]);
+        return MbString::getLength($parts[0]);
     }
 
     /**
