@@ -2,9 +2,9 @@
 
 namespace Darsyn\IP\Doctrine;
 
-use Darsyn\IP\Binary;
 use Darsyn\IP\Exception\IpException;
 use Darsyn\IP\IpInterface;
+use Darsyn\IP\Util\MbString;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\DBAL\Types\Type;
@@ -107,7 +107,7 @@ abstract class AbstractType extends Type
             ));
         }
 
-        if (static::IP_LENGTH !== $valueLength = Binary::getLength($value->getBinary())) {
+        if (static::IP_LENGTH !== $valueLength = MbString::getLength($value->getBinary())) {
             throw new ConversionException(sprintf(
                 'Cannot fit IPv%d address (%d bytes) into database column (%d bytes). Reconfigure Doctrine types to use a different IP class.',
                 $value->getVersion(),
