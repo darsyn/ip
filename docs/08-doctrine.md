@@ -24,31 +24,17 @@ doctrine:
             ip: Darsyn\IP\Doctrine\MultiType
 ```
 
-Now you can happily store IP addresses in your entites like nobody's business:
+Now you can happily store IP addresses in your entities like nobody's business:
 
 ```php
 <?php
 use Darsyn\IP\Version\Multi as IP;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+ #[ORM\Entity]
 class AnalyticsEntity
 {
-    /**
-     * @ORM\Column(type="ip")
-     */
-    protected $ipAddress;
-
-    public function getIpAddress()
-    {
-        return $this->ipAddress;
-    }
-
-    public function setIpAddress(IP $ip)
-    {
-        $this->ipAddress = $ip;
-    }
+     #[ORM\Column(type: 'ip')]
+    public IP $ipAddress;
 }
 ```
