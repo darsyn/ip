@@ -1,4 +1,4 @@
-name: "Darsyn IP Automated Tests"
+name: "Static Analysis"
 
 on:
   pull_request:
