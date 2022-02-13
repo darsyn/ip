@@ -24,22 +24,22 @@ class NativeFormatter implements ProtocolFormatterInterface
     /**
      * {@inheritDoc}
      */
-    public function pton($protocol)
+    public function pton($binary)
     {
-        if (\is_string($protocol)) {
-            if (\filter_var($protocol, \FILTER_VALIDATE_IP, \FILTER_FLAG_IPV4)) {
-                $sequence = \unpack('a4', \inet_pton($protocol));
+        if (\is_string($binary)) {
+            if (\filter_var($binary, \FILTER_VALIDATE_IP, \FILTER_FLAG_IPV4)) {
+                $sequence = \unpack('a4', \inet_pton($binary));
                 return \current($sequence);
             }
-            if (\filter_var($protocol, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
-                $sequence = \unpack('a16', \inet_pton($protocol));
+            if (\filter_var($binary, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+                $sequence = \unpack('a16', \inet_pton($binary));
                 return \current($sequence);
             }
-            $length = Binary::getLength($protocol);
+            $length = Binary::getLength($binary);
             if ($length === 4 || $length === 16) {
-                return $protocol;
+                return $binary;
             }
         }
-        throw new FormatException($protocol);
+        throw new FormatException($binary);
     }
 }

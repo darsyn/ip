@@ -21,6 +21,7 @@ abstract class AbstractType extends Type
     const IP_LENGTH = 16;
 
     /**
+     * @psalm-return class-string
      * @return string
      */
     abstract protected function getIpClass();
@@ -36,7 +37,7 @@ abstract class AbstractType extends Type
     /**
      * {@inheritdoc}
      */
-    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    public function getSQLDeclaration(array $column, AbstractPlatform $platform)
     {
         return $platform->getBinaryTypeDeclarationSQL(['length' => static::IP_LENGTH]);
     }
@@ -88,7 +89,7 @@ abstract class AbstractType extends Type
             } catch (IpException $e) {
                 throw new ConversionException(sprintf(
                     'Could not convert PHP value "%s" to valid IP address ready for database insertion.',
-                    $value
+                    (string) $value
                 ), 0, $e);
             }
         }
