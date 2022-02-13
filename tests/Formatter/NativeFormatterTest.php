@@ -18,9 +18,7 @@ class NativeFormatterTest extends TestCase
         $this->formatter = new Formatter;
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function testFormatterIsInstanceOfInterface()
     {
         $this->assertInstanceOf(ProtocolFormatterInterface::class, $this->formatter);
