@@ -4,6 +4,7 @@ namespace Darsyn\IP\Tests\Version;
 
 use Darsyn\IP\Exception\InvalidCidrException;
 use Darsyn\IP\Exception\InvalidIpAddressException;
+use Darsyn\IP\Exception\WrongVersionException;
 use Darsyn\IP\IpInterface;
 use Darsyn\IP\Version\IPv4 as IP;
 use Darsyn\IP\Version\IPv6;
@@ -203,7 +204,8 @@ class IPv4Test extends TestCase
     {
         $first = IP::factory('12.34.56.78');
         $second = IP::factory('12.34.56.78');
-        $this->assertFalse($first->inRange($second, $cidr));
+        $this->expectException(InvalidCidrException::class);
+        $first->inRange($second, $cidr);
     }
 
     /**
@@ -213,7 +215,8 @@ class IPv4Test extends TestCase
     {
         $ip = IP::factory('12.34.56.78');
         $other = IPv6::factory('::12.34.56.78');
-        $this->assertFalse($ip->inRange($other, 0));
+        $this->expectException(WrongVersionException::class);
+        $ip->inRange($other, 0);
     }
 
     /**
