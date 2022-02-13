@@ -11,36 +11,11 @@ on:
 
 jobs:
 
-  syntax-linting:
+  phpstan:
     runs-on: 'ubuntu-20.04'
     strategy:
       matrix:
         php:
-          - '5.6'
-          - '7.0'
-          - '7.1'
-          - '7.2'
-          - '7.3'
-          - '7.4'
-          - '8.0'
-          - '8.1'
-    steps:
-      - uses: 'actions/checkout@v2'
-      - uses: 'shivammathur/setup-php@v2'
-        with:
-          php-version: '${{ matrix.php }}'
-      - run: 'find src/ -type f -name "*.php" -print0 | xargs -0 -n1 -P4 php -l -n | (! grep -v "No syntax errors detected" )'
-
-  unit-testing:
-    runs-on: 'ubuntu-20.04'
-    strategy:
-      matrix:
-        php:
-          - '5.6'
-          - '7.0'
-          - '7.1'
-          - '7.2'
-          - '7.3'
           - '7.4'
           - '8.0'
           - '8.1'
@@ -52,4 +27,32 @@ jobs:
       - uses: 'ramsey/composer-install@v2'
         with:
           dependency-versions: 'highest'
-      - run: './vendor/bin/phpunit --bootstrap="tests/bootstrap.php" --test-suffix="Test.php" tests'
+      - run: 'composer require --dev phpstan/phpstan'
+      - run: './vendor/bin/phpstan analyse'
+
+  psalm:
+    runs-on: 'ubuntu-20.04'
+    strategy:
+      matrix:
+        php:
+          - '5.6'
+          - '7.0'
+          - '7.1'
+          - '7.2'
+          - '7.3'
+          - '7.4'
+          - '8.0'
+          - '8.1'
+        include:
+          - php: '8.2'
+            experimental: true
+    steps:
+      - uses: 'actions/checkout@v2'
+      - uses: 'shivammathur/setup-php@v2'
+        with:
+          php-version: '${{ matrix.php }}'
+      - uses: 'ramsey/composer-install@v2'
+        with:
+          dependency-versions: 'highest'
+      - run: 'composer require --dev vimeo/psalm'
+      - run: './vendor/bin/psalm --show-info=false --stats --output-format=github --threads=$(nproc)'
