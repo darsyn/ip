@@ -25,6 +25,9 @@ jobs:
       - uses: 'ramsey/composer-install@v2'
         with:
           dependency-versions: 'highest'
+      # Require vimeo/psalm via command-line instead of adding to Composer's
+      # "require-dev"; we only want to run static analysis once on the highest
+      # version of PHP available. Also, Psalm on 5.6? No, thank you.
       - run: 'composer require --dev vimeo/psalm'
       - run: './vendor/bin/psalm --init src 3'
-      - run: './vendor/bin/psalm --show-info=false --stats --output-format="github" --threads=$(nproc) --php-version=5.6'
+      - run: './vendor/bin/psalm --threads=$(nproc) --php-version=5.6 --no-cache --stats --show-info=false --output-format="github"'

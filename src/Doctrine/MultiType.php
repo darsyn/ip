@@ -4,9 +4,7 @@ namespace Darsyn\IP\Doctrine;
 
 use Darsyn\IP\Version\Multi as IP;
 
-/**
- * {@inheritDoc}
- */
+/** {@inheritDoc} */
 class MultiType extends AbstractType
 {
     /** {@inheritDoc} */

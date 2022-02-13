@@ -4,9 +4,7 @@ namespace Darsyn\IP\Doctrine;
 
 use Darsyn\IP\Version\IPv6 as IP;
 
-/**
- * {@inheritDoc}
- */
+/** {@inheritDoc} */
 class IPv6Type extends AbstractType
 {
     /** {@inheritDoc} */

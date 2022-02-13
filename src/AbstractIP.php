@@ -11,7 +11,7 @@ use Darsyn\IP\Version;
 
 abstract class AbstractIP implements IpInterface
 {
-    /** @var \Darsyn\IP\Formatter\ProtocolFormatterInterface $formatter */
+    /** @var \Darsyn\IP\Formatter\ProtocolFormatterInterface|null $formatter */
     protected static $formatter;
 
     /**

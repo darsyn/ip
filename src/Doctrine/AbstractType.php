@@ -56,7 +56,6 @@ abstract class AbstractType extends Type
                 ));
             }
         }
-        /** @var string|\Darsyn\IP\IpInterface|null $value */
         if (empty($value)) {
             return null;
         }
@@ -68,7 +67,7 @@ abstract class AbstractType extends Type
         try {
             return $this->createIpObject($value);
         } catch (IpException $e) {
-            throw ConversionException::conversionFailed($value, static::NAME);
+            throw ConversionException::conversionFailed($value, self::NAME);
         }
     }
 

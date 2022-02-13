@@ -4,9 +4,7 @@ namespace Darsyn\IP\Doctrine;
 
 use Darsyn\IP\Version\IPv4 as IP;
 
-/**
- * {@inheritDoc}
- */
+/** {@inheritDoc} */
 class IPv4Type extends AbstractType
 {
     const IP_LENGTH = 4;

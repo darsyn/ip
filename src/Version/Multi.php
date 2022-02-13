@@ -34,7 +34,7 @@ class Multi extends IPv6 implements MultiVersionInterface
     /** @var \Darsyn\IP\Strategy\EmbeddingStrategyInterface $embeddingStrategy */
     private $embeddingStrategy;
 
-    /** @var bool $embedded */
+    /** @var bool|null $embedded */
     private $embedded;
 
     /** {@inheritDoc} */
@@ -56,6 +56,7 @@ class Multi extends IPv6 implements MultiVersionInterface
 
     /**
      * {@inheritDoc}
+     * @param string $ip
      * @param \Darsyn\IP\Strategy\EmbeddingStrategyInterface $strategy
      */
     public static function factory($ip, EmbeddingStrategyInterface $strategy = null)
@@ -80,6 +81,7 @@ class Multi extends IPv6 implements MultiVersionInterface
 
     /**
      * {@inheritDoc}
+     * @param string $ip
      * @param \Darsyn\IP\Strategy\EmbeddingStrategyInterface|null $strategy
      */
     protected function __construct($ip, EmbeddingStrategyInterface $strategy = null)
@@ -116,7 +118,7 @@ class Multi extends IPv6 implements MultiVersionInterface
                 throw new Exception\IpException('An unknown error occured internally.', 0, $e);
             }
         }
-        throw new Exception\WrongVersionException(4, 6, $this->getBinary());
+        throw new Exception\WrongVersionException(4, 6, (string) $this);
     }
 
     /** {@inheritDoc} */

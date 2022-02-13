@@ -144,7 +144,7 @@ class MultiTest extends TestCase
             $ip = IP::factory($value);
             $ip->getDotAddress();
         } catch (WrongVersionException $e) {
-            $this->assertSame($ip->getBinary(), $e->getSuppliedIp());
+            $this->assertSame((string) $ip, $e->getSuppliedIp());
             $this->assertSame(4, $e->getExpectedVersion());
             $this->assertSame(6, $e->getActualVersion());
             throw $e;
