@@ -1,7 +1,8 @@
 # Overview
 
-IP addresses get automatically validated on object instantiation; if the IP
-address supplied is invalid, an `InvalidIpAddressException` will be thrown.
+IP addresses get automatically validated on creation through the static factory
+method.; if the IP address supplied is invalid an `InvalidIpAddressException`
+will be thrown.
 
 ```php
 <?php
@@ -67,6 +68,29 @@ Each class has methods for determining the version:
 > what [embedding strategy](./05-strategies.md) is used rather than what
 > notation was passed to the constructor.
 
+## Instantiation
+
+All classes are instantiated using the `factory()` static method. This method
+validates the input and converts it into binary. In the case of the `Multi`
+class it also packs any version 4 addresses into a version 6 address.
+
+```php
+<?php
+use Darsyn\IP\Version\Multi as IP;
+
+try {
+    $ip = new IP('127.0.0.1');
+} catch (\Error) {
+    echo 'Cannot create IP using "new"; please use IP::factory() instead.';
+}
+```
+
+> Many instances are constructed for all [helper](./04-helpers.md) and
+> [type](./07-types.md) methods. Validating the input every time a new instance
+> is constructed slows things down considerably, so to speed up internal
+> processes the constructor does not perform any input validation. Because of
+> this the constructor method has been kept private.
+
 ## Return Formats
 
 Once an IP object has been initialised, the IP address value can be returned in
@@ -81,11 +105,11 @@ Human-readable format comes in 3 flavours:
 - Compacted is for IPv6 addresses, eg `2001:db8::a60:8a2e:370:7334`.
 - Expanded is for IPv6 addresses, eg `2001:0db8:0000:0000:0a60:8a2e:0370:7334`.
 
-### `getDotAddress()`
+### Dot Address
 
-Is only available for `IPv4` and `Multi` classes. Calling `getDotAddress()` on
-an instance of `Multi` that contains a version 6 address will result in a
-`WrongVersionException` being thrown.
+`getDotAddress()` is only available for `IPv4` and `Multi` classes. Calling
+`getDotAddress()` on an instance of `Multi` that contains a version 6 address
+will result in a `WrongVersionException` being thrown.
 
 ```php
 <?php
@@ -101,12 +125,12 @@ try {
 }
 ```
 
-### `getCompactedAddress()`
+### Compacted Address
 
-Is only available for `IPv6` and `Multi` classes. Calling `getCompactedAddress()`
-on an instance of `Multi` that contains a version 4 address will result in the
-IP address being converted to a version 6 address according to the embedding
-strategy.
+`getCompactedAddress()` is only available for `IPv6` and `Multi` classes.
+Calling `getCompactedAddress()` on an instance of `Multi` that contains a
+version 4 address will result in the IP address being converted to a version 6
+address according to the embedding strategy.
 
 ```php
 <?php
@@ -116,12 +140,12 @@ $ip = IP::factory('127.0.0.1');
 echo $ip->getCompactedAddress(); // string("::ffff:7f00:1")
 ```
 
-### `getExpandedAddress()`
+### Expanded Address
 
-Is only available for `IPv6` and `Multi` classes. Calling `getExpandedAddress()`
-on an instance of `Multi` that contains a version 4 address will result in the
-IP address being converted to a version 6 address according to the embedding
-strategy.
+`getExpandedAddress()` is only available for `IPv6` and `Multi` classes. Calling
+`getExpandedAddress()` on an instance of `Multi` that contains a version 4
+address will result in the IP address being converted to a version 6 address
+according to the embedding strategy.
 
 ```php
 <?php
@@ -131,11 +155,11 @@ $ip = IP::factory('127.0.0.1');
 $ip->getExpandedAddress(); // string("0000:0000:0000:0000:0000:ffff:7f00:0001")
 ```
 
-### `getProtocolAppropriateAddress()`
+### Protocol Appropriate Address
 
-Is only available for the `Multi` class. If the instance of `Multi` contains a
-version 4 address, it will be returned in dot-notation, otherwise it returns a
-compacted version 6 address.
+`getProtocolAppropriateAddress()` is only available for the `Multi` class. If
+the instance of `Multi` contains a version 4 address, it will be returned in
+dot notation, otherwise it returns a compacted version 6 address.
 
 ```php
 <?php
@@ -145,21 +169,25 @@ $ip = IP::factory('::ffff:7f00:1');
 $ip->getProtocolAppropriateAddress(); // string("127.0.0.1")
 ```
 
-### `getBinary()`
+### Binary
 
-Returns the 16 byte (4 bytes if using `IPv4`) binary string of the IP address.
-This will most likely contain non-printable characters, so is not appropriate
-for displaying. 
+`getBinary()` returns the 16 byte (4 bytes if using `IPv4`) binary string of the
+IP address. This will most likely contain non-printable characters, so is not
+appropriate for displaying. 
 
 ```php
 <?php
-use Darsyn\IP\Version\Multi as IP;
+use Darsyn\IP\Version\IPv4 as IP;
 
-$ip = IP::factory('127.0.0.1');
-$binary = $ip->getBinary();
+// The IPv4 address "80.111.111.112" just so happens to be, when converted to
+// binary, the same as the binary for the ASCII string "Poop". Today you learnt
+// something new.
+
+$ip = IP::factory('80.111.111.112');
+$ip->getBinary(); // string("Poop")
 ```
 
-### String Casting
+## String Casting
 
 Previous versions of this documentation specified that string casting for IP
 objects was enabled to get the binary string, but that was unfortunately untrue.
