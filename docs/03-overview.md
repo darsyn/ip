@@ -1,7 +1,7 @@
 # Overview
 
 IP addresses get automatically validated on creation through the static factory
-method.; if the IP address supplied is invalid an `InvalidIpAddressException`
+method; if the IP address supplied is invalid an `InvalidIpAddressException`
 will be thrown.
 
 ```php
