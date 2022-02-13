@@ -138,13 +138,9 @@ abstract class AbstractIP implements IpInterface
      */
     public function getCommonCidr(IpInterface $ip)
     {
-        // Cannot calculate the greatest common CIDR between an IPv4 and IPv6
-        // address, they are fundamentally incompatible. Furthermore, the
-        // greatest common CIDR cannot be calculated between an IPv4 address and
-        // an IPv4 address embedded into an IPv6 address.
+        // Cannot calculate the greatest common CIDR between an IPv4 and
+        // IPv6/IPv4-embedded address, they are fundamentally incompatible.
         if (!$this->isSameByteLength($ip)) {
-            // They may represent the same version (eg, IPv4 and IPv4-embdedded)
-            // but they are not compatible.
             throw new WrongVersionException(
                 MbString::getLength($this->getBinary()) === 4 ? 4 : 6,
                 MbString::getLength($ip->getBinary()) === 4 ? 4 : 6,
