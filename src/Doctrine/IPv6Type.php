@@ -9,17 +9,13 @@ use Darsyn\IP\Version\IPv6 as IP;
  */
 class IPv6Type extends AbstractType
 {
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     protected function getIpClass()
     {
         return IP::class;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     protected function createIpObject($ip)
     {
         return IP::factory($ip);

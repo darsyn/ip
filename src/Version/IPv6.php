@@ -27,9 +27,7 @@ use Darsyn\IP\Util\MbString;
  */
 class IPv6 extends AbstractIP implements Version6Interface
 {
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public static function factory($ip)
     {
         try {
@@ -58,9 +56,7 @@ class IPv6 extends AbstractIP implements Version6Interface
         return new static(Multi::factory($ip, $strategy)->getBinary());
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function getExpandedAddress()
     {
         // Convert the 16-byte binary sequence into a hexadecimal-string
@@ -70,9 +66,7 @@ class IPv6 extends AbstractIP implements Version6Interface
         return MbString::subString(\is_string($expanded) ? $expanded : '', 0, -1);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function getCompactedAddress()
     {
         try {
@@ -82,57 +76,43 @@ class IPv6 extends AbstractIP implements Version6Interface
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function getVersion()
     {
         return 6;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function isLinkLocal()
     {
         return $this->inRange(new self(Binary::fromHex('fe800000000000000000000000000000')), 10);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function isLoopback()
     {
         return $this->inRange(new self(Binary::fromHex('00000000000000000000000000000001')), 128);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function isMulticast()
     {
         return $this->inRange(new self(Binary::fromHex('ff000000000000000000000000000000')), 8);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function isPrivateUse()
     {
         return $this->inRange(new self(Binary::fromHex('fd000000000000000000000000000000')), 8);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function isUnspecified()
     {
         return $this->getBinary() === "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function __toString()
     {
         return $this->getCompactedAddress();

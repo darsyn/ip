@@ -26,9 +26,7 @@ use Darsyn\IP\Util\MbString;
  */
 class IPv4 extends AbstractIP implements Version4Interface
 {
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public static function factory($ip)
     {
         try {
@@ -49,9 +47,7 @@ class IPv4 extends AbstractIP implements Version4Interface
         return new static($binary);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function getDotAddress()
     {
         try {
@@ -61,41 +57,31 @@ class IPv4 extends AbstractIP implements Version4Interface
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function getVersion()
     {
         return 4;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function isLinkLocal()
     {
         return $this->inRange(new static(Binary::fromHex('a9fe0000')), 16);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function isLoopback()
     {
         return $this->inRange(new static(Binary::fromHex('7f000000')), 8);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function isMulticast()
     {
         return $this->inRange(new static(Binary::fromHex('e0000000')), 4);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function isPrivateUse()
     {
         return $this->inRange(new static(Binary::fromHex('0a000000')), 8)
@@ -103,17 +89,13 @@ class IPv4 extends AbstractIP implements Version4Interface
             || $this->inRange(new static(Binary::fromHex('c0a80000')), 16);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function isUnspecified()
     {
         return $this->getBinary() === "\0\0\0\0";
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function __toString()
     {
         return $this->getDotAddress();

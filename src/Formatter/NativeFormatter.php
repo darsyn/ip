@@ -7,9 +7,7 @@ use Darsyn\IP\Util\MbString;
 
 class NativeFormatter implements ProtocolFormatterInterface
 {
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function ntop($binary)
     {
         if (\is_string($binary)) {
@@ -21,9 +19,7 @@ class NativeFormatter implements ProtocolFormatterInterface
         throw new FormatException($binary);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function pton($binary)
     {
         if (\is_string($binary)) {

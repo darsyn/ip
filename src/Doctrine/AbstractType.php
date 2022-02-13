@@ -34,9 +34,7 @@ abstract class AbstractType extends Type
      */
     abstract protected function createIpObject($ip);
 
-    /**
-     * {@inheritdoc}
-     */
+    /** {@inheritDoc} */
     public function getSQLDeclaration(array $column, AbstractPlatform $platform)
     {
         return $platform->getBinaryTypeDeclarationSQL(['length' => static::IP_LENGTH]);
@@ -120,25 +118,19 @@ abstract class AbstractType extends Type
         return $value->getBinary();
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    /** {@inheritDoc} */
     public function getName()
     {
         return self::NAME;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    /** {@inheritDoc} */
     public function getBindingType()
     {
         return \PDO::PARAM_LOB;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    /** {@inheritDoc} */
     public function requiresSQLCommentHint(AbstractPlatform $platform)
     {
         return true;

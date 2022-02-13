@@ -8,9 +8,7 @@ use Darsyn\IP\Util\MbString;
 
 class Derived implements EmbeddingStrategyInterface
 {
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function isEmbedded($binary)
     {
         return MbString::getLength($binary) === 16
@@ -18,9 +16,7 @@ class Derived implements EmbeddingStrategyInterface
             && MbString::subString($binary, 6, 10) === "\0\0\0\0\0\0\0\0\0\0";
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function extract($binary)
     {
         if (MbString::getLength($binary) === 16) {
@@ -29,9 +25,7 @@ class Derived implements EmbeddingStrategyInterface
         throw new StrategyException\ExtractionException($binary, $this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function pack($binary)
     {
         if (MbString::getLength($binary) === 4) {
