@@ -139,7 +139,7 @@ class MultiTest extends TestCase
      */
     public function testDotAddressThrowsExceptionForNonVersion4Addresses($value)
     {
-        $this->expectException(\Darsyn\IP\Exception\WrongVersionException::class);
+        $this->expectException(WrongVersionException::class);
         try {
             $ip = IP::factory($value);
             $ip->getDotAddress();
@@ -208,6 +208,26 @@ class MultiTest extends TestCase
         $second = IPv4::factory('127.0.0.1');
         $this->expectException(WrongVersionException::class);
         $first->inRange($second, 0);
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getCommonCidrValues()
+     */
+    public function testCommonCidr($first, $second, $expectedCidr)
+    {
+        $first = IP::factory($first);
+        $second = IP::factory($second);
+        $this->assertSame($expectedCidr, $first->getCommonCidr($second));
+    }
+
+    /** @test */
+    public function testCommonCidrThrowsException()
+    {
+        $first = IP::factory('12.34.56.78');
+        $second = IPv4::factory('12.34.56.78');
+        $this->expectException(WrongVersionException::class);
+        $first->getCommonCidr($second);
     }
 
     /**

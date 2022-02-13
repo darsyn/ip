@@ -130,6 +130,28 @@ class IPv6
         ];
     }
 
+    public static function getCommonCidrValues()
+    {
+        return [
+            ['cea9:ae3d:9fa6:a752:189a:9057:a38d:845c', 'cea9:ae3d:9fa6:a752:189d:1dfe:b689:f71e',  77 ],
+            ['2870:7f44:a8c3:4ca8:dafa:bb1c:72e7:9fb6', '2870:7f44:a8c3:4ca8:dafa:bb5c:2f74:80be',  89 ],
+            ['7253:1a1c:7555:6ac6:ea61:bbfd:d69c:f18f', '7253:1a1c:7555:6ac6:ea61:bbfd:d69e:7b37',  110],
+            ['ce59:af1c:ba23:d57c:ae06:3c80:1127:2436', 'ce59:af1c:ba23:d54f:3007:746a:b63e:9888',  58 ],
+            ['3ad3:6aa2:7985:5e2b:919e:a13e:5e2b:136f', '3ad3:6aa2:7985:5e2b:919e:a1b5:4032:cab0',  88 ],
+            ['d46a:2c00:6779:8aef:f833:7219:7944:e577', 'd46a:2c00:6779:8a1f:9e1:87ca:6649:530a',   56 ],
+            ['21b4:913:7f19:9336:3c2b:6eff:85c0:684b',  '21b4:913:7f19:934e:8a94:19e5:910c:5fc5',   57 ],
+            ['7a13:6e44:96ae:419f:b402:b9c6:c7e0:9978', '7a13:6e4a:a50a:ca54:e74f:8c59:53db:a535',  28 ],
+            ['bf1:ca13:bf30:dda9:5276:4565:1a41:f6ac',  'bf1:ca18:7dc9:e941:69b2:38e3:cbb2:ddf8',   28 ],
+            ['9b8d:c55d:f3e9:5593:50e5:e933:2eb0:110',  '9b8d:c55d:f3e9:5593:50a4:29d9:93d4:fccc',  73 ],
+            ['9b26:3549:9cf:84ba:6583:fb45:e3a:7cf2',   '9b26:3549:9cf:84ba:6586:74d7:e24e:91db',   77 ],
+            ['52dd:91e6:f55d:7a30:197e:1fa7:337d:22ff', '52dd:91e6:f55d:7a30:197e:1fa7:3a2c:ecff',  100],
+            ['e51b:81af:1a16:a3c1:8f53:b4c1:d67e:6055', 'e51b:81af:1a16:a3b5:c255:23ad:34da:6069',  57 ],
+            ['cb5:c011:d0e9:546c:1f08:a09e:8116:8365',  '1a15:12c1:6dd:a19:9339:488f:f31f:3edb',    3] ,
+            ['9c87:6dce:cd4e:14bb:87dc:9b14:cc8a:fef3', '9c87:6dce:cd4e:14bb:87dc:9b14:da23:f3f3',  99 ],
+            ['8cda:85cb:3911:57d3:9bd9:6fd2:e8d2:9521', '8cda:85cb:3908:b2cd:eb43:f94d:dee3:8a4b',  43 ],
+        ];
+    }
+
     public static function getMappedIpAddresses()
     {
         return [
