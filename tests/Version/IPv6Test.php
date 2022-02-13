@@ -235,9 +235,7 @@ class IPv6Test extends TestCase
         $this->assertTrue($first->inRange($second, $cidr));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function testDifferentVersionsAreNotInRange()
     {
         $ip = IP::factory('::12.34.56.78');

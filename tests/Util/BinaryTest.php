@@ -27,17 +27,13 @@ class BinaryTest extends TestCase
         Binary::fromHumanReadable($input);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function testEmptyHexInput()
     {
         $this->assertSame('', Binary::fromHex(''));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function testEmptyHumanReadableInput()
     {
         $this->assertSame('', Binary::fromHumanReadable(''));

@@ -193,9 +193,7 @@ class MultiTest extends TestCase
         $this->assertTrue($first->inRange($second, $cidr));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function testDifferentVersionsAreInRange()
     {
         $first = IP::factory('127.0.0.1', new Mapped);
@@ -203,9 +201,7 @@ class MultiTest extends TestCase
         $this->assertTrue($first->inRange($second, 0));
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function testDifferentByteLengthsAreNotInRange()
     {
         $first = IP::factory('127.0.0.1');
