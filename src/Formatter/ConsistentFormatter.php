@@ -40,13 +40,21 @@ class ConsistentFormatter extends NativeFormatter
             $length = $zero ? ++$length : 0;
             $sequences[++$i] = $length;
         }
-        $maxLength = \max($sequences);
-        $position = \array_search($maxLength, $sequences, true) - $maxLength;
+        if (\count($sequences) > 0) {
+            $maxLength = \max($sequences);
+            $endPosition = \array_search($maxLength, $sequences, true);
+            if (!\is_int($endPosition)) {
+                throw new \RuntimeException;
+            }
+            $startPosition = $endPosition - $maxLength;
+        } else {
+            $maxLength = $startPosition = 0;
+        }
         $parts = \array_map(function ($part) {
             return \ltrim($part, '0') ?: '0';
         }, $parts);
         if ($maxLength > 0) {
-            \array_splice($parts, $position, $maxLength, ':');
+            \array_splice($parts, $startPosition, $maxLength, ':');
         }
         return \str_pad(\preg_replace('/\:{2,}/', '::', \implode(':', $parts)), 2, ':');
     }

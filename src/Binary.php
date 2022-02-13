@@ -11,7 +11,7 @@ class Binary
     public static function getLength($str)
     {
         return \function_exists('\\mb_strlen')
-            ? (int) \mb_strlen($str, '8bit')
+            ? \mb_strlen($str, '8bit')
             : (int) (\strlen(\bin2hex($str)) / 2);
     }
 
