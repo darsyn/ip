@@ -125,15 +125,16 @@ interface IpInterface
     public function isEmbedded();
 
     /**
-     * Whether the IP is reserved for link-local usage according to
-     * RFC 3927/RFC 4291 (IPv4/IPv6).
+     * Whether the IPv4 is reserved for link-local usage, according to
+     * RFC 3927; or the IPv6 is a unicast address with link-local scope,
+     * according to RFC 4291 (section 2.4).
      *
      * @return bool
      */
     public function isLinkLocal();
 
     /**
-     * Whether the IP is a loopback address according to RFC 2373/RFC 3330
+     * Whether the IP is a loopback address, according to RFC 2373/RFC 3330
      * (IPv4/IPv6).
      *
      * @return bool
@@ -141,7 +142,7 @@ interface IpInterface
     public function isLoopback();
 
     /**
-     * Whether the IP is a multicast address according to RFC 3171/RFC 2373
+     * Whether the IP is a multicast address, according to RFC 3171/RFC 2373
      * (IPv4/IPv6).
      *
      * @return bool
@@ -149,7 +150,7 @@ interface IpInterface
     public function isMulticast();
 
     /**
-     * Whether the IP is for private use according to RFC 1918/RFC 4193
+     * Whether the IP is for private use, according to RFC 1918/RFC 4193
      * (IPv4/IPv6).
      *
      * @return bool
@@ -157,11 +158,39 @@ interface IpInterface
     public function isPrivateUse();
 
     /**
-     * Whether the IP is unspecified according to RFC 5735/RFC 2373 (IPv4/IPv6).
+     * Whether the IP is unspecified, according to RFC 5735/RFC 2373 (IPv4/IPv6).
      *
      * @return bool
      */
     public function isUnspecified();
+
+    /**
+     * Whether the IP is reserved for network devices benchmarking, according
+     * to RFC 2544/RFC 5180 (IPv4/IPv6).
+     *
+     * @return bool
+     */
+    public function isBenchmarking();
+
+    /**
+     * Whether the IP is in range designated for documentation, according to
+     * RFC 5737/RFC 3849 (IPv4/IPv6).
+     *
+     * @return bool
+     */
+    public function isDocumentation();
+
+    /**
+     * Whether the IP appears to be publicly/globally routable.
+     * Please refer to the IANA IPv4 Special-Purpose Address Registry. I can't
+     * seem to find a standard for IPv6, so I copied logic from Rust.
+     *
+     * @see https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry.xhtml
+     * @see https://doc.rust-lang.org/std/net/struct.Ipv6Addr.html#method.is_global
+     *
+     * @return bool
+     */
+    public function isPublic();
 
     /**
      * Implement string casting for IP objects.

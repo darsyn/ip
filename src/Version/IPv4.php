@@ -96,6 +96,46 @@ class IPv4 extends AbstractIP implements Version4Interface
     }
 
     /** {@inheritDoc} */
+    public function isBroadcast()
+    {
+        return $this->getBinary() === Binary::fromHex('ffffffff');
+    }
+
+    /** {@inheritDoc} */
+    public function isBenchmarking()
+    {
+        return $this->inRange(new static(Binary::fromHex('c6120000')), 15);
+    }
+
+    /** {@inheritDoc} */
+    public function isDocumentation()
+    {
+       return $this->inRange(new static(Binary::fromHex('c0000200')), 24) // TEST-NET-1
+          || $this->inRange(new static(Binary::fromHex('c6336400')), 24)  // TEST-NET-2
+          || $this->inRange(new static(Binary::fromHex('cb007100')), 24); // TEST-NET-3
+    }
+
+    /** {@inheritDoc} */
+    public function isFuture()
+    {
+        return $this->inRange(new static(Binary::fromHex('f0000000')), 4);
+    }
+
+    /** {@inheritDoc} */
+    public function isPublic()
+    {
+        $isPrivate = $this->isPrivateUse()
+            || $this->isLoopback()
+            || $this->isLinkLocal()
+            || $this->isBroadcast()
+            || $this->isDocumentation()
+            || $this->isUnspecified()
+            || $this->isFuture()
+            || $this->isBenchmarking();
+        return !$isPrivate;
+    }
+
+    /** {@inheritDoc} */
     public function __toString()
     {
         return $this->getDotAddress();

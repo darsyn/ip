@@ -113,6 +113,49 @@ class IPv6 extends AbstractIP implements Version6Interface
     }
 
     /** {@inheritDoc} */
+    public function isBenchmarking()
+    {
+        return $this->inRange(new self(Binary::fromHex('20010002000000000000000000000000')), 48);
+    }
+
+    /** {@inheritDoc} */
+    public function isDocumentation()
+    {
+        return $this->inRange(new self(Binary::fromHex('20010db8000000000000000000000000')), 32);
+    }
+
+    /** {@inheritDoc} */
+    public function isPublic()
+    {
+        // Is: Multicast (Global Scope), or Unicast Global.
+        return MbString::subString($this->getBinary(), 0, 2) === Binary::fromHex('ff02')
+            || $this->isUnicastGlobal();
+    }
+
+    /** {@inheritDoc} */
+    public function isUnicast()
+    {
+        return !$this->isMulticast();
+    }
+
+    /** {@inheritDoc} */
+    public function isUniqueLocal()
+    {
+        return $this->inRange(new self(Binary::fromHex('fc000000000000000000000000000000')), 7);
+    }
+
+    /** {@inheritDoc} */
+    public function isUnicastGlobal()
+    {
+        $isPrivate = $this->isLoopback()
+            || $this->isLinkLocal()
+            || $this->isUniqueLocal()
+            || $this->isUnspecified()
+            || $this->isDocumentation();
+        return !$isPrivate;
+    }
+
+    /** {@inheritDoc} */
     public function __toString()
     {
         return $this->getCompactedAddress();

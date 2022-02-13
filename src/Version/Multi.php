@@ -201,6 +201,42 @@ class Multi extends IPv6 implements MultiVersionInterface
     }
 
     /** {@inheritDoc} */
+    public function isBenchmarking()
+    {
+        return parent::isBenchmarking()
+            || $this->isEmbedded()
+            && (new IPv4($this->getShortBinary()))->isBenchmarking();
+    }
+
+    /** {@inheritDoc} */
+    public function isBroadcast()
+    {
+        try {
+            return (new IPv4($this->getShortBinary()))->isBroadcast();
+        } catch (Exception\Strategy\ExtractionException $e) {
+            throw new Exception\WrongVersionException(4, $this->getVersion(), $this);
+        }
+    }
+
+    /** {@inheritDoc} */
+    public function isDocumentation()
+    {
+        return parent::isDocumentation()
+            || $this->isEmbedded()
+            && (new IPv4($this->getShortBinary()))->isDocumentation();
+    }
+
+    /** {@inheritDoc} */
+    public function isFuture()
+    {
+        try {
+            return (new IPv4($this->getShortBinary()))->isFuture();
+        } catch (Exception\Strategy\ExtractionException $e) {
+            throw new Exception\WrongVersionException(4, $this->getVersion(), $this);
+        }
+    }
+
+    /** {@inheritDoc} */
     public function isLinkLocal()
     {
         return parent::isLinkLocal()
@@ -230,6 +266,14 @@ class Multi extends IPv6 implements MultiVersionInterface
         return parent::isPrivateUse()
             || $this->isEmbedded()
             && (new IPv4($this->getShortBinary()))->isPrivateUse();
+    }
+
+    /** {@inheritDoc} */
+    public function isPublic()
+    {
+        return parent::isPublic()
+            || $this->isEmbedded()
+            && (new IPv4($this->getShortBinary()))->isPublic();
     }
 
     /** {@inheritDoc} */

@@ -27,4 +27,26 @@ interface Version6Interface extends IpInterface
      * @return string
      */
     public function getExpandedAddress();
+
+    /**
+     * Whether the IP is a unique local address, according to RFC 4193.
+     *
+     * @return bool
+     */
+    public function isUniqueLocal();
+
+    /**
+     * Whether the IP is a unicast address, according to RFC 4291.
+     *
+     * @return bool
+     */
+    public function isUnicast();
+
+    /**
+     * Whether the IP is a globally routable unicast address, according to
+     * RFC 2941 (section 2.5.7).
+     *
+     * @return bool
+     */
+    public function isUnicastGlobal();
 }
