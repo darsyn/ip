@@ -8,18 +8,14 @@ use Darsyn\IP\Util\MbString;
 
 class Mapped implements EmbeddingStrategyInterface
 {
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function isEmbedded($binary)
     {
         return MbString::getLength($binary) === 16
             && MbString::subString($binary, 0, 12) === Binary::fromHex('00000000000000000000ffff');
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function extract($binary)
     {
         if (MbString::getLength($binary) === 16) {
@@ -28,9 +24,7 @@ class Mapped implements EmbeddingStrategyInterface
         throw new StrategyException\ExtractionException($binary, $this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function pack($binary)
     {
         if (MbString::getLength($binary) === 4) {

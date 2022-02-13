@@ -37,9 +37,7 @@ class Multi extends IPv6 implements MultiVersionInterface
     /** @var bool $embedded */
     private $embedded;
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public static function setDefaultEmbeddingStrategy(EmbeddingStrategyInterface $strategy)
     {
         self::$defaultEmbeddingStrategy = $strategy;
@@ -271,9 +269,7 @@ class Multi extends IPv6 implements MultiVersionInterface
         return $this->isVersion4() && $ip->isVersion4() && $this->embeddingStrategy->isEmbedded($ip->getBinary());
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function __toString()
      {
          return $this->getProtocolAppropriateAddress();

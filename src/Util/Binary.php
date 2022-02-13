@@ -5,10 +5,10 @@ namespace Darsyn\IP\Util;
 class Binary
 {
     /**
-    * @param string $hex
-    * @throws \InvalidArgumentException
-    * @return string
-    */
+     * @param string $hex
+     * @throws \InvalidArgumentException
+     * @return string
+     */
     public static function fromHex($hex)
     {
         if (!\is_string($hex) || !(\ctype_xdigit($hex) || $hex === '') || MbString::getLength($hex) % 2 !== 0) {
@@ -18,10 +18,10 @@ class Binary
     }
 
     /**
-    * @param string $binary
+     * @param string $binary
      * @throws \InvalidArgumentException
-    * @return string
-    */
+     * @return string
+     */
     public static function toHex($binary)
     {
         if (!\is_string($binary)) {

@@ -6,7 +6,7 @@ class MbString
 {
     /**
      * @param string $str
-     * @return integer
+     * @return int
      */
     public static function getLength($str)
     {
@@ -17,9 +17,9 @@ class MbString
 
     /**
      * @param string $str
-     * @param integer $start
-     * @param integer|null $length
-     * @return boolean|string
+     * @param int $start
+     * @param int|null $length
+     * @return bool|string
      */
     public static function subString($str, $start, $length = null)
     {
@@ -35,7 +35,7 @@ class MbString
      * @param string $input
      * @param int $paddingLength
      * @param string $padding
-     * @param integer $type
+     * @param int $type
      * @return string
      */
     public static function padString($input, $paddingLength, $padding = ' ', $type = \STR_PAD_RIGHT)

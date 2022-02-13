@@ -11,17 +11,13 @@ class IPv4Type extends AbstractType
 {
     const IP_LENGTH = 4;
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     protected function getIpClass()
     {
         return IP::class;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     protected function createIpObject($ip)
     {
         return IP::factory($ip);

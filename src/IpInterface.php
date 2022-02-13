@@ -91,7 +91,7 @@ interface IpInterface
      *
      * @param \Darsyn\IP\IpInterface $ip
      * @throws \Darsyn\IP\Exception\WrongVersionException
-     * @return integer
+     * @return int
      */
     public function getCommonCidr(IpInterface $ip);
 

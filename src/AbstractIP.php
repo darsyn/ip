@@ -56,41 +56,31 @@ abstract class AbstractIP implements IpInterface
         $this->ip = $ip;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     final public function getBinary()
     {
         return $this->ip;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function isVersion($version)
     {
         return $this->getVersion() === $version;
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function isVersion4()
     {
         return $this->isVersion(4);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function isVersion6()
     {
         return $this->isVersion(6);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function getNetworkIp($cidr)
     {
         // Providing that the CIDR is valid, bitwise AND the IP address binary
@@ -101,9 +91,7 @@ abstract class AbstractIP implements IpInterface
         ));
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function getBroadcastIp($cidr)
     {
         // Providing that the CIDR is valid, bitwise OR the IP address binary
@@ -114,9 +102,7 @@ abstract class AbstractIP implements IpInterface
         ));
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function inRange(IpInterface $ip, $cidr)
     {
         if (!$this->isSameByteLength($ip)) {
@@ -133,9 +119,7 @@ abstract class AbstractIP implements IpInterface
         return $ours->getNetworkIp($cidr)->getBinary() === $theirs->getNetworkIp($cidr)->getBinary();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function getCommonCidr(IpInterface $ip)
     {
         // Cannot calculate the greatest common CIDR between an IPv4 and
@@ -152,33 +136,25 @@ abstract class AbstractIP implements IpInterface
         return MbString::getLength($parts[0]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function isMapped()
     {
         return (new Strategy\Mapped)->isEmbedded($this->getBinary());
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function isDerived()
     {
         return (new Strategy\Derived)->isEmbedded($this->getBinary());
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function isCompatible()
     {
         return (new Strategy\Compatible)->isEmbedded($this->getBinary());
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public function isEmbedded()
     {
         return false;
