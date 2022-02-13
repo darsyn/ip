@@ -1,4 +1,4 @@
-name: "Darsyn IP Automated Tests"
+name: "Linting and Unit Tests"
 
 on:
   pull_request:
