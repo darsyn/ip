@@ -11,21 +11,21 @@ class MbString
     public static function getLength($str)
     {
         return \function_exists('\\mb_strlen')
-            ? (int) \mb_strlen($str, '8bit')
-            : \strlen(\bin2hex($str)) / 2;
+            ? \mb_strlen($str, '8bit')
+            : (int) (\strlen(\bin2hex($str)) / 2);
     }
 
     /**
      * @param string $str
      * @param int $start
      * @param int|null $length
-     * @return bool|string
+     * @return string
      */
     public static function subString($str, $start, $length = null)
     {
         return \function_exists('\\mb_substr')
-            ? \mb_substr($str, $start, $length, '8bit')
-            : \substr($str, $start, $length);
+            ? (\mb_substr($str, $start, $length, '8bit') ?: '')
+            : (\substr($str, $start, $length) ?: '');
     }
 
     /**

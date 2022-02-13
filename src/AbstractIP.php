@@ -107,7 +107,7 @@ abstract class AbstractIP implements IpInterface
     {
         if (!$this->isSameByteLength($ip)) {
             // Cannot calculate if one IP is in range of another if they of different byte-lengths.
-            throw new WrongVersionException($this->getVersion(), $ip->getVersion(), $ip);
+            throw new WrongVersionException($this->getVersion(), $ip->getVersion(), (string) $ip);
         }
         // If this method is being called, it means Multi may have failed it's
         // IPv4 check, and we must proceed as IPv6 only. We must perform
@@ -128,7 +128,7 @@ abstract class AbstractIP implements IpInterface
             throw new WrongVersionException(
                 MbString::getLength($this->getBinary()) === 4 ? 4 : 6,
                 MbString::getLength($ip->getBinary()) === 4 ? 4 : 6,
-                $ip
+                (string) $ip
             );
         }
         $mask = $this->getBinary() ^ $ip->getBinary();
