@@ -80,7 +80,7 @@ class MultiTest extends TestCase
      */
     public function testExceptionIsThrownOnInstantiationWithInvalidAddresses($value)
     {
-        $this->expectException(\Darsyn\IP\Exception\InvalidIpAddressException::class);
+        $this->expectException(InvalidIpAddressException::class);
         $this->expectExceptionMessage('The IP address supplied is not valid.');
         try {
             $ip = IP::factory($value);
@@ -88,7 +88,6 @@ class MultiTest extends TestCase
             $this->assertSame($value, $e->getSuppliedIp());
             throw $e;
         }
-        $this->fail();
     }
 
     /**
@@ -142,12 +141,11 @@ class MultiTest extends TestCase
             $ip = IP::factory($value);
             $ip->getDotAddress();
         } catch (WrongVersionException $e) {
-            $this->assertSame($ip->getBinary(), $e->getSuppliedIp());
+            $this->assertSame((string) $ip, $e->getSuppliedIp());
             $this->assertSame(4, $e->getExpectedVersion());
             $this->assertSame(6, $e->getActualVersion());
             throw $e;
         }
-        $this->fail();
     }
 
     /**
