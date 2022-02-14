@@ -2,7 +2,7 @@
 
 namespace Darsyn\IP\Tests\DataProvider;
 
-class IPv4
+class IPv4 implements IpDataProviderInterface
 {
     public static function getValidBinarySequences()
     {
@@ -186,5 +186,31 @@ class IPv4
             ['0.0.0.1',   false],
             ['127.0.0.1', false],
         ];
+    }
+
+    /** {@inheritDoc} */
+    public static function getCategorizedIpAddresses()
+    {
+        return [];
+    }
+
+    /** {@inheritDoc} */
+    public static function getCategoryOfIpAddresses($category)
+    {
+        $data = [];
+        $true = $false = 0;
+        foreach (self::getCategorizedIpAddresses() as $ipAddress => $categories) {
+            if (($categories & $category) > 0) {
+                $data[] = [$ipAddress, true];
+                $true++;
+            } else {
+                $data[] = [$ipAddress, false];
+                $false++;
+            }
+        }
+        if ($true === 0 || $false === 0) {
+            throw new \DomainException('Please supply both valid and invalid IP addresses for test.');
+        }
+        return $data;
     }
 }

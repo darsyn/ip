@@ -2,7 +2,7 @@
 
 namespace Darsyn\IP\Tests\DataProvider;
 
-class IPv6
+class IPv6 implements IpDataProviderInterface
 {
     public static function getValidBinarySequences()
     {
@@ -216,5 +216,31 @@ class IPv6
             ['::1',             false],
             ['2002:7f00:1::',   false],
         ];
+    }
+
+    /** {@inheritDoc} */
+    public static function getCategorizedIpAddresses()
+    {
+        return [];
+    }
+
+    /** {@inheritDoc} */
+    public static function getCategoryOfIpAddresses($category)
+    {
+        $data = [];
+        $true = $false = 0;
+        foreach (self::getCategorizedIpAddresses() as $ipAddress => $categories) {
+            if (($categories & $category) > 0) {
+                $data[] = [$ipAddress, true];
+                $true++;
+            } else {
+                $data[] = [$ipAddress, false];
+                $false++;
+            }
+        }
+        if ($true === 0 || $false === 0) {
+            throw new \DomainException('Please supply both valid and invalid IP addresses for test.');
+        }
+        return $data;
     }
 }
