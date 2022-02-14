@@ -2,7 +2,7 @@
 
 namespace Darsyn\IP\Tests\DataProvider;
 
-class IPv4
+class IPv4 implements IpDataProviderInterface
 {
     public static function getValidBinarySequences()
     {
@@ -133,58 +133,87 @@ class IPv4
 
     public static function getLinkLocalIpAddresses()
     {
-        return [
-            ['169.253.255.255', false],
-            ['169.254.0.0',     true ],
-            ['169.254.255.255', true ],
-            ['169.255.0.0',     false],
-        ];
+        return self::getCategoryOfIpAddresses(self::LINK_LOCAL);
     }
 
     public static function getLoopbackIpAddresses()
     {
-        return [
-            ['126.255.255.255', false],
-            ['127.0.0.0',       true ],
-            ['127.255.255.255', true ],
-            ['128.0.0.0',       false],
-        ];
+        return self::getCategoryOfIpAddresses(self::LOOPBACK);
     }
 
     public static function getMulticastIpAddresses()
     {
-        return [
-            ['223.255.255.255', false],
-            ['224.0.0.0',       true ],
-            ['239.255.255.255', true ],
-            ['240.0.0.0',       false],
-        ];
+        return self::getCategoryOfIpAddresses(self::MULTICAST);
     }
 
     public static function getPrivateUseIpAddresses()
     {
-        return [
-            ['9.255.255.255',   false],
-            ['10.0.0.0',        true ],
-            ['10.255.255.255',  true ],
-            ['11.0.0.0',        false],
-            ['172.15.255.255',  false],
-            ['172.16.0.0',      true ],
-            ['172.31.255.255',  true ],
-            ['172.32.0.0',      false],
-            ['192.167.255.255', false],
-            ['192.168.0.0',     true ],
-            ['192.168.255.255', true ],
-            ['192.169.0.0',     false],
-        ];
+        return self::getCategoryOfIpAddresses(self::PRIVATE_USE);
     }
 
     public static function getUnspecifiedIpAddresses()
     {
+        return self::getCategoryOfIpAddresses(self::UNSPECIFIED);
+    }
+
+    /** {@inheritDoc} */
+    public static function getCategorizedIpAddresses()
+    {
         return [
-            ['0.0.0.0',   true ],
-            ['0.0.0.1',   false],
-            ['127.0.0.1', false],
+            '10.9.8.7' => self::PRIVATE_USE,
+            '127.1.2.3' => self::LOOPBACK,
+            '172.31.254.253' => self::PRIVATE_USE,
+            '169.254.253.242' => self::LINK_LOCAL,
+            '192.0.2.183' => self::DOCUMENTATION,
+            '192.1.2.183' => self::PUBLIC_USE,
+            '192.168.254.253' => self::PRIVATE_USE,
+            '198.51.100.0' => self::DOCUMENTATION,
+            '203.0.113.0' => self::DOCUMENTATION,
+            '203.2.113.0' => self::PUBLIC_USE,
+            '255.255.255.255' => self::BROADCAST,
+            '198.18.0.0' => self::BENCHMARKING,
+            '198.18.54.2' => self::BENCHMARKING,
+            '198.19.255.255' => self::BENCHMARKING,
+            '224.0.0.0' => self::PUBLIC_USE | self::MULTICAST_IPV4,
+            '239.255.255.255' => self::PUBLIC_USE | self::MULTICAST_IPV4,
+            '0.0.0.0' => self::UNSPECIFIED,
+            '10.0.0.0' => self::PRIVATE_USE,
+            '10.255.255.255' => self::PRIVATE_USE,
+            '172.16.0.0' => self::PRIVATE_USE,
+            '172.31.255.255' => self::PRIVATE_USE,
+            '192.168.0.0' => self::PRIVATE_USE,
+            '192.168.255.255' => self::PRIVATE_USE,
+            '127.0.0.0' => self::LOOPBACK,
+            '127.255.255.255' => self::LOOPBACK,
+            '169.254.0.0' => self::LINK_LOCAL,
+            '169.254.255.255' => self::LINK_LOCAL,
+            '129.129.154.203' => self::PUBLIC_USE,
+            '239.248.153.114' => self::PUBLIC_USE | self::MULTICAST_IPV4,
+            '85.101.159.135' => self::PUBLIC_USE,
+            '72.64.156.77' => self::PUBLIC_USE,
+            '162.199.210.167' => self::PUBLIC_USE,
+            '2.12.191.95' => self::PUBLIC_USE,
+            '83.125.176.74' => self::PUBLIC_USE,
+            '224.0.65.129' => self::PUBLIC_USE | self::MULTICAST_IPV4,
         ];
+    }
+
+    /** {@inheritDoc} */
+    public static function getCategoryOfIpAddresses($category)
+    {
+        $data = [];
+        $true = $false = 0;
+        foreach (self::getCategorizedIpAddresses() as $ipAddress => $categories) {
+            $isIpInCategory = ($categories & $category) > 0;
+            $data[] = [$ipAddress, $isIpInCategory];
+            $isIpInCategory ? $true++ : $false++;
+        }
+        if ($true === 0) {
+            throw new \DomainException('Test data only contains invalid IP addresses for the test category; supply valid cases too.');
+        }
+        if ($false === 0) {
+            throw new \DomainException('Test data only contains valid IP addresses for the test category; supply invalid cases too.');
+        }
+        return $data;
     }
 }

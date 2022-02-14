@@ -2,7 +2,7 @@
 
 namespace Darsyn\IP\Tests\DataProvider;
 
-class IPv6
+class IPv6 implements IpDataProviderInterface
 {
     public static function getValidBinarySequences()
     {
@@ -132,89 +132,118 @@ class IPv6
 
     public static function getMappedIpAddresses()
     {
-        return [
-            ['::ffff:1:0',                              true ],
-            ['::fff:1:0',                               false],
-            ['1::ffff:b12:cab',                         false],
-            ['::ffff:7f00:1',                           true ],
-            ['::ffff:1234:5678',                        true ],
-            ['0000:0000:0000:0000:0000:ffff:7f00:a001', true ],
-            ['::fff:7f00:1',                            false],
-            ['a::ffff:7f00:1',                          false],
-            ['2001:db8::a60:8a2e:370:7334',             false],
-        ];
+        return self::getCategoryOfIpAddresses(self::MAPPED);
     }
 
     public static function getDerivedIpAddresses()
     {
-        return [
-            ['2002::',                          true ],
-            ['2002:7f00:1::',                   true ],
-            ['2002:1234:4321:0:00:000:0000::',  true ],
-            ['2001:7f00:1::',                   false],
-            ['2002:7f00:1::a',                  false],
-            ['2002::1',                         false],
-        ];
+        return self::getCategoryOfIpAddresses(self::DERIVED);
     }
 
     public static function getCompatibleIpAddresses()
     {
-        return  [
-            ['::7f00:1',                                true ],
-            ['::1',                                     true ],
-            ['::12.34.56.78',                           true ],
-            ['0::000:0000:b12:cab',                     true ],
-            ['2002:7f00:1::',                           false],
-            ['9800:ea88:a5:cbcc:9d68:68f3:dc4a:ce01',   false],
-            ['::',                                      true ],
-        ];
+        return self::getCategoryOfIpAddresses(self::COMPATIBLE);
     }
 
     public static function getLinkLocalIpAddresses()
     {
-        return [
-            ['fe7f:ffff:ffff:ffff:ffff:ffff:ffff:ffff', false],
-            ['fe80::',                                  true ],
-            ['febf:ffff:ffff:ffff:ffff:ffff:ffff:ffff', true ],
-            ['fec0::',                                  false],
-        ];
+        return self::getCategoryOfIpAddresses(self::LINK_LOCAL);
     }
 
     public static function getLoopbackIpAddresses()
     {
-        return [
-            ['::1', true ],
-            ['::2', false],
-            ['1::', false],
-        ];
+        return self::getCategoryOfIpAddresses(self::LOOPBACK);
+    }
+
+    public static function getEmbeddedLoopbackIpAddresses()
+    {
+        return self::getCategoryOfIpAddresses(self::LOOPBACK | self::EMBEDDED_LOOPBACK);
     }
 
     public static function getMulticastIpAddresses()
     {
-        return [
-            ['feff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', false],
-            ['ff00::',                                  true ],
-            ['ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', true ],
-        ];
+        return self::getCategoryOfIpAddresses(self::MULTICAST);
     }
 
     public static function getPrivateUseIpAddresses()
     {
-        return [
-            ['fcff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', false],
-            ['fd00::',                                  true ],
-            ['fdff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', true ],
-            ['fe00::',                                  false],
-        ];
+        return self::getCategoryOfIpAddresses(self::PRIVATE_USE);
     }
 
     public static function getUnspecifiedIpAddresses()
     {
+        return self::getCategoryOfIpAddresses(self::UNSPECIFIED);
+    }
+
+    /** {@inheritDoc} */
+    public static function getCategorizedIpAddresses()
+    {
         return [
-            ['::0',             true ],
-            ['::',              true ],
-            ['::1',             false],
-            ['2002:7f00:1::',   false],
+            '::' => self::UNSPECIFIED | self::UNICAST_OTHER | self::COMPATIBLE,
+            '::0' => self::UNSPECIFIED | self::UNICAST_OTHER | self::COMPATIBLE,
+            '::1' => self::LOOPBACK | self::UNICAST_OTHER | self::COMPATIBLE,
+            '::0.0.0.2' => self::PUBLIC_USE | self::UNICAST_GLOBAL | self::COMPATIBLE,
+            '1::' => self::PUBLIC_USE | self::UNICAST_GLOBAL,
+            'fc00::' => self::UNIQUE_LOCAL | self::UNICAST_OTHER,
+            'fdff:ffff::' => self::PRIVATE_USE | self::UNIQUE_LOCAL | self::UNICAST_OTHER,
+            'fe80:ffff::' => self::LINK_LOCAL,
+            'fe80::' => self::LINK_LOCAL,
+            'febf:ffff::' => self::LINK_LOCAL,
+            'febf::' => self::LINK_LOCAL,
+            'febf:ffff:ffff:ffff:ffff:ffff:ffff:ffff' => self::LINK_LOCAL,
+            'fe80::ffff:ffff:ffff:ffff' => self::LINK_LOCAL,
+            'fe80:0:0:1::' => self::LINK_LOCAL,
+            'fec0::' => self::PUBLIC_USE | self::UNICAST_GLOBAL,
+            'ff01::' => self::MULTICAST_INTERFACE_LOCAL,
+            'ff02::' => self::MULTICAST_LINK_LOCAL,
+            'ff03::' => self::MULTICAST_REALM_LOCAL,
+            'ff04::' => self::MULTICAST_ADMIN_LOCAL,
+            'ff05::' => self::MULTICAST_SITE_LOCAL,
+            'ff08::' => self::MULTICAST_ORGANIZATION_LOCAL,
+            'ff0e::' => self::PUBLIC_USE | self::MULTICAST_GLOBAL,
+            '2001:db8:85a3::8a2e:370:7334' => self::DOCUMENTATION | self::UNICAST_OTHER,
+            '2001:2::ac32:23ff:21' => self::PUBLIC_USE | self::BENCHMARKING | self::UNICAST_GLOBAL,
+            '102:304:506:708:90a:b0c:d0e:f10' => self::PUBLIC_USE | self::UNICAST_GLOBAL,
+            'fd00::' => self::PRIVATE_USE | self::UNIQUE_LOCAL | self::UNICAST_OTHER,
+            'fdff:ffff:ffff:ffff:ffff:ffff:ffff:ffff' => self::PRIVATE_USE | self::UNIQUE_LOCAL | self::UNICAST_OTHER,
+            'ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff' => self::BROADCAST | self::MULTICAST_OTHER,
+            '::ffff:1:0' => self::PUBLIC_USE | self::UNICAST_GLOBAL | self::MAPPED,
+            '::ffff:7f00:1' => self::EMBEDDED_LOOPBACK | self::PUBLIC_USE | self::UNICAST_GLOBAL | self::MAPPED,
+            '::ffff:1234:5678' => self::PUBLIC_USE | self::UNICAST_GLOBAL | self::MAPPED,
+            '0000:0000:0000:0000:0000:ffff:7f00:a001' => self::EMBEDDED_LOOPBACK | self::PUBLIC_USE | self::UNICAST_GLOBAL | self::MAPPED,
+            '2002::' => self::PUBLIC_USE | self::UNICAST_GLOBAL | self::DERIVED,
+            '2002:7f00:1::' => self::PUBLIC_USE | self::UNICAST_GLOBAL | self::DERIVED,
+            '2002:1234:4321:0:00:000:0000::' => self::PUBLIC_USE | self::UNICAST_GLOBAL | self::DERIVED,
+            '::7f00:1' => self::PUBLIC_USE | self::UNICAST_GLOBAL | self::COMPATIBLE,
+            '::12.34.56.78' => self::PUBLIC_USE | self::UNICAST_GLOBAL | self::COMPATIBLE,
+            '0::000:0000:b12:cab' => self::PUBLIC_USE | self::UNICAST_GLOBAL | self::COMPATIBLE,
+            '1cc9:7d7f:2a9f:cabd:9186:2be5:bef1:6a54' => self::PUBLIC_USE | self::UNICAST_GLOBAL,
+            'b638:cc70:716:c4d4:f69c:4ee3:6c65:a0b2' => self::PUBLIC_USE | self::UNICAST_GLOBAL,
+            '140c:12f1:6e6f:c0bb:980e:3816:3e52:1193' => self::PUBLIC_USE | self::UNICAST_GLOBAL,
+            '7a30:bf4:4c6c:8dc1:e340:774d:6487:3822' => self::PUBLIC_USE | self::UNICAST_GLOBAL,
+            '6af8:1ceb:eaae:104a:829c:e76e:5802:13f8' => self::PUBLIC_USE | self::UNICAST_GLOBAL,
+            '3e48:c9fd:c569:f5dd:ee36:8075:691b:8234' => self::PUBLIC_USE | self::UNICAST_GLOBAL,
+            'cab2:4f27:790f:cf03:5241:9eff:aba5:bb5c' => self::PUBLIC_USE | self::UNICAST_GLOBAL,
+            'e896:8866:872b:bd4f:6d60:7aa8:ebe5:36f1' => self::PUBLIC_USE | self::UNICAST_GLOBAL,
         ];
+    }
+
+    /** {@inheritDoc} */
+    public static function getCategoryOfIpAddresses($category)
+    {
+        $data = [];
+        $true = $false = 0;
+        foreach (self::getCategorizedIpAddresses() as $ipAddress => $categories) {
+            $isIpInCategory = ($categories & $category) > 0;
+            $data[] = [$ipAddress, $isIpInCategory];
+            $isIpInCategory ? $true++ : $false++;
+        }
+        if ($true === 0) {
+            throw new \DomainException('Test data only contains invalid IP addresses for the test category; supply valid cases too.');
+        }
+        if ($false === 0) {
+            throw new \DomainException('Test data only contains valid IP addresses for the test category; supply invalid cases too.');
+        }
+        return $data;
     }
 }

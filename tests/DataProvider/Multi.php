@@ -197,7 +197,7 @@ class Multi
 
     public static function getLoopbackIpAddresses()
     {
-        return array_merge(IPv4::getLoopbackIpAddresses(), IPv6::getLoopbackIpAddresses());
+        return array_merge(IPv4::getLoopbackIpAddresses(), IPv6::getEmbeddedLoopbackIpAddresses());
     }
 
     public static function getMulticastIpAddresses()
@@ -271,8 +271,6 @@ class Multi
             [Mapped::class,     '0000:0000:0000:0000:0000:ffff:ae82:3cc4', '174.130.60.196'  ],
             [Mapped::class,     '0000:0000:0000:0000:0000:ffff:0c06:79fc', '12.6.121.252'    ],
             [Mapped::class,     '0000:0000:0000:0000:0000:ffff:ffff:ffff', '255.255.255.255' ],
-
-
         ];
     }
 }
