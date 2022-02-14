@@ -3,8 +3,9 @@
 namespace Darsyn\IP\Version;
 
 use Darsyn\IP\AbstractIP;
-use Darsyn\IP\Binary;
 use Darsyn\IP\Exception;
+use Darsyn\IP\Util\Binary;
+use Darsyn\IP\Util\MbString;
 
 /**
  * IPv4 Address
@@ -36,8 +37,8 @@ class IPv4 extends AbstractIP implements Version4Interface
             // If the string was not 4 bytes long, then the IP supplied was
             // neither in protocol notation or binary sequence notation. Throw
             // an exception.
-            if (Binary::getLength($binary) !== 4) {
-                if (Binary::getLength($ip) !== 4) {
+            if (MbString::getLength($binary) !== 4) {
+                if (MbString::getLength($ip) !== 4) {
                     throw new Exception\WrongVersionException(4, 6, $ip);
                 }
                 $binary = $ip;
