@@ -132,7 +132,7 @@ class Multi extends IPv6 implements MultiVersionInterface
     public function getNetworkIp($cidr)
     {
         try {
-            if ($this->isCidrVersion4Appropriate($cidr) && $this->isEmbedded()) {
+            if ($this->isVersion4WithAppropriateCidr($cidr)) {
                 $v4 = (new IPv4($this->getShortBinary()))->getNetworkIp($cidr)->getBinary();
                 return new static(
                     $this->embeddingStrategy->pack($v4),
@@ -148,7 +148,7 @@ class Multi extends IPv6 implements MultiVersionInterface
     public function getBroadcastIp($cidr)
     {
         try {
-            if ($this->isCidrVersion4Appropriate($cidr) && $this->isEmbedded()) {
+            if ($this->isVersion4WithAppropriateCidr($cidr)) {
                 $v4 = (new IPv4($this->getShortBinary()))->getBroadcastIp($cidr)->getBinary();
                 return new static(
                     $this->embeddingStrategy->pack($v4),
@@ -163,23 +163,17 @@ class Multi extends IPv6 implements MultiVersionInterface
     /** {@inheritDoc} */
     public function inRange(IpInterface $ip, $cidr)
     {
-        // If both IP's (ours and theirs) are version 4 according to OUR
-        // embedding strategy then attempt to compare them as IPv4 ranges first.
-        // This purposefully will not work with comparing IPv4 addresses with
-        // IPv4-embedded IPv6 addresses.
         try {
-            if ($this->isVersion4() && $ip->isVersion4() && $this->embeddingStrategy->isEmbedded($ip->getBinary())) {
+            if ($this->isVersion4WithAppropriateCidr($cidr) && $this->isVersion4CompatibleWithCurrentStrategy($ip)) {
                 $ours = $this->getShortBinary();
                 $theirs = $this->embeddingStrategy->extract($ip->getBinary());
-                if ((new IPv4($ours))->inRange(new IPv4($theirs), $cidr)) {
-                    return true;
-                }
+                return (new IPv4($ours))->inRange(new IPv4($theirs), $cidr);
             }
-        } catch (Exception\Strategy\ExtractionException $e) {
-        } catch (Exception\InvalidIpAddressException $e) {
+        } catch (Exception\IpException $e) {
+            // If an exception was thrown, the two IP addresses were incompatible
+            // and should not have been checked as IPv4 addresses, fallback to
+            // performing the operation as IPv6 addresses.
         }
-        // If they are not in range as IPv4 addresses, then just carry on and
-        // compare them as normal IPv6 addresses.
         return parent::inRange($ip, $cidr);
     }
 
@@ -242,14 +236,25 @@ class Multi extends IPv6 implements MultiVersionInterface
     }
 
     /**
-     * Is the CIDR provided appropriate for use with IPv4 addresses?
+     * Can the supplied CIDR and current version be considered as an IPv4 operation?
      *
      * @param int $cidr
      * @return bool
      */
-    private function isCidrVersion4Appropriate($cidr)
+    private function isVersion4WithAppropriateCidr($cidr)
     {
-        return \is_int($cidr) && $cidr <= 32;
+        return \is_int($cidr) && $cidr <= 32 && $this->isVersion4();
+    }
+
+    /**
+     * Can the supplied and current IP be considered as an IPv4 operation?
+     *
+     * @param \Darsyn\IP\IpInterface $ip
+     * @return bool
+     */
+    private function isVersion4CompatibleWithCurrentStrategy(IpInterface $ip)
+    {
+        return $this->isVersion4() && $ip->isVersion4() && $this->embeddingStrategy->isEmbedded($ip->getBinary());
     }
 
     /**
