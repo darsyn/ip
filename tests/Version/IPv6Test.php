@@ -337,6 +337,36 @@ class IPv6Test extends TestCase
 
     /**
      * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getBenchmarkingIpAddresses()
+     */
+    public function testIsBenchmarking($value, $isBenchmarking)
+    {
+        $ip = IP::factory($value);
+        $this->assertSame($isBenchmarking, $ip->isBenchmarking());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getDocumentationIpAddresses()
+     */
+    public function testIsDocumentation($value, $isDocumentation)
+    {
+        $ip = IP::factory($value);
+        $this->assertSame($isDocumentation, $ip->isDocumentation());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getPublicIpAddresses()
+     */
+    public function testIsPublic($value, $isPublic)
+    {
+        $ip = IP::factory($value);
+        $this->assertSame($isPublic, $ip->isPublic());
+    }
+
+    /**
+     * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidIpAddresses()
      */
     public function testStringCasting($value, $hex, $expanded, $compacted)

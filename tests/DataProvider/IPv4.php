@@ -133,6 +133,7 @@ class IPv4 implements IpDataProviderInterface
 
     public static function getLinkLocalIpAddresses()
     {
+        self::getCategoryOfIpAddresses(self::LINK_LOCAL);
         return [
             ['169.253.255.255', false],
             ['169.254.0.0',     true ],
@@ -143,6 +144,7 @@ class IPv4 implements IpDataProviderInterface
 
     public static function getLoopbackIpAddresses()
     {
+        return self::getCategoryOfIpAddresses(self::LOOPBACK);
         return [
             ['126.255.255.255', false],
             ['127.0.0.0',       true ],
@@ -153,6 +155,7 @@ class IPv4 implements IpDataProviderInterface
 
     public static function getMulticastIpAddresses()
     {
+        return self::getCategoryOfIpAddresses(self::MULTICAST);
         return [
             ['223.255.255.255', false],
             ['224.0.0.0',       true ],
@@ -163,6 +166,7 @@ class IPv4 implements IpDataProviderInterface
 
     public static function getPrivateUseIpAddresses()
     {
+        return self::getCategoryOfIpAddresses(self::PRIVATE_USE);
         return [
             ['9.255.255.255',   false],
             ['10.0.0.0',        true ],
@@ -181,6 +185,7 @@ class IPv4 implements IpDataProviderInterface
 
     public static function getUnspecifiedIpAddresses()
     {
+        return self::getCategoryOfIpAddresses(self::UNSPECIFIED);
         return [
             ['0.0.0.0',   true ],
             ['0.0.0.1',   false],
@@ -191,7 +196,35 @@ class IPv4 implements IpDataProviderInterface
     /** {@inheritDoc} */
     public static function getCategorizedIpAddresses()
     {
-        return [];
+        return [
+            '10.9.8.7' => self::PRIVATE_USE,
+            '127.1.2.3' => self::LOOPBACK,
+            '172.31.254.253' => self::PRIVATE_USE,
+            '169.254.253.242' => self::LINK_LOCAL,
+            '192.0.2.183' => self::DOCUMENTATION,
+            '192.1.2.183' => self::PUBLIC_USE,
+            '192.168.254.253' => self::PRIVATE_USE,
+            '198.51.100.0' => self::DOCUMENTATION,
+            '203.0.113.0' => self::DOCUMENTATION,
+            '203.2.113.0' => self::PUBLIC_USE,
+            '255.255.255.255' => self::BROADCAST,
+            '198.18.0.0' => self::BENCHMARKING,
+            '198.18.54.2' => self::BENCHMARKING,
+            '198.19.255.255' => self::BENCHMARKING,
+            '224.0.0.0' => self::PUBLIC_USE | self::MULTICAST,
+            '239.255.255.255' => self::PUBLIC_USE | self::MULTICAST,
+            '0.0.0.0' => self::UNSPECIFIED,
+            '10.0.0.0' => self::PRIVATE_USE,
+            '10.255.255.255' => self::PRIVATE_USE,
+            '172.16.0.0' => self::PRIVATE_USE,
+            '172.31.255.255' => self::PRIVATE_USE,
+            '192.168.0.0' => self::PRIVATE_USE,
+            '192.168.255.255' => self::PRIVATE_USE,
+            '127.0.0.0' => self::LOOPBACK,
+            '127.255.255.255' => self::LOOPBACK,
+            '169.254.0.0' => self::LINK_LOCAL,
+            '169.254.255.255' => self::LINK_LOCAL,
+        ];
     }
 
     /** {@inheritDoc} */

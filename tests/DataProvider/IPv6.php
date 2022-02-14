@@ -132,6 +132,7 @@ class IPv6 implements IpDataProviderInterface
 
     public static function getMappedIpAddresses()
     {
+        return self::getCategoryOfIpAddresses(self::MAPPED);
         return [
             ['::ffff:1:0',                              true ],
             ['::fff:1:0',                               false],
@@ -147,6 +148,7 @@ class IPv6 implements IpDataProviderInterface
 
     public static function getDerivedIpAddresses()
     {
+        return self::getCategoryOfIpAddresses(self::DERIVED);
         return [
             ['2002::',                          true ],
             ['2002:7f00:1::',                   true ],
@@ -159,6 +161,7 @@ class IPv6 implements IpDataProviderInterface
 
     public static function getCompatibleIpAddresses()
     {
+        return self::getCategoryOfIpAddresses(self::COMPATIBLE);
         return  [
             ['::7f00:1',                                true ],
             ['::1',                                     true ],
@@ -172,6 +175,7 @@ class IPv6 implements IpDataProviderInterface
 
     public static function getLinkLocalIpAddresses()
     {
+        return self::getCategoryOfIpAddresses(self::LINK_LOCAL);
         return [
             ['fe7f:ffff:ffff:ffff:ffff:ffff:ffff:ffff', false],
             ['fe80::',                                  true ],
@@ -182,6 +186,7 @@ class IPv6 implements IpDataProviderInterface
 
     public static function getLoopbackIpAddresses()
     {
+        //return self::getCategoryOfIpAddresses(self::LOOPBACK);
         return [
             ['::1', true ],
             ['::2', false],
@@ -191,6 +196,7 @@ class IPv6 implements IpDataProviderInterface
 
     public static function getMulticastIpAddresses()
     {
+        return self::getCategoryOfIpAddresses(self::MULTICAST);
         return [
             ['feff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', false],
             ['ff00::',                                  true ],
@@ -200,6 +206,7 @@ class IPv6 implements IpDataProviderInterface
 
     public static function getPrivateUseIpAddresses()
     {
+        return self::getCategoryOfIpAddresses(self::PRIVATE_USE);
         return [
             ['fcff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', false],
             ['fd00::',                                  true ],
@@ -210,6 +217,7 @@ class IPv6 implements IpDataProviderInterface
 
     public static function getUnspecifiedIpAddresses()
     {
+        return self::getCategoryOfIpAddresses(self::UNSPECIFIED);
         return [
             ['::0',             true ],
             ['::',              true ],
@@ -218,10 +226,79 @@ class IPv6 implements IpDataProviderInterface
         ];
     }
 
+    public static function getBenchmarkingIpAddresses()
+    {
+        return self::getCategoryOfIpAddresses(self::BENCHMARKING);
+    }
+
+    public static function getDocumentationIpAddresses()
+    {
+        return self::getCategoryOfIpAddresses(self::DOCUMENTATION);
+    }
+
+    public static function getPublicIpAddresses()
+    {
+        return self::getCategoryOfIpAddresses(self::PUBLIC_USE);
+    }
+
+    public static function getUnicastIpAddresses()
+    {
+        return self::getCategoryOfIpAddresses(self::UNICAST);
+    }
+
+    public static function getUniqueLocalIpAddresses()
+    {
+        return self::getCategoryOfIpAddresses(self::UNIQUE_LOCAL);
+    }
+
+    public static function getUnicastGlobalAddresses()
+    {
+        return self::getCategoryOfIpAddresses(self::UNICAST_GLOBAL);
+    }
+
     /** {@inheritDoc} */
     public static function getCategorizedIpAddresses()
     {
-        return [];
+        return [
+            '::' => self::UNSPECIFIED | self::COMPATIBLE,
+            '::0' => self::UNSPECIFIED | self::COMPATIBLE,
+            '::1' => self::LOOPBACK | self::COMPATIBLE,
+            '::0.0.0.2' => self::PUBLIC_USE | self::UNICAST_GLOBAL | self::COMPATIBLE,
+            '1::' => self::PUBLIC_USE | self::UNICAST_GLOBAL,
+            'fc00::' => self::UNIQUE_LOCAL,
+            'fdff:ffff::' => self::UNIQUE_LOCAL | self::PRIVATE_USE,
+            'fe80:ffff::' => self::LINK_LOCAL,
+            'fe80::' => self::LINK_LOCAL,
+            'febf:ffff::' => self::LINK_LOCAL,
+            'febf::' => self::LINK_LOCAL,
+            'febf:ffff:ffff:ffff:ffff:ffff:ffff:ffff' => self::LINK_LOCAL,
+            'fe80::ffff:ffff:ffff:ffff' => self::LINK_LOCAL,
+            'fe80:0:0:1::' => self::LINK_LOCAL,
+            'fec0::' => self::UNICAST_GLOBAL | self::PUBLIC_USE,
+            'ff01::' => self::MULTICAST_INTERFACE_LOCAL,
+            'ff02::' => self::MULTICAST_LINK_LOCAL,
+            'ff03::' => self::MULTICAST_REALM_LOCAL,
+            'ff04::' => self::MULTICAST_ADMIN_LOCAL,
+            'ff05::' => self::MULTICAST_SITE_LOCAL,
+            'ff08::' => self::MULTICAST_ORGANIZATION_LOCAL,
+            'ff0e::' => self::PUBLIC_USE | self::MULTICAST_GLOBAL,
+            '2001:db8:85a3::8a2e:370:7334' => self::DOCUMENTATION,
+            '2001:2::ac32:23ff:21' => self::PUBLIC_USE | self::UNICAST_GLOBAL | self::BENCHMARKING,
+            '102:304:506:708:90a:b0c:d0e:f10' => self::PUBLIC_USE | self::UNICAST_GLOBAL,
+            'fd00::' => self::PRIVATE_USE,
+            'fdff:ffff:ffff:ffff:ffff:ffff:ffff:ffff' => self::PRIVATE_USE,
+            'ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff' => self::MULTICAST | self::BROADCAST,
+            '::ffff:1:0' => self::MAPPED,
+            '::ffff:7f00:1' => self::MAPPED,
+            '::ffff:1234:5678' => self::MAPPED,
+            '0000:0000:0000:0000:0000:ffff:7f00:a001' => self::MAPPED,
+            '2002::' => self::DERIVED,
+            '2002:7f00:1::' => self::DERIVED,
+            '2002:1234:4321:0:00:000:0000::' => self::DERIVED,
+            '::7f00:1' => self::COMPATIBLE,
+            '::12.34.56.78' => self::COMPATIBLE,
+            '0::000:0000:b12:cab' => self::COMPATIBLE,
+        ];
     }
 
     /** {@inheritDoc} */

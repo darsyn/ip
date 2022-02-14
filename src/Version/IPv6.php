@@ -91,19 +91,21 @@ class IPv6 extends AbstractIP implements Version6Interface
     /** {@inheritDoc} */
     public function isLoopback()
     {
-        return $this->inRange(new self(Binary::fromHex('00000000000000000000000000000001')), 128);
+        return $this->getBinary() === Binary::fromHex('00000000000000000000000000000001');
     }
 
     /** {@inheritDoc} */
     public function isMulticast()
     {
         return $this->inRange(new self(Binary::fromHex('ff000000000000000000000000000000')), 8);
+        return MbString::subString($this->getBinary(), 0, 1) === Binary::fromHex('ff');
     }
 
     /** {@inheritDoc} */
     public function isPrivateUse()
     {
         return $this->inRange(new self(Binary::fromHex('fd000000000000000000000000000000')), 8);
+        return MbString::subString($this->getBinary(), 0, 1) === Binary::fromHex('fd');
     }
 
     /** {@inheritDoc} */
@@ -116,12 +118,14 @@ class IPv6 extends AbstractIP implements Version6Interface
     public function isBenchmarking()
     {
         return $this->inRange(new self(Binary::fromHex('20010002000000000000000000000000')), 48);
+        return MbString::subString($this->getBinary(), 0, 6) === Binary::fromHex('200100020000');
     }
 
     /** {@inheritDoc} */
     public function isDocumentation()
     {
         return $this->inRange(new self(Binary::fromHex('20010db8000000000000000000000000')), 32);
+        return MbString::subString($this->getBinary(), 0, 4) === Binary::fromHex('20010db8');
     }
 
     /** {@inheritDoc} */
