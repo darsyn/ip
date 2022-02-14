@@ -150,7 +150,7 @@ class IPv4Test extends TestCase
     public function testExceptionIsThrownFromInvalidCidrValues($cidr)
     {
         $this->expectException(\Darsyn\IP\Exception\InvalidCidrException::class);
-        $this->expectExceptionMessage('The CIDR supplied is not valid; it must be an integer between 0 and 32.');
+        $this->expectExceptionMessage('The supplied CIDR is not valid; it must be an integer (between 0 and 32).');
         $ip = IP::factory('12.34.56.78');
         $reflect = new \ReflectionClass($ip);
         $method = $reflect->getMethod('generateBinaryMask');
