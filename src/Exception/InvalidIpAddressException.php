@@ -10,7 +10,7 @@ class InvalidIpAddressException extends IpException
     /**
      * Constructor
      *
-     * @param string $ip
+     * @param scalar $ip
      * @param \Exception|null $previous
      */
     public function __construct($ip, \Exception $previous = null)
