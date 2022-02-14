@@ -3,10 +3,10 @@
 namespace Darsyn\IP\Version;
 
 use Darsyn\IP\AbstractIP;
-use Darsyn\IP\Binary;
 use Darsyn\IP\Exception;
-use Darsyn\IP\Formatter\ProtocolFormatterInterface;
 use Darsyn\IP\Strategy\EmbeddingStrategyInterface;
+use Darsyn\IP\Util\Binary;
+use Darsyn\IP\Util\MbString;
 
 /**
  * IPv6 Address
@@ -37,7 +37,7 @@ class IPv6 extends AbstractIP implements Version6Interface
             $binary = self::getProtocolFormatter()->pton($ip);
             // If the string was not 4 bytes long, then the IP supplied was neither
             // in protocol notation or binary sequence notation. Throw an exception.
-            if (Binary::getLength($binary) !== 16) {
+            if (MbString::getLength($binary) !== 16) {
                 throw new Exception\WrongVersionException(6, 4, $ip);
             }
         } catch (Exception\IpException $e) {
@@ -67,7 +67,7 @@ class IPv6 extends AbstractIP implements Version6Interface
         // representation, insert a colon between every block of 4 characters,
         // and return the resulting IP address in full IPv6 protocol notation.
         $expanded = \preg_replace('/([a-fA-F0-9]{4})/', '$1:', Binary::toHex($this->getBinary()));
-        return Binary::subString(\is_string($expanded) ? $expanded : '', 0, -1);
+        return MbString::subString(\is_string($expanded) ? $expanded : '', 0, -1);
     }
 
     /**
