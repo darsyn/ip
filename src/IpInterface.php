@@ -75,11 +75,13 @@ interface IpInterface
      *
      * Returns a boolean value depending on whether the IP address in question
      * is within the range of the target IP/CIDR combination.
-     * Comparing two IP's of different versions will *always* return false.
+     * Comparing two IPs of different byte-lengths (IPv4 vs IPv6/IPv4-embedded)
+     * will throw a WrongVersionException.
      *
      * @param \Darsyn\IP\IpInterface $ip
      * @param int $cidr
      * @throws \Darsyn\IP\Exception\InvalidCidrException
+     * @throws \Darsyn\IP\Exception\WrongVersionException
      * @return bool
      */
     public function inRange(IpInterface $ip, $cidr);

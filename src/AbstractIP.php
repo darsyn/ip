@@ -2,6 +2,7 @@
 
 namespace Darsyn\IP;
 
+use Darsyn\IP\Exception\WrongVersionException;
 use Darsyn\IP\Formatter\ConsistentFormatter;
 use Darsyn\IP\Formatter\ProtocolFormatterInterface;
 use Darsyn\IP\Util\Binary;
@@ -117,11 +118,18 @@ abstract class AbstractIP implements IpInterface
      */
     public function inRange(IpInterface $ip, $cidr)
     {
-        try {
-            return $this->getNetworkIp($cidr)->getBinary() === $ip->getNetworkIp($cidr)->getBinary();
-        } catch (Exception\InvalidCidrException $e) {
-            return false;
+        if (!$this->isSameByteLength($ip)) {
+            // Cannot calculate if one IP is in range of another if they of different byte-lengths.
+            throw new WrongVersionException($this->getVersion(), $ip->getVersion(), (string) $ip);
         }
+        // If this method is being called, it means Multi may have failed it's
+        // IPv4 check, and we must proceed as IPv6 only. We must perform
+        // getNetworkIp() as IPv6, otherwise instances of Multi with IPv4-embedded
+        // addresses and CIDR below 32 will return an incorrect network IP for
+        // comparison.
+        $ours = $this instanceof Version\MultiVersionInterface ? new Version\IPv6($this->getBinary()) : $this;
+        $theirs = $ip instanceof Version\MultiVersionInterface ? new Version\IPv6($ip->getBinary()) : $ip;
+        return $ours->getNetworkIp($cidr)->getBinary() === $theirs->getNetworkIp($cidr)->getBinary();
     }
 
     /**
@@ -154,6 +162,15 @@ abstract class AbstractIP implements IpInterface
     public function isEmbedded()
     {
         return false;
+    }
+
+    /**
+     * @param \Darsyn\IP\IpInterface $ip
+     * @return bool
+     */
+    protected function isSameByteLength(IpInterface $ip)
+    {
+        return Binary::getLength($this->getBinary()) === Binary::getLength($ip->getBinary());
     }
 
     /**
