@@ -155,11 +155,6 @@ class IPv6 implements IpDataProviderInterface
         return self::getCategoryOfIpAddresses(self::LOOPBACK);
     }
 
-    public static function getEmbeddedLoopbackIpAddresses()
-    {
-        return self::getCategoryOfIpAddresses(self::LOOPBACK | self::EMBEDDED_LOOPBACK);
-    }
-
     public static function getMulticastIpAddresses()
     {
         return self::getCategoryOfIpAddresses(self::MULTICAST);
@@ -206,15 +201,15 @@ class IPv6 implements IpDataProviderInterface
             '102:304:506:708:90a:b0c:d0e:f10' => self::PUBLIC_USE | self::UNICAST_GLOBAL,
             'fd00::' => self::PRIVATE_USE | self::UNIQUE_LOCAL | self::UNICAST_OTHER,
             'fdff:ffff:ffff:ffff:ffff:ffff:ffff:ffff' => self::PRIVATE_USE | self::UNIQUE_LOCAL | self::UNICAST_OTHER,
-            'ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff' => self::BROADCAST | self::MULTICAST_OTHER,
+            'ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff' => self::MULTICAST_OTHER,
             '::ffff:1:0' => self::PUBLIC_USE | self::UNICAST_GLOBAL | self::MAPPED,
-            '::ffff:7f00:1' => self::EMBEDDED_LOOPBACK | self::PUBLIC_USE | self::UNICAST_GLOBAL | self::MAPPED,
+            '::ffff:7f00:1' => self::PUBLIC_USE | self::UNICAST_GLOBAL | self::MAPPED | self::LOOPBACK_MAPPED,
             '::ffff:1234:5678' => self::PUBLIC_USE | self::UNICAST_GLOBAL | self::MAPPED,
-            '0000:0000:0000:0000:0000:ffff:7f00:a001' => self::EMBEDDED_LOOPBACK | self::PUBLIC_USE | self::UNICAST_GLOBAL | self::MAPPED,
+            '0000:0000:0000:0000:0000:ffff:7f00:a001' => self::PUBLIC_USE | self::UNICAST_GLOBAL | self::MAPPED | self::LOOPBACK_MAPPED,
             '2002::' => self::PUBLIC_USE | self::UNICAST_GLOBAL | self::DERIVED,
-            '2002:7f00:1::' => self::PUBLIC_USE | self::UNICAST_GLOBAL | self::DERIVED,
+            '2002:7f00:1::' => self::PUBLIC_USE | self::UNICAST_GLOBAL | self::DERIVED | self::LOOPBACK_DERIVED,
             '2002:1234:4321:0:00:000:0000::' => self::PUBLIC_USE | self::UNICAST_GLOBAL | self::DERIVED,
-            '::7f00:1' => self::PUBLIC_USE | self::UNICAST_GLOBAL | self::COMPATIBLE,
+            '::7f00:1' => self::PUBLIC_USE | self::UNICAST_GLOBAL | self::COMPATIBLE | self::LOOPBACK_COMPATIBLE,
             '::12.34.56.78' => self::PUBLIC_USE | self::UNICAST_GLOBAL | self::COMPATIBLE,
             '0::000:0000:b12:cab' => self::PUBLIC_USE | self::UNICAST_GLOBAL | self::COMPATIBLE,
             '1cc9:7d7f:2a9f:cabd:9186:2be5:bef1:6a54' => self::PUBLIC_USE | self::UNICAST_GLOBAL,
