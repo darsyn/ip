@@ -195,9 +195,28 @@ class Multi
         return array_merge(IPv4::getLinkLocalIpAddresses(), IPv6::getLinkLocalIpAddresses());
     }
 
-    public static function getLoopbackIpAddresses()
+    public static function getMappedLoopbackIpAddresses()
     {
-        return array_merge(IPv4::getLoopbackIpAddresses(), IPv6::getLoopbackIpAddresses());
+        return array_merge(
+            IPv4::getLoopbackIpAddresses(),
+            IPv6::getCategoryOfIpAddresses(IPv6::LOOPBACK | IPv6::LOOPBACK_MAPPED)
+        );
+    }
+
+    public static function getCompatibleLoopbackIpAddresses()
+    {
+        return array_merge(
+            IPv4::getLoopbackIpAddresses(),
+            IPv6::getCategoryOfIpAddresses(IPv6::LOOPBACK | IPv6::LOOPBACK_COMPATIBLE)
+        );
+    }
+
+    public static function getDerivedLoopbackIpAddresses()
+    {
+        return array_merge(
+            IPv4::getLoopbackIpAddresses(),
+            IPv6::getCategoryOfIpAddresses(IPv6::LOOPBACK | IPv6::LOOPBACK_DERIVED)
+        );
     }
 
     public static function getMulticastIpAddresses()
