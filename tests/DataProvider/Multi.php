@@ -187,7 +187,7 @@ class Multi
 
     public function getCompatibleIpAddresses()
     {
-        return  IPv6::getCompatibleIpAddresses();
+        return IPv6::getCompatibleIpAddresses();
     }
 
     public static function getLinkLocalIpAddresses()
@@ -197,7 +197,7 @@ class Multi
 
     public static function getLoopbackIpAddresses()
     {
-        return array_merge(IPv4::getLoopbackIpAddresses(), IPv6::getEmbeddedLoopbackIpAddresses());
+        return array_merge(IPv4::getLoopbackIpAddresses(), IPv6::getLoopbackIpAddresses());
     }
 
     public static function getMulticastIpAddresses()

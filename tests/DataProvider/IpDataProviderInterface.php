@@ -12,11 +12,11 @@ interface IpDataProviderInterface
     const PUBLIC_USE                    = 1 << 4;
     const BENCHMARKING                  = 1 << 5;
     const DOCUMENTATION                 = 1 << 6;
-    const BROADCAST                     = 1 << 7;
-    const MULTICAST_IPV4                = 1 << 8;
+    const MULTICAST_IPV4                = 1 << 7;
     // IPv4
+    const BROADCAST                     = 1 << 8;
     const SHARED                        = 1 << 9;
-    const RESERVED                      = 1 << 10;
+    const FUTURE_RESERVED               = 1 << 10;
     // IPv6
     const MULTICAST_INTERFACE_LOCAL     = 1 << 11;
     const MULTICAST_LINK_LOCAL          = 1 << 12;
@@ -32,8 +32,14 @@ interface IpDataProviderInterface
     const MAPPED                        = 1 << 22;
     const DERIVED                       = 1 << 23;
     const COMPATIBLE                    = 1 << 24;
-    const EMBEDDED_LOOPBACK             = 1 << 25;
+    const LOOPBACK_MAPPED               = 1 << 25;
+    const LOOPBACK_COMPATIBLE           = 1 << 26;
+    const LOOPBACK_DERIVED              = 1 << 27;
     // Combinations
+    const LOOPBACK_EMBEDDED = 0
+        | self::LOOPBACK_MAPPED
+        | self::LOOPBACK_COMPATIBLE
+        | self::LOOPBACK_DERIVED;
     const MULTICAST = 0
         | self::MULTICAST_IPV4
         | self::MULTICAST_INTERFACE_LOCAL
