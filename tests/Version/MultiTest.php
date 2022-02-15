@@ -5,7 +5,7 @@ namespace Darsyn\IP\Tests\Version;
 use Darsyn\IP\Exception\InvalidIpAddressException;
 use Darsyn\IP\Exception\WrongVersionException;
 use Darsyn\IP\IpInterface;
-use Darsyn\IP\Strategy\Mapped;
+use Darsyn\IP\Strategy;
 use Darsyn\IP\Version\Multi as IP;
 use Darsyn\IP\Version\MultiVersionInterface;
 use Darsyn\IP\Version\Version4Interface;
@@ -17,7 +17,7 @@ class MultiTest extends TestCase
     /** @before */
     public function resetDefaultEmbeddingStrategy()
     {
-        IP::setDefaultEmbeddingStrategy(new Mapped);
+        IP::setDefaultEmbeddingStrategy(new Strategy\Mapped);
     }
 
     /**
@@ -201,11 +201,31 @@ class MultiTest extends TestCase
 
     /**
      * @test
-     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getLoopbackIpAddresses()
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getMappedLoopbackIpAddresses()
      */
-    public function testIsLoopback($value, $isLoopback)
+    public function testIsLoopbackMapped($value, $isLoopback)
     {
-        $ip = IP::factory($value);
+        $ip = IP::factory($value, new Strategy\Mapped);
+        $this->assertSame($isLoopback, $ip->isLoopback());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getCompatibleLoopbackIpAddresses()
+     */
+    public function testIsLoopbackCompatible($value, $isLoopback)
+    {
+        $ip = IP::factory($value, new Strategy\Compatible);
+        $this->assertSame($isLoopback, $ip->isLoopback());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getDerivedLoopbackIpAddresses()
+     */
+    public function testIsLoopbackDerived($value, $isLoopback)
+    {
+        $ip = IP::factory($value, new Strategy\Derived);
         $this->assertSame($isLoopback, $ip->isLoopback());
     }
 
