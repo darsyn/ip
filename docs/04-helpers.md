@@ -156,6 +156,23 @@ $clientIp->inRange($hostIp, 11); // bool(true)
 $clientIp->inRange($hostIp, 24); // bool(false)
 ```
 
+### Greatest Common CIDR
+
+> ```
+> @throws \Darsyn\IP\Exception\WrongVersionException
+>
+> getCommonCidr(IpInterface $ip): int
+> ```
+
+```php
+<?php
+use Darsyn\IP\Version\Multi as IP;
+
+$hostIp = IP::factory('d6be:583:71a4:aa6d:c77d:77dd:cec:f897');
+$clientIp = IP::factory('d6be:583:71a4:aa67:b07a::c7');
+$hostIp->getCommonCidr($clientIp); // int(60)
+```
+
 ## `IPv6` vs `Multi`?
 
 The `Multi` class tries to deal with both IPv4 and IPv6 interchangeably which

@@ -163,6 +163,14 @@ class Multi
         );
     }
 
+    public static function getCommonCidrValues()
+    {
+        return array_merge(
+            IPv4::getCommonCidrValues(),
+            IPv6::getCommonCidrValues()
+        );
+    }
+
     public static function getEmbeddedAddresses()
     {
         return array_merge(
