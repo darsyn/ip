@@ -170,7 +170,7 @@ abstract class AbstractIP implements IpInterface
      */
     protected function isSameByteLength(IpInterface $ip)
     {
-        return Binary::getLength($this->getBinary()) === Binary::getLength($ip->getBinary());
+        return MbString::getLength($this->getBinary()) === MbString::getLength($ip->getBinary());
     }
 
     /**
