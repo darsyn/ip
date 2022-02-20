@@ -6,6 +6,8 @@ use Darsyn\IP\Exception\InvalidIpAddressException;
 use Darsyn\IP\Exception\WrongVersionException;
 use Darsyn\IP\IpInterface;
 use Darsyn\IP\Strategy;
+use Darsyn\IP\Version\IPv4;
+use Darsyn\IP\Version\IPv6;
 use Darsyn\IP\Version\Multi as IP;
 use Darsyn\IP\Version\MultiVersionInterface;
 use Darsyn\IP\Version\Version4Interface;
@@ -187,6 +189,43 @@ class MultiTest extends TestCase
         $first = IP::factory($first);
         $second = IP::factory($second);
         $this->assertTrue($first->inRange($second, $cidr));
+    }
+
+    /** @test */
+    public function testDifferentVersionsAreInRange()
+    {
+        $first = IP::factory('127.0.0.1', new Strategy\Mapped);
+        $second = IPv6::factory('::1234:5678:abcd:90ef');
+        $this->assertTrue($first->inRange($second, 0));
+    }
+
+    /** @test */
+    public function testDifferentByteLengthsAreNotInRange()
+    {
+        $first = IP::factory('127.0.0.1');
+        $second = IPv4::factory('127.0.0.1');
+        $this->expectException(WrongVersionException::class);
+        $first->inRange($second, 0);
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getCommonCidrValues()
+     */
+    public function testCommonCidr($first, $second, $expectedCidr)
+    {
+        $first = IP::factory($first);
+        $second = IP::factory($second);
+        $this->assertSame($expectedCidr, $first->getCommonCidr($second));
+    }
+
+    /** @test */
+    public function testCommonCidrThrowsException()
+    {
+        $first = IP::factory('12.34.56.78');
+        $second = IPv4::factory('12.34.56.78');
+        $this->expectException(WrongVersionException::class);
+        $first->getCommonCidr($second);
     }
 
     /**

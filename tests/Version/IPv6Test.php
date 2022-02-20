@@ -248,6 +248,37 @@ class IPv6Test extends TestCase
 
     /**
      * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getCommonCidrValues()
+     */
+    public function testCommonCidr($first, $second, $expectedCidr)
+    {
+        $first = IP::factory($first);
+        $second = IP::factory($second);
+        $this->assertSame($expectedCidr, $first->getCommonCidr($second));
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getCommonCidrValues()
+     */
+    public function testEmbeddedCommonCidr($first, $second, $expectedCidr)
+    {
+        $first = IP::fromEmbedded($first);
+        $second = IP::fromEmbedded($second);
+        $this->assertSame(96 + $expectedCidr, $first->getCommonCidr($second));
+    }
+
+    /** @test */
+    public function testCommonCidrThrowsException()
+    {
+        $first = IP::factory('2001:db8::a60:8a2e:370:7334');
+        $second = IPv4::factory('12.34.56.78');
+        $this->expectException(WrongVersionException::class);
+        $first->getCommonCidr($second);
+    }
+
+    /**
+     * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getMappedIpAddresses()
      */
     public function testIsMapped($value, $isMapped)

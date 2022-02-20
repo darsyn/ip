@@ -132,6 +132,23 @@ abstract class AbstractIP implements IpInterface
         return $ours->getNetworkIp($cidr)->getBinary() === $theirs->getNetworkIp($cidr)->getBinary();
     }
 
+    /** {@inheritDoc} */
+    public function getCommonCidr(IpInterface $ip)
+    {
+        // Cannot calculate the greatest common CIDR between an IPv4 and
+        // IPv6/IPv4-embedded address, they are fundamentally incompatible.
+        if (!$this->isSameByteLength($ip)) {
+            throw new WrongVersionException(
+                MbString::getLength($this->getBinary()) === 4 ? 4 : 6,
+                MbString::getLength($ip->getBinary()) === 4 ? 4 : 6,
+                (string) $ip
+            );
+        }
+        $mask = $this->getBinary() ^ $ip->getBinary();
+        $parts = explode('1', Binary::toHumanReadable($mask), 2);
+        return MbString::getLength($parts[0]);
+    }
+
     /**
      * {@inheritDoc}
      */

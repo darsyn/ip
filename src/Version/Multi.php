@@ -178,6 +178,23 @@ class Multi extends IPv6 implements MultiVersionInterface
     }
 
     /** {@inheritDoc} */
+    public function getCommonCidr(IpInterface $ip)
+    {
+        try {
+            if ($this->isVersion4CompatibleWithCurrentStrategy($ip)) {
+                $ours = $this->getShortBinary();
+                $theirs = $this->embeddingStrategy->extract($ip->getBinary());
+                return (new IPv4($ours))->getCommonCidr(new IPv4($theirs));
+            }
+        } catch (Exception\IpException $e) {
+            // If an exception was thrown, the two IP addresses were incompatible
+            // and should not have been checked as IPv4 addresses, fallback to
+            // performing the operation as IPv6 addresses.
+        }
+        return parent::getCommonCidr($ip);
+    }
+
+    /** {@inheritDoc} */
     public function isEmbedded()
     {
         if (null === $this->embedded) {
