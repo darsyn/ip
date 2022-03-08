@@ -33,6 +33,7 @@ abstract class AbstractType extends Type
 
     /**
      * {@inheritdoc}
+     * @return string
      */
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
@@ -42,6 +43,7 @@ abstract class AbstractType extends Type
     /**
      * {@inheritdoc}
      * @throws \Doctrine\DBAL\Types\ConversionException
+     * @return \Darsyn\IP\IpInterface|null
      */
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
@@ -69,6 +71,7 @@ abstract class AbstractType extends Type
     /**
      * {@inheritdoc}
      * @throws \Doctrine\DBAL\Types\ConversionException
+     * @return string|null
      */
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
@@ -89,6 +92,7 @@ abstract class AbstractType extends Type
 
     /**
      * {@inheritdoc}
+     * @return string
      */
     public function getName()
     {
@@ -97,6 +101,7 @@ abstract class AbstractType extends Type
 
     /**
      * {@inheritdoc}
+     * @return int
      */
     public function getBindingType()
     {
@@ -105,6 +110,7 @@ abstract class AbstractType extends Type
 
     /**
      * {@inheritdoc}
+     * @return bool
      */
     public function requiresSQLCommentHint(AbstractPlatform $platform)
     {
