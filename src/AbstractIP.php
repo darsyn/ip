@@ -66,6 +66,14 @@ abstract class AbstractIP implements IpInterface
     /**
      * {@inheritDoc}
      */
+    public function equals(IpInterface $ip)
+    {
+        return $this->getBinary() === $ip->getBinary();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function isVersion($version)
     {
         return $this->getVersion() === $version;

@@ -20,6 +20,14 @@ interface IpInterface
     public function getBinary();
 
     /**
+     * Do two IP objects represent the same IP address?
+     *
+     * @param \Darsyn\IP\IpInterface $ip
+     * @return bool
+     */
+    public function equals(IpInterface $ip);
+
+    /**
      * Get the IP version from the binary value
      *
      * @return int
