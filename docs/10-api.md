@@ -4,6 +4,7 @@
 |---------------------------------------|----------------------|------|------|-------|
 | `factory(string $ip, [$strategy])`    | Static `IpInterface` | ✓    | ✓    | ✓     |
 | `getBinary()`                         | `string`             | ✓    | ✓    | ✓     |
+| `equals(IpInterface $ip)`             | `bool`               | ✓    | ✓    | ✓     |
 | `getVersion()`                        | `int`                | ✓    | ✓    | ✓     |
 | `isVersion(int $version)`             | `bool`               | ✓    | ✓    | ✓     |
 | `isVersion4()`                        | `bool`               | ✓    | ✓    | ✓     |
