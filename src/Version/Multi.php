@@ -206,41 +206,131 @@ class Multi extends IPv6 implements MultiVersionInterface
     /** {@inheritDoc} */
     public function isLinkLocal()
     {
-        return parent::isLinkLocal()
-            || $this->isEmbedded()
-            && (new IPv4($this->getShortBinary()))->isLinkLocal();
+        return $this->isEmbedded()
+            ? (new IPv4($this->getShortBinary()))->isLinkLocal()
+            : parent::isLinkLocal();
     }
 
     /** {@inheritDoc} */
     public function isLoopback()
     {
-        return parent::isLoopback()
-            || $this->isEmbedded()
-            && (new IPv4($this->getShortBinary()))->isLoopback();
+        return $this->isEmbedded()
+            ? (new IPv4($this->getShortBinary()))->isLoopback()
+            : parent::isLoopback();
     }
 
     /** * {@inheritDoc} */
     public function isMulticast()
     {
-        return parent::isMulticast()
-            || $this->isEmbedded()
-            && (new IPv4($this->getShortBinary()))->isMulticast();
+        return $this->isEmbedded()
+            ? (new IPv4($this->getShortBinary()))->isMulticast()
+            : parent::isMulticast();
     }
 
     /** {@inheritDoc} */
     public function isPrivateUse()
     {
-        return parent::isPrivateUse()
-            || $this->isEmbedded()
-            && (new IPv4($this->getShortBinary()))->isPrivateUse();
+        return $this->isEmbedded()
+            ? (new IPv4($this->getShortBinary()))->isPrivateUse()
+            : parent::isPrivateUse();
     }
 
     /** {@inheritDoc} */
     public function isUnspecified()
     {
-        return parent::isUnspecified()
-            || $this->isEmbedded()
-            && (new IPv4($this->getShortBinary()))->isUnspecified();
+        return $this->isEmbedded()
+            ? (new IPv4($this->getShortBinary()))->isUnspecified()
+            : parent::isUnspecified();
+    }
+
+    /** {@inheritDoc} */
+    public function isBenchmarking()
+    {
+        return $this->isEmbedded()
+            ? (new IPv4($this->getShortBinary()))->isBenchmarking()
+            : parent::isBenchmarking();
+    }
+
+    /** {@inheritDoc} */
+    public function isDocumentation()
+    {
+        return $this->isEmbedded()
+            ? (new IPv4($this->getShortBinary()))->isDocumentation()
+            : parent::isDocumentation();
+    }
+
+    /** {@inheritDoc} */
+    public function isPublicUse()
+    {
+        return $this->isEmbedded()
+            ? (new IPv4($this->getShortBinary()))->isPublicUse()
+            : parent::isPublicUse();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isUniqueLocal()
+    {
+        if ($this->isEmbedded()) {
+            throw new Exception\WrongVersionException(6, 4, (string) $this);
+        }
+        return parent::isUniqueLocal();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isUnicast()
+    {
+        if ($this->isEmbedded()) {
+            throw new Exception\WrongVersionException(6, 4, (string) $this);
+        }
+        return parent::isUnicast();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isUnicastGlobal()
+    {
+        if ($this->isEmbedded()) {
+            throw new Exception\WrongVersionException(6, 4, (string) $this);
+        }
+        return parent::isUnicastGlobal();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isBroadcast()
+    {
+        if ($this->isEmbedded()) {
+            return (new IPv4($this->getShortBinary()))->isBroadcast();
+        }
+        throw new Exception\WrongVersionException(4, 6, (string) $this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isShared()
+    {
+        if ($this->isEmbedded()) {
+            return (new IPv4($this->getShortBinary()))->isShared();
+        }
+        throw new Exception\WrongVersionException(4, 6, (string) $this);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isFutureReserved()
+    {
+        if ($this->isEmbedded()) {
+            return (new IPv4($this->getShortBinary()))->isFutureReserved();
+        }
+        throw new Exception\WrongVersionException(4, 6, (string) $this);
     }
 
     /**
@@ -278,7 +368,7 @@ class Multi extends IPv6 implements MultiVersionInterface
      * {@inheritDoc}
      */
     public function __toString()
-     {
-         return $this->getProtocolAppropriateAddress();
-     }
+    {
+        return $this->getProtocolAppropriateAddress();
+    }
 }

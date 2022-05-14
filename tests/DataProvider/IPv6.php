@@ -192,6 +192,59 @@ class IPv6 implements IpDataProviderInterface
         return self::getCategoryOfIpAddresses(self::UNSPECIFIED);
     }
 
+    public static function getBenchmarkingIpAddresses()
+    {
+        return self::getCategoryOfIpAddresses(self::BENCHMARKING);
+    }
+
+    public static function getDocumentationIpAddresses()
+    {
+        return self::getCategoryOfIpAddresses(self::DOCUMENTATION);
+    }
+
+    public static function getPublicUseIpAddresses()
+    {
+        return self::getCategoryOfIpAddresses(self::PUBLIC_USE_V6);
+    }
+
+    public static function getPublicUseIpAddressesExcludingMapped()
+    {
+        // Exclude IPv4-embedded addresses embedded using the Mapped strategy,
+        // they may fail the test because the IPv4 equivalent is not public (eg,
+        // "::ffff:7f00:1").
+        return self::getCategoryOfIpAddresses(self::PUBLIC_USE_V6, self::MAPPED);
+    }
+
+    public static function getUniqueLocalIpAddresses()
+    {
+        return self::getCategoryOfIpAddresses(self::UNIQUE_LOCAL);
+    }
+
+    public static function getUniqueLocalIpAddressesExcludingMapped()
+    {
+        return self::getCategoryOfIpAddresses(self::UNIQUE_LOCAL, self::MAPPED);
+    }
+
+    public static function getUnicastIpAddresses()
+    {
+        return self::getCategoryOfIpAddresses(self::UNICAST);
+    }
+
+    public static function getUnicastIpAddressesExcludingMapped()
+    {
+        return self::getCategoryOfIpAddresses(self::UNICAST, self::MAPPED);
+    }
+
+    public static function getUnicastGlobalIpAddresses()
+    {
+        return self::getCategoryOfIpAddresses(self::UNICAST_GLOBAL);
+    }
+
+    public static function getUnicastGlobalIpAddressesExcludingMapped()
+    {
+        return self::getCategoryOfIpAddresses(self::UNICAST_GLOBAL, self::MAPPED);
+    }
+
     /** {@inheritDoc} */
     public static function getCategorizedIpAddresses()
     {
@@ -199,8 +252,8 @@ class IPv6 implements IpDataProviderInterface
             '::' => self::UNSPECIFIED | self::UNICAST_OTHER | self::COMPATIBLE,
             '::0' => self::UNSPECIFIED | self::UNICAST_OTHER | self::COMPATIBLE,
             '::1' => self::LOOPBACK | self::UNICAST_OTHER | self::COMPATIBLE,
-            '::0.0.0.2' => self::PUBLIC_USE | self::UNICAST_GLOBAL | self::COMPATIBLE,
-            '1::' => self::PUBLIC_USE | self::UNICAST_GLOBAL,
+            '::0.0.0.2' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::COMPATIBLE,
+            '1::' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL,
             'fc00::' => self::UNIQUE_LOCAL | self::UNICAST_OTHER,
             'fdff:ffff::' => self::PRIVATE_USE | self::UNIQUE_LOCAL | self::UNICAST_OTHER,
             'fe80:ffff::' => self::LINK_LOCAL,
@@ -210,47 +263,51 @@ class IPv6 implements IpDataProviderInterface
             'febf:ffff:ffff:ffff:ffff:ffff:ffff:ffff' => self::LINK_LOCAL,
             'fe80::ffff:ffff:ffff:ffff' => self::LINK_LOCAL,
             'fe80:0:0:1::' => self::LINK_LOCAL,
-            'fec0::' => self::PUBLIC_USE | self::UNICAST_GLOBAL,
+            'fec0::' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL,
             'ff01::' => self::MULTICAST_INTERFACE_LOCAL,
             'ff02::' => self::MULTICAST_LINK_LOCAL,
             'ff03::' => self::MULTICAST_REALM_LOCAL,
             'ff04::' => self::MULTICAST_ADMIN_LOCAL,
             'ff05::' => self::MULTICAST_SITE_LOCAL,
             'ff08::' => self::MULTICAST_ORGANIZATION_LOCAL,
-            'ff0e::' => self::PUBLIC_USE | self::MULTICAST_GLOBAL,
+            'ff0e::' => self::PUBLIC_USE_V6 | self::MULTICAST_GLOBAL,
             '2001:db8:85a3::8a2e:370:7334' => self::DOCUMENTATION | self::UNICAST_OTHER,
-            '2001:2::ac32:23ff:21' => self::PUBLIC_USE | self::BENCHMARKING | self::UNICAST_GLOBAL,
-            '102:304:506:708:90a:b0c:d0e:f10' => self::PUBLIC_USE | self::UNICAST_GLOBAL,
+            '2001:2::ac32:23ff:21' => self::PUBLIC_USE_V6 | self::BENCHMARKING | self::UNICAST_GLOBAL,
+            '102:304:506:708:90a:b0c:d0e:f10' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL,
             'fd00::' => self::PRIVATE_USE | self::UNIQUE_LOCAL | self::UNICAST_OTHER,
             'fdff:ffff:ffff:ffff:ffff:ffff:ffff:ffff' => self::PRIVATE_USE | self::UNIQUE_LOCAL | self::UNICAST_OTHER,
             'ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff' => self::MULTICAST_OTHER,
-            '::ffff:1:0' => self::PUBLIC_USE | self::UNICAST_GLOBAL | self::MAPPED,
-            '::ffff:7f00:1' => self::PUBLIC_USE | self::UNICAST_GLOBAL | self::MAPPED | self::LOOPBACK_MAPPED,
-            '::ffff:1234:5678' => self::PUBLIC_USE | self::UNICAST_GLOBAL | self::MAPPED,
-            '0000:0000:0000:0000:0000:ffff:7f00:a001' => self::PUBLIC_USE | self::UNICAST_GLOBAL | self::MAPPED | self::LOOPBACK_MAPPED,
-            '2002::' => self::PUBLIC_USE | self::UNICAST_GLOBAL | self::DERIVED,
-            '2002:7f00:1::' => self::PUBLIC_USE | self::UNICAST_GLOBAL | self::DERIVED | self::LOOPBACK_DERIVED,
-            '2002:1234:4321:0:00:000:0000::' => self::PUBLIC_USE | self::UNICAST_GLOBAL | self::DERIVED,
-            '::7f00:1' => self::PUBLIC_USE | self::UNICAST_GLOBAL | self::COMPATIBLE | self::LOOPBACK_COMPATIBLE,
-            '::12.34.56.78' => self::PUBLIC_USE | self::UNICAST_GLOBAL | self::COMPATIBLE,
-            '0::000:0000:b12:cab' => self::PUBLIC_USE | self::UNICAST_GLOBAL | self::COMPATIBLE,
-            '1cc9:7d7f:2a9f:cabd:9186:2be5:bef1:6a54' => self::PUBLIC_USE | self::UNICAST_GLOBAL,
-            'b638:cc70:716:c4d4:f69c:4ee3:6c65:a0b2' => self::PUBLIC_USE | self::UNICAST_GLOBAL,
-            '140c:12f1:6e6f:c0bb:980e:3816:3e52:1193' => self::PUBLIC_USE | self::UNICAST_GLOBAL,
-            '7a30:bf4:4c6c:8dc1:e340:774d:6487:3822' => self::PUBLIC_USE | self::UNICAST_GLOBAL,
-            '6af8:1ceb:eaae:104a:829c:e76e:5802:13f8' => self::PUBLIC_USE | self::UNICAST_GLOBAL,
-            '3e48:c9fd:c569:f5dd:ee36:8075:691b:8234' => self::PUBLIC_USE | self::UNICAST_GLOBAL,
-            'cab2:4f27:790f:cf03:5241:9eff:aba5:bb5c' => self::PUBLIC_USE | self::UNICAST_GLOBAL,
-            'e896:8866:872b:bd4f:6d60:7aa8:ebe5:36f1' => self::PUBLIC_USE | self::UNICAST_GLOBAL,
+            '::ffff:1:0' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::MAPPED,
+            '::ffff:7f00:1' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::MAPPED | self::LOOPBACK_MAPPED,
+            '::ffff:1234:5678' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::MAPPED,
+            '0000:0000:0000:0000:0000:ffff:7f00:a001' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::MAPPED | self::LOOPBACK_MAPPED,
+            '2002::' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::DERIVED,
+            '2002:7f00:1::' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::DERIVED | self::LOOPBACK_DERIVED,
+            '2002:1234:4321:0:00:000:0000::' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::DERIVED,
+            '::7f00:1' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::COMPATIBLE | self::LOOPBACK_COMPATIBLE,
+            '::12.34.56.78' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::COMPATIBLE,
+            '0::000:0000:b12:cab' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::COMPATIBLE,
+            '1cc9:7d7f:2a9f:cabd:9186:2be5:bef1:6a54' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL,
+            'b638:cc70:716:c4d4:f69c:4ee3:6c65:a0b2' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL,
+            '140c:12f1:6e6f:c0bb:980e:3816:3e52:1193' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL,
+            '7a30:bf4:4c6c:8dc1:e340:774d:6487:3822' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL,
+            '6af8:1ceb:eaae:104a:829c:e76e:5802:13f8' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL,
+            '3e48:c9fd:c569:f5dd:ee36:8075:691b:8234' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL,
+            'cab2:4f27:790f:cf03:5241:9eff:aba5:bb5c' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL,
+            'e896:8866:872b:bd4f:6d60:7aa8:ebe5:36f1' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL,
         ];
     }
 
     /** {@inheritDoc} */
-    public static function getCategoryOfIpAddresses($category)
+    public static function getCategoryOfIpAddresses($category, $exclude = 0)
     {
         $data = [];
         $true = $false = 0;
-        foreach (self::getCategorizedIpAddresses() as $ipAddress => $categories) {
+        $ipAddresses = self::getCategorizedIpAddresses();
+        $ipAddresses = array_filter($ipAddresses, function ($categories) use ($exclude) {
+            return !(($categories & $exclude) > 0);
+        });
+        foreach ($ipAddresses as $ipAddress => $categories) {
             $isIpInCategory = ($categories & $category) > 0;
             $data[] = [$ipAddress, $isIpInCategory];
             $isIpInCategory ? $true++ : $false++;

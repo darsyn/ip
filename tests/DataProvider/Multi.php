@@ -242,6 +242,99 @@ class Multi
         return array_merge(IPv4::getUnspecifiedIpAddresses(), IPv6::getUnspecifiedIpAddresses());
     }
 
+    public static function getBenchmarkingIpAddresses()
+    {
+        return array_merge(IPv4::getBenchmarkingIpAddresses(), IPv6::getBenchmarkingIpAddresses());
+    }
+
+    public static function getDocumentationIpAddresses()
+    {
+        return array_merge(IPv4::getDocumentationIpAddresses(), IPv6::getDocumentationIpAddresses());
+    }
+
+    public static function getPublicUseIpAddresses()
+    {
+        return array_merge(IPv4::getPublicUseIpAddresses(), IPv6::getPublicUseIpAddressesExcludingMapped());
+    }
+
+    public static function getUniqueLocalIpAddresses()
+    {
+        return array_merge(
+            array_map(function ($testData) {
+                return [$testData[0], false, true];
+            }, self::getValidIpVersion4Addresses()),
+            array_map(function ($testData) {
+                $testData[] = false;
+                return $testData;
+            }, IPv6::getUniqueLocalIpAddressesExcludingMapped())
+        );
+    }
+
+    public static function getUnicastIpAddresses()
+    {
+        return array_merge(
+            array_map(function ($testData) {
+                return [$testData[0], false, true];
+            }, self::getValidIpVersion4Addresses()),
+            array_map(function ($testData) {
+                $testData[] = false;
+                return $testData;
+            }, IPv6::getUnicastIpAddressesExcludingMapped())
+        );
+    }
+
+    public static function getUnicastGlobalIpAddresses()
+    {
+        return array_merge(
+            array_map(function ($testData) {
+                return [$testData[0], false, true];
+            }, self::getValidIpVersion4Addresses()),
+            array_map(function ($testData) {
+                $testData[] = false;
+                return $testData;
+            }, IPv6::getUnicastGlobalIpAddressesExcludingMapped())
+        );
+    }
+
+    public static function getIsBroadcastIpAddresses()
+    {
+        return array_merge(
+            array_map(function ($testData) {
+                $testData[] = false;
+                return $testData;
+            }, IPv4::getIsBroadcastIpAddresses()),
+            array_map(function ($testData) {
+                return [$testData[0], false, true];
+            }, self::getValidIpVersion6Addresses())
+        );
+    }
+
+    public static function getSharedIpAddresses()
+    {
+        return array_merge(
+            array_map(function ($testData) {
+                $testData[] = false;
+                return $testData;
+            }, IPv4::getSharedIpAddresses()),
+            array_map(function ($testData) {
+                return [$testData[0], false, true];
+            }, self::getValidIpVersion6Addresses())
+        );
+    }
+
+    public static function getFutureReservedIpAddresses()
+    {
+        return array_merge(
+            array_map(function ($testData) {
+                $testData[] = false;
+                return $testData;
+            }, IPv4::getFutureReservedIpAddresses()),
+            array_map(function ($testData) {
+                return [$testData[0], false, true];
+            }, self::getValidIpVersion6Addresses())
+        );
+    }
+
     public static function getEmbeddingStrategyIpAddresses()
     {
         return [

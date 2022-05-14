@@ -332,6 +332,66 @@ class IPv4Test extends TestCase
 
     /**
      * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getBenchmarkingIpAddresses()
+     */
+    public function testIsBenchmarking($value, $isBenchmarking)
+    {
+        $ip = IP::factory($value);
+        $this->assertSame($isBenchmarking, $ip->isBenchmarking());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getDocumentationIpAddresses()
+     */
+    public function testIsDocumentation($value, $isDocumentation)
+    {
+        $ip = IP::factory($value);
+        $this->assertSame($isDocumentation, $ip->isDocumentation());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getPublicUseIpAddresses()
+     */
+    public function testIsPublicUse($value, $isPublicUse)
+    {
+        $ip = IP::factory($value);
+        $this->assertSame($isPublicUse, $ip->isPublicUse());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getIsBroadcastIpAddresses()
+     */
+    public function testIsBroadcast($value, $isBroadcast)
+    {
+        $ip = IP::factory($value);
+        $this->assertSame($isBroadcast, $ip->isBroadcast());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getSharedIpAddresses()
+     */
+    public function testIsShared($value, $isShared)
+    {
+        $ip = IP::factory($value);
+        $this->assertSame($isShared, $ip->isShared());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getFutureReservedIpAddresses()
+     */
+    public function testIsFutureReserved($value, $isFutureReserved)
+    {
+        $ip = IP::factory($value);
+        $this->assertSame($isFutureReserved, $ip->isFutureReserved());
+    }
+
+    /**
+     * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidIpAddresses()
      */
     public function testStringCasting($value, $expectedHex, $expectedDot)

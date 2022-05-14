@@ -27,6 +27,7 @@ use Darsyn\IP\Util\MbString;
  */
 class IPv6 extends AbstractIP implements Version6Interface
 {
+
     /**
      * {@inheritDoc}
      */
@@ -117,6 +118,18 @@ class IPv6 extends AbstractIP implements Version6Interface
     /**
      * {@inheritDoc}
      */
+    public function getMulticastScope()
+    {
+        if (!$this->isMulticast()) {
+            return null;
+        }
+        $firstSegment = MbString::subString($this->getBinary(), 0, 2);
+        return (int) hexdec(Binary::toHex($firstSegment & Binary::fromHex('000f')));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function isPrivateUse()
     {
         return $this->inRange(new self(Binary::fromHex('fd000000000000000000000000000000')), 8);
@@ -128,6 +141,59 @@ class IPv6 extends AbstractIP implements Version6Interface
     public function isUnspecified()
     {
         return $this->getBinary() === "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isBenchmarking()
+    {
+        return $this->inRange(new self(Binary::fromHex('20010002000000000000000000000000')), 48);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isDocumentation()
+    {
+        return $this->inRange(new self(Binary::fromHex('20010db8000000000000000000000000')), 32);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isPublicUse()
+    {
+        return $this->getMulticastScope() === self::MULTICAST_GLOBAL || $this->isUnicastGlobal();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isUniqueLocal()
+    {
+        return $this->inRange(new self(Binary::fromHex('fc000000000000000000000000000000')), 7);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isUnicast()
+    {
+        return !$this->isMulticast();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isUnicastGlobal()
+    {
+        return $this->isUnicast()
+            && !$this->isLoopback()
+            && !$this->isLinkLocal()
+            && !$this->isUniqueLocal()
+            && !$this->isUnspecified()
+            && !$this->isDocumentation();
     }
 
     /**

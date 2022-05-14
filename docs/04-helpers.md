@@ -185,6 +185,16 @@ All the helper methods of `Multi` are affected by this.
 The `IPv6` class, however, gives consistent results regardless of embedding
 strategy and always deals with CIDR values from 0 to 128.
 
+> It is recommended that you pick a concrete version (either `IPv4` or `IPv6`)
+> unless you absolutely know that you need to deal with both interchangeably.
+> Using `Multi` can cause unexpected behaviour.
+>
+> For example, `Multi::factory('0.0.0.1', new Strategy\Compatible)` results in
+> an object which is both a loopback address `::1` if viewing as IPv6, but also
+> not a loopback address `127.x.x.x` if viewing as an IPv4-embedded address.
+>
+> Use `Multi` with caution.
+
 ### IPv6 From Embedded
 
 If you want to embed IPv4 addresses into IPv6, but do not want `Multi` to return

@@ -178,6 +178,36 @@ class IPv4 implements IpDataProviderInterface
         return self::getCategoryOfIpAddresses(self::UNSPECIFIED);
     }
 
+    public static function getBenchmarkingIpAddresses()
+    {
+        return self::getCategoryOfIpAddresses(self::BENCHMARKING);
+    }
+
+    public static function getDocumentationIpAddresses()
+    {
+        return self::getCategoryOfIpAddresses(self::DOCUMENTATION);
+    }
+
+    public static function getPublicUseIpAddresses()
+    {
+        return self::getCategoryOfIpAddresses(self::PUBLIC_USE_V4);
+    }
+
+    public static function getIsBroadcastIpAddresses()
+    {
+        return self::getCategoryOfIpAddresses(self::BROADCAST);
+    }
+
+    public static function getSharedIpAddresses()
+    {
+        return self::getCategoryOfIpAddresses(self::SHARED);
+    }
+
+    public static function getFutureReservedIpAddresses()
+    {
+        return self::getCategoryOfIpAddresses(self::FUTURE_RESERVED);
+    }
+
     /** {@inheritDoc} */
     public static function getCategorizedIpAddresses()
     {
@@ -224,11 +254,15 @@ class IPv4 implements IpDataProviderInterface
     }
 
     /** {@inheritDoc} */
-    public static function getCategoryOfIpAddresses($category)
+    public static function getCategoryOfIpAddresses($category, $exclude = 0)
     {
         $data = [];
         $true = $false = 0;
-        foreach (self::getCategorizedIpAddresses() as $ipAddress => $categories) {
+        $ipAddresses = self::getCategorizedIpAddresses();
+        $ipAddresses = array_filter($ipAddresses, function ($categories) use ($exclude) {
+            return !(($categories & $exclude) > 0);
+        });
+        foreach ($ipAddresses as $ipAddress => $categories) {
             $isIpInCategory = ($categories & $category) > 0;
             $data[] = [$ipAddress, $isIpInCategory];
             $isIpInCategory ? $true++ : $false++;
