@@ -17,4 +17,28 @@ interface Version4Interface extends IpInterface
      * @return string
      */
     public function getDotAddress();
+
+    /**
+     * Whether the IP is a broadcast address, according to RFC 919.
+     *
+     * @throws \Darsyn\IP\Exception\WrongVersionException
+     * @return bool
+     */
+    public function isBroadcast();
+
+    /**
+     * Whether the IP is part of the Shared Address Space, according to RFC 6598.
+     *
+     * @throws \Darsyn\IP\Exception\WrongVersionException
+     * @return bool
+     */
+    public function isShared();
+
+    /**
+     * Whether the IP is reserved for future use, according to RFC 1112.
+     *
+     * @throws \Darsyn\IP\Exception\WrongVersionException
+     * @return bool
+     */
+    public function isFutureReserved();
 }

@@ -74,7 +74,7 @@ class IPv4 extends AbstractIP implements Version4Interface
      */
     public function isLinkLocal()
     {
-        return $this->inRange(new static(Binary::fromHex('a9fe0000')), 16);
+        return $this->inRange(new self(Binary::fromHex('a9fe0000')), 16);
     }
 
     /**
@@ -82,7 +82,7 @@ class IPv4 extends AbstractIP implements Version4Interface
      */
     public function isLoopback()
     {
-        return $this->inRange(new static(Binary::fromHex('7f000000')), 8);
+        return $this->inRange(new self(Binary::fromHex('7f000000')), 8);
     }
 
     /**
@@ -90,7 +90,7 @@ class IPv4 extends AbstractIP implements Version4Interface
      */
     public function isMulticast()
     {
-        return $this->inRange(new static(Binary::fromHex('e0000000')), 4);
+        return $this->inRange(new self(Binary::fromHex('e0000000')), 4);
     }
 
     /**
@@ -98,9 +98,9 @@ class IPv4 extends AbstractIP implements Version4Interface
      */
     public function isPrivateUse()
     {
-        return $this->inRange(new static(Binary::fromHex('0a000000')), 8)
-            || $this->inRange(new static(Binary::fromHex('ac100000')), 12)
-            || $this->inRange(new static(Binary::fromHex('c0a80000')), 16);
+        return $this->inRange(new self(Binary::fromHex('0a000000')), 8)
+            || $this->inRange(new self(Binary::fromHex('ac100000')), 12)
+            || $this->inRange(new self(Binary::fromHex('c0a80000')), 16);
     }
 
     /**
@@ -109,6 +109,79 @@ class IPv4 extends AbstractIP implements Version4Interface
     public function isUnspecified()
     {
         return $this->getBinary() === "\0\0\0\0";
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isBenchmarking()
+    {
+        return $this->inRange(new self(Binary::fromHex('c6120000')), 15);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isDocumentation()
+    {
+        return $this->inRange(new self(Binary::fromHex('c0000200')), 24)
+            || $this->inRange(new self(Binary::fromHex('c6336400')), 24)
+            || $this->inRange(new self(Binary::fromHex('cb007100')), 24);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isPublicUse()
+    {
+        // Both 192.0.0.9 and 192.0.0.10 are globally routable, despite being in the future reserved block.
+        if (in_array(Binary::toHex($this->getBinary()), ['c0000009', 'c000000a'], true)) {
+            return true;
+        }
+
+        // The whole 0.0.0.0/8 block is not for public use.
+        if ($this->inRange(new self(Binary::fromHex('00000000')), 8)) {
+            return false;
+        }
+
+        // Addresses reserved for future protocols are not globally routable (different to reserved for future use).
+        if ($this->inRange(new self(Binary::fromHex('c0000000')), 24)) {
+            return false;
+        }
+
+        return !$this->isPrivateUse()
+            && !$this->isLoopback()
+            && !$this->isLinkLocal()
+            && !$this->isBroadcast()
+            && !$this->isShared()
+            && !$this->isDocumentation()
+            && !$this->isFutureReserved()
+            && !$this->isBenchmarking();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isBroadcast()
+    {
+        return $this->getBinary() === Binary::fromHex('ffffffff');
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isShared()
+    {
+        return $this->inRange(new self(Binary::fromHex('64400000')), 10);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isFutureReserved()
+    {
+        return $this->getBinary() !== Binary::fromHex('ffffffff')
+            && $this->inRange(new self(Binary::fromHex('f0000000')), 4);
     }
 
     /**

@@ -370,6 +370,66 @@ class IPv6Test extends TestCase
 
     /**
      * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getBenchmarkingIpAddresses()
+     */
+    public function testIsBenchmarking($value, $isBenchmarking)
+    {
+        $ip = IP::factory($value);
+        $this->assertSame($isBenchmarking, $ip->isBenchmarking());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getDocumentationIpAddresses()
+     */
+    public function testIsDocumentation($value, $isDocumentation)
+    {
+        $ip = IP::factory($value);
+        $this->assertSame($isDocumentation, $ip->isDocumentation());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getPublicUseIpAddresses()
+     */
+    public function testIsPublicUse($value, $isPublicUse)
+    {
+        $ip = IP::factory($value);
+        $this->assertSame($isPublicUse, $ip->isPublicUse());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getUniqueLocalIpAddresses()
+     */
+    public function testIsUniqueLocal($value, $isUniqueLocal)
+    {
+        $ip = IP::factory($value);
+        $this->assertSame($isUniqueLocal, $ip->isUniqueLocal());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getUnicastIpAddresses()
+     */
+    public function testIsUnicast($value, $isUnicast)
+    {
+        $ip = IP::factory($value);
+        $this->assertSame($isUnicast, $ip->isUnicast());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getUnicastGlobalIpAddresses()
+     */
+    public function testIsUnicastGlobal($value, $isUnicastGlobal)
+    {
+        $ip = IP::factory($value);
+        $this->assertSame($isUnicastGlobal, $ip->isUnicastGlobal());
+    }
+
+    /**
+     * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidIpAddresses()
      */
     public function testStringCasting($value, $hex, $expanded, $compacted)
