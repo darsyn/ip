@@ -1,0 +1,55 @@
+name: "Linting and Unit Tests"
+
+on:
+  pull_request:
+    branches:
+      - 'develop'
+  push:
+    branches:
+      - 'develop'
+      - 'master'
+
+jobs:
+
+  syntax-linting:
+    runs-on: 'ubuntu-20.04'
+    strategy:
+      matrix:
+        php:
+          - '5.6'
+          - '7.0'
+          - '7.1'
+          - '7.2'
+          - '7.3'
+          - '7.4'
+          - '8.0'
+          - '8.1'
+    steps:
+      - uses: 'actions/checkout@v2'
+      - uses: 'shivammathur/setup-php@v2'
+        with:
+          php-version: '${{ matrix.php }}'
+      - run: 'find src/ -type f -name "*.php" -print0 | xargs -0 -n1 -P4 php -l -n | (! grep -v "No syntax errors detected" )'
+
+  unit-testing:
+    runs-on: 'ubuntu-20.04'
+    strategy:
+      matrix:
+        php:
+          - '5.6'
+          - '7.0'
+          - '7.1'
+          - '7.2'
+          - '7.3'
+          - '7.4'
+          - '8.0'
+          - '8.1'
+    steps:
+      - uses: 'actions/checkout@v2'
+      - uses: 'shivammathur/setup-php@v2'
+        with:
+          php-version: '${{ matrix.php }}'
+      - uses: 'ramsey/composer-install@v2'
+        with:
+          dependency-versions: 'highest'
+      - run: './vendor/bin/phpunit --bootstrap="tests/bootstrap.php" --test-suffix="Test.php" tests'

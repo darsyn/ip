@@ -5,6 +5,9 @@ namespace Darsyn\IP\Tests\Version;
 use Darsyn\IP\Exception\InvalidIpAddressException;
 use Darsyn\IP\Exception\WrongVersionException;
 use Darsyn\IP\IpInterface;
+use Darsyn\IP\Strategy;
+use Darsyn\IP\Version\IPv4;
+use Darsyn\IP\Version\IPv6;
 use Darsyn\IP\Version\Multi as IP;
 use Darsyn\IP\Version\MultiVersionInterface;
 use Darsyn\IP\Version\Version4Interface;
@@ -13,6 +16,12 @@ use PHPUnit\Framework\TestCase;
 
 class MultiTest extends TestCase
 {
+    /** @before */
+    public function resetDefaultEmbeddingStrategy()
+    {
+        IP::setDefaultEmbeddingStrategy(new Strategy\Mapped);
+    }
+
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidIpAddresses()
@@ -24,6 +33,27 @@ class MultiTest extends TestCase
         $this->assertInstanceOf(Version4Interface::class, $ip);
         $this->assertInstanceOf(Version6Interface::class, $ip);
         $this->assertInstanceOf(MultiVersionInterface::class, $ip);
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getEmbeddingStrategyIpAddresses()
+     */
+    public function testEmbeddingStrategy($strategyClass, $expandedAddress, $v4address)
+    {
+        $ip = IP::factory($v4address, new $strategyClass);
+        $this->assertSame($expandedAddress, $ip->getExpandedAddress());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getEmbeddingStrategyIpAddresses()
+     */
+    public function testDefaufltEmbeddingStrategy($strategyClass, $expandedAddress, $v4address)
+    {
+        IP::setDefaultEmbeddingStrategy(new $strategyClass);
+        $ip = IP::factory($v4address);
+        $this->assertSame($expandedAddress, $ip->getExpandedAddress());
     }
 
     /**
@@ -52,7 +82,7 @@ class MultiTest extends TestCase
      */
     public function testExceptionIsThrownOnInstantiationWithInvalidAddresses($value)
     {
-        $this->expectException(\Darsyn\IP\Exception\InvalidIpAddressException::class);
+        $this->expectException(InvalidIpAddressException::class);
         $this->expectExceptionMessage('The IP address supplied is not valid.');
         try {
             $ip = IP::factory($value);
@@ -60,7 +90,6 @@ class MultiTest extends TestCase
             $this->assertSame($value, $e->getSuppliedIp());
             throw $e;
         }
-        $this->fail();
     }
 
     /**
@@ -114,12 +143,21 @@ class MultiTest extends TestCase
             $ip = IP::factory($value);
             $ip->getDotAddress();
         } catch (WrongVersionException $e) {
-            $this->assertSame($ip->getBinary(), $e->getSuppliedIp());
+            $this->assertSame((string) $ip, $e->getSuppliedIp());
             $this->assertSame(4, $e->getExpectedVersion());
             $this->assertSame(6, $e->getActualVersion());
             throw $e;
         }
-        $this->fail();
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getIpAddressVersions()
+     */
+    public function testVersion($value, $version)
+    {
+        $ip = IP::factory($value);
+        $this->assertSame($version, $ip->getVersion());
     }
 
     /**
@@ -153,6 +191,43 @@ class MultiTest extends TestCase
         $this->assertTrue($first->inRange($second, $cidr));
     }
 
+    /** @test */
+    public function testDifferentVersionsAreInRange()
+    {
+        $first = IP::factory('127.0.0.1', new Strategy\Mapped);
+        $second = IPv6::factory('::1234:5678:abcd:90ef');
+        $this->assertTrue($first->inRange($second, 0));
+    }
+
+    /** @test */
+    public function testDifferentByteLengthsAreNotInRange()
+    {
+        $first = IP::factory('127.0.0.1');
+        $second = IPv4::factory('127.0.0.1');
+        $this->expectException(WrongVersionException::class);
+        $first->inRange($second, 0);
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getCommonCidrValues()
+     */
+    public function testCommonCidr($first, $second, $expectedCidr)
+    {
+        $first = IP::factory($first);
+        $second = IP::factory($second);
+        $this->assertSame($expectedCidr, $first->getCommonCidr($second));
+    }
+
+    /** @test */
+    public function testCommonCidrThrowsException()
+    {
+        $first = IP::factory('12.34.56.78');
+        $second = IPv4::factory('12.34.56.78');
+        $this->expectException(WrongVersionException::class);
+        $first->getCommonCidr($second);
+    }
+
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getLinkLocalIpAddresses()
@@ -165,11 +240,38 @@ class MultiTest extends TestCase
 
     /**
      * @test
-     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getLoopbackIpAddresses()
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getMappedLoopbackIpAddresses()
      */
-    public function testIsLoopback($value, $isLoopback)
+    public function testIsLoopbackMapped($value, $isLoopback)
     {
-        $ip = IP::factory($value);
+        $ip = IP::factory($value, new Strategy\Mapped);
+        $this->assertSame($isLoopback, $ip->isLoopback());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getCompatibleLoopbackIpAddresses()
+     */
+    public function testIsLoopbackCompatible($value, $isLoopback)
+    {
+        $ip = IP::factory($value, new Strategy\Compatible);
+        if ($ip->getExpandedAddress() === '0000:0000:0000:0000:0000:0000:0000:0001') {
+            // Special case that I can't figure out a solution for.
+            // The address 0.0.0.1 (when using the compatible embedding strategy)
+            // is a loopback address if viewing as IPv6 (::1), but also not a
+            // loopback address (127.x.x.x) if viewing as an IPv4-embedded address.
+            $this->markTestSkipped();
+        }
+        $this->assertSame($isLoopback, $ip->isLoopback());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getDerivedLoopbackIpAddresses()
+     */
+    public function testIsLoopbackDerived($value, $isLoopback)
+    {
+        $ip = IP::factory($value, new Strategy\Derived);
         $this->assertSame($isLoopback, $ip->isLoopback());
     }
 
@@ -202,6 +304,102 @@ class MultiTest extends TestCase
     {
         $ip = IP::factory($value);
         $this->assertSame($isUnspecified, $ip->isUnspecified());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getBenchmarkingIpAddresses()
+     */
+    public function testIsBenchmarking($value, $isBenchmarking)
+    {
+        $ip = IP::factory($value);
+        $this->assertSame($isBenchmarking, $ip->isBenchmarking());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getDocumentationIpAddresses()
+     */
+    public function testIsDocumentation($value, $isDocumentation)
+    {
+        $ip = IP::factory($value);
+        $this->assertSame($isDocumentation, $ip->isDocumentation());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getPublicUseIpAddresses()
+     */
+    public function testIsPublicUse($value, $isPublicUse)
+    {
+        $ip = IP::factory($value, new Strategy\Mapped);
+        $this->assertSame($isPublicUse, $ip->isPublicUse());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getUniqueLocalIpAddresses()
+     */
+    public function testIsUniqueLocal($value, $isUniqueLocal, $willThrowException)
+    {
+        $ip = IP::factory($value, new Strategy\Mapped);
+        $willThrowException && $this->expectException(WrongVersionException::class);
+        $this->assertSame($isUniqueLocal, $ip->isUniqueLocal());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getUnicastIpAddresses()
+     */
+    public function testIsUnicast($value, $isUnicast, $willThrowException)
+    {
+        $ip = IP::factory($value, new Strategy\Mapped);
+        $willThrowException && $this->expectException(WrongVersionException::class);
+        $this->assertSame($isUnicast, $ip->isUnicast());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getUnicastGlobalIpAddresses()
+     */
+    public function testIsUnicastGlobal($value, $isUnicastGlobal, $willThrowException)
+    {
+        $ip = IP::factory($value, new Strategy\Mapped);
+        $willThrowException && $this->expectException(WrongVersionException::class);
+        $this->assertSame($isUnicastGlobal, $ip->isUnicastGlobal());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getIsBroadcastIpAddresses()
+     */
+    public function testIsBroadcast($value, $isBroadcast, $willThrowException)
+    {
+        $ip = IP::factory($value);
+        $willThrowException && $this->expectException(WrongVersionException::class);
+        $this->assertSame($isBroadcast, $ip->isBroadcast());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getSharedIpAddresses()
+     */
+    public function testIsShared($value, $isShared, $willThrowException)
+    {
+        $ip = IP::factory($value);
+        $willThrowException && $this->expectException(WrongVersionException::class);
+        $this->assertSame($isShared, $ip->isShared());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getFutureReservedIpAddresses()
+     */
+    public function testIsFutureReserved($value, $isFutureReserved, $willThrowException)
+    {
+        $ip = IP::factory($value);
+        $willThrowException && $this->expectException(WrongVersionException::class);
+        $this->assertSame($isFutureReserved, $ip->isFutureReserved());
     }
 
     /**

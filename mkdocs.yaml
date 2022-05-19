@@ -1,0 +1,18 @@
+# docker run --rm -it --volume "$(pwd):/docs" --user "$(id -u)" "squidfunk/mkdocs-material" build -f "./mkdocs.yaml"
+
+site_name: 'Darsyn IP'
+site_url: 'https://darsyn.github.io/ip/'
+repo_url: 'https://github.com/darsyn/ip'
+site_author: 'Zan Baldwin'
+remote_branch: 'gh-pages'
+theme:
+  name: 'material'
+docs_dir: 'docs'
+site_dir: 'gh-pages'
+use_directory_urls: false
+markdown_extensions:
+  - 'pymdownx.inlinehilite'
+  - 'pymdownx.snippets'
+  - 'pymdownx.superfences'
+  - 'pymdownx.highlight':
+      anchor_linenums: true

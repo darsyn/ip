@@ -4,9 +4,12 @@ namespace Darsyn\IP\Tests\Version;
 
 use Darsyn\IP\Exception\InvalidCidrException;
 use Darsyn\IP\Exception\InvalidIpAddressException;
+use Darsyn\IP\Exception\WrongVersionException;
 use Darsyn\IP\IpInterface;
+use Darsyn\IP\Strategy\Mapped;
 use Darsyn\IP\Version\IPv4;
 use Darsyn\IP\Version\IPv6 as IP;
+use Darsyn\IP\Version\Multi;
 use Darsyn\IP\Version\Version6Interface;
 use PHPUnit\Framework\TestCase;
 
@@ -58,6 +61,33 @@ class IPv6Test extends TestCase
             throw $e;
         }
         $this->fail();
+    }
+
+    /**
+     * @test
+     * @covers \Darsyn\IP\Version\IPv6::fromEmbedded()
+     * @covers \Darsyn\IP\Version\Multi::factory()
+     * @covers \Darsyn\IP\Version\Multi::getBinary()
+     */
+    public function testInstantiationFromEmbeddedIpAddress()
+    {
+        try {
+            $ip = IP::factory('12.34.56.78');
+            $this->fail('IPv6 factory should not accept IPv4 addresses.');
+        } catch (InvalidIpAddressException $e) {
+        }
+
+        // IPv4 address can be embedded into IPv6 objects using the fromEmbedded() static instantiator.
+        $embedded = IP::fromEmbedded('12.34.56.78', new Mapped);
+        // But IPv6 objects should ignore the fact that it's embedded and only work with the full IPv6 address.
+        $this->assertSame('0000:1fff:ffff:ffff:ffff:ffff:ffff:ffff', $embedded->getBroadcastIp(19)->getExpandedAddress());
+
+        // Multi objects understand both IPv4 and IPv6 addresses.
+        $multi = Multi::factory('12.34.56.78', new Mapped);
+        // So therefore, if a Multi object detects that it holds an embedded IPv4 address it will attempt to work with
+        // the IPv4 address before falling back on the full IPv6 address.
+        $this->assertSame('0000:0000:0000:0000:0000:ffff:0c22:3fff', $multi->getBroadcastIp(19)->getExpandedAddress());
+        $this->assertSame('12.34.63.255', $multi->getBroadcastIp(19)->getDotAddress());
     }
 
     /**
@@ -160,7 +190,7 @@ class IPv6Test extends TestCase
     public function testExceptionIsThrownFromInvalidCidrValues($cidr)
     {
         $this->expectException(\Darsyn\IP\Exception\InvalidCidrException::class);
-        $this->expectExceptionMessage('The CIDR supplied is not valid; it must be an integer between 0 and 128.');
+        $this->expectExceptionMessage('The supplied CIDR is not valid; it must be an integer (between 0 and 128).');
         $ip = IP::factory('::1');
         $reflect = new \ReflectionClass($ip);
         $method = $reflect->getMethod('generateBinaryMask');
@@ -212,7 +242,39 @@ class IPv6Test extends TestCase
     {
         $ip = IP::factory('::12.34.56.78');
         $other = IPv4::factory('12.34.56.78');
-        $this->assertFalse($ip->inRange($other, 0));
+        $this->expectException(WrongVersionException::class);
+        $ip->inRange($other, 0);
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getCommonCidrValues()
+     */
+    public function testCommonCidr($first, $second, $expectedCidr)
+    {
+        $first = IP::factory($first);
+        $second = IP::factory($second);
+        $this->assertSame($expectedCidr, $first->getCommonCidr($second));
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getCommonCidrValues()
+     */
+    public function testEmbeddedCommonCidr($first, $second, $expectedCidr)
+    {
+        $first = IP::fromEmbedded($first);
+        $second = IP::fromEmbedded($second);
+        $this->assertSame(96 + $expectedCidr, $first->getCommonCidr($second));
+    }
+
+    /** @test */
+    public function testCommonCidrThrowsException()
+    {
+        $first = IP::factory('2001:db8::a60:8a2e:370:7334');
+        $second = IPv4::factory('12.34.56.78');
+        $this->expectException(WrongVersionException::class);
+        $first->getCommonCidr($second);
     }
 
     /**
@@ -304,6 +366,66 @@ class IPv6Test extends TestCase
     {
         $ip = IP::factory($value);
         $this->assertSame($isUnspecified, $ip->isUnspecified());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getBenchmarkingIpAddresses()
+     */
+    public function testIsBenchmarking($value, $isBenchmarking)
+    {
+        $ip = IP::factory($value);
+        $this->assertSame($isBenchmarking, $ip->isBenchmarking());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getDocumentationIpAddresses()
+     */
+    public function testIsDocumentation($value, $isDocumentation)
+    {
+        $ip = IP::factory($value);
+        $this->assertSame($isDocumentation, $ip->isDocumentation());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getPublicUseIpAddresses()
+     */
+    public function testIsPublicUse($value, $isPublicUse)
+    {
+        $ip = IP::factory($value);
+        $this->assertSame($isPublicUse, $ip->isPublicUse());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getUniqueLocalIpAddresses()
+     */
+    public function testIsUniqueLocal($value, $isUniqueLocal)
+    {
+        $ip = IP::factory($value);
+        $this->assertSame($isUniqueLocal, $ip->isUniqueLocal());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getUnicastIpAddresses()
+     */
+    public function testIsUnicast($value, $isUnicast)
+    {
+        $ip = IP::factory($value);
+        $this->assertSame($isUnicast, $ip->isUnicast());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getUnicastGlobalIpAddresses()
+     */
+    public function testIsUnicastGlobal($value, $isUnicastGlobal)
+    {
+        $ip = IP::factory($value);
+        $this->assertSame($isUnicastGlobal, $ip->isUnicastGlobal());
     }
 
     /**

@@ -2,6 +2,10 @@
 
 namespace Darsyn\IP\Tests\DataProvider;
 
+use Darsyn\IP\Strategy\Compatible;
+use Darsyn\IP\Strategy\Derived;
+use Darsyn\IP\Strategy\Mapped;
+
 class Multi
 {
     public static function getValidBinarySequences()
@@ -90,6 +94,18 @@ class Multi
         ];
     }
 
+    public static function getIpAddressVersions()
+    {
+        return array_merge(
+            array_map(function ($row) {
+                return [$row[0], 4];
+            }, self::getValidIpVersion4Addresses()),
+            array_map(function ($row) {
+                return [$row[0], 6];
+            }, self::getValidIpVersion6Addresses())
+        );
+    }
+
     public static function getValidCidrValues()
     {
         return IPv6::getValidCidrValues();
@@ -147,6 +163,26 @@ class Multi
         );
     }
 
+    public static function getCommonCidrValues()
+    {
+        return array_merge(
+            IPv4::getCommonCidrValues(),
+            IPv6::getCommonCidrValues()
+        );
+    }
+
+    public static function getEmbeddedAddresses()
+    {
+        return array_merge(
+            array_map(function ($row) {
+                return [$row[0], true];
+            }, self::getValidIpVersion4Addresses()),
+            array_map(function ($row) {
+                return [$row[0], false];
+            }, self::getValidIpVersion6Addresses())
+        );
+    }
+
     public function getMappedIpAddresses()
     {
         return IPv6::getMappedIpAddresses();
@@ -159,7 +195,7 @@ class Multi
 
     public function getCompatibleIpAddresses()
     {
-        return  IPv6::getCompatibleIpAddresses();
+        return IPv6::getCompatibleIpAddresses();
     }
 
     public static function getLinkLocalIpAddresses()
@@ -167,9 +203,28 @@ class Multi
         return array_merge(IPv4::getLinkLocalIpAddresses(), IPv6::getLinkLocalIpAddresses());
     }
 
-    public static function getLoopbackIpAddresses()
+    public static function getMappedLoopbackIpAddresses()
     {
-        return array_merge(IPv4::getLoopbackIpAddresses(), IPv6::getLoopbackIpAddresses());
+        return array_merge(
+            IPv4::getLoopbackIpAddresses(),
+            IPv6::getCategoryOfIpAddresses(IPv6::LOOPBACK | IPv6::LOOPBACK_MAPPED)
+        );
+    }
+
+    public static function getCompatibleLoopbackIpAddresses()
+    {
+        return array_merge(
+            IPv4::getLoopbackIpAddresses(),
+            IPv6::getCategoryOfIpAddresses(IPv6::LOOPBACK | IPv6::LOOPBACK_COMPATIBLE)
+        );
+    }
+
+    public static function getDerivedLoopbackIpAddresses()
+    {
+        return array_merge(
+            IPv4::getLoopbackIpAddresses(),
+            IPv6::getCategoryOfIpAddresses(IPv6::LOOPBACK | IPv6::LOOPBACK_DERIVED)
+        );
     }
 
     public static function getMulticastIpAddresses()
@@ -185,5 +240,157 @@ class Multi
     public static function getUnspecifiedIpAddresses()
     {
         return array_merge(IPv4::getUnspecifiedIpAddresses(), IPv6::getUnspecifiedIpAddresses());
+    }
+
+    public static function getBenchmarkingIpAddresses()
+    {
+        return array_merge(IPv4::getBenchmarkingIpAddresses(), IPv6::getBenchmarkingIpAddresses());
+    }
+
+    public static function getDocumentationIpAddresses()
+    {
+        return array_merge(IPv4::getDocumentationIpAddresses(), IPv6::getDocumentationIpAddresses());
+    }
+
+    public static function getPublicUseIpAddresses()
+    {
+        return array_merge(IPv4::getPublicUseIpAddresses(), IPv6::getPublicUseIpAddressesExcludingMapped());
+    }
+
+    public static function getUniqueLocalIpAddresses()
+    {
+        return array_merge(
+            array_map(function ($testData) {
+                return [$testData[0], false, true];
+            }, self::getValidIpVersion4Addresses()),
+            array_map(function ($testData) {
+                $testData[] = false;
+                return $testData;
+            }, IPv6::getUniqueLocalIpAddressesExcludingMapped())
+        );
+    }
+
+    public static function getUnicastIpAddresses()
+    {
+        return array_merge(
+            array_map(function ($testData) {
+                return [$testData[0], false, true];
+            }, self::getValidIpVersion4Addresses()),
+            array_map(function ($testData) {
+                $testData[] = false;
+                return $testData;
+            }, IPv6::getUnicastIpAddressesExcludingMapped())
+        );
+    }
+
+    public static function getUnicastGlobalIpAddresses()
+    {
+        return array_merge(
+            array_map(function ($testData) {
+                return [$testData[0], false, true];
+            }, self::getValidIpVersion4Addresses()),
+            array_map(function ($testData) {
+                $testData[] = false;
+                return $testData;
+            }, IPv6::getUnicastGlobalIpAddressesExcludingMapped())
+        );
+    }
+
+    public static function getIsBroadcastIpAddresses()
+    {
+        return array_merge(
+            array_map(function ($testData) {
+                $testData[] = false;
+                return $testData;
+            }, IPv4::getIsBroadcastIpAddresses()),
+            array_map(function ($testData) {
+                return [$testData[0], false, true];
+            }, self::getValidIpVersion6Addresses())
+        );
+    }
+
+    public static function getSharedIpAddresses()
+    {
+        return array_merge(
+            array_map(function ($testData) {
+                $testData[] = false;
+                return $testData;
+            }, IPv4::getSharedIpAddresses()),
+            array_map(function ($testData) {
+                return [$testData[0], false, true];
+            }, self::getValidIpVersion6Addresses())
+        );
+    }
+
+    public static function getFutureReservedIpAddresses()
+    {
+        return array_merge(
+            array_map(function ($testData) {
+                $testData[] = false;
+                return $testData;
+            }, IPv4::getFutureReservedIpAddresses()),
+            array_map(function ($testData) {
+                return [$testData[0], false, true];
+            }, self::getValidIpVersion6Addresses())
+        );
+    }
+
+    public static function getEmbeddingStrategyIpAddresses()
+    {
+        return [
+            [Compatible::class, '0000:0000:0000:0000:0000:0000:0c22:384e', '12.34.56.78'     ],
+            [Compatible::class, '0000:0000:0000:0000:0000:0000:770e:712c', '119.14.113.44'   ],
+            [Compatible::class, '0000:0000:0000:0000:0000:0000:53c5:2449', '83.197.36.73'    ],
+            [Compatible::class, '0000:0000:0000:0000:0000:0000:1276:3b28', '18.118.59.40'    ],
+            [Compatible::class, '0000:0000:0000:0000:0000:0000:6427:4480', '100.39.68.128'   ],
+            [Compatible::class, '0000:0000:0000:0000:0000:0000:44c0:6122', '68.192.97.34'    ],
+            [Compatible::class, '0000:0000:0000:0000:0000:0000:8dd8:074b', '141.216.7.75'    ],
+            [Compatible::class, '0000:0000:0000:0000:0000:0000:97c5:30cd', '151.197.48.205'  ],
+            [Compatible::class, '0000:0000:0000:0000:0000:0000:b6ea:c58d', '182.234.197.141' ],
+            [Compatible::class, '0000:0000:0000:0000:0000:0000:0000:0000', '0.0.0.0'         ],
+            [Compatible::class, '0000:0000:0000:0000:0000:0000:7163:7a89', '113.99.122.137'  ],
+            [Compatible::class, '0000:0000:0000:0000:0000:0000:4708:d36c', '71.8.211.108'    ],
+            [Compatible::class, '0000:0000:0000:0000:0000:0000:c8fa:3d9b', '200.250.61.155'  ],
+            [Compatible::class, '0000:0000:0000:0000:0000:0000:db37:478d', '219.55.71.141'   ],
+            [Compatible::class, '0000:0000:0000:0000:0000:0000:ae82:3cc4', '174.130.60.196'  ],
+            [Compatible::class, '0000:0000:0000:0000:0000:0000:0c06:79fc', '12.6.121.252'    ],
+            [Compatible::class, '0000:0000:0000:0000:0000:0000:ffff:ffff', '255.255.255.255' ],
+
+            [Derived::class,    '2002:0c22:384e:0000:0000:0000:0000:0000', '12.34.56.78'     ],
+            [Derived::class,    '2002:770e:712c:0000:0000:0000:0000:0000', '119.14.113.44'   ],
+            [Derived::class,    '2002:53c5:2449:0000:0000:0000:0000:0000', '83.197.36.73'    ],
+            [Derived::class,    '2002:1276:3b28:0000:0000:0000:0000:0000', '18.118.59.40'    ],
+            [Derived::class,    '2002:6427:4480:0000:0000:0000:0000:0000', '100.39.68.128'   ],
+            [Derived::class,    '2002:44c0:6122:0000:0000:0000:0000:0000', '68.192.97.34'    ],
+            [Derived::class,    '2002:8dd8:074b:0000:0000:0000:0000:0000', '141.216.7.75'    ],
+            [Derived::class,    '2002:97c5:30cd:0000:0000:0000:0000:0000', '151.197.48.205'  ],
+            [Derived::class,    '2002:b6ea:c58d:0000:0000:0000:0000:0000', '182.234.197.141' ],
+            [Derived::class,    '2002:0000:0000:0000:0000:0000:0000:0000', '0.0.0.0'         ],
+            [Derived::class,    '2002:7163:7a89:0000:0000:0000:0000:0000', '113.99.122.137'  ],
+            [Derived::class,    '2002:4708:d36c:0000:0000:0000:0000:0000', '71.8.211.108'    ],
+            [Derived::class,    '2002:c8fa:3d9b:0000:0000:0000:0000:0000', '200.250.61.155'  ],
+            [Derived::class,    '2002:db37:478d:0000:0000:0000:0000:0000', '219.55.71.141'   ],
+            [Derived::class,    '2002:ae82:3cc4:0000:0000:0000:0000:0000', '174.130.60.196'  ],
+            [Derived::class,    '2002:0c06:79fc:0000:0000:0000:0000:0000', '12.6.121.252'    ],
+            [Derived::class,    '2002:ffff:ffff:0000:0000:0000:0000:0000', '255.255.255.255' ],
+
+            [Mapped::class,     '0000:0000:0000:0000:0000:ffff:0c22:384e', '12.34.56.78'     ],
+            [Mapped::class,     '0000:0000:0000:0000:0000:ffff:770e:712c', '119.14.113.44'   ],
+            [Mapped::class,     '0000:0000:0000:0000:0000:ffff:53c5:2449', '83.197.36.73'    ],
+            [Mapped::class,     '0000:0000:0000:0000:0000:ffff:1276:3b28', '18.118.59.40'    ],
+            [Mapped::class,     '0000:0000:0000:0000:0000:ffff:6427:4480', '100.39.68.128'   ],
+            [Mapped::class,     '0000:0000:0000:0000:0000:ffff:44c0:6122', '68.192.97.34'    ],
+            [Mapped::class,     '0000:0000:0000:0000:0000:ffff:8dd8:074b', '141.216.7.75'    ],
+            [Mapped::class,     '0000:0000:0000:0000:0000:ffff:97c5:30cd', '151.197.48.205'  ],
+            [Mapped::class,     '0000:0000:0000:0000:0000:ffff:b6ea:c58d', '182.234.197.141' ],
+            [Mapped::class,     '0000:0000:0000:0000:0000:ffff:0000:0000', '0.0.0.0'         ],
+            [Mapped::class,     '0000:0000:0000:0000:0000:ffff:7163:7a89', '113.99.122.137'  ],
+            [Mapped::class,     '0000:0000:0000:0000:0000:ffff:4708:d36c', '71.8.211.108'    ],
+            [Mapped::class,     '0000:0000:0000:0000:0000:ffff:c8fa:3d9b', '200.250.61.155'  ],
+            [Mapped::class,     '0000:0000:0000:0000:0000:ffff:db37:478d', '219.55.71.141'   ],
+            [Mapped::class,     '0000:0000:0000:0000:0000:ffff:ae82:3cc4', '174.130.60.196'  ],
+            [Mapped::class,     '0000:0000:0000:0000:0000:ffff:0c06:79fc', '12.6.121.252'    ],
+            [Mapped::class,     '0000:0000:0000:0000:0000:ffff:ffff:ffff', '255.255.255.255' ],
+        ];
     }
 }

@@ -1,4 +1,4 @@
-## Introduction
+# Introduction
 
 IP is an immutable value object for (both version 4 and 6) IP addresses. Several
 helper methods are provided for ranges, broadcast and network addresses, subnet
@@ -13,8 +13,9 @@ for most applications).
 
 ## License
 
-Please see the [separate license file](../LICENSE.md) included in this repository
-for a full copy of the MIT license, which this project is licensed under.
+Please see the separate license file included in this repository for a full copy
+of the [MIT license](https://opensource.org/licenses/MIT), which this project is
+licensed under.
 
 ## Authors
 
@@ -22,4 +23,5 @@ for a full copy of the MIT license, which this project is licensed under.
 - [Jaume Casado Ruiz](http://jau.cat)
 - [Pascal Hofmann](http://pascalhofmann.de)
 
-If you make a contribution (submit a pull request), don't forget to add your name here!
+If you make a contribution (submit a pull request), don't forget to add your
+name here!

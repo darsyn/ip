@@ -4,6 +4,7 @@ namespace Darsyn\IP\Tests\Version;
 
 use Darsyn\IP\Exception\InvalidCidrException;
 use Darsyn\IP\Exception\InvalidIpAddressException;
+use Darsyn\IP\Exception\WrongVersionException;
 use Darsyn\IP\IpInterface;
 use Darsyn\IP\Version\IPv4 as IP;
 use Darsyn\IP\Version\IPv6;
@@ -150,7 +151,7 @@ class IPv4Test extends TestCase
     public function testExceptionIsThrownFromInvalidCidrValues($cidr)
     {
         $this->expectException(\Darsyn\IP\Exception\InvalidCidrException::class);
-        $this->expectExceptionMessage('The CIDR supplied is not valid; it must be an integer between 0 and 32.');
+        $this->expectExceptionMessage('The supplied CIDR is not valid; it must be an integer (between 0 and 32).');
         $ip = IP::factory('12.34.56.78');
         $reflect = new \ReflectionClass($ip);
         $method = $reflect->getMethod('generateBinaryMask');
@@ -199,11 +200,12 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getInvalidCidrValues()
      */
-    public function testInRangeReturnsFalseInsteadOfExceptionOnInvalidCidr($cidr)
+    public function testInRangeThrowsExceptionOnInvalidCidr($cidr)
     {
         $first = IP::factory('12.34.56.78');
         $second = IP::factory('12.34.56.78');
-        $this->assertFalse($first->inRange($second, $cidr));
+        $this->expectException(InvalidCidrException::class);
+        $first->inRange($second, $cidr);
     }
 
     /**
@@ -213,7 +215,28 @@ class IPv4Test extends TestCase
     {
         $ip = IP::factory('12.34.56.78');
         $other = IPv6::factory('::12.34.56.78');
-        $this->assertFalse($ip->inRange($other, 0));
+        $this->expectException(WrongVersionException::class);
+        $ip->inRange($other, 0);
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getCommonCidrValues()
+     */
+    public function testCommonCidr($first, $second, $expectedCidr)
+    {
+        $first = IP::factory($first);
+        $second = IP::factory($second);
+        $this->assertSame($expectedCidr, $first->getCommonCidr($second));
+    }
+
+    /** @test */
+    public function testCommonCidrThrowsException()
+    {
+        $first = IP::factory('12.34.56.78');
+        $second = IPv6::factory('2001:db8::a60:8a2e:370:7334');
+        $this->expectException(WrongVersionException::class);
+        $first->getCommonCidr($second);
     }
 
     /**
@@ -305,6 +328,66 @@ class IPv4Test extends TestCase
     {
         $ip = IP::factory($value);
         $this->assertSame($isUnspecified, $ip->isUnspecified());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getBenchmarkingIpAddresses()
+     */
+    public function testIsBenchmarking($value, $isBenchmarking)
+    {
+        $ip = IP::factory($value);
+        $this->assertSame($isBenchmarking, $ip->isBenchmarking());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getDocumentationIpAddresses()
+     */
+    public function testIsDocumentation($value, $isDocumentation)
+    {
+        $ip = IP::factory($value);
+        $this->assertSame($isDocumentation, $ip->isDocumentation());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getPublicUseIpAddresses()
+     */
+    public function testIsPublicUse($value, $isPublicUse)
+    {
+        $ip = IP::factory($value);
+        $this->assertSame($isPublicUse, $ip->isPublicUse());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getIsBroadcastIpAddresses()
+     */
+    public function testIsBroadcast($value, $isBroadcast)
+    {
+        $ip = IP::factory($value);
+        $this->assertSame($isBroadcast, $ip->isBroadcast());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getSharedIpAddresses()
+     */
+    public function testIsShared($value, $isShared)
+    {
+        $ip = IP::factory($value);
+        $this->assertSame($isShared, $ip->isShared());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getFutureReservedIpAddresses()
+     */
+    public function testIsFutureReserved($value, $isFutureReserved)
+    {
+        $ip = IP::factory($value);
+        $this->assertSame($isFutureReserved, $ip->isFutureReserved());
     }
 
     /**

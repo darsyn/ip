@@ -12,6 +12,7 @@ interface MultiVersionInterface extends Version4Interface, Version6Interface
      *
      * @static
      * @param \Darsyn\IP\Strategy\EmbeddingStrategyInterface $strategy
+     * @return void
      */
     public static function setDefaultEmbeddingStrategy(EmbeddingStrategyInterface $strategy);
 

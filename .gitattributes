@@ -1,0 +1,6 @@
+* text=auto
+
+/.github/ export-ignore
+/docs/ export-ignore
+/tests/ export-ignore
+/mkdocs.yaml export-ignore

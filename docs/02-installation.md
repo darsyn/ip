@@ -1,19 +1,17 @@
-## Installation
+# Installation
 
-### System Requirements
+## System Requirements
 
-- This library will not support end-of-life PHP versions, therefore only PHP
-  5.6+ is supported. You can expect support for 7.0+ only commencing 1st January
-  2019.
+- All functionality can be implemented without using new language features, so
+  this library will support PHP versions `5.6` onwards.
 - This library cannot be used on 32-bits systems due to a dependency on the
-  in-built PHP functions `inet_pton` and `inet_ntop`. This dependency may be
-  circumvented in a future version but is not guaranteed.
+  in-built PHP functions `inet_pton` and `inet_ntop`.
 
-### Install
+## Install
 
 The library is available on [Packagist](https://packagist.org/packages/darsyn/ip)
 and should be installed using [Composer](https://getcomposer.org/). This can be 
-done by running the following command on a composer installed box:
+done by running the following command:
 
 ```bash
 $ composer require darsyn/ip

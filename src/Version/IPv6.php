@@ -3,9 +3,10 @@
 namespace Darsyn\IP\Version;
 
 use Darsyn\IP\AbstractIP;
-use Darsyn\IP\Binary;
 use Darsyn\IP\Exception;
-use Darsyn\IP\Formatter\ProtocolFormatterInterface;
+use Darsyn\IP\Strategy\EmbeddingStrategyInterface;
+use Darsyn\IP\Util\Binary;
+use Darsyn\IP\Util\MbString;
 
 /**
  * IPv6 Address
@@ -26,6 +27,7 @@ use Darsyn\IP\Formatter\ProtocolFormatterInterface;
  */
 class IPv6 extends AbstractIP implements Version6Interface
 {
+
     /**
      * {@inheritDoc}
      */
@@ -36,13 +38,25 @@ class IPv6 extends AbstractIP implements Version6Interface
             $binary = self::getProtocolFormatter()->pton($ip);
             // If the string was not 4 bytes long, then the IP supplied was neither
             // in protocol notation or binary sequence notation. Throw an exception.
-            if (Binary::getLength($binary) !== 16) {
+            if (MbString::getLength($binary) !== 16) {
                 throw new Exception\WrongVersionException(6, 4, $ip);
             }
         } catch (Exception\IpException $e) {
             throw new Exception\InvalidIpAddressException($ip, $e);
         }
         return new static($binary);
+    }
+
+    /**
+     * @param string $ip
+     * @param \Darsyn\IP\Strategy\EmbeddingStrategyInterface|null $strategy
+     * @throws \Darsyn\IP\Exception\InvalidIpAddressException
+     * @throws \Darsyn\IP\Exception\WrongVersionException
+     * @return static
+     */
+    public static function fromEmbedded($ip, EmbeddingStrategyInterface $strategy = null)
+    {
+        return new static(Multi::factory($ip, $strategy)->getBinary());
     }
 
     /**
@@ -53,7 +67,8 @@ class IPv6 extends AbstractIP implements Version6Interface
         // Convert the 16-byte binary sequence into a hexadecimal-string
         // representation, insert a colon between every block of 4 characters,
         // and return the resulting IP address in full IPv6 protocol notation.
-        return \substr(\preg_replace('/([a-fA-F0-9]{4})/', '$1:', Binary::toHex($this->getBinary())), 0, -1);
+        $expanded = \preg_replace('/([a-fA-F0-9]{4})/', '$1:', Binary::toHex($this->getBinary()));
+        return MbString::subString(\is_string($expanded) ? $expanded : '', 0, -1);
     }
 
     /**
@@ -64,7 +79,7 @@ class IPv6 extends AbstractIP implements Version6Interface
         try {
             return self::getProtocolFormatter()->ntop($this->getBinary());
         } catch (Exception\Formatter\FormatException $e) {
-            throw new Exception\IpException('An unknown error occured internally.', null, $e);
+            throw new Exception\IpException('An unknown error occured internally.', 0, $e);
         }
     }
 
@@ -103,6 +118,18 @@ class IPv6 extends AbstractIP implements Version6Interface
     /**
      * {@inheritDoc}
      */
+    public function getMulticastScope()
+    {
+        if (!$this->isMulticast()) {
+            return null;
+        }
+        $firstSegment = MbString::subString($this->getBinary(), 0, 2);
+        return (int) hexdec(Binary::toHex($firstSegment & Binary::fromHex('000f')));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function isPrivateUse()
     {
         return $this->inRange(new self(Binary::fromHex('fd000000000000000000000000000000')), 8);
@@ -114,6 +141,59 @@ class IPv6 extends AbstractIP implements Version6Interface
     public function isUnspecified()
     {
         return $this->getBinary() === "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isBenchmarking()
+    {
+        return $this->inRange(new self(Binary::fromHex('20010002000000000000000000000000')), 48);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isDocumentation()
+    {
+        return $this->inRange(new self(Binary::fromHex('20010db8000000000000000000000000')), 32);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isPublicUse()
+    {
+        return $this->getMulticastScope() === self::MULTICAST_GLOBAL || $this->isUnicastGlobal();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isUniqueLocal()
+    {
+        return $this->inRange(new self(Binary::fromHex('fc000000000000000000000000000000')), 7);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isUnicast()
+    {
+        return !$this->isMulticast();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function isUnicastGlobal()
+    {
+        return $this->isUnicast()
+            && !$this->isLoopback()
+            && !$this->isLinkLocal()
+            && !$this->isUniqueLocal()
+            && !$this->isUnspecified()
+            && !$this->isDocumentation();
     }
 
     /**

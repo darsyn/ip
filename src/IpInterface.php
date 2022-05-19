@@ -20,6 +20,14 @@ interface IpInterface
     public function getBinary();
 
     /**
+     * Do two IP objects represent the same IP address?
+     *
+     * @param \Darsyn\IP\IpInterface $ip
+     * @return bool
+     */
+    public function equals(IpInterface $ip);
+
+    /**
      * Get the IP version from the binary value
      *
      * @return int
@@ -75,14 +83,27 @@ interface IpInterface
      *
      * Returns a boolean value depending on whether the IP address in question
      * is within the range of the target IP/CIDR combination.
-     * Comparing two IP's of different versions will *always* return false.
+     * Comparing two IPs of different byte-lengths (IPv4 vs IPv6/IPv4-embedded)
+     * will throw a WrongVersionException.
      *
      * @param \Darsyn\IP\IpInterface $ip
-     * @param integer $cidr
+     * @param int $cidr
      * @throws \Darsyn\IP\Exception\InvalidCidrException
-     * @return boolean
+     * @throws \Darsyn\IP\Exception\WrongVersionException
+     * @return bool
      */
     public function inRange(IpInterface $ip, $cidr);
+
+    /**
+     * Get Common CIDR Between IP Addresses
+     *
+     * Returns the highest common CIDR between the current IP address and another
+     *
+     * @param \Darsyn\IP\IpInterface $ip
+     * @throws \Darsyn\IP\Exception\WrongVersionException
+     * @return int
+     */
+    public function getCommonCidr(IpInterface $ip);
 
     /**
      * Whether the IP is an IPv4-mapped IPv6 address (eg, "::ffff:7f00:1").
@@ -106,15 +127,15 @@ interface IpInterface
     public function isCompatible();
 
     /**
-     * Whether the IP is an IPv4-embedded IPv6 address (either a mapped or
-     * compatible address).
+     * Whether the IP is an IPv4-embedded IPv6 address (according to the
+     * embedding strategy used).
      *
      * @return bool
      */
     public function isEmbedded();
 
     /**
-     * Whether the IP is reserved for link-local usage according to
+     * Whether the IP is reserved for link-local usage, according to
      * RFC 3927/RFC 4291 (IPv4/IPv6).
      *
      * @return bool
@@ -122,7 +143,7 @@ interface IpInterface
     public function isLinkLocal();
 
     /**
-     * Whether the IP is a loopback address according to RFC 2373/RFC 3330
+     * Whether the IP is a loopback address, according to RFC 2373/RFC 3330
      * (IPv4/IPv6).
      *
      * @return bool
@@ -130,7 +151,7 @@ interface IpInterface
     public function isLoopback();
 
     /**
-     * Whether the IP is a multicast address according to RFC 3171/RFC 2373
+     * Whether the IP is a multicast address, according to RFC 3171/RFC 2373
      * (IPv4/IPv6).
      *
      * @return bool
@@ -138,7 +159,7 @@ interface IpInterface
     public function isMulticast();
 
     /**
-     * Whether the IP is for private use according to RFC 1918/RFC 4193
+     * Whether the IP is for private use, according to RFC 1918/RFC 4193
      * (IPv4/IPv6).
      *
      * @return bool
@@ -146,11 +167,38 @@ interface IpInterface
     public function isPrivateUse();
 
     /**
-     * Whether the IP is unspecified according to RFC 5735/RFC 2373 (IPv4/IPv6).
+     * Whether the IP is unspecified, according to RFC 5735/RFC 2373 (IPv4/IPv6).
      *
      * @return bool
      */
     public function isUnspecified();
+
+    /**
+     * Whether the IP is reserved for network devices benchmarking, according
+     * to RFC 2544/RFC 5180 (IPv4/IPv6).
+     *
+     * @return bool
+     */
+    public function isBenchmarking();
+
+    /**
+     * Whether the IP is in range designated for documentation, according to
+     * RFC 5737/RFC 3849 (IPv4/IPv6).
+     *
+     * @return bool
+     */
+    public function isDocumentation();
+
+    /**
+     * Whether the IP appears to be publicly/globally routable. Please refer to
+     * the IANA Special-Purpose Address Registry documents.
+     *
+     * @see https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry.xhtml
+     * @see https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv6-special-registry.xhtml
+     *
+     * @return bool
+     */
+    public function isPublicUse();
 
     /**
      * Implement string casting for IP objects.

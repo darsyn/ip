@@ -9,18 +9,21 @@ class InvalidCidrException extends IpException
 
     /**
      * Constructor
-     * .
-     * @param int $cidr
-     * @param int $length
+     *
+     * @param mixed $cidr
+     * @param mixed $addressLengthInBytes
      * @param \Exception|null $previous
      */
-    public function __construct($cidr, $length, \Exception $previous = null)
+    public function __construct($cidr, $addressLengthInBytes, \Exception $previous = null)
     {
         $this->cidr = $cidr;
-        $message = \is_int($length)
-            ? \sprintf('The CIDR supplied is not valid; it must be an integer between 0 and %d.', $length * 8)
-            : 'The CIDR supplied is not valid; it must be an integer.';
-        parent::__construct($message, null, $previous);
+        $message = 'The supplied CIDR is not valid; it must be an integer ';
+        if (!\is_int($addressLengthInBytes)) {
+            $message .= '(could not determine valid CIDR range).';
+        } else {
+            $message .= \sprintf('(between 0 and %d).', $addressLengthInBytes * 8);
+        }
+        parent::__construct($message, 0, $previous);
     }
 
     /**
