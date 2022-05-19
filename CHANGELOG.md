@@ -1,6 +1,6 @@
 # Darsyn IP
 
-## `4.2.0`
+## `4.1.0`
 
 - Added `IpInterface::equals()` method for comparing two IP addresses.
 - Added `getCommonCidr(IpInterface $ip): int` for determining how in range two
