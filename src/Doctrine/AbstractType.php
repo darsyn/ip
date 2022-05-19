@@ -46,7 +46,7 @@ abstract class AbstractType extends Type
     /**
      * {@inheritdoc}
      * @throws \Doctrine\DBAL\Types\ConversionException
-     * @return mixed
+     * @return \Darsyn\IP\IpInterface|null
      */
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
@@ -66,6 +66,7 @@ abstract class AbstractType extends Type
         }
         /** @var string|\Darsyn\IP\IpInterface $value */
         if (\is_a($value, $this->getIpClass(), false)) {
+            /** @var \Darsyn\IP\IpInterface $value */
             return $value;
         }
         /** @var string $value */
@@ -79,7 +80,7 @@ abstract class AbstractType extends Type
     /**
      * {@inheritdoc}
      * @throws \Doctrine\DBAL\Types\ConversionException
-     * @return mixed
+     * @return string|null
      */
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
