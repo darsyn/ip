@@ -64,12 +64,10 @@ abstract class AbstractType extends Type
         if (empty($value)) {
             return null;
         }
-        /** @var string|\Darsyn\IP\IpInterface $value */
-        if (\is_a($value, $this->getIpClass(), false)) {
+        if (\is_object($value) && \is_a($value, $this->getIpClass(), false)) {
             /** @var \Darsyn\IP\IpInterface $value */
             return $value;
         }
-        /** @var string $value */
         try {
             return $this->createIpObject($value);
         } catch (IpException $e) {
