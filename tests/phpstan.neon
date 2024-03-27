@@ -1,0 +1,17 @@
+parameters:
+    level: 'max'
+    paths: [ '../src' ]
+    checkFunctionNameCase: true
+    checkGenericClassInNonGenericObjectType: true
+    reportUnmatchedIgnoredErrors: true
+    treatPhpDocTypesAsCertain: false
+    parallel:
+        maximumNumberOfProcesses: 4
+    ignoreErrors:
+        -
+            # This project purposefully uses "new static()".
+            message: "#^Unsafe usage of new static\\(\\)\\.$#"
+
+includes:
+    - '../vendor/phpstan/phpstan-deprecation-rules/rules.neon'
+    - '../vendor/phpstan/phpstan/conf/bleedingEdge.neon'

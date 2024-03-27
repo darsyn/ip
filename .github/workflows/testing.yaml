@@ -24,6 +24,8 @@ jobs:
           - '7.4'
           - '8.0'
           - '8.1'
+          - '8.2'
+          - '8.3'
     steps:
       - uses: 'actions/checkout@v2'
       - uses: 'shivammathur/setup-php@v2'
@@ -44,6 +46,8 @@ jobs:
           - '7.4'
           - '8.0'
           - '8.1'
+          - '8.2'
+          - '8.3'
     steps:
       - uses: 'actions/checkout@v2'
       - uses: 'shivammathur/setup-php@v2'
@@ -52,4 +56,9 @@ jobs:
       - uses: 'ramsey/composer-install@v2'
         with:
           dependency-versions: 'highest'
+      # Require PHPUnit via command-line instead of adding to Composer's
+      # "require-dev"; we can't specify a version range that would satisfy all
+      # the PHP versions we want to test on because certain versions of PHPUnit
+      # conflict with the static analysis tools we use.
+      - run: 'composer require --dev phpstan/phpstan phpstan/phpstan-deprecation-rules'
       - run: './vendor/bin/phpunit --bootstrap="tests/bootstrap.php" --test-suffix="Test.php" tests'
