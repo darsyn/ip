@@ -16,7 +16,7 @@ class ConsistentFormatter extends NativeFormatter
         if (\is_string($binary)) {
             $length = MbString::getLength($binary);
             if ($length === 16) {
-                return $this->ntopVersion6(Binary::toHex($binary));
+                return $this->ntopVersion6($binary);
             }
             if ($length === 4) {
                 return $this->ntopVersion4($binary);
@@ -26,11 +26,12 @@ class ConsistentFormatter extends NativeFormatter
     }
 
     /**
-     * @param string $hex
+     * @param string $binary
      * @return string
      */
-    private function ntopVersion6($hex)
+    private function ntopVersion6($binary)
     {
+        $hex = Binary::toHex($binary);
         $parts = \str_split($hex, 4);
         $zeroes = \array_map(function ($part) {
             return $part === '0000';
@@ -57,7 +58,10 @@ class ConsistentFormatter extends NativeFormatter
         if ($maxLength > 0) {
             \array_splice($parts, $startPosition, $maxLength, ':');
         }
-        return \str_pad(\preg_replace('/\:{2,}/', '::', \implode(':', $parts)), 2, ':');
+        if (null === $shortened = \preg_replace('/\:{2,}/', '::', \implode(':', $parts))) {
+            throw new FormatException($binary);
+        }
+        return \str_pad($shortened, 2, ':');
     }
 
     /**
@@ -66,6 +70,13 @@ class ConsistentFormatter extends NativeFormatter
      */
     private function ntopVersion4($binary)
     {
-        return \inet_ntop(\pack('A4', $binary));
+        // $pack return type is `string|false` below PHP 8 and `string`
+        // above PHP 8.
+        $pack = \pack('A4', $binary);
+        // @phpstan-ignore-next-line identical.alwaysFalse
+        if (false === $pack || false === $protocol = \inet_ntop($pack)) {
+            throw new FormatException($binary);
+        }
+        return $protocol;
     }
 }
