@@ -29,7 +29,7 @@ jobs:
       # "require-dev"; we only want to run static analysis once on the highest
       # version of PHP available. Also, Psalm on 5.6? No, thank you.
       - run: 'composer require --dev vimeo/psalm'
-      - run: './vendor/bin/psalm --config="tests/psalm.xml" --threads="$(nproc)" --php-version="5.6" --no-cache --stats --show-info=false --output-format="github"'
+      - run: './vendor/bin/psalm --threads="$(nproc)" --php-version="5.6" --no-cache --stats --show-info=false --output-format="github"'
 
   phpstan:
     runs-on: 'ubuntu-22.04'
@@ -49,4 +49,4 @@ jobs:
         # "require-dev"; we only want to run static analysis once on the highest
         # version of PHP available.
         - run: 'composer require --dev phpstan/phpstan phpstan/phpstan-deprecation-rules'
-        - run: './vendor/bin/phpstan analyze --no-progress --configuration="tests/phpstan.neon" --error-format="github"'
+        - run: './vendor/bin/phpstan analyze --no-progress --error-format="github"'

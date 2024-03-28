@@ -1,6 +1,6 @@
 parameters:
     level: 'max'
-    paths: [ '../src' ]
+    paths: [ 'src' ]
     checkFunctionNameCase: true
     checkGenericClassInNonGenericObjectType: true
     reportUnmatchedIgnoredErrors: true
@@ -9,9 +9,9 @@ parameters:
         maximumNumberOfProcesses: 4
     ignoreErrors:
         -
-            # This project purposefully uses "new static()".
+            # This project purposefully uses variable constructors and "new static()".
             message: "#^Unsafe usage of new static\\(\\)\\.$#"
 
 includes:
-    - '../vendor/phpstan/phpstan-deprecation-rules/rules.neon'
-    - '../vendor/phpstan/phpstan/conf/bleedingEdge.neon'
+    - 'vendor/phpstan/phpstan-deprecation-rules/rules.neon'
+    - 'vendor/phpstan/phpstan/conf/bleedingEdge.neon'
