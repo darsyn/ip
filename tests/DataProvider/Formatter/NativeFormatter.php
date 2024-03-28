@@ -4,6 +4,7 @@ namespace Darsyn\IP\Tests\DataProvider\Formatter;
 
 class NativeFormatter
 {
+    /** @return list<array{string, string}> */
     public static function getValidBinarySequences()
     {
         return [
@@ -32,6 +33,7 @@ class NativeFormatter
         ];
     }
 
+    /** @return list<array{mixed}> */
     public static function getInvalidBinarySequences()
     {
         return [

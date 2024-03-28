@@ -18,7 +18,10 @@ use PHPUnit\Framework\TestCase;
 
 class MultiTest extends TestCase
 {
-    /** @before */
+    /**
+     * @before
+     * @return void
+     */
     #[PHPUnit\Before]
     public function resetDefaultEmbeddingStrategy()
     {
@@ -28,6 +31,8 @@ class MultiTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidIpAddresses()
+     * @param string $value
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidIpAddresses')]
@@ -43,6 +48,10 @@ class MultiTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getEmbeddingStrategyIpAddresses()
+     * @param class-string<Strategy\EmbeddingStrategyInterface> $strategyClass
+     * @param string $expandedAddress
+     * @param string $v4address
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getEmbeddingStrategyIpAddresses')]
@@ -55,6 +64,10 @@ class MultiTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getEmbeddingStrategyIpAddresses()
+     * @param class-string<Strategy\EmbeddingStrategyInterface> $strategyClass
+     * @param string $expandedAddress
+     * @param string $v4address
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getEmbeddingStrategyIpAddresses')]
@@ -68,6 +81,8 @@ class MultiTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidBinarySequences()
+     * @param string $value
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidBinarySequences')]
@@ -80,18 +95,24 @@ class MultiTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidProtocolIpAddresses()
+     * @param string $value
+     * @param string $hex
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidProtocolIpAddresses')]
     public function testProtocolNotationConvertsToCorrectBinarySequence($value, $hex)
     {
         $ip = IP::factory($value);
-        $this->assertSame($hex, unpack('H*hex', $ip->getBinary())['hex']);
+        $actualHex = unpack('H*hex', $ip->getBinary());
+        $this->assertSame($hex, is_array($actualHex) ? $actualHex['hex'] : null);
     }
 
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getInvalidIpAddresses()
+     * @param mixed $value
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getInvalidIpAddresses')]
@@ -100,6 +121,7 @@ class MultiTest extends TestCase
         $this->expectException(InvalidIpAddressException::class);
         $this->expectExceptionMessage('The IP address supplied is not valid.');
         try {
+            /** @phpstan-ignore argument.type */
             $ip = IP::factory($value);
         } catch (InvalidIpAddressException $e) {
             $this->assertSame($value, $e->getSuppliedIp());
@@ -110,6 +132,8 @@ class MultiTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidIpAddresses()
+     * @param string $value
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidIpAddresses')]
@@ -122,6 +146,11 @@ class MultiTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidIpAddresses()
+     * @param string $value
+     * @param string $hex
+     * @param string $expanded
+     * @param string $compacted
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidIpAddresses')]
@@ -134,6 +163,10 @@ class MultiTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidProtocolIpAddresses()
+     * @param string $value
+     * @param string $hex
+     * @param string $expanded
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidProtocolIpAddresses')]
@@ -146,6 +179,12 @@ class MultiTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidIpVersion4Addresses()
+     * @param string $value
+     * @param string $hex
+     * @param string $expanded
+     * @param string $compacted
+     * @param string $dot
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidIpVersion4Addresses')]
@@ -158,6 +197,8 @@ class MultiTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidIpVersion6Addresses()
+     * @param string $value
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidIpVersion6Addresses')]
@@ -168,6 +209,7 @@ class MultiTest extends TestCase
             $ip = IP::factory($value);
             $ip->getDotAddress();
         } catch (WrongVersionException $e) {
+            $this->assertTrue(isset($ip));
             $this->assertSame((string) $ip, $e->getSuppliedIp());
             $this->assertSame(4, $e->getExpectedVersion());
             $this->assertSame(6, $e->getActualVersion());
@@ -178,6 +220,9 @@ class MultiTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getIpAddressVersions()
+     * @param string $value
+     * @param int $version
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getIpAddressVersions')]
@@ -190,6 +235,10 @@ class MultiTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getNetworkIpAddresses()
+     * @param string $initial
+     * @param string $expected
+     * @param int $cidr
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getNetworkIpAddresses')]
@@ -202,6 +251,10 @@ class MultiTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getBroadcastIpAddresses()
+     * @param string $initial
+     * @param string $expected
+     * @param int $cidr
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getBroadcastIpAddresses')]
@@ -214,6 +267,10 @@ class MultiTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidInRangeIpAddresses()
+     * @param string $first
+     * @param string $second
+     * @param int $cidr
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidInRangeIpAddresses')]
@@ -224,7 +281,10 @@ class MultiTest extends TestCase
         $this->assertTrue($first->inRange($second, $cidr));
     }
 
-    /** @test */
+    /**
+     * @test
+     * @return void
+     */
     #[PHPUnit\Test]
     public function testDifferentVersionsAreInRange()
     {
@@ -233,7 +293,10 @@ class MultiTest extends TestCase
         $this->assertTrue($first->inRange($second, 0));
     }
 
-    /** @test */
+    /**
+     * @test
+     * @return void
+     */
     #[PHPUnit\Test]
     public function testDifferentByteLengthsAreNotInRange()
     {
@@ -246,6 +309,10 @@ class MultiTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getCommonCidrValues()
+     * @param string $first
+     * @param string $second
+     * @param int $expectedCidr
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getCommonCidrValues')]
@@ -256,7 +323,10 @@ class MultiTest extends TestCase
         $this->assertSame($expectedCidr, $first->getCommonCidr($second));
     }
 
-    /** @test */
+    /**
+     * @test
+     * @return void
+     */
     #[PHPUnit\Test]
     public function testCommonCidrThrowsException()
     {
@@ -269,6 +339,9 @@ class MultiTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getLinkLocalIpAddresses()
+     * @param string $value
+     * @param bool $isLinkLocal
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getLinkLocalIpAddresses')]
@@ -281,6 +354,9 @@ class MultiTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getMappedLoopbackIpAddresses()
+     * @param string $value
+     * @param bool $isLoopback
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getMappedLoopbackIpAddresses')]
@@ -293,6 +369,9 @@ class MultiTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getCompatibleLoopbackIpAddresses()
+     * @param string $value
+     * @param bool $isLoopback
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getCompatibleLoopbackIpAddresses')]
@@ -312,6 +391,9 @@ class MultiTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getDerivedLoopbackIpAddresses()
+     * @param string $value
+     * @param bool $isLoopback
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getDerivedLoopbackIpAddresses')]
@@ -324,6 +406,9 @@ class MultiTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getMulticastIpAddresses()
+     * @param string $value
+     * @param bool $isMulticast
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getMulticastIpAddresses')]
@@ -337,6 +422,9 @@ class MultiTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getPrivateUseIpAddresses()
+     * @param string $value
+     * @param bool $isPrivateUse
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getPrivateUseIpAddresses')]
@@ -349,6 +437,9 @@ class MultiTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getUnspecifiedIpAddresses()
+     * @param string $value
+     * @param bool $isUnspecified
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getUnspecifiedIpAddresses')]
@@ -361,6 +452,9 @@ class MultiTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getBenchmarkingIpAddresses()
+     * @param string $value
+     * @param bool $isBenchmarking
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getBenchmarkingIpAddresses')]
@@ -373,6 +467,9 @@ class MultiTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getDocumentationIpAddresses()
+     * @param string $value
+     * @param bool $isDocumentation
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getDocumentationIpAddresses')]
@@ -385,6 +482,9 @@ class MultiTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getPublicUseIpAddresses()
+     * @param string $value
+     * @param bool $isPublicUse
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getPublicUseIpAddresses')]
@@ -397,6 +497,10 @@ class MultiTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getUniqueLocalIpAddresses()
+     * @param string $value
+     * @param bool $isUniqueLocal
+     * @param bool $willThrowException
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getUniqueLocalIpAddresses')]
@@ -410,6 +514,10 @@ class MultiTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getUnicastIpAddresses()
+     * @param string $value
+     * @param bool $isUnicast
+     * @param bool $willThrowException
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getUnicastIpAddresses')]
@@ -423,6 +531,10 @@ class MultiTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getUnicastGlobalIpAddresses()
+     * @param string $value
+     * @param bool $isUnicastGlobal
+     * @param bool $willThrowException
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getUnicastGlobalIpAddresses')]
@@ -436,6 +548,10 @@ class MultiTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getIsBroadcastIpAddresses()
+     * @param string $value
+     * @param bool $isBroadcast
+     * @param bool $willThrowException
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getIsBroadcastIpAddresses')]
@@ -449,6 +565,10 @@ class MultiTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getSharedIpAddresses()
+     * @param string $value
+     * @param bool $isShared
+     * @param bool $willThrowException
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getSharedIpAddresses')]
@@ -462,6 +582,10 @@ class MultiTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getFutureReservedIpAddresses()
+     * @param string $value
+     * @param bool $isFutureReserved
+     * @param bool $willThrowException
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getFutureReservedIpAddresses')]
@@ -475,6 +599,12 @@ class MultiTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidIpAddresses()
+     * @param string $value
+     * @param string $hex
+     * @param string $expanded
+     * @param string $compacted
+     * @param string|null $dot
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidIpAddresses')]

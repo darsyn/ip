@@ -18,7 +18,7 @@ class NativeFormatter implements ProtocolFormatterInterface
                 $pack = \pack(\sprintf('A%d', $length), $binary);
                 // $pack return type is `string|false` below PHP 8 and `string`
                 // above PHP 8.
-                // @phpstan-ignore-next-line identical.alwaysFalse
+                /** @phpstan-ignore identical.alwaysFalse */
                 if (false === $pack || false === $protocol = \inet_ntop($pack)) {
                     throw new FormatException($binary);
                 }

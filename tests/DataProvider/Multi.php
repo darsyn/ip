@@ -4,10 +4,12 @@ namespace Darsyn\IP\Tests\DataProvider;
 
 use Darsyn\IP\Strategy\Compatible;
 use Darsyn\IP\Strategy\Derived;
+use Darsyn\IP\Strategy\EmbeddingStrategyInterface;
 use Darsyn\IP\Strategy\Mapped;
 
 class Multi
 {
+    /** @return list<array{string, string, string, string, string|null}> */
     public static function getValidBinarySequences()
     {
         return [
@@ -20,7 +22,7 @@ class Multi
             [pack('H*', '9800ea8800a5cbcc9d6868f3dc4ace01'), '9800ea8800a5cbcc9d6868f3dc4ace01', '9800:ea88:00a5:cbcc:9d68:68f3:dc4a:ce01', '9800:ea88:a5:cbcc:9d68:68f3:dc4a:ce01',   null              ],
             [pack('H*', 'c3f889b050c8b06c043cff4f7f4ae66d'), 'c3f889b050c8b06c043cff4f7f4ae66d', 'c3f8:89b0:50c8:b06c:043c:ff4f:7f4a:e66d', 'c3f8:89b0:50c8:b06c:43c:ff4f:7f4a:e66d',  null              ],
             [pack('H*', 'ffffffffffffffffffffffffffffffff'), 'ffffffffffffffffffffffffffffffff', 'ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', 'ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', null              ],
-            ['1234567890123456',                             '31323334353637383930313233343536', '3132:3334:3536:3738:3930:3132:3334:3536', '3132:3334:3536:3738:3930:3132:3334:3536', null              ],
+            ['1234567890123456',                             '31323334353637383930313233343536', '3132:3334:3536:3738:3930:3132:3334:3536', '3132:3334:3536:3738:3930:3132:3334:3536',              null              ],
             [pack('H*', '00000000000000000000ffff00000000'), '00000000000000000000ffff00000000', '0000:0000:0000:0000:0000:ffff:0000:0000', '::ffff:0:0',                              '0.0.0.0'         ],
             [pack('H*', '00000000000000000000ffff71637a89'), '00000000000000000000ffff71637a89', '0000:0000:0000:0000:0000:ffff:7163:7a89', '::ffff:7163:7a89',                        '113.99.122.137'  ],
             [pack('H*', '00000000000000000000ffff4708d36c'), '00000000000000000000ffff4708d36c', '0000:0000:0000:0000:0000:ffff:4708:d36c', '::ffff:4708:d36c',                        '71.8.211.108'    ],
@@ -32,6 +34,7 @@ class Multi
         ];
     }
 
+    /** @return list<array{string, string, string, string, string|null}> */
     public static function getValidProtocolIpAddresses()
     {
         return [
@@ -55,25 +58,29 @@ class Multi
         ];
     }
 
+    /** @return list<array{string, string, string, string, string|null}> */
     public static function getValidIpAddresses()
     {
         return array_merge(self::getValidBinarySequences(), self::getValidProtocolIpAddresses());
     }
 
+    /** @return list<array{string, string, string, string, string}> */
     public static function getValidIpVersion4Addresses()
     {
-        return array_filter(self::getValidIpAddresses(), function (array $row) {
+        return array_values(array_filter(self::getValidIpAddresses(), function (array $row) {
             return is_string($row[4]);
-        });
+        }));
     }
 
+    /** @return list<array{string, string, string, string, null}> */
     public static function getValidIpVersion6Addresses()
     {
-        return array_filter(self::getValidIpAddresses(), function (array $row) {
+        return array_values(array_filter(self::getValidIpAddresses(), function (array $row) {
             return !is_string($row[4]);
-        });
+        }));
     }
 
+    /** @return list<array{mixed}> */
     public static function getInvalidIpAddresses()
     {
         return [
@@ -94,6 +101,7 @@ class Multi
         ];
     }
 
+    /** @return list<array{string, 4|6}> */
     public static function getIpAddressVersions()
     {
         return array_merge(
@@ -106,16 +114,19 @@ class Multi
         );
     }
 
+    /** @return list<array{int, string}> */
     public static function getValidCidrValues()
     {
         return IPv6::getValidCidrValues();
     }
 
+    /** @return list<array{mixed}> */
     public static function getInvalidCidrValues()
     {
         return IPv6::getInvalidCidrValues();
     }
 
+    /** @return list<array{string, string, int}> */
     public static function getNetworkIpAddresses()
     {
         return array_merge(
@@ -131,6 +142,7 @@ class Multi
         );
     }
 
+    /** @return list<array{string, string, int}> */
     public static function getBroadcastIpAddresses()
     {
         return array_merge(
@@ -145,17 +157,12 @@ class Multi
         );
     }
 
+    /** @return list<array{string, string, int}> */
     public static function getValidInRangeIpAddresses()
     {
         return array_merge(
-            array_map(function ($row) {
-                array_push($row, true);
-                return $row;
-            }, IPv4::getValidInRangeIpAddresses()),
-            array_map(function ($row) {
-                array_push($row, true);
-                return $row;
-            }, IPv6::getValidInRangeIpAddresses()),
+            IPv4::getValidInRangeIpAddresses(),
+            IPv6::getValidInRangeIpAddresses(),
             [
                 // Mix IPv6 and IPv4 addresses together.
                 ['::ffff:12.34.56.78', '12.34.56.78', 30],
@@ -163,6 +170,7 @@ class Multi
         );
     }
 
+    /** @return list<array{string, string, int}> */
     public static function getCommonCidrValues()
     {
         return array_merge(
@@ -171,6 +179,7 @@ class Multi
         );
     }
 
+    /** @return list<array{string, bool}> */
     public static function getEmbeddedAddresses()
     {
         return array_merge(
@@ -183,26 +192,31 @@ class Multi
         );
     }
 
+    /** @return list<array{string, bool}> */
     public function getMappedIpAddresses()
     {
         return IPv6::getMappedIpAddresses();
     }
 
+    /** @return list<array{string, bool}> */
     public function getDerivedIpAddresses()
     {
         return IPv6::getDerivedIpAddresses();
     }
 
+    /** @return list<array{string, bool}> */
     public function getCompatibleIpAddresses()
     {
         return IPv6::getCompatibleIpAddresses();
     }
 
+    /** @return list<array{string, bool}> */
     public static function getLinkLocalIpAddresses()
     {
         return array_merge(IPv4::getLinkLocalIpAddresses(), IPv6::getLinkLocalIpAddresses());
     }
 
+    /** @return list<array{string, bool}> */
     public static function getMappedLoopbackIpAddresses()
     {
         return array_merge(
@@ -211,6 +225,7 @@ class Multi
         );
     }
 
+    /** @return list<array{string, bool}> */
     public static function getCompatibleLoopbackIpAddresses()
     {
         return array_merge(
@@ -219,6 +234,7 @@ class Multi
         );
     }
 
+    /** @return list<array{string, bool}> */
     public static function getDerivedLoopbackIpAddresses()
     {
         return array_merge(
@@ -227,36 +243,43 @@ class Multi
         );
     }
 
+    /** @return list<array{string, bool}> */
     public static function getMulticastIpAddresses()
     {
         return array_merge(IPv4::getMulticastIpAddresses(), IPv6::getMulticastIpAddresses());
     }
 
+    /** @return list<array{string, bool}> */
     public static function getPrivateUseIpAddresses()
     {
         return array_merge(IPv4::getPrivateUseIpAddresses(), IPv6::getPrivateUseIpAddresses());
     }
 
+    /** @return list<array{string, bool}> */
     public static function getUnspecifiedIpAddresses()
     {
         return array_merge(IPv4::getUnspecifiedIpAddresses(), IPv6::getUnspecifiedIpAddresses());
     }
 
+    /** @return list<array{string, bool}> */
     public static function getBenchmarkingIpAddresses()
     {
         return array_merge(IPv4::getBenchmarkingIpAddresses(), IPv6::getBenchmarkingIpAddresses());
     }
 
+    /** @return list<array{string, bool}> */
     public static function getDocumentationIpAddresses()
     {
         return array_merge(IPv4::getDocumentationIpAddresses(), IPv6::getDocumentationIpAddresses());
     }
 
+    /** @return list<array{string, bool}> */
     public static function getPublicUseIpAddresses()
     {
         return array_merge(IPv4::getPublicUseIpAddresses(), IPv6::getPublicUseIpAddressesExcludingMapped());
     }
 
+    /** @return list<array{string, bool, bool}> */
     public static function getUniqueLocalIpAddresses()
     {
         return array_merge(
@@ -270,6 +293,7 @@ class Multi
         );
     }
 
+    /** @return list<array{string, bool, bool}> */
     public static function getUnicastIpAddresses()
     {
         return array_merge(
@@ -283,6 +307,7 @@ class Multi
         );
     }
 
+    /** @return list<array{string, bool, bool}> */
     public static function getUnicastGlobalIpAddresses()
     {
         return array_merge(
@@ -296,6 +321,7 @@ class Multi
         );
     }
 
+    /** @return list<array{string, bool, bool}> */
     public static function getIsBroadcastIpAddresses()
     {
         return array_merge(
@@ -309,6 +335,7 @@ class Multi
         );
     }
 
+    /** @return list<array{string, bool, bool}> */
     public static function getSharedIpAddresses()
     {
         return array_merge(
@@ -322,6 +349,7 @@ class Multi
         );
     }
 
+    /** @return list<array{string, bool, bool}> */
     public static function getFutureReservedIpAddresses()
     {
         return array_merge(
@@ -335,6 +363,7 @@ class Multi
         );
     }
 
+    /** @return list<array{class-string<EmbeddingStrategyInterface>, string, string}> */
     public static function getEmbeddingStrategyIpAddresses()
     {
         return [
