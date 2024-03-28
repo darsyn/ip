@@ -1,6 +1,6 @@
 parameters:
     level: 'max'
-    paths: [ 'src' ]
+    paths: [ 'src', 'tests' ]
     checkFunctionNameCase: true
     checkGenericClassInNonGenericObjectType: true
     reportUnmatchedIgnoredErrors: true

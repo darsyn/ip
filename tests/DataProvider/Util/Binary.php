@@ -4,6 +4,7 @@ namespace Darsyn\IP\Tests\DataProvider\Util;
 
 class Binary
 {
+    /** @return list<array{string, string}> */
     public static function getBinaryData()
     {
         return [
@@ -31,6 +32,7 @@ class Binary
         ];
     }
 
+    /** @return list<array{mixed}> */
     public static function getInvalidHex()
     {
         return [
@@ -46,6 +48,7 @@ class Binary
         ];
     }
 
+    /** @return list<array{mixed}> */
     public static function getInvalidHumanReadable()
     {
         return [

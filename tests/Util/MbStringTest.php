@@ -15,28 +15,40 @@ class MbStringTest extends TestCase
     const GRAPHEME_CLUSTER = '🧙‍♀️';
     const GRAPHEME_CLUSTER_BYTES = 13;
 
-    /** @test */
+    /**
+     * @test
+     * @return void
+     */
     #[PHPUnit\Test]
     public function testGetLengthAscii()
     {
         $this->assertSame(13, MbString::getLength('Hello, World!'));
     }
 
-    /** @test */
+    /**
+     * @test
+     * @return void
+     */
     #[PHPUnit\Test]
     public function testGetLengthUnicodeCharacter()
     {
         $this->assertSame(7 + self::EMOJI_BYTES, MbString::getLength('Hello! ' . self::EMOJI));
     }
 
-    /** @test */
+    /**
+     * @test
+     * @return void
+     */
     #[PHPUnit\Test]
     public function testGetLengthGraphemeCluster()
     {
         $this->assertSame(15 + self::GRAPHEME_CLUSTER_BYTES, MbString::getLength('Harriet Potter ' . self::GRAPHEME_CLUSTER));
     }
 
-    /** @test */
+    /**
+     * @test
+     * @return void
+     */
     #[PHPUnit\Test]
     public function testSubStringAscii()
     {
@@ -46,7 +58,10 @@ class MbStringTest extends TestCase
         $this->assertSame('lo, World!', $substring);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @return void
+     */
     #[PHPUnit\Test]
     public function testSubStringUnicodeCharacter()
     {
@@ -56,7 +71,10 @@ class MbStringTest extends TestCase
         $this->assertSame('! ' . Binary::fromHex('f09f'), $substring);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @return void
+     */
     #[PHPUnit\Test]
     public function testSubStringGraphemeCluster()
     {
@@ -66,7 +84,10 @@ class MbStringTest extends TestCase
         $this->assertSame('ter ' . Binary::fromHex('f09fa799e280'), $substring);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @return void
+     */
     #[PHPUnit\Test]
     public function testPadStringAscii()
     {
@@ -75,7 +96,10 @@ class MbStringTest extends TestCase
         $this->assertSame('-0Hello-0', $result = MbString::padString('Hello', 9, '-0-', STR_PAD_BOTH));
     }
 
-    /** @test */
+    /**
+     * @test
+     * @return void
+     */
     #[PHPUnit\Test]
     public function testPadStringUnicodeCharacter()
     {
@@ -84,7 +108,10 @@ class MbStringTest extends TestCase
         $this->assertSame('-' . self::EMOJI . '--', MbString::padString(self::EMOJI, 3 + self::EMOJI_BYTES, '-', STR_PAD_BOTH));
     }
 
-    /** @test */
+    /**
+     * @test
+     * @return void
+     */
     #[PHPUnit\Test]
     public function testPadStringGraphemeCluster()
     {

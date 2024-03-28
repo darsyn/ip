@@ -17,7 +17,10 @@ class MultiTypeTest extends TestCase
     /** @var \Darsyn\IP\Doctrine\MultiType $type */
     private $type;
 
-    /** @beforeClass */
+    /**
+     * @beforeClass
+     * @return void
+     */
     #[PHPUnit\BeforeClass]
     public static function setUpBeforeClassWithoutReturnDeclaration()
     {
@@ -26,7 +29,10 @@ class MultiTypeTest extends TestCase
         }
     }
 
-    /** @before */
+    /**
+     * @before
+     * @return void
+     */
     #[PHPUnit\Before]
     protected function setUpWithoutReturnDeclaration()
     {
@@ -35,10 +41,15 @@ class MultiTypeTest extends TestCase
         }
 
         $this->platform = new TestPlatform;
-        $this->type = Type::getType('ip_multi');
+        $type = Type::getType('ip_multi');
+        $this->assertInstanceOf(MultiType::class, $type);
+        $this->type = $type;
     }
 
-    /** @test */
+    /**
+     * @test
+     * @return void
+     */
     #[PHPUnit\Test]
     public function testIpConvertsToDatabaseValue()
     {
@@ -50,7 +61,10 @@ class MultiTypeTest extends TestCase
         $this->assertEquals($expected, $actual);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @return void
+     */
     #[PHPUnit\Test]
     public function testInvalidIpConversionForDatabaseValue()
     {
@@ -58,14 +72,20 @@ class MultiTypeTest extends TestCase
         $this->type->convertToDatabaseValue('abcdefg', $this->platform);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @return void
+     */
     #[PHPUnit\Test]
     public function testNullConversionForDatabaseValue()
     {
         $this->assertNull($this->type->convertToDatabaseValue(null, $this->platform));
     }
 
-    /** @test */
+    /**
+     * @test
+     * @return void
+     */
     #[PHPUnit\Test]
     public function testIpConvertsToPHPValue()
     {
@@ -76,7 +96,10 @@ class MultiTypeTest extends TestCase
         $this->assertEquals('12.34.56.78', $dbIp->getDotAddress());
     }
 
-    /** @test */
+    /**
+     * @test
+     * @return void
+     */
     #[PHPUnit\Test]
     public function testIpObjectConvertsToPHPValue()
     {
@@ -87,12 +110,17 @@ class MultiTypeTest extends TestCase
         $this->assertSame($ip, $dbIp);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @return void
+     */
     #[PHPUnit\Test]
     public function testStreamConvertsToPHPValue()
     {
         $ip = IP::factory('12.34.56.78');
         $stream = fopen('php://memory','r+');
+        // assertIsResource() isn't available for PHP 5.6 and 7.0 (PHPUnit < 7.0).
+        $this->assertTrue(is_resource($stream));
         fwrite($stream, $ip->getBinary());
         rewind($stream);
         /** @var IP $dbIp */
@@ -101,7 +129,10 @@ class MultiTypeTest extends TestCase
         $this->assertEquals('12.34.56.78', $dbIp->getDotAddress());
     }
 
-    /** @test */
+    /**
+     * @test
+     * @return void
+     */
     #[PHPUnit\Test]
     public function testInvalidIpConversionForPHPValue()
     {
@@ -109,28 +140,40 @@ class MultiTypeTest extends TestCase
         $this->type->convertToPHPValue('abcdefg', $this->platform);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @return void
+     */
     #[PHPUnit\Test]
     public function testNullConversionForPHPValue()
     {
         $this->assertNull($this->type->convertToPHPValue(null, $this->platform));
     }
 
-    /** @test */
+    /**
+     * @test
+     * @return void
+     */
     #[PHPUnit\Test]
     public function testGetName()
     {
         $this->assertEquals('ip', $this->type->getName());
     }
 
-    /** @test */
+    /**
+     * @test
+     * @return void
+     */
     #[PHPUnit\Test]
     public function testGetBinaryTypeDeclarationSQL()
     {
-        $this->assertEquals('DUMMYBINARY()', $this->type->getSqlDeclaration(['length' => 16], $this->platform));
+        $this->assertEquals('DUMMYBINARY()', $this->type->getSQLDeclaration(['length' => 16], $this->platform));
     }
 
-    /** @test */
+    /**
+     * @test
+     * @return void
+     */
     #[PHPUnit\Test]
     public function testBindingTypeIsAValidPDOTypeConstant()
     {
@@ -148,7 +191,10 @@ class MultiTypeTest extends TestCase
         $this->assertContains($this->type->getBindingType(), $paramConstants);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @return void
+     */
     #[PHPUnit\Test]
     public function testRequiresSQLCommentHint()
     {

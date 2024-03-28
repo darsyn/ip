@@ -14,7 +14,10 @@ class CompatibleTest extends TestCase
     /** @var \Darsyn\IP\Strategy\EmbeddingStrategyInterface $strategy */
     private $strategy;
 
-    /** @before */
+    /**
+     * @before
+     * @return void
+     */
     #[PHPUnit\Before]
     protected function setUpWithoutReturnDeclaration()
     {
@@ -24,17 +27,23 @@ class CompatibleTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Compatible::getInvalidIpAddresses()
+     * @param mixed $value
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(CompatibleDataProvider::class, 'getInvalidIpAddresses')]
     public function testIsEmbeddedReturnsFalseForAStringOtherThan16BytesLong($value)
     {
+        /** @phpstan-ignore argument.type */
         $this->assertFalse($this->strategy->isEmbedded($value));
     }
 
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Compatible::getValidIpAddresses()
+     * @param string $value
+     * @param bool $isEmbedded
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(CompatibleDataProvider::class, 'getValidIpAddresses')]
@@ -46,6 +55,8 @@ class CompatibleTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Compatible::getInvalidIpAddresses()
+     * @param mixed $value
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(CompatibleDataProvider::class, 'getInvalidIpAddresses')]
@@ -53,6 +64,7 @@ class CompatibleTest extends TestCase
     {
         $this->expectException(\Darsyn\IP\Exception\Strategy\ExtractionException::class);
         try {
+            /** @phpstan-ignore argument.type */
             $this->strategy->extract($value);
         } catch (ExtractionException $e) {
             $this->assertSame($this->strategy, $e->getEmbeddingStrategy());
@@ -65,6 +77,9 @@ class CompatibleTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Compatible::getValidSequences()
+     * @param string $ipv6
+     * @param string $ipv4
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(CompatibleDataProvider::class, 'getValidSequences')]
@@ -76,6 +91,8 @@ class CompatibleTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Compatible::getInvalidIpAddresses()
+     * @param mixed $value
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(CompatibleDataProvider::class, 'getInvalidIpAddresses')]
@@ -83,6 +100,7 @@ class CompatibleTest extends TestCase
     {
         $this->expectException(\Darsyn\IP\Exception\Strategy\PackingException::class);
         try {
+            /** @phpstan-ignore argument.type */
             $this->strategy->pack($value);
         } catch (PackingException $e) {
             $this->assertSame($this->strategy, $e->getEmbeddingStrategy());
@@ -95,6 +113,9 @@ class CompatibleTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Compatible::getValidSequences()
+     * @param string $ipv6
+     * @param string $ipv4
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(CompatibleDataProvider::class, 'getValidSequences')]
