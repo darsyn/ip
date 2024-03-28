@@ -4,6 +4,7 @@ namespace Darsyn\IP\Tests\Util;
 
 use Darsyn\IP\Util\Binary;
 use Darsyn\IP\Util\MbString;
+use PHPUnit\Framework\Attributes as PHPUnit;
 use PHPUnit\Framework\TestCase;
 
 class MbStringTest extends TestCase
@@ -15,24 +16,28 @@ class MbStringTest extends TestCase
     const GRAPHEME_CLUSTER_BYTES = 13;
 
     /** @test */
+    #[PHPUnit\Test]
     public function testGetLengthAscii()
     {
         $this->assertSame(13, MbString::getLength('Hello, World!'));
     }
 
     /** @test */
+    #[PHPUnit\Test]
     public function testGetLengthUnicodeCharacter()
     {
         $this->assertSame(7 + self::EMOJI_BYTES, MbString::getLength('Hello! ' . self::EMOJI));
     }
 
     /** @test */
+    #[PHPUnit\Test]
     public function testGetLengthGraphemeCluster()
     {
         $this->assertSame(15 + self::GRAPHEME_CLUSTER_BYTES, MbString::getLength('Harriet Potter ' . self::GRAPHEME_CLUSTER));
     }
 
     /** @test */
+    #[PHPUnit\Test]
     public function testSubStringAscii()
     {
         $text = 'Hello, World!';
@@ -42,6 +47,7 @@ class MbStringTest extends TestCase
     }
 
     /** @test */
+    #[PHPUnit\Test]
     public function testSubStringUnicodeCharacter()
     {
         $text = 'Hello! ' . self::EMOJI;
@@ -51,6 +57,7 @@ class MbStringTest extends TestCase
     }
 
     /** @test */
+    #[PHPUnit\Test]
     public function testSubStringGraphemeCluster()
     {
         $text = 'Harriet Potter ' . self::GRAPHEME_CLUSTER;
@@ -60,6 +67,7 @@ class MbStringTest extends TestCase
     }
 
     /** @test */
+    #[PHPUnit\Test]
     public function testPadStringAscii()
     {
         $this->assertSame('-0--Hello', $result = MbString::padString('Hello', 9, '-0-', STR_PAD_LEFT));
@@ -68,6 +76,7 @@ class MbStringTest extends TestCase
     }
 
     /** @test */
+    #[PHPUnit\Test]
     public function testPadStringUnicodeCharacter()
     {
         $this->assertSame('---' . self::EMOJI, MbString::padString(self::EMOJI, 3 + self::EMOJI_BYTES, '-', STR_PAD_LEFT));
@@ -76,6 +85,7 @@ class MbStringTest extends TestCase
     }
 
     /** @test */
+    #[PHPUnit\Test]
     public function testPadStringGraphemeCluster()
     {
         $this->assertSame('--' . self::GRAPHEME_CLUSTER, MbString::padString(self::GRAPHEME_CLUSTER, 2 + self::GRAPHEME_CLUSTER_BYTES, '-', STR_PAD_LEFT));
