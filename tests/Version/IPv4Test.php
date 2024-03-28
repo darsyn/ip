@@ -6,9 +6,11 @@ use Darsyn\IP\Exception\InvalidCidrException;
 use Darsyn\IP\Exception\InvalidIpAddressException;
 use Darsyn\IP\Exception\WrongVersionException;
 use Darsyn\IP\IpInterface;
+use Darsyn\IP\Tests\DataProvider\IPv4 as IPv4DataProvider;
 use Darsyn\IP\Version\IPv4 as IP;
 use Darsyn\IP\Version\IPv6;
 use Darsyn\IP\Version\Version4Interface;
+use PHPUnit\Framework\Attributes as PHPUnit;
 use PHPUnit\Framework\TestCase;
 
 class IPv4Test extends TestCase
@@ -17,6 +19,8 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidIpAddresses()
      */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidIpAddresses')]
     public function testInstantiationWithValidAddresses($value)
     {
         $ip = IP::factory($value);
@@ -28,6 +32,8 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidBinarySequences()
      */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidBinarySequences')]
     public function testBinarySequenceIsTheSameOnceInstantiated($value)
     {
         $ip = IP::factory($value);
@@ -38,6 +44,8 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidProtocolIpAddresses()
      */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidProtocolIpAddresses')]
     public function testProtocolNotationConvertsToCorrectBinarySequence($value, $expectedHex)
     {
         $ip = IP::factory($value);
@@ -48,6 +56,8 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getInvalidIpAddresses()
      */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getInvalidIpAddresses')]
     public function testExceptionIsThrownOnInstantiationWithInvalidAddresses($value)
     {
         $this->expectException(\Darsyn\IP\Exception\InvalidIpAddressException::class);
@@ -65,6 +75,8 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidIpAddresses()
      */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidIpAddresses')]
     public function testGetBinaryAlwaysReturnsA4ByteString($value)
     {
         $ip = IP::factory($value);
@@ -75,6 +87,8 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidIpAddresses()
      */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidIpAddresses')]
     public function testDotAddressReturnsCorrectString($value, $expectedHex, $expectedDot)
     {
         $ip = IP::factory($value);
@@ -85,6 +99,8 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidIpAddresses()
      */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidIpAddresses')]
     public function testGetVersionAlwaysReturns4($value)
     {
         $ip = IP::factory($value);
@@ -95,6 +111,8 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidIpAddresses()
      */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidIpAddresses')]
     public function testIsVersionOnlyReturnsTrueFor4($value)
     {
         $ip = IP::factory($value);
@@ -105,6 +123,8 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidIpAddresses()
      */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidIpAddresses')]
     public function testIsVersionOnlyReturnsFalseFor6($value)
     {
         $ip = IP::factory($value);
@@ -115,6 +135,8 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidIpAddresses()
      */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidIpAddresses')]
     public function testIsVersion4AlwaysReturnsTrue($value)
     {
         $ip = IP::factory($value);
@@ -125,6 +147,8 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidIpAddresses()
      */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidIpAddresses')]
     public function testIsVersion6AlwaysReturnsFalse($value)
     {
         $ip = IP::factory($value);
@@ -135,6 +159,8 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidCidrValues()
      */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidCidrValues')]
     public function testCidrMasks($cidr, $expectedMaskHex)
     {
         $ip = IP::factory('12.34.56.78');
@@ -148,6 +174,8 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getInvalidCidrValues()
      */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getInvalidCidrValues')]
     public function testExceptionIsThrownFromInvalidCidrValues($cidr)
     {
         $this->expectException(\Darsyn\IP\Exception\InvalidCidrException::class);
@@ -167,8 +195,10 @@ class IPv4Test extends TestCase
 
     /**
      * @test
-     * @dataProvider \Darsyn\IP\Tests\DataProvider\Ipv4::getNetworkIpAddresses()
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getNetworkIpAddresses()
      */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getNetworkIpAddresses')]
     public function testNetworkIp($expected, $cidr)
     {
         $ip = IP::factory('12.34.56.78');
@@ -177,8 +207,10 @@ class IPv4Test extends TestCase
 
     /**
      * @test
-     * @dataProvider \Darsyn\IP\Tests\DataProvider\Ipv4::getBroadcastIpAddresses()
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getBroadcastIpAddresses()
      */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getBroadcastIpAddresses')]
     public function testBroadcastIp($expected, $cidr)
     {
         $ip = IP::factory('12.34.56.78');
@@ -189,6 +221,8 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidInRangeIpAddresses()
      */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidInRangeIpAddresses')]
     public function testInRange($first, $second, $cidr)
     {
         $first = IP::factory($first);
@@ -200,6 +234,8 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getInvalidCidrValues()
      */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getInvalidCidrValues')]
     public function testInRangeThrowsExceptionOnInvalidCidr($cidr)
     {
         $first = IP::factory('12.34.56.78');
@@ -208,9 +244,8 @@ class IPv4Test extends TestCase
         $first->inRange($second, $cidr);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
+    #[PHPUnit\Test]
     public function testDifferentVersionsAreNotInRange()
     {
         $ip = IP::factory('12.34.56.78');
@@ -223,6 +258,8 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getCommonCidrValues()
      */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getCommonCidrValues')]
     public function testCommonCidr($first, $second, $expectedCidr)
     {
         $first = IP::factory($first);
@@ -231,6 +268,7 @@ class IPv4Test extends TestCase
     }
 
     /** @test */
+    #[PHPUnit\Test]
     public function testCommonCidrThrowsException()
     {
         $first = IP::factory('12.34.56.78');
@@ -243,6 +281,8 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidIpAddresses()
      */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidIpAddresses')]
     public function testIsMappedAlwaysReturnsFalse($value)
     {
         $ip = IP::factory($value);
@@ -253,6 +293,8 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidIpAddresses()
      */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidIpAddresses')]
     public function testIsDerivedAlwaysReturnsFalse($value)
     {
         $ip = IP::factory($value);
@@ -263,6 +305,8 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidIpAddresses()
      */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidIpAddresses')]
     public function testIsCompatibleAlwaysReturnsFalse($value)
     {
         $ip = IP::factory($value);
@@ -273,6 +317,8 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidIpAddresses()
      */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidIpAddresses')]
     public function testIsEmbeddedAlwaysReturnsFalse($value)
     {
         $ip = IP::factory($value);
@@ -283,6 +329,8 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getLinkLocalIpAddresses()
      */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getLinkLocalIpAddresses')]
     public function testIsLinkLocal($value, $isLinkLocal)
     {
         $ip = IP::factory($value);
@@ -293,6 +341,8 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getLoopbackIpAddresses()
      */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getLoopbackIpAddresses')]
     public function testIsLoopback($value, $isLoopback)
     {
         $ip = IP::factory($value);
@@ -303,6 +353,8 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getMulticastIpAddresses()
      */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getMulticastIpAddresses')]
     public function testIsMulticast($value, $isMulticast)
     {
         $ip = IP::factory($value);
@@ -314,6 +366,8 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getPrivateUseIpAddresses()
      */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getPrivateUseIpAddresses')]
     public function testIsPrivateUse($value, $isPrivateUse)
     {
         $ip = IP::factory($value);
@@ -324,6 +378,8 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getUnspecifiedIpAddresses()
      */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getUnspecifiedIpAddresses')]
     public function testIsUnspecified($value, $isUnspecified)
     {
         $ip = IP::factory($value);
@@ -334,6 +390,8 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getBenchmarkingIpAddresses()
      */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getBenchmarkingIpAddresses')]
     public function testIsBenchmarking($value, $isBenchmarking)
     {
         $ip = IP::factory($value);
@@ -344,6 +402,8 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getDocumentationIpAddresses()
      */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getDocumentationIpAddresses')]
     public function testIsDocumentation($value, $isDocumentation)
     {
         $ip = IP::factory($value);
@@ -354,6 +414,8 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getPublicUseIpAddresses()
      */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getPublicUseIpAddresses')]
     public function testIsPublicUse($value, $isPublicUse)
     {
         $ip = IP::factory($value);
@@ -364,6 +426,8 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getIsBroadcastIpAddresses()
      */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getIsBroadcastIpAddresses')]
     public function testIsBroadcast($value, $isBroadcast)
     {
         $ip = IP::factory($value);
@@ -374,6 +438,8 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getSharedIpAddresses()
      */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getSharedIpAddresses')]
     public function testIsShared($value, $isShared)
     {
         $ip = IP::factory($value);
@@ -384,6 +450,8 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getFutureReservedIpAddresses()
      */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getFutureReservedIpAddresses')]
     public function testIsFutureReserved($value, $isFutureReserved)
     {
         $ip = IP::factory($value);
@@ -394,6 +462,8 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidIpAddresses()
      */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidIpAddresses')]
     public function testStringCasting($value, $expectedHex, $expectedDot)
     {
         $ip = IP::factory($value);
