@@ -4,6 +4,7 @@ namespace Darsyn\IP\Tests\DataProvider\Strategy;
 
 class Derived
 {
+    /** @return list<array{string, bool}> */
     public static function getValidIpAddresses()
     {
         $valid = array_map(function (array $row) {
@@ -17,6 +18,7 @@ class Derived
         return array_merge($valid, $invalid);
     }
 
+    /** @return list<array{mixed}> */
     public static function getInvalidIpAddresses()
     {
         return [
@@ -28,6 +30,7 @@ class Derived
         ];
     }
 
+    /** @return list<array{string, string}> */
     public static function getValidSequences()
     {
         return [
@@ -38,6 +41,7 @@ class Derived
         ];
     }
 
+    /** @return list<array{string}> */
     public static function getInvalidSequences()
     {
         return [

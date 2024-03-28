@@ -4,6 +4,7 @@ namespace Darsyn\IP\Tests\DataProvider;
 
 class IPv4 implements IpDataProviderInterface
 {
+    /** @return list<array{string, string, string}> */
     public static function getValidBinarySequences()
     {
         return [
@@ -23,6 +24,7 @@ class IPv4 implements IpDataProviderInterface
         ];
     }
 
+    /** @return list<array{string, string, string}> */
     public static function getValidProtocolIpAddresses()
     {
         return [
@@ -41,11 +43,13 @@ class IPv4 implements IpDataProviderInterface
         ];
     }
 
+    /** @return list<array{string, string, string}> */
     public static function getValidIpAddresses()
     {
         return array_merge(self::getValidBinarySequences(), self::getValidProtocolIpAddresses());
     }
 
+    /** @return list<array{mixed}> */
     public static function getInvalidIpAddresses()
     {
         return [
@@ -67,6 +71,7 @@ class IPv4 implements IpDataProviderInterface
         ];
     }
 
+    /** @return list<array{int, string}> */
     public static function getValidCidrValues()
     {
         return [
@@ -82,6 +87,7 @@ class IPv4 implements IpDataProviderInterface
         ];
     }
 
+    /** @return list<array{mixed}> */
     public static function getInvalidCidrValues()
     {
         return [
@@ -97,6 +103,7 @@ class IPv4 implements IpDataProviderInterface
         ];
     }
 
+    /** @return list<array{string, int}> */
     public static function getNetworkIpAddresses()
     {
         return [
@@ -109,6 +116,7 @@ class IPv4 implements IpDataProviderInterface
         ];
     }
 
+    /** @return list<array{string, int}> */
     public static function getBroadcastIpAddresses()
     {
         return [
@@ -121,6 +129,7 @@ class IPv4 implements IpDataProviderInterface
         ];
     }
 
+    /** @return list<array{string, string, int}> */
     public static function getValidInRangeIpAddresses()
     {
         return [
@@ -131,6 +140,7 @@ class IPv4 implements IpDataProviderInterface
         ];
     }
 
+    /** @return list<array{string, string, int}> */
     public static function getCommonCidrValues()
     {
         return [
@@ -153,56 +163,67 @@ class IPv4 implements IpDataProviderInterface
         ];
     }
 
+    /** @return list<array{string, bool}> */
     public static function getLinkLocalIpAddresses()
     {
         return self::getCategoryOfIpAddresses(self::LINK_LOCAL);
     }
 
+    /** @return list<array{string, bool}> */
     public static function getLoopbackIpAddresses()
     {
         return self::getCategoryOfIpAddresses(self::LOOPBACK);
     }
 
+    /** @return list<array{string, bool}> */
     public static function getMulticastIpAddresses()
     {
         return self::getCategoryOfIpAddresses(self::MULTICAST);
     }
 
+    /** @return list<array{string, bool}> */
     public static function getPrivateUseIpAddresses()
     {
         return self::getCategoryOfIpAddresses(self::PRIVATE_USE);
     }
 
+    /** @return list<array{string, bool}> */
     public static function getUnspecifiedIpAddresses()
     {
         return self::getCategoryOfIpAddresses(self::UNSPECIFIED);
     }
 
+    /** @return list<array{string, bool}> */
     public static function getBenchmarkingIpAddresses()
     {
         return self::getCategoryOfIpAddresses(self::BENCHMARKING);
     }
 
+    /** @return list<array{string, bool}> */
     public static function getDocumentationIpAddresses()
     {
         return self::getCategoryOfIpAddresses(self::DOCUMENTATION);
     }
 
+    /** @return list<array{string, bool}> */
     public static function getPublicUseIpAddresses()
     {
         return self::getCategoryOfIpAddresses(self::PUBLIC_USE_V4);
     }
 
+    /** @return list<array{string, bool}> */
     public static function getIsBroadcastIpAddresses()
     {
         return self::getCategoryOfIpAddresses(self::BROADCAST);
     }
 
+    /** @return list<array{string, bool}> */
     public static function getSharedIpAddresses()
     {
         return self::getCategoryOfIpAddresses(self::SHARED);
     }
 
+    /** @return list<array{string, bool}> */
     public static function getFutureReservedIpAddresses()
     {
         return self::getCategoryOfIpAddresses(self::FUTURE_RESERVED);

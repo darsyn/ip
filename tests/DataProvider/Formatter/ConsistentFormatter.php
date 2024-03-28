@@ -4,6 +4,7 @@ namespace Darsyn\IP\Tests\DataProvider\Formatter;
 
 class ConsistentFormatter
 {
+    /** @return list<array{string, string}> */
     public static function getValidBinarySequences()
     {
         return [
@@ -33,6 +34,7 @@ class ConsistentFormatter
         ];
     }
 
+    /** @return list<array{mixed}> */
     public static function getInvalidBinarySequences()
     {
         return [

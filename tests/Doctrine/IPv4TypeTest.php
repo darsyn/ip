@@ -6,6 +6,7 @@ use Darsyn\IP\Doctrine\IPv4Type;
 use Darsyn\IP\Version\IPv4 as IP;
 use Doctrine\DBAL\Types\Type;
 use PDO;
+use PHPUnit\Framework\Attributes as PHPUnit;
 use PHPUnit\Framework\TestCase;
 
 class IPv4TypeTest extends TestCase
@@ -16,7 +17,11 @@ class IPv4TypeTest extends TestCase
     /** @var \Darsyn\IP\Doctrine\IPv4Type $type */
     private $type;
 
-    /** @beforeClass */
+    /**
+     * @beforeClass
+     * @return void
+     */
+    #[PHPUnit\BeforeClass]
     public static function setUpBeforeClassWithoutReturnDeclaration()
     {
         if (class_exists(Type::class)) {
@@ -24,36 +29,28 @@ class IPv4TypeTest extends TestCase
         }
     }
 
-    private function getPlatformMock()
-    {
-        // We have to use MySQL as the platform here, because the AbstractPlatform does not support BINARY types.
-        $mockBuilder = $this->getMockBuilder('Doctrine\DBAL\Platforms\MySqlPlatform');
-        $mockedMethods = ['getBinaryTypeDeclarationSQL'];
-        // MockBuilder::setMethods() was deprecated in favour of MockBuilder::onlyMethods() in PHPUnit v7.5.x
-        method_exists($mockBuilder, 'onlyMethods')
-            ? $mockBuilder->onlyMethods($mockedMethods)
-            : $mockBuilder->setMethods($mockedMethods);
-        return $mockBuilder->getMockForAbstractClass();
-    }
-
-    /** @before */
+    /**
+     * @before
+     * @return void
+     */
+    #[PHPUnit\Before]
     protected function setUpWithoutReturnDeclaration()
     {
         if (!class_exists('Doctrine\DBAL\Types\Type')) {
             $this->markTestSkipped('Skipping test that requires "doctrine/dbal".');
         }
 
-        $this->platform = $this->getPlatformMock();
-        $this->platform
-            ->expects($this->any())
-            ->method('getBinaryTypeDeclarationSQL')
-            ->will($this->returnValue('DUMMYBINARY()'));
-        $this->type = Type::getType('ipv4');
+        $this->platform = new TestPlatform;
+        $type = Type::getType('ipv4');
+        $this->assertInstanceOf(IPv4Type::class, $type);
+        $this->type = $type;
     }
 
     /**
      * @test
+     * @return void
      */
+    #[PHPUnit\Test]
     public function testIpConvertsToDatabaseValue()
     {
         $ip = IP::factory('12.34.56.78');
@@ -66,7 +63,9 @@ class IPv4TypeTest extends TestCase
 
     /**
      * @test
+     * @return void
      */
+    #[PHPUnit\Test]
     public function testInvalidIpConversionForDatabaseValue()
     {
         $this->expectException(\Doctrine\DBAL\Types\ConversionException::class);
@@ -75,7 +74,9 @@ class IPv4TypeTest extends TestCase
 
     /**
      * @test
+     * @return void
      */
+    #[PHPUnit\Test]
     public function testNullConversionForDatabaseValue()
     {
         $this->assertNull($this->type->convertToDatabaseValue(null, $this->platform));
@@ -83,7 +84,9 @@ class IPv4TypeTest extends TestCase
 
     /**
      * @test
+     * @return void
      */
+    #[PHPUnit\Test]
     public function testIpConvertsToPHPValue()
     {
         $ip = IP::factory('12.34.56.78');
@@ -95,7 +98,9 @@ class IPv4TypeTest extends TestCase
 
     /**
      * @test
+     * @return void
      */
+    #[PHPUnit\Test]
     public function testIpObjectConvertsToPHPValue()
     {
         $ip = IP::factory('12.34.56.78');
@@ -107,11 +112,15 @@ class IPv4TypeTest extends TestCase
 
     /**
      * @test
+     * @return void
      */
+    #[PHPUnit\Test]
     public function testStreamConvertsToPHPValue()
     {
         $ip = IP::factory('12.34.56.78');
         $stream = fopen('php://memory','r+');
+        // assertIsResource() isn't available for PHP 5.6 and 7.0 (PHPUnit < 7.0).
+        $this->assertTrue(is_resource($stream));
         fwrite($stream, $ip->getBinary());
         rewind($stream);
         /** @var IP $dbIp */
@@ -122,7 +131,9 @@ class IPv4TypeTest extends TestCase
 
     /**
      * @test
+     * @return void
      */
+    #[PHPUnit\Test]
     public function testInvalidIpConversionForPHPValue()
     {
         $this->expectException(\Doctrine\DBAL\Types\ConversionException::class);
@@ -131,7 +142,9 @@ class IPv4TypeTest extends TestCase
 
     /**
      * @test
+     * @return void
      */
+    #[PHPUnit\Test]
     public function testNullConversionForPHPValue()
     {
         $this->assertNull($this->type->convertToPHPValue(null, $this->platform));
@@ -139,7 +152,9 @@ class IPv4TypeTest extends TestCase
 
     /**
      * @test
+     * @return void
      */
+    #[PHPUnit\Test]
     public function testGetName()
     {
         $this->assertEquals('ip', $this->type->getName());
@@ -147,15 +162,19 @@ class IPv4TypeTest extends TestCase
 
     /**
      * @test
+     * @return void
      */
+    #[PHPUnit\Test]
     public function testGetBinaryTypeDeclarationSQL()
     {
-        $this->assertEquals('DUMMYBINARY()', $this->type->getSqlDeclaration(['length' => 4], $this->platform));
+        $this->assertEquals('DUMMYBINARY()', $this->type->getSQLDeclaration(['length' => 4], $this->platform));
     }
 
     /**
      * @test
+     * @return void
      */
+    #[PHPUnit\Test]
     public function testBindingTypeIsAValidPDOTypeConstant()
     {
         // Get all constants of the PDO class.
@@ -174,7 +193,9 @@ class IPv4TypeTest extends TestCase
 
     /**
      * @test
+     * @return void
      */
+    #[PHPUnit\Test]
     public function testRequiresSQLCommentHint()
     {
         $this->assertTrue($this->type->requiresSQLCommentHint($this->platform));

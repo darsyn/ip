@@ -11,12 +11,12 @@ on:
 
 jobs:
 
-  psalm:
-    runs-on: 'ubuntu-20.04'
+  phpstan:
+    runs-on: 'ubuntu-22.04'
     strategy:
       matrix:
         php:
-          - '8.1'
+            - '8.3'
     steps:
       - uses: 'actions/checkout@v2'
       - uses: 'shivammathur/setup-php@v2'
@@ -25,8 +25,8 @@ jobs:
       - uses: 'ramsey/composer-install@v2'
         with:
           dependency-versions: 'highest'
-      # Require vimeo/psalm via command-line instead of adding to Composer's
+      # Require PHPStan via command-line instead of adding to Composer's
       # "require-dev"; we only want to run static analysis once on the highest
-      # version of PHP available. Also, Psalm on 5.6? No, thank you.
-      - run: 'composer require --dev vimeo/psalm'
-      - run: './vendor/bin/psalm --config="tests/psalm.xml" --threads="$(nproc)" --php-version="5.6" --no-cache --stats --show-info=false --output-format="github"'
+      # version of PHP available.
+      - run: 'composer require --dev phpstan/phpstan phpstan/phpstan-deprecation-rules'
+      - run: './vendor/bin/phpstan analyze --no-progress --error-format="github"'

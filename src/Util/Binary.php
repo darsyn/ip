@@ -25,9 +25,11 @@ class Binary
     public static function toHex($binary)
     {
         if (!\is_string($binary)) {
-            throw new \InvalidArgumentException('Cannot convert non-string to hexidecimal.');
+            throw new \InvalidArgumentException('Cannot convert non-string to hexadecimal.');
         }
-        $data = \unpack('H*', $binary);
+        if (false === $data = \unpack('H*', $binary)) {
+            throw new \InvalidArgumentException('Unknown error converting string to hexadecimal.');
+        }
         return \reset($data);
     }
 
@@ -61,7 +63,7 @@ class Binary
         }
         $hex = static::toHex($binary);
         return \implode('', \array_map(function ($character) {
-            return MbString::padString(\decbin(\hexdec($character)), 8, '0', \STR_PAD_LEFT);
+            return MbString::padString(\decbin((int) \hexdec($character)), 8, '0', \STR_PAD_LEFT);
         }, \function_exists('mb_str_split') ? \mb_str_split($hex, 2, '8bit') : \str_split($hex, 2)));
     }
 }
