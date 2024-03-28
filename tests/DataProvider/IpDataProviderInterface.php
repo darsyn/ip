@@ -60,14 +60,14 @@ interface IpDataProviderInterface
         | self::UNICAST_OTHER;
 
     /**
-     * @return array<string,int>
+     * @return array<string, int>
      */
     public static function getCategorizedIpAddresses();
 
     /**
      * @param int $category
      * @param int $exclude
-     * @return array<array{string, bool}>
+     * @return list<array{string, bool}>
      */
     public static function getCategoryOfIpAddresses($category, $exclude = 0);
 }

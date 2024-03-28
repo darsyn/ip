@@ -4,6 +4,7 @@ namespace Darsyn\IP\Tests\DataProvider;
 
 class IPv6 implements IpDataProviderInterface
 {
+    /** @return list<array{string, string, string, string}> */
     public static function getValidBinarySequences()
     {
         return [
@@ -23,6 +24,7 @@ class IPv6 implements IpDataProviderInterface
         ];
     }
 
+    /** @return list<array{string, string, string, string}> */
     public static function getValidProtocolIpAddresses()
     {
         return [
@@ -40,11 +42,13 @@ class IPv6 implements IpDataProviderInterface
         ];
     }
 
+    /** @return list<array{string, string, string, string}> */
     public static function getValidIpAddresses()
     {
         return array_merge(self::getValidBinarySequences(), self::getValidProtocolIpAddresses());
     }
 
+    /** @return list<array{mixed}> */
     public static function getInvalidIpAddresses()
     {
         return [
@@ -67,6 +71,7 @@ class IPv6 implements IpDataProviderInterface
         ];
     }
 
+    /** @return list<array{int, string}> */
     public static function getValidCidrValues()
     {
         return [
@@ -81,6 +86,7 @@ class IPv6 implements IpDataProviderInterface
         ];
     }
 
+    /** @return list<array{mixed}> */
     public static function getInvalidCidrValues()
     {
         return [
@@ -96,6 +102,7 @@ class IPv6 implements IpDataProviderInterface
         ];
     }
 
+    /** @return list<array{string, int}> */
     public static function getNetworkIpAddresses()
     {
         return [
@@ -107,6 +114,7 @@ class IPv6 implements IpDataProviderInterface
         ];
     }
 
+    /** @return list<array{string, int}> */
     public static function getBroadcastIpAddresses()
     {
         return [
@@ -118,6 +126,7 @@ class IPv6 implements IpDataProviderInterface
         ];
     }
 
+    /** @return list<array{string, string, int}> */
     public static function getValidInRangeIpAddresses()
     {
         return [
@@ -130,6 +139,7 @@ class IPv6 implements IpDataProviderInterface
         ];
     }
 
+    /** @return list<array{string, string, int}> */
     public static function getCommonCidrValues()
     {
         return [
@@ -152,61 +162,73 @@ class IPv6 implements IpDataProviderInterface
         ];
     }
 
+    /** @return list<array{string, bool}> */
     public static function getMappedIpAddresses()
     {
         return self::getCategoryOfIpAddresses(self::MAPPED);
     }
 
+    /** @return list<array{string, bool}> */
     public static function getDerivedIpAddresses()
     {
         return self::getCategoryOfIpAddresses(self::DERIVED);
     }
 
+    /** @return list<array{string, bool}> */
     public static function getCompatibleIpAddresses()
     {
         return self::getCategoryOfIpAddresses(self::COMPATIBLE);
     }
 
+    /** @return list<array{string, bool}> */
     public static function getLinkLocalIpAddresses()
     {
         return self::getCategoryOfIpAddresses(self::LINK_LOCAL);
     }
 
+    /** @return list<array{string, bool}> */
     public static function getLoopbackIpAddresses()
     {
         return self::getCategoryOfIpAddresses(self::LOOPBACK);
     }
 
+    /** @return list<array{string, bool}> */
     public static function getMulticastIpAddresses()
     {
         return self::getCategoryOfIpAddresses(self::MULTICAST);
     }
 
+    /** @return list<array{string, bool}> */
     public static function getPrivateUseIpAddresses()
     {
         return self::getCategoryOfIpAddresses(self::PRIVATE_USE);
     }
 
+    /** @return list<array{string, bool}> */
     public static function getUnspecifiedIpAddresses()
     {
         return self::getCategoryOfIpAddresses(self::UNSPECIFIED);
     }
 
+    /** @return list<array{string, bool}> */
     public static function getBenchmarkingIpAddresses()
     {
         return self::getCategoryOfIpAddresses(self::BENCHMARKING);
     }
 
+    /** @return list<array{string, bool}> */
     public static function getDocumentationIpAddresses()
     {
         return self::getCategoryOfIpAddresses(self::DOCUMENTATION);
     }
 
+    /** @return list<array{string, bool}> */
     public static function getPublicUseIpAddresses()
     {
         return self::getCategoryOfIpAddresses(self::PUBLIC_USE_V6);
     }
 
+    /** @return list<array{string, bool}> */
     public static function getPublicUseIpAddressesExcludingMapped()
     {
         // Exclude IPv4-embedded addresses embedded using the Mapped strategy,
@@ -215,31 +237,37 @@ class IPv6 implements IpDataProviderInterface
         return self::getCategoryOfIpAddresses(self::PUBLIC_USE_V6, self::MAPPED);
     }
 
+    /** @return list<array{string, bool}> */
     public static function getUniqueLocalIpAddresses()
     {
         return self::getCategoryOfIpAddresses(self::UNIQUE_LOCAL);
     }
 
+    /** @return list<array{string, bool}> */
     public static function getUniqueLocalIpAddressesExcludingMapped()
     {
         return self::getCategoryOfIpAddresses(self::UNIQUE_LOCAL, self::MAPPED);
     }
 
+    /** @return list<array{string, bool}> */
     public static function getUnicastIpAddresses()
     {
         return self::getCategoryOfIpAddresses(self::UNICAST);
     }
 
+    /** @return list<array{string, bool}> */
     public static function getUnicastIpAddressesExcludingMapped()
     {
         return self::getCategoryOfIpAddresses(self::UNICAST, self::MAPPED);
     }
 
+    /** @return list<array{string, bool}> */
     public static function getUnicastGlobalIpAddresses()
     {
         return self::getCategoryOfIpAddresses(self::UNICAST_GLOBAL);
     }
 
+    /** @return list<array{string, bool}> */
     public static function getUnicastGlobalIpAddressesExcludingMapped()
     {
         return self::getCategoryOfIpAddresses(self::UNICAST_GLOBAL, self::MAPPED);

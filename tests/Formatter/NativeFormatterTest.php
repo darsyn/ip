@@ -14,14 +14,20 @@ class NativeFormatterTest extends TestCase
     /** @var \Darsyn\IP\Formatter\ProtocolFormatterInterface $formatter */
     private $formatter;
 
-    /** @before */
+    /**
+     * @before
+     * @return void
+     */
     #[PHPUnit\Before]
     protected function setUpWithoutReturnDeclaration()
     {
         $this->formatter = new Formatter;
     }
 
-    /** @test */
+    /**
+     * @test
+     * @return void
+     */
     #[PHPUnit\Test]
     public function testFormatterIsInstanceOfInterface()
     {
@@ -31,6 +37,9 @@ class NativeFormatterTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Formatter\NativeFormatter::getValidBinarySequences()
+     * @param string $value
+     * @param string $expected
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(NativeFormatterDataProvider::class, 'getValidBinarySequences')]
@@ -42,6 +51,8 @@ class NativeFormatterTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Formatter\NativeFormatter::getInvalidBinarySequences()
+     * @param mixed $value
+     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(NativeFormatterDataProvider::class, 'getInvalidBinarySequences')]
@@ -49,6 +60,7 @@ class NativeFormatterTest extends TestCase
     {
         $this->expectException(\Darsyn\IP\Exception\Formatter\FormatException::class);
         try {
+            /** @phpstan-ignore argument.type */
             $this->formatter->ntop($value);
         } catch (FormatException $e) {
             $this->assertSame($value, $e->getSuppliedBinary());
