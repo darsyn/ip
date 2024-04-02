@@ -10,30 +10,32 @@ accuracy or readability of the documentation - are always welcome.
 
 Full documentation is available in the [`docs/`](docs/) folder.
 
-## Code of Conduct
+## Compatibility
 
-This project includes and adheres to the [Contributor Covenant as a Code of
-Conduct](CODE_OF_CONDUCT.md).
+This library has extensive test coverage using PHPUnit on PHP versions: `5.6`,
+`7.0`, `7.1`, `7.2`, `7.3`, `7.4`, `8.0`, `8.1`, `8.2`, and `8.3`.
 
-## Upgrading
+Static analysis is performed with PHPStan at `max` level on PHP `8.3`, using
+both core and deprecation rules.
 
-This library is fairly similar to how it was in `3.3.1`; the main differences
-are:
+The Doctrine features included in this library are compatible with Doctrine DBAL
+`^2.3 || ^3.0`. This is **not** enforced via Composer (in case you want to use
+this library in a project that uses Doctrine DBAL `4+` without using the
+Doctrine features this library provides).
 
-- There are three main classes instead of one: [`IPv4`](src/Version/IPv4.php),
+## Brief Example
+
+- There are three main classes: [`IPv4`](src/Version/IPv4.php),
   [`IPv6`](src/Version/IPv6.php), and [`Multi`](src/Version/Multi.php) (for both
   version 4 and 6 addresses).
 - Objects are created using a static factory method
   [`IpInterface::factory()`](src/IpInterface.php) instead of the constructor to
   speed up internal processes.
-- A few methods have been renamed (see [the API reference](docs/09-api.md)).
-- Finally, the default for representing version 4 addresses internally has
-  changed [from IPv4-compatible to IPv4-mapped](docs/05-strategies.md).
-
-## Brief Example
+- When using `Multi`, the default strategy for representing version 4 addresses
+  internally is [IPv4-mapped](docs/05-strategies.md).
 
 ```php
-<?php
+<?php declare(strict_types=1);
 
 use Darsyn\IP\Exception;
 use Darsyn\IP\Version\IPv4;
@@ -54,6 +56,11 @@ if (!$ip->isPrivateUse()) {
     record_visit($ip->getBinary(), $_SERVER['HTTP_USER_AGENT']);
 }
 ```
+
+## Code of Conduct
+
+This project includes and adheres to the [Contributor Covenant as a Code of
+Conduct](CODE_OF_CONDUCT.md).
 
 # License
 

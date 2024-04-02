@@ -1,6 +1,8 @@
 # Doctrine Support
 
-This library can be used to support IP address as column types with Doctrine.
+This library can be used to support IP address as column types with Doctrine
+DBAL versions `^2.3 || ^3.0`.
+
 Three Doctrine types are provided to match the three version classes:
 
 - `Darsyn\IP\Doctrine\IPV4Type` supports the `IPv4` class.
@@ -31,7 +33,7 @@ Now you can happily store IP addresses in your entities like nobody's business:
 use Darsyn\IP\Version\Multi as IP;
 use Doctrine\ORM\Mapping as ORM;
 
- #[ORM\Entity]
+#[ORM\Entity]
 class AnalyticsEntity
 {
      #[ORM\Column(type: 'ip')]
