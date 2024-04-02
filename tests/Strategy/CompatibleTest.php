@@ -34,7 +34,7 @@ class CompatibleTest extends TestCase
     #[PHPUnit\DataProviderExternal(CompatibleDataProvider::class, 'getInvalidIpAddresses')]
     public function testIsEmbeddedReturnsFalseForAStringOtherThan16BytesLong($value)
     {
-        /** @phpstan-ignore argument.type */
+        /** @phpstan-ignore-next-line (@phpstan-ignore argument.type) */
         $this->assertFalse($this->strategy->isEmbedded($value));
     }
 
@@ -64,7 +64,7 @@ class CompatibleTest extends TestCase
     {
         $this->expectException(\Darsyn\IP\Exception\Strategy\ExtractionException::class);
         try {
-            /** @phpstan-ignore argument.type */
+            /** @phpstan-ignore-next-line (@phpstan-ignore argument.type) */
             $this->strategy->extract($value);
         } catch (ExtractionException $e) {
             $this->assertSame($this->strategy, $e->getEmbeddingStrategy());
@@ -100,7 +100,7 @@ class CompatibleTest extends TestCase
     {
         $this->expectException(\Darsyn\IP\Exception\Strategy\PackingException::class);
         try {
-            /** @phpstan-ignore argument.type */
+            /** @phpstan-ignore-next-line (@phpstan-ignore argument.type) */
             $this->strategy->pack($value);
         } catch (PackingException $e) {
             $this->assertSame($this->strategy, $e->getEmbeddingStrategy());
