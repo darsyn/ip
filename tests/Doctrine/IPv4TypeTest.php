@@ -155,16 +155,6 @@ class IPv4TypeTest extends TestCase
      * @return void
      */
     #[PHPUnit\Test]
-    public function testGetName()
-    {
-        $this->assertEquals('ip', $this->type->getName());
-    }
-
-    /**
-     * @test
-     * @return void
-     */
-    #[PHPUnit\Test]
     public function testGetBinaryTypeDeclarationSQL()
     {
         $this->assertEquals('DUMMYBINARY()', $this->type->getSQLDeclaration(['length' => 4], $this->platform));
@@ -189,15 +179,5 @@ class IPv4TypeTest extends TestCase
         // Check that the return value of the Type's binding value is a valid
         // PDO PARAM constant.
         $this->assertContains($this->type->getBindingType(), $paramConstants);
-    }
-
-    /**
-     * @test
-     * @return void
-     */
-    #[PHPUnit\Test]
-    public function testRequiresSQLCommentHint()
-    {
-        $this->assertTrue($this->type->requiresSQLCommentHint($this->platform));
     }
 }
