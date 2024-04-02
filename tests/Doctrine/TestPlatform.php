@@ -2,9 +2,9 @@
 
 namespace Darsyn\IP\Tests\Doctrine;
 
-use Doctrine\DBAL\Platforms\MySqlPlatform;
+use Doctrine\DBAL\Platforms\SqlitePlatform;
 
-class TestPlatform extends MySqlPlatform
+class TestPlatform extends SqlitePlatform
 {
     public function getBinaryTypeDeclarationSQL(array $column)
     {
