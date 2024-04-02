@@ -121,7 +121,7 @@ class MultiTest extends TestCase
         $this->expectException(InvalidIpAddressException::class);
         $this->expectExceptionMessage('The IP address supplied is not valid.');
         try {
-            /** @phpstan-ignore argument.type */
+            /** @phpstan-ignore-next-line (@phpstan-ignore argument.type) */
             $ip = IP::factory($value);
         } catch (InvalidIpAddressException $e) {
             $this->assertSame($value, $e->getSuppliedIp());

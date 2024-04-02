@@ -20,7 +20,7 @@ class BinaryTest extends TestCase
     public function testInvalidHexInput($input)
     {
         $this->expectException(\InvalidArgumentException::class);
-        /** @phpstan-ignore argument.type */
+        /** @phpstan-ignore-next-line (@phpstan-ignore argument.type) */
         Binary::fromHex($input);
     }
 
@@ -35,7 +35,7 @@ class BinaryTest extends TestCase
     public function testInvalidHumanReadableInput($input)
     {
         $this->expectException(\InvalidArgumentException::class);
-        /** @phpstan-ignore argument.type */
+        /** @phpstan-ignore-next-line (@phpstan-ignore argument.type) */
         Binary::fromHumanReadable($input);
     }
 

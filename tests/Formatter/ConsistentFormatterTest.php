@@ -60,7 +60,7 @@ class ConsistentFormatterTest extends TestCase
     {
         $this->expectException(\Darsyn\IP\Exception\Formatter\FormatException::class);
         try {
-            /** @phpstan-ignore argument.type */
+            /** @phpstan-ignore-next-line (@phpstan-ignore argument.type) */
             $this->formatter->ntop($value);
         } catch (FormatException $e) {
             $this->assertSame($value, $e->getSuppliedBinary());
