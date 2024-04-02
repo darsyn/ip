@@ -32,7 +32,7 @@ class MappedTest extends TestCase
     #[PHPUnit\DataProviderExternal(MappedDataProvider::class, 'getInvalidIpAddresses')]
     public function testIsEmbeddedReturnsFalseForAStringOtherThan16BytesLong($value)
     {
-        /** @phpstan-ignore argument.type */
+        /** @phpstan-ignore-next-line (@phpstan-ignore argument.type) */
         $this->assertFalse($this->strategy->isEmbedded($value));
     }
 
@@ -61,7 +61,7 @@ class MappedTest extends TestCase
     public function testExceptionIsThrownWhenTryingToExtractFromStringsNot16Bytes($value)
     {
         $this->expectException(\Darsyn\IP\Exception\Strategy\ExtractionException::class);
-        /** @phpstan-ignore argument.type */
+        /** @phpstan-ignore-next-line (@phpstan-ignore argument.type) */
         $this->strategy->extract($value);
     }
 
@@ -90,7 +90,7 @@ class MappedTest extends TestCase
     public function testExceptionIsThrownWhenTryingToPackStringsNot4Bytes($value)
     {
         $this->expectException(\Darsyn\IP\Exception\Strategy\PackingException::class);
-        /** @phpstan-ignore argument.type */
+        /** @phpstan-ignore-next-line (@phpstan-ignore argument.type) */
         $this->strategy->pack($value);
     }
 
