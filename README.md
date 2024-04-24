@@ -16,7 +16,7 @@ This library has extensive test coverage using PHPUnit on PHP versions: `5.6`,
 `7.0`, `7.1`, `7.2`, `7.3`, `7.4`, `8.0`, `8.1`, `8.2`, and `8.3`.
 
 Static analysis is performed with PHPStan at `max` level on PHP `8.3`, using
-both core and deprecation rules.
+core, bleeding edge, and deprecation rules.
 
 The Doctrine features included in this library are compatible with Doctrine DBAL
 `^2.3 || ^3.0`. This is **not** enforced via Composer (in case you want to use
