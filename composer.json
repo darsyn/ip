@@ -28,8 +28,11 @@
     },
     "require-dev": {
         "ext-pdo": "*",
-        "doctrine/dbal": "^2.3",
+        "doctrine/dbal": "^2.3 || ^3",
         "phpunit/phpunit": "*"
+    },
+    "conflict": {
+        "doctrine/dbal": ">=4“
     },
     "prefer-stable": true,
     "config": {
