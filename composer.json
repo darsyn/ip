@@ -32,7 +32,7 @@
         "phpunit/phpunit": "*"
     },
     "conflict": {
-        "doctrine/dbal": ">=4“
+        "doctrine/dbal": ">=4"
     },
     "prefer-stable": true,
     "config": {
