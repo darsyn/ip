@@ -1,5 +1,10 @@
 # Doctrine Support
 
+> This documentation is for the package `darsyn/ip-doctrine`, which was split
+> into a separate package in v5+ so that PHP version requirements could be
+> updated independently. Require that as a Composer dependency to use this
+> functionality.
+
 This library can be used to support IP address as column types with Doctrine
 DBAL versions `^2.3 || ^3.0`.
 

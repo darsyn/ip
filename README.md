@@ -18,10 +18,8 @@ This library has extensive test coverage using PHPUnit on PHP versions: `5.6`,
 Static analysis is performed with PHPStan at `max` level on PHP `8.3`, using
 core, bleeding edge, and deprecation rules.
 
-The Doctrine features included in this library are compatible with Doctrine DBAL
-`^2.3 || ^3.0`. This is **not** enforced via Composer (in case you want to use
-this library in a project that uses Doctrine DBAL `4+` without using the
-Doctrine features this library provides).
+> The Doctrine features for this library have been split off into their own
+> package, [`darsyn/ip-doctrine`](https://packagist.org/packages/darsyn/ip-doctrine).
 
 ## Brief Example
 

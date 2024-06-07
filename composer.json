@@ -28,18 +28,13 @@
         }
     },
     "require-dev": {
-        "ext-pdo": "*",
-        "doctrine/dbal": "^2.3 || ^3",
         "phpunit/phpunit": "*"
-    },
-    "conflict": {
-        "doctrine/dbal": ">=4"
     },
     "prefer-stable": true,
     "config": {
         "sort-packages": true
     },
     "suggest": {
-        "doctrine/dbal": "to use IP as a column type"
+        "darsyn/ip-doctrine": "to use IP as a Doctrine column type"
     }
 }
