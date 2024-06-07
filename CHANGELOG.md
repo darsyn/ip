@@ -1,5 +1,21 @@
 # Darsyn IP
 
+## `5.0.0`
+
+- Removed Doctrine functionality, and split it off into its own package:
+  [`darsyn/ip-doctrine`](https://packagist.org/packages/darsyn/ip-doctrine).
+  List it as a Composer dependency suggestion.
+- Change from [Psalm](https://psalm.dev/) to [PHPStan](https://phpstan.org/) for
+  static analysis.
+  - Add types to all function arguments lists and return values.
+  - Update the codebase to pass static analysis on `max` level (standard,
+    deprecation, and bleeding edge rules).
+- Test against PHP versions `8.2` and `8.3` in CI pipeline.
+- Update README with notes on version compatibility.
+- Explicitly state the requirement of the `ctype` PHP extension.
+- Add PHPUnit attributes alongside annotations to be compatible with the highest
+  version of PHPUnit for any supported PHP version.
+
 ## `4.1.0`
 
 - Added `IpInterface::equals()` method for comparing two IP addresses.
