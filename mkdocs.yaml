@@ -1,4 +1,5 @@
 # docker run --rm -it --volume "$(pwd):/docs" --user "$(id -u)" "squidfunk/mkdocs-material" build -f "./mkdocs.yaml"
+# podman run --rm -it --volume "$(pwd):/docs" "squidfunk/mkdocs-material" build -f "./mkdocs.yaml"
 
 site_name: 'Darsyn IP'
 site_url: 'https://darsyn.github.io/ip/'
