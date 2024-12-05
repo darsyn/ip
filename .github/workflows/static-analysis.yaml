@@ -16,7 +16,9 @@ jobs:
     strategy:
       matrix:
         php:
+            - '7.4'
             - '8.3'
+            - '8.4'
     steps:
       - uses: 'actions/checkout@v2'
       - uses: 'shivammathur/setup-php@v2'
@@ -28,5 +30,5 @@ jobs:
       # Require PHPStan via command-line instead of adding to Composer's
       # "require-dev"; we only want to run static analysis once on the highest
       # version of PHP available.
-      - run: 'composer require --dev phpstan/phpstan phpstan/phpstan-deprecation-rules'
+      - run: 'composer require --dev "phpstan/phpstan:^2" "phpstan/phpstan-deprecation-rules"'
       - run: './vendor/bin/phpstan analyze --no-progress --error-format="github"'

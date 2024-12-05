@@ -76,7 +76,7 @@ class IPv6Test extends TestCase
         $this->expectException(\Darsyn\IP\Exception\InvalidIpAddressException::class);
         $this->expectExceptionMessage('The IP address supplied is not valid.');
         try {
-            /** @phpstan-ignore-next-line (@phpstan-ignore argument.type) */
+            // @phpstan-ignore argument.type
             $ip = IP::factory($value);
         } catch (InvalidIpAddressException $e) {
             $this->assertSame($value, $e->getSuppliedIp());
@@ -246,7 +246,7 @@ class IPv6Test extends TestCase
         $reflect = new \ReflectionClass($ip);
         $method = $reflect->getMethod('generateBinaryMask');
         $method->setAccessible(true);
-        /** @phpstan-ignore-next-line (@phpstan-ignore argument.type) */
+        // @phpstan-ignore argument.type
         $actualMask = unpack('H*hex', $method->invoke($ip, $cidr, 16));
         $this->assertSame($expectedMaskHex, is_array($actualMask) ? $actualMask['hex'] : null);
     }
@@ -269,7 +269,7 @@ class IPv6Test extends TestCase
         $method->setAccessible(true);
         try {
             $method->invoke($ip, $cidr, 16);
-        /** @phpstan-ignore-next-line (@phpstan-ignore catch.neverThrown) */
+        // @phpstan-ignore catch.neverThrown
         } catch (InvalidCidrException $e) {
             $this->assertSame($cidr, $e->getSuppliedCidr());
             throw $e;

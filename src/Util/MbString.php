@@ -23,9 +23,14 @@ class MbString
      */
     public static function subString($str, $start, $length = null)
     {
-        return \function_exists('\\mb_substr')
-            ? (\mb_substr($str, $start, $length, '8bit') ?: '')
-            : (\substr($str, $start, $length) ?: '');
+        if (\function_exists('\\mb_substr')) {
+            return (\mb_substr($str, $start, $length, '8bit') ?: '');
+        }
+        return is_int($length)
+            ? (\substr($str, $start, $length) ?: '')
+            // On PHP versions 7.2 to 7.4, the $length argument cannot be null.
+            // The official PHP docs do not mention this peculiarity.
+            : (\substr($str, $start) ?: '');
     }
 
     /**

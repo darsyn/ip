@@ -13,9 +13,9 @@ Full documentation is available in the [`docs/`](docs/) folder.
 ## Compatibility
 
 This library has extensive test coverage using PHPUnit on PHP versions: `5.6`,
-`7.0`, `7.1`, `7.2`, `7.3`, `7.4`, `8.0`, `8.1`, `8.2`, and `8.3`.
+`7.0`, `7.1`, `7.2`, `7.3`, `7.4`, `8.0`, `8.1`, `8.2`, `8.3` and `8.4`.
 
-Static analysis is performed with PHPStan at `max` level on PHP `8.3`, using
+Static analysis is performed with PHPStan at `max` level on PHP `8.4`, using
 core, bleeding edge, and deprecation rules.
 
 > The Doctrine features for this library have been split off into their own
