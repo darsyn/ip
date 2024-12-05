@@ -26,12 +26,13 @@ jobs:
           - '8.1'
           - '8.2'
           - '8.3'
+          - '8.4'
     steps:
       - uses: 'actions/checkout@v2'
       - uses: 'shivammathur/setup-php@v2'
         with:
           php-version: '${{ matrix.php }}'
-      - run: 'find src/ -type f -name "*.php" -print0 | xargs -0 -n1 -P4 php -l -n | (! grep -v "No syntax errors detected" )'
+      - run: 'find src/ -type f -name "*.php" -print0 | xargs -0 -n1 -P4 php -d"error_reporting=E_ALL&~E_DEPRECATED" -l -n | (! grep -v "No syntax errors detected" )'
 
   unit-testing:
     runs-on: 'ubuntu-20.04'
@@ -48,6 +49,7 @@ jobs:
           - '8.1'
           - '8.2'
           - '8.3'
+          - '8.4'
     steps:
       - uses: 'actions/checkout@v2'
       - uses: 'shivammathur/setup-php@v2'

@@ -27,10 +27,10 @@ class Binary
         if (!\is_string($binary)) {
             throw new \InvalidArgumentException('Cannot convert non-string to hexadecimal.');
         }
-        if (false === $data = \unpack('H*', $binary)) {
+        if (false === ($data = \unpack('H*', $binary)) || !is_string($hex = \reset($data))) {
             throw new \InvalidArgumentException('Unknown error converting string to hexadecimal.');
         }
-        return \reset($data);
+        return $hex;
     }
 
     /**

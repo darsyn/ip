@@ -73,7 +73,7 @@ class ConsistentFormatter extends NativeFormatter
         // $pack return type is `string|false` below PHP 8 and `string`
         // above PHP 8.
         $pack = \pack('A4', $binary);
-        /** @phpstan-ignore-next-line (@phpstan-ignore identical.alwaysFalse) */
+        // @phpstan-ignore identical.alwaysFalse
         if (false === $pack || false === $protocol = \inet_ntop($pack)) {
             throw new FormatException($binary);
         }

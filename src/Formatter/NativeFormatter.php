@@ -18,7 +18,7 @@ class NativeFormatter implements ProtocolFormatterInterface
                 $pack = \pack(\sprintf('A%d', $length), $binary);
                 // $pack return type is `string|false` below PHP 8 and `string`
                 // above PHP 8.
-                /** @phpstan-ignore-next-line (@phpstan-ignore identical.alwaysFalse) */
+                // @phpstan-ignore identical.alwaysFalse
                 if (false === $pack || false === $protocol = \inet_ntop($pack)) {
                     throw new FormatException($binary);
                 }
@@ -36,17 +36,23 @@ class NativeFormatter implements ProtocolFormatterInterface
         if (\is_string($binary)) {
             if (\filter_var($binary, \FILTER_VALIDATE_IP, \FILTER_FLAG_IPV4)) {
                 $number = \inet_pton($binary);
-                if (false === $number || false === $sequence = \unpack('a4', $number)) {
+                if (false === $number
+                    || false === ($sequence = \unpack('a4', $number))
+                    || !is_string($return = \current($sequence))
+                ) {
                     throw new FormatException($binary);
                 }
-                return \current($sequence);
+                return $return;
             }
             if (\filter_var($binary, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
                 $number = \inet_pton($binary);
-                if (false === $number || false === $sequence = \unpack('a16', $number)) {
+                if (false === $number
+                    || false === ($sequence = \unpack('a16', $number))
+                    || !is_string($return = \current($sequence))
+                ) {
                     throw new FormatException($binary);
                 }
-                return \current($sequence);
+                return $return;
             }
             $length = MbString::getLength($binary);
             if ($length === 4 || $length === 16) {
