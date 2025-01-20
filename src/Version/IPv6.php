@@ -54,7 +54,7 @@ class IPv6 extends AbstractIP implements Version6Interface
      * @throws \Darsyn\IP\Exception\WrongVersionException
      * @return static
      */
-    public static function fromEmbedded($ip, EmbeddingStrategyInterface $strategy = null)
+    public static function fromEmbedded($ip, ?EmbeddingStrategyInterface $strategy = null)
     {
         return new static(Multi::factory($ip, $strategy)->getBinary());
     }

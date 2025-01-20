@@ -18,7 +18,7 @@ class PackingException extends IpException
      * @param EmbeddingStrategyInterface $embeddingStrategy
      * @param \Exception|null $previous
      */
-    public function __construct($binary, EmbeddingStrategyInterface $embeddingStrategy, \Exception $previous = null)
+    public function __construct($binary, EmbeddingStrategyInterface $embeddingStrategy, ?\Exception $previous = null)
     {
         $this->binary = $binary;
         $this->embeddingStrategy = $embeddingStrategy;
