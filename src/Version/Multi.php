@@ -61,7 +61,7 @@ class Multi extends IPv6 implements MultiVersionInterface
      * {@inheritDoc}
      * @param \Darsyn\IP\Strategy\EmbeddingStrategyInterface $strategy
      */
-    public static function factory($ip, EmbeddingStrategyInterface $strategy = null)
+    public static function factory($ip, ?EmbeddingStrategyInterface $strategy = null)
     {
         // We need a strategy to pack version 4 addresses.
         $strategy = $strategy ?: self::getDefaultEmbeddingStrategy();
@@ -85,7 +85,7 @@ class Multi extends IPv6 implements MultiVersionInterface
      * {@inheritDoc}
      * @param \Darsyn\IP\Strategy\EmbeddingStrategyInterface|null $strategy
      */
-    protected function __construct($ip, EmbeddingStrategyInterface $strategy = null)
+    protected function __construct($ip, ?EmbeddingStrategyInterface $strategy = null)
     {
         // Fallback to default in case this instance was created from static in
         // the abstract IP class.
