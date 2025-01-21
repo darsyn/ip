@@ -18,8 +18,8 @@
         }
     },
     "require": {
-        "php-64bit": ">=5.6",
-        "php-ipv6": ">=5.6",
+        "php-64bit": ">=7.1",
+        "php-ipv6": ">=7.1",
         "ext-ctype": "*"
     },
     "autoload-dev": {
