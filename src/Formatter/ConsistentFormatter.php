@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Darsyn\IP\Formatter;
 
 use Darsyn\IP\Exception\Formatter\FormatException;
@@ -11,25 +13,19 @@ class ConsistentFormatter extends NativeFormatter
     /**
      * {@inheritDoc}
      */
-    public function ntop($binary)
+    public function ntop(string $binary): string
     {
-        if (\is_string($binary)) {
-            $length = MbString::getLength($binary);
-            if ($length === 16) {
-                return $this->ntopVersion6($binary);
-            }
-            if ($length === 4) {
-                return $this->ntopVersion4($binary);
-            }
+        $length = MbString::getLength($binary);
+        if ($length === 16) {
+            return $this->ntopVersion6($binary);
+        }
+        if ($length === 4) {
+            return $this->ntopVersion4($binary);
         }
         throw new FormatException($binary);
     }
 
-    /**
-     * @param string $binary
-     * @return string
-     */
-    private function ntopVersion6($binary)
+    private function ntopVersion6(string $binary): string
     {
         $hex = Binary::toHex($binary);
         $parts = \str_split($hex, 4);
@@ -64,11 +60,7 @@ class ConsistentFormatter extends NativeFormatter
         return \str_pad($shortened, 2, ':');
     }
 
-    /**
-     * @param string $binary
-     * @return string
-     */
-    private function ntopVersion4($binary)
+    private function ntopVersion4(string $binary): string
     {
         // $pack return type is `string|false` below PHP 8 and `string`
         // above PHP 8.

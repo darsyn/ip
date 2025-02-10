@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Darsyn\IP\Exception;
 
 class InvalidCidrException extends IpException
@@ -12,7 +14,6 @@ class InvalidCidrException extends IpException
      *
      * @param mixed $cidr
      * @param mixed $addressLengthInBytes
-     * @param \Exception|null $previous
      */
     public function __construct($cidr, $addressLengthInBytes, ?\Exception $previous = null)
     {

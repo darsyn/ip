@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Darsyn\IP\Util;
 
 class Binary
@@ -9,9 +11,9 @@ class Binary
      * @throws \InvalidArgumentException
      * @return string
      */
-    public static function fromHex($hex)
+    public static function fromHex(string $hex): string
     {
-        if (!\is_string($hex) || !(\ctype_xdigit($hex) || $hex === '') || MbString::getLength($hex) % 2 !== 0) {
+        if (!(\ctype_xdigit($hex) || $hex === '') || MbString::getLength($hex) % 2 !== 0) {
             throw new \InvalidArgumentException('Valid hexadecimal string not provided.');
         }
         return \pack('H*', \strtolower($hex));
@@ -22,11 +24,8 @@ class Binary
      * @throws \InvalidArgumentException
      * @return string
      */
-    public static function toHex($binary)
+    public static function toHex(string $binary): string
     {
-        if (!\is_string($binary)) {
-            throw new \InvalidArgumentException('Cannot convert non-string to hexadecimal.');
-        }
         if (false === ($data = \unpack('H*', $binary)) || !is_string($hex = \reset($data))) {
             throw new \InvalidArgumentException('Unknown error converting string to hexadecimal.');
         }
@@ -38,10 +37,9 @@ class Binary
      * @throws \InvalidArgumentException
      * @return string
      */
-    public static function fromHumanReadable($asciiBinarySequence)
+    public static function fromHumanReadable(string $asciiBinarySequence): string
     {
-        if (!\is_string($asciiBinarySequence)
-            || !\preg_match('/^[01]*$/', $asciiBinarySequence)
+        if (!\preg_match('/^[01]*$/', $asciiBinarySequence)
             || MbString::getLength($asciiBinarySequence) % 8 !== 0
         ) {
             throw new \InvalidArgumentException('Valid (ASCII) binary sequence not provided.');
@@ -56,11 +54,8 @@ class Binary
      * @throws \InvalidArgumentException
      * @return string
      */
-    public static function toHumanReadable($binary)
+    public static function toHumanReadable(string $binary): string
     {
-        if (!\is_string($binary)) {
-            throw new \InvalidArgumentException('Cannot convert non-string to  (ASCII) binary sequence.');
-        }
         $hex = static::toHex($binary);
         return \implode('', \array_map(function ($character) {
             return MbString::padString(\decbin((int) \hexdec($character)), 8, '0', \STR_PAD_LEFT);

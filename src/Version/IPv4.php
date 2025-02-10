@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Darsyn\IP\Version;
 
 use Darsyn\IP\AbstractIP;
@@ -29,7 +31,7 @@ class IPv4 extends AbstractIP implements Version4Interface
     /**
      * {@inheritDoc}
      */
-    public static function factory($ip)
+    public static function factory(string $ip)
     {
         try {
             // Convert from protocol notation to binary sequence.
@@ -52,7 +54,7 @@ class IPv4 extends AbstractIP implements Version4Interface
     /**
      * {@inheritDoc}
      */
-    public function getDotAddress()
+    public function getDotAddress(): string
     {
         try {
             return self::getProtocolFormatter()->ntop($this->getBinary());
@@ -64,7 +66,7 @@ class IPv4 extends AbstractIP implements Version4Interface
     /**
      * {@inheritDoc}
      */
-    public function getVersion()
+    public function getVersion(): int
     {
         return 4;
     }
@@ -72,7 +74,7 @@ class IPv4 extends AbstractIP implements Version4Interface
     /**
      * {@inheritDoc}
      */
-    public function isLinkLocal()
+    public function isLinkLocal(): bool
     {
         return $this->inRange(new self(Binary::fromHex('a9fe0000')), 16);
     }
@@ -80,7 +82,7 @@ class IPv4 extends AbstractIP implements Version4Interface
     /**
      * {@inheritDoc}
      */
-    public function isLoopback()
+    public function isLoopback(): bool
     {
         return $this->inRange(new self(Binary::fromHex('7f000000')), 8);
     }
@@ -88,7 +90,7 @@ class IPv4 extends AbstractIP implements Version4Interface
     /**
      * {@inheritDoc}
      */
-    public function isMulticast()
+    public function isMulticast(): bool
     {
         return $this->inRange(new self(Binary::fromHex('e0000000')), 4);
     }
@@ -96,7 +98,7 @@ class IPv4 extends AbstractIP implements Version4Interface
     /**
      * {@inheritDoc}
      */
-    public function isPrivateUse()
+    public function isPrivateUse(): bool
     {
         return $this->inRange(new self(Binary::fromHex('0a000000')), 8)
             || $this->inRange(new self(Binary::fromHex('ac100000')), 12)
@@ -106,7 +108,7 @@ class IPv4 extends AbstractIP implements Version4Interface
     /**
      * {@inheritDoc}
      */
-    public function isUnspecified()
+    public function isUnspecified(): bool
     {
         return $this->getBinary() === "\0\0\0\0";
     }
@@ -114,7 +116,7 @@ class IPv4 extends AbstractIP implements Version4Interface
     /**
      * {@inheritDoc}
      */
-    public function isBenchmarking()
+    public function isBenchmarking(): bool
     {
         return $this->inRange(new self(Binary::fromHex('c6120000')), 15);
     }
@@ -122,7 +124,7 @@ class IPv4 extends AbstractIP implements Version4Interface
     /**
      * {@inheritDoc}
      */
-    public function isDocumentation()
+    public function isDocumentation(): bool
     {
         return $this->inRange(new self(Binary::fromHex('c0000200')), 24)
             || $this->inRange(new self(Binary::fromHex('c6336400')), 24)
@@ -132,7 +134,7 @@ class IPv4 extends AbstractIP implements Version4Interface
     /**
      * {@inheritDoc}
      */
-    public function isPublicUse()
+    public function isPublicUse(): bool
     {
         // Both 192.0.0.9 and 192.0.0.10 are globally routable, despite being in the future reserved block.
         if (in_array(Binary::toHex($this->getBinary()), ['c0000009', 'c000000a'], true)) {
@@ -162,7 +164,7 @@ class IPv4 extends AbstractIP implements Version4Interface
     /**
      * {@inheritDoc}
      */
-    public function isBroadcast()
+    public function isBroadcast(): bool
     {
         return $this->getBinary() === Binary::fromHex('ffffffff');
     }
@@ -170,7 +172,7 @@ class IPv4 extends AbstractIP implements Version4Interface
     /**
      * {@inheritDoc}
      */
-    public function isShared()
+    public function isShared(): bool
     {
         return $this->inRange(new self(Binary::fromHex('64400000')), 10);
     }
@@ -178,7 +180,7 @@ class IPv4 extends AbstractIP implements Version4Interface
     /**
      * {@inheritDoc}
      */
-    public function isFutureReserved()
+    public function isFutureReserved(): bool
     {
         return $this->getBinary() !== Binary::fromHex('ffffffff')
             && $this->inRange(new self(Binary::fromHex('f0000000')), 4);
@@ -187,7 +189,7 @@ class IPv4 extends AbstractIP implements Version4Interface
     /**
      * {@inheritDoc}
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getDotAddress();
     }

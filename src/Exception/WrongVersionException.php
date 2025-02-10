@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Darsyn\IP\Exception;
 
 class WrongVersionException extends InvalidIpAddressException
@@ -11,30 +13,22 @@ class WrongVersionException extends InvalidIpAddressException
     private $actual;
 
     /**
-     * @param int $expected
-     * @param int $actual
      * @param scalar $ip
      * @param \Exception|null $previous
      */
-    public function __construct($expected, $actual, $ip, ?\Exception $previous = null)
+    public function __construct(int $expected, int $actual, $ip, ?\Exception $previous = null)
     {
         $this->expected = $expected;
         $this->actual = $actual;
         parent::__construct($ip, $previous);
     }
 
-    /**
-     * @return int
-     */
-    public function getExpectedVersion()
+    public function getExpectedVersion(): int
     {
         return $this->expected;
     }
 
-    /**
-     * @return int
-     */
-    public function getActualVersion()
+    public function getActualVersion(): int
     {
         return $this->actual;
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Darsyn\IP;
 
 use Darsyn\IP\Exception\WrongVersionException;
@@ -20,12 +22,7 @@ abstract class AbstractIP implements IpInterface
      */
     private $ip;
 
-    /**
-     * @static
-     * @param \Darsyn\IP\Formatter\ProtocolFormatterInterface $formatter
-     * @return void
-     */
-    public static function setProtocolFormatter(ProtocolFormatterInterface $formatter)
+    public static function setProtocolFormatter(ProtocolFormatterInterface $formatter): void
     {
         self::$formatter = $formatter;
     }
@@ -34,10 +31,8 @@ abstract class AbstractIP implements IpInterface
      * Get the protocol formatter set by the user, falling back to using our
      * custom formatter for consistency by default if the user has not set one
      * globally.
-     *
-     * @return \Darsyn\IP\Formatter\ProtocolFormatterInterface
      */
-    protected static function getProtocolFormatter()
+    protected static function getProtocolFormatter(): ProtocolFormatterInterface
     {
         if (null === self::$formatter) {
             self::$formatter = new ConsistentFormatter;
@@ -45,12 +40,7 @@ abstract class AbstractIP implements IpInterface
         return self::$formatter;
     }
 
-    /**
-     * Constructor
-     *
-     * @param string $ip
-     */
-    protected function __construct($ip)
+    protected function __construct(string $ip)
     {
         $this->ip = $ip;
     }
@@ -58,7 +48,7 @@ abstract class AbstractIP implements IpInterface
     /**
      * {@inheritDoc}
      */
-    final public function getBinary()
+    final public function getBinary(): string
     {
         return $this->ip;
     }
@@ -66,7 +56,7 @@ abstract class AbstractIP implements IpInterface
     /**
      * {@inheritDoc}
      */
-    public function equals(IpInterface $ip)
+    public function equals(IpInterface $ip): bool
     {
         return $this->getBinary() === $ip->getBinary();
     }
@@ -74,7 +64,7 @@ abstract class AbstractIP implements IpInterface
     /**
      * {@inheritDoc}
      */
-    public function isVersion($version)
+    public function isVersion(int $version): bool
     {
         return $this->getVersion() === $version;
     }
@@ -82,7 +72,7 @@ abstract class AbstractIP implements IpInterface
     /**
      * {@inheritDoc}
      */
-    public function isVersion4()
+    public function isVersion4(): bool
     {
         return $this->isVersion(4);
     }
@@ -90,7 +80,7 @@ abstract class AbstractIP implements IpInterface
     /**
      * {@inheritDoc}
      */
-    public function isVersion6()
+    public function isVersion6(): bool
     {
         return $this->isVersion(6);
     }
@@ -98,7 +88,7 @@ abstract class AbstractIP implements IpInterface
     /**
      * {@inheritDoc}
      */
-    public function getNetworkIp($cidr)
+    public function getNetworkIp(int $cidr)
     {
         // Providing that the CIDR is valid, bitwise AND the IP address binary
         // sequence with the mask generated from the CIDR.
@@ -111,7 +101,7 @@ abstract class AbstractIP implements IpInterface
     /**
      * {@inheritDoc}
      */
-    public function getBroadcastIp($cidr)
+    public function getBroadcastIp(int $cidr)
     {
         // Providing that the CIDR is valid, bitwise OR the IP address binary
         // sequence with the inverse of the mask generated from the CIDR.
@@ -124,7 +114,7 @@ abstract class AbstractIP implements IpInterface
     /**
      * {@inheritDoc}
      */
-    public function inRange(IpInterface $ip, $cidr)
+    public function inRange(IpInterface $ip, int $cidr): bool
     {
         if (!$this->isSameByteLength($ip)) {
             // Cannot calculate if one IP is in range of another if they of different byte-lengths.
@@ -141,7 +131,7 @@ abstract class AbstractIP implements IpInterface
     }
 
     /** {@inheritDoc} */
-    public function getCommonCidr(IpInterface $ip)
+    public function getCommonCidr(IpInterface $ip): int
     {
         // Cannot calculate the greatest common CIDR between an IPv4 and
         // IPv6/IPv4-embedded address, they are fundamentally incompatible.
@@ -160,7 +150,7 @@ abstract class AbstractIP implements IpInterface
     /**
      * {@inheritDoc}
      */
-    public function isMapped()
+    public function isMapped(): bool
     {
         return (new Strategy\Mapped)->isEmbedded($this->getBinary());
     }
@@ -168,7 +158,7 @@ abstract class AbstractIP implements IpInterface
     /**
      * {@inheritDoc}
      */
-    public function isDerived()
+    public function isDerived(): bool
     {
         return (new Strategy\Derived)->isEmbedded($this->getBinary());
     }
@@ -176,7 +166,7 @@ abstract class AbstractIP implements IpInterface
     /**
      * {@inheritDoc}
      */
-    public function isCompatible()
+    public function isCompatible(): bool
     {
         return (new Strategy\Compatible)->isEmbedded($this->getBinary());
     }
@@ -184,16 +174,12 @@ abstract class AbstractIP implements IpInterface
     /**
      * {@inheritDoc}
      */
-    public function isEmbedded()
+    public function isEmbedded(): bool
     {
         return false;
     }
 
-    /**
-     * @param \Darsyn\IP\IpInterface $ip
-     * @return bool
-     */
-    protected function isSameByteLength(IpInterface $ip)
+    protected function isSameByteLength(IpInterface $ip): bool
     {
         return MbString::getLength($this->getBinary()) === MbString::getLength($ip->getBinary());
     }
@@ -203,15 +189,11 @@ abstract class AbstractIP implements IpInterface
      * to construct the bitmask as a string instead of doing any mathematical
      * operations (such as base_convert).
      *
-     * @param int $cidr
-     * @param int $lengthInBytes
      * @throws \Darsyn\IP\Exception\InvalidCidrException
-     * @return string
      */
-    protected function generateBinaryMask($cidr, $lengthInBytes)
+    protected function generateBinaryMask(int $cidr, int $lengthInBytes): string
     {
-        if (!\is_int($cidr) || !\is_int($lengthInBytes)
-            || $cidr < 0    || $lengthInBytes < 0
+        if ($cidr < 0    || $lengthInBytes < 0
             // CIDR is measured in bits; we're describing the length in bytes.
             || $cidr > $lengthInBytes * 8
         ) {

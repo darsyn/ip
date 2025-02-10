@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Darsyn\IP\Strategy;
 
 use Darsyn\IP\Exception\Strategy as StrategyException;
@@ -10,7 +12,7 @@ class Compatible implements EmbeddingStrategyInterface
     /**
      * {@inheritDoc}
      */
-    public function isEmbedded($binary)
+    public function isEmbedded(string $binary): bool
     {
         return MbString::getLength($binary) === 16
             && MbString::subString($binary, 0, 12) === "\0\0\0\0\0\0\0\0\0\0\0\0";
@@ -19,7 +21,7 @@ class Compatible implements EmbeddingStrategyInterface
     /**
      * {@inheritDoc}
      */
-    public function extract($binary)
+    public function extract(string $binary): string
     {
         if (MbString::getLength($binary) === 16) {
             return MbString::subString($binary, 12, 4);
@@ -30,7 +32,7 @@ class Compatible implements EmbeddingStrategyInterface
     /**
      * {@inheritDoc}
      */
-    public function pack($binary)
+    public function pack(string $binary): string
     {
         if (MbString::getLength($binary) === 4) {
             return "\0\0\0\0\0\0\0\0\0\0\0\0" . $binary;

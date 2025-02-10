@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Darsyn\IP\Version;
 
 use Darsyn\IP\IpInterface;
@@ -21,9 +23,8 @@ interface Version6Interface extends IpInterface
      * (including double-colons if appropriate).
      *
      * @throws \Darsyn\IP\Exception\IpException
-     * @return string
      */
-    public function getCompactedAddress();
+    public function getCompactedAddress(): string;
 
     /**
      * Get Expanded Address
@@ -32,38 +33,29 @@ interface Version6Interface extends IpInterface
      * (no double colons).
      *
      * @throws \Darsyn\IP\Exception\IpException
-     * @return string
      */
-    public function getExpandedAddress();
+    public function getExpandedAddress(): string;
 
     /**
      * Returns the IP address’s multicast scope if the address is multicast,
      * null otherwise. Return values are integers mapped to the MULTICAST_*
      * constants on this interface.
-     *
-     * @return int|null
      */
-    public function getMulticastScope();
+    public function getMulticastScope(): ?int;
 
     /**
      * Whether the IP is a unique local address, according to RFC 4193.
-     *
-     * @return bool
      */
-    public function isUniqueLocal();
+    public function isUniqueLocal(): bool;
 
     /**
      * Whether the IP is a unicast address, according to RFC 4291.
-     *
-     * @return bool
      */
-    public function isUnicast();
+    public function isUnicast(): bool;
 
     /**
      * Whether the IP is a globally routable unicast address, according to
      * RFC 2941.
-     *
-     * @return bool
      */
-    public function isUnicastGlobal();
+    public function isUnicastGlobal(): bool;
 }

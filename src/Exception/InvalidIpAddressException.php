@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Darsyn\IP\Exception;
 
 class InvalidIpAddressException extends IpException
@@ -11,7 +13,6 @@ class InvalidIpAddressException extends IpException
      * Constructor
      *
      * @param scalar $ip
-     * @param \Exception|null $previous
      */
     public function __construct($ip, ?\Exception $previous = null)
     {

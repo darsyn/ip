@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Darsyn\IP\Version;
 
 use Darsyn\IP\IpInterface;
@@ -14,31 +16,27 @@ interface Version4Interface extends IpInterface
      *
      * @throws \Darsyn\IP\Exception\IpException
      * @throws \Darsyn\IP\Exception\WrongVersionException
-     * @return string
      */
-    public function getDotAddress();
+    public function getDotAddress(): string;
 
     /**
      * Whether the IP is a broadcast address, according to RFC 919.
      *
      * @throws \Darsyn\IP\Exception\WrongVersionException
-     * @return bool
      */
-    public function isBroadcast();
+    public function isBroadcast(): bool;
 
     /**
      * Whether the IP is part of the Shared Address Space, according to RFC 6598.
      *
      * @throws \Darsyn\IP\Exception\WrongVersionException
-     * @return bool
      */
-    public function isShared();
+    public function isShared(): bool;
 
     /**
      * Whether the IP is reserved for future use, according to RFC 1112.
      *
      * @throws \Darsyn\IP\Exception\WrongVersionException
-     * @return bool
      */
-    public function isFutureReserved();
+    public function isFutureReserved(): bool;
 }
