@@ -32,15 +32,10 @@ class Binary
         ];
     }
 
-    /** @return list<array{mixed}> */
+    /** @return list<array{string}> */
     public static function getInvalidHex()
     {
         return [
-            [1],
-            [1.2],
-            [null],
-            [[]],
-            [new \stdClass],
             ['1'],
             ['123'],
             ['abcdeg'],
@@ -48,15 +43,10 @@ class Binary
         ];
     }
 
-    /** @return list<array{mixed}> */
+    /** @return list<array{string}> */
     public static function getInvalidHumanReadable()
     {
         return [
-            [1],
-            [1.2],
-            [null],
-            [[]],
-            [new \stdClass],
             ['1'],
             ['010'],
             ['101210'],

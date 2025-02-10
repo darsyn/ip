@@ -18,13 +18,12 @@ class Derived
         return array_merge($valid, $invalid);
     }
 
-    /** @return list<array{mixed}> */
+    /** @return list<array{string}> */
     public static function getInvalidIpAddresses()
     {
         return [
             [pack('H*', '20010db8000000000a608a2e037073')],
             [pack('H*', '20010db8000000000a608a2e0370734556')],
-            [123],
             ['12345678901234567'],
             ['123456789012345'],
         ];

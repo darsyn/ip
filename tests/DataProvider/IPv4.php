@@ -49,7 +49,7 @@ class IPv4 implements IpDataProviderInterface
         return array_merge(self::getValidBinarySequences(), self::getValidProtocolIpAddresses());
     }
 
-    /** @return list<array{mixed}> */
+    /** @return list<array{string}> */
     public static function getInvalidIpAddresses()
     {
         return [
@@ -60,12 +60,6 @@ class IPv4 implements IpDataProviderInterface
             ['This one is completely wrong.'],
             // 5 bytes instead of 4.
             [pack('H*', '20010db80')],
-            [123],
-            [1.3],
-            [array()],
-            [(object) array()],
-            [null],
-            [true],
             ['12345'],
             ['123'],
         ];
@@ -87,19 +81,12 @@ class IPv4 implements IpDataProviderInterface
         ];
     }
 
-    /** @return list<array{mixed}> */
+    /** @return list<array{int}> */
     public static function getInvalidCidrValues()
     {
         return [
             [-1],
             [33],
-            ['0'],
-            ['128'],
-            [12.3],
-            [true],
-            [null],
-            [[]],
-            [(object) []],
         ];
     }
 

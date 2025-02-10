@@ -48,7 +48,7 @@ class IPv6 implements IpDataProviderInterface
         return array_merge(self::getValidBinarySequences(), self::getValidProtocolIpAddresses());
     }
 
-    /** @return list<array{mixed}> */
+    /** @return list<array{string}> */
     public static function getInvalidIpAddresses()
     {
         return [
@@ -60,12 +60,6 @@ class IPv6 implements IpDataProviderInterface
             ['This one is completely wrong.'],
             // 15 bytes instead of 16.
             [pack('H*', '20010db8000000000a608a2e037073')],
-            [123],
-            [1.3],
-            [array()],
-            [(object) array()],
-            [null],
-            [true],
             ['12345678901234567'],
             ['123456789012345'],
         ];
@@ -86,19 +80,12 @@ class IPv6 implements IpDataProviderInterface
         ];
     }
 
-    /** @return list<array{mixed}> */
+    /** @return list<array{int}> */
     public static function getInvalidCidrValues()
     {
         return [
             [-1],
             [129],
-            ['0'],
-            ['128'],
-            [12.3],
-            [true],
-            [null],
-            [[]],
-            [(object) []],
         ];
     }
 

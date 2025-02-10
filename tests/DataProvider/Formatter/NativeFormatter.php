@@ -33,7 +33,7 @@ class NativeFormatter
         ];
     }
 
-    /** @return list<array{mixed}> */
+    /** @return list<array{string}> */
     public static function getInvalidBinarySequences()
     {
         return [
@@ -42,13 +42,6 @@ class NativeFormatter
             ['123456789012345'],
             ['12345678901234567'],
             ['This one is completely wrong.'],
-            // 5 bytes instead of 4.
-            [123],
-            [1.3],
-            [array()],
-            [(object) array()],
-            [null],
-            [true],
         ];
     }
 }
