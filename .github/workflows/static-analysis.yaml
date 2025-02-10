@@ -3,11 +3,12 @@ name: "Static Analysis"
 on:
   pull_request:
     branches:
-      - 'develop'
+      - '5.x'
+      - '6.x'
   push:
     branches:
-      - 'develop'
-      - 'master'
+      - '5.x'
+      - '6.x'
 
 jobs:
 
