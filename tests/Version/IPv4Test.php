@@ -19,11 +19,13 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidIpAddresses()
      * @param string $value
+     * @param string $expectedHex
+     * @param string $expectedDot
      * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidIpAddresses')]
-    public function testInstantiationWithValidAddresses($value)
+    public function testInstantiationWithValidAddresses($value, $expectedHex, $expectedDot)
     {
         $ip = IP::factory($value);
         $this->assertInstanceOf(IpInterface::class, $ip);
@@ -34,11 +36,13 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidBinarySequences()
      * @param string $value
+     * @param string $expectedHex
+     * @param string $expectedDot
      * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidBinarySequences')]
-    public function testBinarySequenceIsTheSameOnceInstantiated($value)
+    public function testBinarySequenceIsTheSameOnceInstantiated($value, $expectedHex, $expectedDot)
     {
         $ip = IP::factory($value);
         $this->assertSame($value, $ip->getBinary());
@@ -49,11 +53,12 @@ class IPv4Test extends TestCase
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidProtocolIpAddresses()
      * @param string $value
      * @param string $expectedHex
+     * @param string $expectedDot
      * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidProtocolIpAddresses')]
-    public function testProtocolNotationConvertsToCorrectBinarySequence($value, $expectedHex)
+    public function testProtocolNotationConvertsToCorrectBinarySequence($value, $expectedHex, $expectedDot)
     {
         $ip = IP::factory($value);
         $actualHex = unpack('H*hex', $ip->getBinary());
@@ -86,11 +91,13 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidIpAddresses()
      * @param string $value
+     * @param string $expectedHex
+     * @param string $expectedDot
      * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidIpAddresses')]
-    public function testGetBinaryAlwaysReturnsA4ByteString($value)
+    public function testGetBinaryAlwaysReturnsA4ByteString($value, $expectedHex, $expectedDot)
     {
         $ip = IP::factory($value);
         $this->assertSame(4, strlen(bin2hex($ip->getBinary())) / 2);
@@ -116,11 +123,13 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidIpAddresses()
      * @param string $value
+     * @param string $expectedHex
+     * @param string $expectedDot
      * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidIpAddresses')]
-    public function testGetVersionAlwaysReturns4($value)
+    public function testGetVersionAlwaysReturns4($value, $expectedHex, $expectedDot)
     {
         $ip = IP::factory($value);
         $this->assertSame(4, $ip->getVersion());
@@ -130,11 +139,13 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidIpAddresses()
      * @param string $value
+     * @param string $expectedHex
+     * @param string $expectedDot
      * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidIpAddresses')]
-    public function testIsVersionOnlyReturnsTrueFor4($value)
+    public function testIsVersionOnlyReturnsTrueFor4($value, $expectedHex, $expectedDot)
     {
         $ip = IP::factory($value);
         $this->assertTrue($ip->isVersion(4));
@@ -144,11 +155,13 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidIpAddresses()
      * @param string $value
+     * @param string $expectedHex
+     * @param string $expectedDot
      * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidIpAddresses')]
-    public function testIsVersionOnlyReturnsFalseFor6($value)
+    public function testIsVersionOnlyReturnsFalseFor6($value, $expectedHex, $expectedDot)
     {
         $ip = IP::factory($value);
         $this->assertFalse($ip->isVersion(6));
@@ -158,11 +171,13 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidIpAddresses()
      * @param string $value
+     * @param string $expectedHex
+     * @param string $expectedDot
      * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidIpAddresses')]
-    public function testIsVersion4AlwaysReturnsTrue($value)
+    public function testIsVersion4AlwaysReturnsTrue($value, $expectedHex, $expectedDot)
     {
         $ip = IP::factory($value);
         $this->assertTrue($ip->isVersion4());
@@ -172,11 +187,13 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidIpAddresses()
      * @param string $value
+     * @param string $expectedHex
+     * @param string $expectedDot
      * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidIpAddresses')]
-    public function testIsVersion6AlwaysReturnsFalse($value)
+    public function testIsVersion6AlwaysReturnsFalse($value, $expectedHex, $expectedDot)
     {
         $ip = IP::factory($value);
         $this->assertFalse($ip->isVersion6());
@@ -339,11 +356,13 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidIpAddresses()
      * @param string $value
+     * @param string $expectedHex
+     * @param string $expectedDot
      * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidIpAddresses')]
-    public function testIsMappedAlwaysReturnsFalse($value)
+    public function testIsMappedAlwaysReturnsFalse($value, $expectedHex, $expectedDot)
     {
         $ip = IP::factory($value);
         $this->assertFalse($ip->isMapped());
@@ -353,11 +372,13 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidIpAddresses()
      * @param string $value
+     * @param string $expectedHex
+     * @param string $expectedDot
      * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidIpAddresses')]
-    public function testIsDerivedAlwaysReturnsFalse($value)
+    public function testIsDerivedAlwaysReturnsFalse($value, $expectedHex, $expectedDot)
     {
         $ip = IP::factory($value);
         $this->assertFalse($ip->isDerived());
@@ -367,11 +388,13 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidIpAddresses()
      * @param string $value
+     * @param string $expectedHex
+     * @param string $expectedDot
      * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidIpAddresses')]
-    public function testIsCompatibleAlwaysReturnsFalse($value)
+    public function testIsCompatibleAlwaysReturnsFalse($value, $expectedHex, $expectedDot)
     {
         $ip = IP::factory($value);
         $this->assertFalse($ip->isCompatible());
@@ -381,11 +404,13 @@ class IPv4Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidIpAddresses()
      * @param string $value
+     * @param string $expectedHex
+     * @param string $expectedDot
      * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidIpAddresses')]
-    public function testIsEmbeddedAlwaysReturnsFalse($value)
+    public function testIsEmbeddedAlwaysReturnsFalse($value, $expectedHex, $expectedDot)
     {
         $ip = IP::factory($value);
         $this->assertFalse($ip->isEmbedded());
