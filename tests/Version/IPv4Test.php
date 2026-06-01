@@ -237,7 +237,6 @@ class IPv4Test extends TestCase
         $method->setAccessible(true);
         try {
             $method->invoke($ip, $cidr, 4);
-        // @phpstan-ignore catch.neverThrown
         } catch (InvalidCidrException $e) {
             $this->assertSame($cidr, $e->getSuppliedCidr());
             throw $e;

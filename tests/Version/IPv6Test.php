@@ -296,7 +296,6 @@ class IPv6Test extends TestCase
         $method->setAccessible(true);
         try {
             $method->invoke($ip, $cidr, 16);
-        // @phpstan-ignore catch.neverThrown
         } catch (InvalidCidrException $e) {
             $this->assertSame($cidr, $e->getSuppliedCidr());
             throw $e;
