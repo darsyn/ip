@@ -211,11 +211,10 @@ class IPv4Test extends TestCase
     public function testCidrMasks($cidr, $expectedMaskHex)
     {
         $ip = IP::factory('12.34.56.78');
-        $reflect = new \ReflectionClass($ip);
-        $method = $reflect->getMethod('generateBinaryMask');
-        $method->setAccessible(true);
-        // @phpstan-ignore argument.type
-        $actualMask = unpack('H*hex', $method->invoke($ip, $cidr, 4));
+        $mask = (function () use ($cidr): string {
+            return $this->generateBinaryMask($cidr, 4);
+        })->call($ip);
+        $actualMask = unpack('H*hex', $mask);
         $this->assertSame($expectedMaskHex, is_array($actualMask) ? $actualMask['hex'] : null);
     }
 
@@ -232,12 +231,11 @@ class IPv4Test extends TestCase
         $this->expectException(\Darsyn\IP\Exception\InvalidCidrException::class);
         $this->expectExceptionMessage('The supplied CIDR is not valid; it must be an integer (between 0 and 32).');
         $ip = IP::factory('12.34.56.78');
-        $reflect = new \ReflectionClass($ip);
-        $method = $reflect->getMethod('generateBinaryMask');
-        $method->setAccessible(true);
         try {
-            $method->invoke($ip, $cidr, 4);
-        // @phpstan-ignore catch.neverThrown
+            (function () use ($cidr): string {
+                // @phpstan-ignore argument.type
+                return $this->generateBinaryMask($cidr, 4);
+            })->call($ip);
         } catch (InvalidCidrException $e) {
             $this->assertSame($cidr, $e->getSuppliedCidr());
             throw $e;
