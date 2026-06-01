@@ -41,3 +41,59 @@ IP::setDefaultEmbeddingStrategy(new Strategy\Compatible);
 // But for this specific instance use the 6to4-derived embedding strategy.
 $ip = IP::factory('127.0.0.1', new Strategy\Derived);
 ```
+
+## Composite
+
+The `Composite` strategy accepts one or more embedding strategies to verify
+address embedding against. But only the first strategy supplied is used to embed
+IPv4 into IPv6 (the "packer").
+
+```php
+<?php
+use Darsyn\IP\Strategy\Composite;
+use Darsyn\IP\Strategy\Mapped;
+use Darsyn\IP\Strategy\Nat64;
+use Darsyn\IP\Version\Multi as IP;
+
+// Recognise both IPv4-mapped and NAT64 embeddings; pack as IPv4-mapped.
+$strategy = new Composite(new Mapped, new Nat64);
+
+// Both Mapped and NAT64 embedded addresses are recognised as IPv4.
+$mapped = IP::factory('::ffff:7f00:1', $strategy);
+$mapped->getDotAddress(); // string("127.0.0.1")
+$nat64 = IP::factory('64:ff9b::7f00:1', $strategy);
+$nat64->getDotAddress(); // string("127.0.0.1")
+
+// But only the first argument (in this example, Mapped) is used to pack an
+// IPv4 address into IPv6.
+IP::factory('127.0.0.1', $strategy)->getCompactedAddress(); // string("::ffff:7f00:1")
+// Existing IPv6 addresses retain their scheme and don't get "re-packed" into
+// the first strategy.
+IP::factory('64:ff9b::7f00:1', $strategy)->getCompactedAddress(); // string("64:ff9b::7f00:1")
+```
+
+### Named Constructor
+
+`Composite::all()` returns a composite of every **unambiguous, non-deprecated**
+strategy:
+- IPv4-mapped (`::ffff:0:0/96`) as the packer,
+- 6to4 (`2002::/16`), and
+- the NAT64 Well-Known Prefix (`64:ff9b::/96`).
+
+```php
+<?php
+use Darsyn\IP\Strategy\Composite;
+use Darsyn\IP\Version\Multi as IP;
+
+// Equivalent to: new Composite(new Mapped, new Derived, new Nat64).
+$strategy = Composite::all();
+
+// An address embedded under any of the three schemes is recognised and
+// resolves to the same version 4 address.
+IP::factory('::ffff:7f00:1', $strategy)->getProtocolAppropriateAddress();   // string("127.0.0.1")
+IP::factory('2002:7f00:1::', $strategy)->getProtocolAppropriateAddress();   // string("127.0.0.1")
+IP::factory('64:ff9b::7f00:1', $strategy)->getProtocolAppropriateAddress(); // string("127.0.0.1")
+```
+
+> **Note:** `all()` deliberately **excludes** the ambiguous, deprecated
+> IPv4-compatible (`Compatible`, `::/96`) strategy.
