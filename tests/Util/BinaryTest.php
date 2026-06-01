@@ -63,11 +63,12 @@ class BinaryTest extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Util\Binary::getBinaryData()
      * @param string $hex
+     * @param string $humanReadable
      * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(BinaryDataProvider::class, 'getBinaryData')]
-    public function testHexCanConvertAndBackAgain($hex)
+    public function testHexCanConvertAndBackAgain($hex, $humanReadable)
     {
         $converted = Binary::fromHex($hex);
         $this->assertSame(strtolower($hex), Binary::toHex($converted));

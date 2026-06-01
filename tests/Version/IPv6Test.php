@@ -22,11 +22,14 @@ class IPv6Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidIpAddresses()
      * @param string $value
+     * @param string $hex
+     * @param string $expanded
+     * @param string $compacted
      * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidIpAddresses')]
-    public function testInstantiationWithValidAddresses($value)
+    public function testInstantiationWithValidAddresses($value, $hex, $expanded, $compacted)
     {
         $ip = IP::factory($value);
         $this->assertInstanceOf(IpInterface::class, $ip);
@@ -37,11 +40,14 @@ class IPv6Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidBinarySequences()
      * @param string $value
+     * @param string $hex
+     * @param string $expanded
+     * @param string $compacted
      * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidBinarySequences')]
-    public function testBinarySequenceIsTheSameOnceInstantiated($value)
+    public function testBinarySequenceIsTheSameOnceInstantiated($value, $hex, $expanded, $compacted)
     {
         $ip = IP::factory($value);
         $this->assertSame($value, $ip->getBinary());
@@ -52,11 +58,13 @@ class IPv6Test extends TestCase
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidProtocolIpAddresses()
      * @param string $value
      * @param string $hex
+     * @param string $expanded
+     * @param string $compacted
      * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidProtocolIpAddresses')]
-    public function testProtocolNotationConvertsToCorrectBinarySequence($value, $hex)
+    public function testProtocolNotationConvertsToCorrectBinarySequence($value, $hex, $expanded, $compacted)
     {
         $ip = IP::factory($value);
         $actualHex = unpack('H*hex', $ip->getBinary());
@@ -118,11 +126,14 @@ class IPv6Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidIpAddresses()
      * @param string $value
+     * @param string $hex
+     * @param string $expanded
+     * @param string $compacted
      * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidIpAddresses')]
-    public function testGetBinaryAlwaysReturnsA16ByteString($value)
+    public function testGetBinaryAlwaysReturnsA16ByteString($value, $hex, $expanded, $compacted)
     {
         $ip = IP::factory($value);
         $this->assertSame(16, strlen(bin2hex($ip->getBinary())) / 2);
@@ -151,11 +162,12 @@ class IPv6Test extends TestCase
      * @param string $value
      * @param string $hex
      * @param string $expanded
+     * @param string $compacted
      * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidProtocolIpAddresses')]
-    public function testGetExpandedAddressReturnsCorrectString($value, $hex, $expanded)
+    public function testGetExpandedAddressReturnsCorrectString($value, $hex, $expanded, $compacted)
     {
         $ip = IP::factory($value);
         $this->assertSame($expanded, $ip->getExpandedAddress());
@@ -165,11 +177,14 @@ class IPv6Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidIpAddresses()
      * @param string $value
+     * @param string $hex
+     * @param string $expanded
+     * @param string $compacted
      * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidIpAddresses')]
-    public function testGetVersionAlwaysReturns6($value)
+    public function testGetVersionAlwaysReturns6($value, $hex, $expanded, $compacted)
     {
         $ip = IP::factory($value);
         $this->assertSame(6, $ip->getVersion());
@@ -179,11 +194,14 @@ class IPv6Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidIpAddresses()
      * @param string $value
+     * @param string $hex
+     * @param string $expanded
+     * @param string $compacted
      * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidIpAddresses')]
-    public function testIsVersionOnlyReturnsTrueFor6($value)
+    public function testIsVersionOnlyReturnsTrueFor6($value, $hex, $expanded, $compacted)
     {
         $ip = IP::factory($value);
         $this->assertTrue($ip->isVersion(6));
@@ -193,11 +211,14 @@ class IPv6Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidIpAddresses()
      * @param string $value
+     * @param string $hex
+     * @param string $expanded
+     * @param string $compacted
      * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidIpAddresses')]
-    public function testIsVersionOnlyReturnsFalseFor4($value)
+    public function testIsVersionOnlyReturnsFalseFor4($value, $hex, $expanded, $compacted)
     {
         $ip = IP::factory($value);
         $this->assertFalse($ip->isVersion(4));
@@ -207,11 +228,14 @@ class IPv6Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidIpAddresses()
      * @param string $value
+     * @param string $hex
+     * @param string $expanded
+     * @param string $compacted
      * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidIpAddresses')]
-    public function testIsVersion6AlwaysReturnsTrue($value)
+    public function testIsVersion6AlwaysReturnsTrue($value, $hex, $expanded, $compacted)
     {
         $ip = IP::factory($value);
         $this->assertTrue($ip->isVersion6());
@@ -221,11 +245,14 @@ class IPv6Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidIpAddresses()
      * @param string $value
+     * @param string $hex
+     * @param string $expanded
+     * @param string $compacted
      * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidIpAddresses')]
-    public function testIsVersion4AlwaysReturnsFalse($value)
+    public function testIsVersion4AlwaysReturnsFalse($value, $hex, $expanded, $compacted)
     {
         $ip = IP::factory($value);
         $this->assertFalse($ip->isVersion4());
@@ -433,11 +460,14 @@ class IPv6Test extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidIpAddresses()
      * @param string $value
+     * @param string $hex
+     * @param string $expanded
+     * @param string $compacted
      * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidIpAddresses')]
-    public function testIsEmbeddedAlwaysReturnsFalse($value)
+    public function testIsEmbeddedAlwaysReturnsFalse($value, $hex, $expanded, $compacted)
     {
         $ip = IP::factory($value);
         $this->assertFalse($ip->isEmbedded());

@@ -32,11 +32,15 @@ class MultiTest extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidIpAddresses()
      * @param string $value
+     * @param string $hex
+     * @param string $expanded
+     * @param string $compacted
+     * @param string $dot
      * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidIpAddresses')]
-    public function testInstantiationWithValidAddresses($value)
+    public function testInstantiationWithValidAddresses($value, $hex, $expanded, $compacted, $dot)
     {
         $ip = IP::factory($value);
         $this->assertInstanceOf(IpInterface::class, $ip);
@@ -82,11 +86,15 @@ class MultiTest extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidBinarySequences()
      * @param string $value
+     * @param string $hex
+     * @param string $expanded
+     * @param string $compacted
+     * @param string $dot
      * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidBinarySequences')]
-    public function testBinarySequenceIsTheSameOnceInstantiated($value)
+    public function testBinarySequenceIsTheSameOnceInstantiated($value, $hex, $expanded, $compacted, $dot)
     {
         $ip = IP::factory($value);
         $this->assertSame($value, $ip->getBinary());
@@ -97,11 +105,14 @@ class MultiTest extends TestCase
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidProtocolIpAddresses()
      * @param string $value
      * @param string $hex
+     * @param string $expanded
+     * @param string $compacted
+     * @param string $dot
      * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidProtocolIpAddresses')]
-    public function testProtocolNotationConvertsToCorrectBinarySequence($value, $hex)
+    public function testProtocolNotationConvertsToCorrectBinarySequence($value, $hex, $expanded, $compacted, $dot)
     {
         $ip = IP::factory($value);
         $actualHex = unpack('H*hex', $ip->getBinary());
@@ -133,11 +144,15 @@ class MultiTest extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidIpAddresses()
      * @param string $value
+     * @param string $hex
+     * @param string $expanded
+     * @param string $compacted
+     * @param string $dot
      * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidIpAddresses')]
-    public function testGetBinaryAlwaysReturnsA16ByteString($value)
+    public function testGetBinaryAlwaysReturnsA16ByteString($value, $hex, $expanded, $compacted, $dot)
     {
         $ip = IP::factory($value);
         $this->assertSame(16, strlen(bin2hex($ip->getBinary())) / 2);
@@ -150,11 +165,12 @@ class MultiTest extends TestCase
      * @param string $hex
      * @param string $expanded
      * @param string $compacted
+     * @param string $dot
      * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidIpAddresses')]
-    public function testGetCompactedAddressReturnsCorrectString($value, $hex, $expanded, $compacted)
+    public function testGetCompactedAddressReturnsCorrectString($value, $hex, $expanded, $compacted, $dot)
     {
         $ip = IP::factory($value);
         $this->assertSame($compacted, $ip->getCompactedAddress());
@@ -166,11 +182,13 @@ class MultiTest extends TestCase
      * @param string $value
      * @param string $hex
      * @param string $expanded
+     * @param string $compacted
+     * @param string $dot
      * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidProtocolIpAddresses')]
-    public function testGetExpandedAddressReturnsCorrectString($value, $hex, $expanded)
+    public function testGetExpandedAddressReturnsCorrectString($value, $hex, $expanded, $compacted, $dot)
     {
         $ip = IP::factory($value);
         $this->assertSame($expanded, $ip->getExpandedAddress());
@@ -198,11 +216,15 @@ class MultiTest extends TestCase
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidIpVersion6Addresses()
      * @param string $value
+     * @param string $hex
+     * @param string $expanded
+     * @param string $compacted
+     * @param string $dot
      * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidIpVersion6Addresses')]
-    public function testDotAddressThrowsExceptionForNonVersion4Addresses($value)
+    public function testDotAddressThrowsExceptionForNonVersion4Addresses($value, $hex, $expanded, $compacted, $dot)
     {
         $this->expectException(\Darsyn\IP\Exception\WrongVersionException::class);
         try {
