@@ -81,7 +81,7 @@ class IPv6 implements IpDataProviderInterface
     }
 
     /** @return list<array{int}> */
-    public static function getInvalidCidrValues()
+    public static function getOutOfRangeCidrValues()
     {
         return [
             [-1],

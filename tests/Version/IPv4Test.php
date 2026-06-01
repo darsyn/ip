@@ -220,20 +220,19 @@ class IPv4Test extends TestCase
 
     /**
      * @test
-     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getInvalidCidrValues()
-     * @param mixed $cidr
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getOutOfRangeCidrValues()
+     * @param int $cidr
      * @return void
      */
     #[PHPUnit\Test]
-    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getInvalidCidrValues')]
-    public function testExceptionIsThrownFromInvalidCidrValues($cidr)
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getOutOfRangeCidrValues')]
+    public function testExceptionIsThrownFromOutOfRangeCidrValues($cidr)
     {
         $this->expectException(\Darsyn\IP\Exception\InvalidCidrException::class);
         $this->expectExceptionMessage('The supplied CIDR is not valid; it must be an integer (between 0 and 32).');
         $ip = IP::factory('12.34.56.78');
         try {
             (function () use ($cidr): string {
-                // @phpstan-ignore argument.type
                 return $this->generateBinaryMask($cidr, 4);
             })->call($ip);
         } catch (InvalidCidrException $e) {
@@ -292,18 +291,17 @@ class IPv4Test extends TestCase
 
     /**
      * @test
-     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getInvalidCidrValues()
-     * @param mixed $cidr
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getOutOfRangeCidrValues()
+     * @param int $cidr
      * @return void
      */
     #[PHPUnit\Test]
-    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getInvalidCidrValues')]
-    public function testInRangeThrowsExceptionOnInvalidCidr($cidr)
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getOutOfRangeCidrValues')]
+    public function testInRangeThrowsExceptionOnOutOfRangeCidr($cidr)
     {
         $first = IP::factory('12.34.56.78');
         $second = IP::factory('12.34.56.78');
         $this->expectException(InvalidCidrException::class);
-        // @phpstan-ignore argument.type
         $first->inRange($second, $cidr);
     }
 

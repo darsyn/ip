@@ -279,20 +279,19 @@ class IPv6Test extends TestCase
 
     /**
      * @test
-     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getInvalidCidrValues()
-     * @param mixed $cidr
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getOutOfRangeCidrValues()
+     * @param int $cidr
      * @return void
      */
     #[PHPUnit\Test]
-    #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getInvalidCidrValues')]
-    public function testExceptionIsThrownFromInvalidCidrValues($cidr)
+    #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getOutOfRangeCidrValues')]
+    public function testExceptionIsThrownFromOutOfRangeCidrValues($cidr)
     {
         $this->expectException(\Darsyn\IP\Exception\InvalidCidrException::class);
         $this->expectExceptionMessage('The supplied CIDR is not valid; it must be an integer (between 0 and 128).');
         $ip = IP::factory('::1');
         try {
             (function () use ($cidr): string {
-                // @phpstan-ignore argument.type
                 return $this->generateBinaryMask($cidr, 16);
             })->call($ip);
         } catch (InvalidCidrException $e) {
