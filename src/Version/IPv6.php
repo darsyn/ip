@@ -6,6 +6,7 @@ namespace Darsyn\IP\Version;
 
 use Darsyn\IP\AbstractIP;
 use Darsyn\IP\Exception;
+use Darsyn\IP\Strategy\Composite;
 use Darsyn\IP\Strategy\EmbeddingStrategyInterface;
 use Darsyn\IP\Util\Binary;
 use Darsyn\IP\Util\MbString;
@@ -142,6 +143,15 @@ class IPv6 extends AbstractIP implements Version6Interface
 
     public function isUnicastGlobal(): bool
     {
+        // An IPv6 address that embeds an IPv4 address is only globally reachable
+        // if the address it actually stands for is; canonicalise before
+        // classifying. The deprecated IPv4-compatible embedding is deliberately
+        // excluded (see Composite::all()), so "::/96" addresses are still
+        // classified as plain IPv6.
+        $strategy = Composite::all();
+        if ($strategy->isEmbedded($this->getBinary())) {
+            return (new IPv4($strategy->extract($this->getBinary())))->isPublicUse();
+        }
         return $this->isUnicast()
             && !$this->isLoopback()
             && !$this->isLinkLocal()

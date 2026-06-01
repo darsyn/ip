@@ -293,14 +293,20 @@ class IPv6 implements IpDataProviderInterface
             'fd00::' => self::PRIVATE_USE | self::UNIQUE_LOCAL | self::UNICAST_OTHER,
             'fdff:ffff:ffff:ffff:ffff:ffff:ffff:ffff' => self::PRIVATE_USE | self::UNIQUE_LOCAL | self::UNICAST_OTHER,
             'ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff' => self::MULTICAST_OTHER,
-            '::ffff:1:0' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::MAPPED,
-            '::ffff:7f00:1' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::MAPPED | self::LOOPBACK_MAPPED,
+            // An IPv4-embedded address is only globally routable if the address
+            // it stands for is; the embedded loopback / "this-network" rows below
+            // are therefore unicast-but-not-global (see IPv6::isUnicastGlobal()).
+            '::ffff:1:0' => self::UNICAST_OTHER | self::MAPPED,
+            '::ffff:7f00:1' => self::UNICAST_OTHER | self::MAPPED | self::LOOPBACK_MAPPED,
             '::ffff:1234:5678' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::MAPPED,
-            '0000:0000:0000:0000:0000:ffff:7f00:a001' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::MAPPED | self::LOOPBACK_MAPPED,
-            '2002::' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::DERIVED,
-            '2002:7f00:1::' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::DERIVED | self::LOOPBACK_DERIVED,
+            '0000:0000:0000:0000:0000:ffff:7f00:a001' => self::UNICAST_OTHER | self::MAPPED | self::LOOPBACK_MAPPED,
+            '2002::' => self::UNICAST_OTHER | self::DERIVED,
+            '2002:7f00:1::' => self::UNICAST_OTHER | self::DERIVED | self::LOOPBACK_DERIVED,
             '2002:1234:4321:0:00:000:0000::' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::DERIVED,
-            '64:ff9b::7f00:1' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::NAT64 | self::LOOPBACK_NAT64,
+            // NAT64 (64:ff9b::/96): excluded from the Compatible-only ambiguity,
+            // recognised by Composite::all(), so it canonicalises like the others.
+            '64:ff9b::1234:5678' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL,
+            '64:ff9b::7f00:1' => self::UNICAST_OTHER | self::NAT64 | self::LOOPBACK_NAT64,
             '::7f00:1' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::COMPATIBLE | self::LOOPBACK_COMPATIBLE,
             '::12.34.56.78' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::COMPATIBLE,
             '0::000:0000:b12:cab' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::COMPATIBLE,
