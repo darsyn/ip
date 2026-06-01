@@ -114,10 +114,10 @@ class Multi
         return IPv6::getValidCidrValues();
     }
 
-    /** @return list<array{mixed}> */
-    public static function getInvalidCidrValues()
+    /** @return list<array{int}> */
+    public static function getOutOfRangeCidrValues()
     {
-        return IPv6::getInvalidCidrValues();
+        return IPv6::getOutOfRangeCidrValues();
     }
 
     /** @return list<array{string, string, int}> */
