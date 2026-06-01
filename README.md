@@ -12,18 +12,18 @@ Full documentation is available in the [`docs/`](docs/) folder.
 
 ## Compatibility
 
-This library has extensive test coverage using PHPUnit on PHP versions: `7.1`,
-`7.2`, `7.3`, `7.4`, `8.0`, `8.1`, `8.2`, `8.3` and `8.4`.
+This library has extensive test coverage using PHPUnit on all supported PHP
+versions.
 
 > Versions `5.x.x` of this library are compatible with PHP versions `5.6` to
 > `8.3` (and will continue to receive bug fixes).
 >
 > Versions `6.x.x` of this library are compatible with PHP versions `7.1` and
-> above, and will receive continued support for future versions of PHP (also
-> accepting proposed new features).
+> above (currently confirmed up to `8.5`), and will receive continued support
+> for future versions of PHP (also accepting proposed new features).
 
-Static analysis is performed with PHPStan at `max` level on PHP `8.4`, using
-core, bleeding edge, and deprecation rules.
+Static analysis is performed with PHPStan at `max` level on PHP `7.4` and `8.5`,
+using core, bleeding edge, and deprecation rules.
 
 > The Doctrine features for this library have been split off into their own
 > package, [`darsyn/ip-doctrine`](https://packagist.org/packages/darsyn/ip-doctrine).
