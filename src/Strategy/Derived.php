@@ -8,6 +8,13 @@ use Darsyn\IP\Exception\Strategy as StrategyException;
 use Darsyn\IP\Util\Binary;
 use Darsyn\IP\Util\MbString;
 
+/**
+ * Embeds an IPv4 address within the 6to4 prefix `2002::/16`, as defined by RFC
+ * 3056 ("Connection of IPv6 Domains via IPv4 Clouds").
+ *
+ * Legacy, but not formally deprecated (only 6to4 anycast was deprecated via
+ * RFC 7526).
+ */
 class Derived implements EmbeddingStrategyInterface
 {
     public function isEmbedded(string $binary): bool

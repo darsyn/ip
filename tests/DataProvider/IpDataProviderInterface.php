@@ -36,10 +36,12 @@ interface IpDataProviderInterface
     public const UNICAST_OTHER = 1 << 22;
     public const MAPPED = 1 << 23;
     public const DERIVED = 1 << 24;
-    public const COMPATIBLE = 1 << 25;
-    public const LOOPBACK_MAPPED = 1 << 26;
-    public const LOOPBACK_COMPATIBLE = 1 << 27;
-    public const LOOPBACK_DERIVED = 1 << 28;
+    public const NAT64 = 1 << 25;
+    public const COMPATIBLE = 1 << 26;
+    public const LOOPBACK_MAPPED = 1 << 27;
+    public const LOOPBACK_COMPATIBLE = 1 << 28;
+    public const LOOPBACK_DERIVED = 1 << 29;
+    public const LOOPBACK_NAT64 = 1 << 30;
 
     // Combinations
     public const PUBLIC_USE = 0
@@ -48,7 +50,8 @@ interface IpDataProviderInterface
     public const LOOPBACK_EMBEDDED = 0
         | self::LOOPBACK_MAPPED
         | self::LOOPBACK_COMPATIBLE
-        | self::LOOPBACK_DERIVED;
+        | self::LOOPBACK_DERIVED
+        | self::LOOPBACK_NAT64;
     public const MULTICAST = 0
         | self::MULTICAST_IPV4
         | self::MULTICAST_INTERFACE_LOCAL

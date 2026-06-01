@@ -329,6 +329,18 @@ class MultiTest extends TestCase
 
     /**
      * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getNat64LoopbackIpAddresses()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getNat64LoopbackIpAddresses')]
+    public function testIsLoopbackNat64(string $value, bool $isLoopback): void
+    {
+        $ip = IP::factory($value, new Strategy\Nat64());
+        $this->assertSame($isLoopback, $ip->isLoopback());
+    }
+
+    /**
+     * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getMulticastIpAddresses()
      */
     #[PHPUnit\Test]

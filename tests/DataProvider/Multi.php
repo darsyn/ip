@@ -240,6 +240,15 @@ class Multi
     }
 
     /** @return list<array{string, bool}> */
+    public static function getNat64LoopbackIpAddresses()
+    {
+        return array_merge(
+            IPv4::getLoopbackIpAddresses(),
+            IPv6::getCategoryOfIpAddresses(IPv6::LOOPBACK | IPv6::LOOPBACK_NAT64)
+        );
+    }
+
+    /** @return list<array{string, bool}> */
     public static function getMulticastIpAddresses()
     {
         return array_merge(IPv4::getMulticastIpAddresses(), IPv6::getMulticastIpAddresses());

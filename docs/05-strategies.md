@@ -1,18 +1,19 @@
 # Embedding Strategies
 
-When using version 4 and version 6 addresses interchangeably (via the 
+When using version 4 and version 6 addresses interchangeably (via the
 `Multi` class), version 4 addresses are *embedded* into version 6 addresses so
 that both versions are stored as 16-byte binary sequences.
 
 Unfortunately there are several different strategies for embedding a version 4
 address into version 6, so this library offers various strategy implementations
-for the main three: 
+for the main three (and one deprecated):
 
-| Strategy Name   | Implementation                  | Format                                    |
-|-----------------|---------------------------------|-------------------------------------------|
-| 6to4-derived    | `Darsyn\IP\Strategy\Derived`    | `2002:XXXX:XXXX:0000:0000:0000:0000:0000` |
-| IPv4-compatible | `Darsyn\IP\Strategy\Compatible` | `0000:0000:0000:0000:0000:0000:XXXX:XXXX` |
-| IPv4-mapped     | `Darsyn\IP\Strategy\Mapped`     | `0000:0000:0000:0000:0000:ffff:XXXX:XXXX` |
+| Strategy Name   | Implementation                  | Format                                    | Notes      |
+|-----------------|---------------------------------|-------------------------------------------|------------|
+| IPv4-mapped     | `Darsyn\IP\Strategy\Mapped`     | `0000:0000:0000:0000:0000:ffff:XXXX:XXXX` | Default    |
+| NAT64           | `Darsyn\IP\Strategy\Nat64`      | `0064:ff9b:0000:0000:0000:0000:XXXX:XXXX` | Translator |
+| 6to4-derived    | `Darsyn\IP\Strategy\Derived`    | `2002:XXXX:XXXX:0000:0000:0000:0000:0000` | Relay      |
+| IPv4-compatible | `Darsyn\IP\Strategy\Compatible` | `0000:0000:0000:0000:0000:0000:XXXX:XXXX` | Deprecated |
 
 Each embedding strategy implements the
 `Darsyn\IP\Strategy\EmbeddingStrategyInterface` which defines methods to:
