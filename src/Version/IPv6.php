@@ -104,7 +104,10 @@ class IPv6 extends AbstractIP implements Version6Interface
 
     public function isPrivateUse(): bool
     {
-        return $this->inRange(new self(Binary::fromHex('fd000000000000000000000000000000')), 8);
+        // Check `fc00::/7` to cover both:
+        //  - `fd00::/8` (locally-assigned), and
+        //  - `fc00::/8` (reserved for centrally-assigned; proposed but never standardised, now undefined).
+        return $this->inRange(new self(Binary::fromHex('fc000000000000000000000000000000')), 7);
     }
 
     public function isUnspecified(): bool

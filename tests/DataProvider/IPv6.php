@@ -270,7 +270,7 @@ class IPv6 implements IpDataProviderInterface
             '::1' => self::LOOPBACK | self::UNICAST_OTHER | self::COMPATIBLE,
             '::0.0.0.2' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::COMPATIBLE,
             '1::' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL,
-            'fc00::' => self::UNIQUE_LOCAL | self::UNICAST_OTHER,
+            'fc00::' => self::PRIVATE_USE | self::UNIQUE_LOCAL | self::UNICAST_OTHER,
             'fdff:ffff::' => self::PRIVATE_USE | self::UNIQUE_LOCAL | self::UNICAST_OTHER,
             'fe80:ffff::' => self::LINK_LOCAL,
             'fe80::' => self::LINK_LOCAL,
