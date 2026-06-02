@@ -1,5 +1,17 @@
 # Darsyn IP
 
+## `6.x`
+
+- Add support for PHP `8.5` in README, and GitHub Action CI workflows.
+- Access protected method via Closure in unit tests, instead of reflection, to
+  fix deprecation warnings in PHP `8.5`.
+- Define all data-provider arguments as test method arguments, to fix
+  deprecation warnings in PHPUnit (cherry-picked from `5.0.2`).
+- Drop all PHP versions except floor (`7.4`) and latest (`8.5`) for running
+  static analysis.
+- Type-narrow out-of-range CIDRs to remove unnecessary `@phpstan-ignore`
+  instructions.
+
 ## `6.0.0`
 
 - Rename default branch name from `develop`/`master` to `6.x`; branch `5.x` from
