@@ -1,5 +1,17 @@
 # Darsyn IP
 
+## `6.0.0`
+
+- Rename default branch name from `develop`/`master` to `6.x`; branch `5.x` from
+  `5.0.0` tag for ongoing support (bugfixes only). Update GitHub Actions CI
+  workflows, and update README with description on the `6.x`/`5.x` split.
+- Drop support for PHP versions less than `7.1`.
+- Fix PHP `8.4` deprecation errors (nullable arguments must be explicit).
+- Add strict types.
+- Add native type support. Remove unnecessary type annotations in doc blocks.
+  Remove unit tests that assert invalid types no longer allowed by PHP's strict
+  typing.
+
 ## `5.0.2`
 
 > `5.0.1` added PHP `8.4` support, but this is deprecated due to true support
