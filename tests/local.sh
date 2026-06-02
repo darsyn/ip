@@ -16,9 +16,9 @@ set -uo pipefail
 
 # Grab the full normalized path to the parent/project directory.
 export PROJECT_DIR="$(dirname "$(dirname "$(readlink -f -- "$0")")")"
-# Every PHP version exercised by the lint + unit-test matrix in testing.yaml.
+# Every PHP version exercised by the lint + unit-test matrix in `runtime-testing.yaml`.
 ALL_VERSIONS=("7.1" "7.2" "7.3" "7.4" "8.0" "8.1" "8.2" "8.3" "8.4" "8.5")
-# The subset that runs static analysis in static-analysis.yaml.
+# The subset that runs analysis in the workflow `static-analysis.yaml`.
 STATIC_ANALYSIS_VERSIONS=("7.4" "8.5")
 
 FAILURES=()
@@ -90,23 +90,36 @@ run_suite() {
 
     command cp -f "${PROJECT_DIR}/composer.json" "${PROJECT_DIR}/composer.json.suite-backup"
 
-    # 1. Syntax linting (testing.yaml: syntax-linting). No dependencies needed.
+    # 1. Syntax linting (runtime-testing.yaml: syntax-linting). No dependencies needed.
     echo "--- [${PHP_VERSION}] Syntax linting ---"
     docker_php "${PHP_VERSION}" sh -c \
         'find src/ -type f -name "*.php" -print0 | xargs -0 -n1 -P4 php -d"error_reporting=E_ALL&~E_DEPRECATED" -l -n | (! grep -v "No syntax errors detected")' \
         || { echo "[${PHP_VERSION}] SYNTAX LINTING FAILED"; FAILED=1; }
 
-    # 2. Install dependencies (PHPStan added only for static-analysis versions).
+    # 2. Install dependencies (PHPStan+Fixer added only for static-analysis versions).
     echo "--- [${PHP_VERSION}] Installing dependencies ---"
     local DEV_DEPS=()
     if is_static_analysis_version "${PHP_VERSION}"; then
-        DEV_DEPS=('phpstan/phpstan:^2' 'phpstan/phpstan-deprecation-rules')
+        DEV_DEPS=('phpstan/phpstan:^2.2' 'phpstan/phpstan-deprecation-rules' 'php-cs-fixer/shim:^3.95')
     fi
     docker_install "${PHP_VERSION}" "${DEV_DEPS[@]}" \
         || { echo "[${PHP_VERSION}] DEPENDENCY INSTALL FAILED"; FAILED=1; }
 
     if [ "${FAILED}" -eq 0 ]; then
-        # 3. Unit tests (testing.yaml: unit-testing).
+        # 3. Code style (static-analysis.yaml: code-style) on the relevant versions.
+        if is_static_analysis_version "${PHP_VERSION}"; then
+            echo "--- [${PHP_VERSION}] Code style ---"
+            docker_php "${PHP_VERSION}" php -d'memory_limit=512M' \
+                'vendor/bin/php-cs-fixer' \
+                check \
+                --allow-risky='yes' \
+                --diff \
+                || { echo "[${PHP_VERSION}] CODE STYLE FAILED"; FAILED=1; }
+        fi
+    fi
+
+    if [ "${FAILED}" -eq 0 ]; then
+        # 4. Unit tests (runtime-testing.yaml: unit-testing).
         echo "--- [${PHP_VERSION}] Unit tests ---"
         docker_php "${PHP_VERSION}" php \
             'vendor/bin/phpunit' \
@@ -117,7 +130,7 @@ run_suite() {
     fi
 
     if [ "${FAILED}" -eq 0 ]; then
-        # 4. Static analysis (static-analysis.yaml: phpstan) on the relevant versions.
+        # 5. Static analysis (static-analysis.yaml: phpstan) on the relevant versions.
         if is_static_analysis_version "${PHP_VERSION}"; then
             echo "--- [${PHP_VERSION}] Static analysis ---"
             docker_php "${PHP_VERSION}" php -d'memory_limit=1G' \
