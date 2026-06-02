@@ -14,6 +14,9 @@
 - Bugfix: don't compress single 16-bit zero group (according to RFC 5952 § `4.2.2`).
 - Bugfix: stop `MbString::subString()` from swallowing valid `0`.
 - Add Bash script for testing GitHub Action workflows locally using Docker.
+- Add code style ruleset definition via PHP-CS-Fixer configuration. Apply the
+  code style to the entire codebase, and enable checking as another CI job in
+  GitHub Actions.
 
 ## `6.0.0`
 
