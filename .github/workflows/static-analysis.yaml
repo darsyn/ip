@@ -28,7 +28,28 @@ jobs:
         with:
           dependency-versions: 'highest'
       # Require PHPStan via command-line instead of adding to Composer's
-      # "require-dev"; we only want to run static analysis once on the highest
-      # version of PHP available.
-      - run: 'composer require --dev "phpstan/phpstan:^2" "phpstan/phpstan-deprecation-rules"'
+      # "require-dev"; we only want to run static analysis on the
+      # floor/latest versions of PHP available.
+      - run: 'composer require --dev "phpstan/phpstan:^2.2" "phpstan/phpstan-deprecation-rules"'
       - run: './vendor/bin/phpstan analyze --no-progress --error-format="github"'
+
+  code-style:
+    runs-on: 'ubuntu-24.04'
+    strategy:
+      matrix:
+        php:
+            - '7.4'
+            - '8.5'
+    steps:
+      - uses: 'actions/checkout@v6'
+      - uses: 'shivammathur/setup-php@v2'
+        with:
+          php-version: '${{ matrix.php }}'
+      - uses: 'ramsey/composer-install@v4'
+        with:
+          dependency-versions: 'highest'
+      # Require PHP-CS-Fixer via command-line instead of adding to Composer's
+      # "require-dev"; we only want to run code style checks on the
+      # floor/latest versions of PHP available.
+      - run: 'composer require --dev "php-cs-fixer/shim:^3.95"'
+      - run: './vendor/bin/php-cs-fixer check --allow-risky=yes --diff'

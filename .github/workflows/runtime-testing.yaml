@@ -1,4 +1,4 @@
-name: 'Linting and Unit Tests'
+name: 'Runtime Testing'
 
 on:
   pull_request:
