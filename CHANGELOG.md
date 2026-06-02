@@ -17,6 +17,7 @@
 - Add code style ruleset definition via PHP-CS-Fixer configuration. Apply the
   code style to the entire codebase, and enable checking as another CI job in
   GitHub Actions.
+- Bugfix: classify full `fc00::/7` block as private use.
 
 ## `6.0.0`
 
