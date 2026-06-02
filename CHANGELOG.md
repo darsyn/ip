@@ -13,6 +13,7 @@
   instructions.
 - Bugfix: don't compress single 16-bit zero group (according to RFC 5952 § `4.2.2`).
 - Bugfix: stop `MbString::subString()` from swallowing valid `0`.
+- Add Bash script for testing GitHub Action workflows locally using Docker.
 
 ## `6.0.0`
 
