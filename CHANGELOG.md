@@ -11,6 +11,8 @@
   static analysis.
 - Type-narrow out-of-range CIDRs to remove unnecessary `@phpstan-ignore`
   instructions.
+- Bugfix: don't compress single 16-bit zero group (according to RFC 5952 § `4.2.2`).
+- Bugfix: stop `MbString::subString()` from swallowing valid `0`.
 
 ## `6.0.0`
 
