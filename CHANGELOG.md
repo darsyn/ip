@@ -1,5 +1,26 @@
 # Darsyn IP
 
+## `5.0.2`
+
+> `5.0.1` added PHP `8.4` support, but this is deprecated due to true support
+> (without supresing deprecation warnings) being unavailable without lifting
+> the minimum PHP version (`5.6`).
+>
+> PHP `8.4` is now only supported (officially) on `6.x`.
+
+- Officially deprecate PHP `8.4` support for the `5.x` branch. Highest PHP
+  version supported for `5.x` is `8.3`, upgrade to `6.x` for higher PHP versions.
+- Update version requirements in README, `composer.json` and GitHub Action CI
+  workflows.
+- Define all data-provider arguments as test method arguments, to fix
+  deprecation warnings in PHPUnit.
+- Remove `@phpstan-ignore` instruction for non-issue in unit tests.
+
+## `5.0.1`
+
+- Add support for PHP `8.4`.
+- Reference comment added for generating documentation on Podman.
+
 ## `5.0.0`
 
 - Removed Doctrine functionality, and split it off into its own package:
