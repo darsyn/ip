@@ -106,7 +106,7 @@ class IPv6 implements IpDataProviderInterface
     {
         return [
             ['200f:ffff:ffff:ffff:ffff:ffff:ffff:ffff', 12 ],
-            ['2001:db8::1f:ffff:ffff:ffff:ffff',        59 ],
+            ['2001:db8:0:1f:ffff:ffff:ffff:ffff',       59 ],
             ['2001:db8::bff:ffff:ffff:ffff',            70 ],
             ['2001:db8::a60:8a2e:1fff:ffff',            99 ],
             ['2001:db8::a60:8a2e:370:7334',             128],
