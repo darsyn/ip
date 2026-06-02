@@ -15,11 +15,6 @@ class ExtractionException extends IpException
     /** @var \Darsyn\IP\Strategy\EmbeddingStrategyInterface $embeddingStrategy */
     private $embeddingStrategy;
 
-    /**
-     * @param string $binary
-     * @param \Darsyn\IP\Strategy\EmbeddingStrategyInterface $embeddingStrategy
-     * @param \Exception|null $previous
-     */
     public function __construct(string $binary, EmbeddingStrategyInterface $embeddingStrategy, ?\Exception $previous = null)
     {
         $this->binary = $binary;

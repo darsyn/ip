@@ -35,7 +35,7 @@ abstract class AbstractIP implements IpInterface
     protected static function getProtocolFormatter(): ProtocolFormatterInterface
     {
         if (null === self::$formatter) {
-            self::$formatter = new ConsistentFormatter;
+            self::$formatter = new ConsistentFormatter();
         }
         return self::$formatter;
     }
@@ -45,49 +45,31 @@ abstract class AbstractIP implements IpInterface
         $this->ip = $ip;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     final public function getBinary(): string
     {
         return $this->ip;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function equals(IpInterface $ip): bool
     {
         return $this->getBinary() === $ip->getBinary();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isVersion(int $version): bool
     {
         return $this->getVersion() === $version;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isVersion4(): bool
     {
         return $this->isVersion(4);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isVersion6(): bool
     {
         return $this->isVersion(6);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getNetworkIp(int $cidr)
     {
         // Providing that the CIDR is valid, bitwise AND the IP address binary
@@ -98,9 +80,6 @@ abstract class AbstractIP implements IpInterface
         ));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getBroadcastIp(int $cidr)
     {
         // Providing that the CIDR is valid, bitwise OR the IP address binary
@@ -111,9 +90,6 @@ abstract class AbstractIP implements IpInterface
         ));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function inRange(IpInterface $ip, int $cidr): bool
     {
         if (!$this->isSameByteLength($ip)) {
@@ -130,15 +106,14 @@ abstract class AbstractIP implements IpInterface
         return $ours->getNetworkIp($cidr)->getBinary() === $theirs->getNetworkIp($cidr)->getBinary();
     }
 
-    /** {@inheritDoc} */
     public function getCommonCidr(IpInterface $ip): int
     {
         // Cannot calculate the greatest common CIDR between an IPv4 and
         // IPv6/IPv4-embedded address, they are fundamentally incompatible.
         if (!$this->isSameByteLength($ip)) {
             throw new WrongVersionException(
-                MbString::getLength($this->getBinary()) === 4 ? 4 : 6,
-                MbString::getLength($ip->getBinary()) === 4 ? 4 : 6,
+                4 === MbString::getLength($this->getBinary()) ? 4 : 6,
+                4 === MbString::getLength($ip->getBinary()) ? 4 : 6,
                 (string) $ip
             );
         }
@@ -147,33 +122,21 @@ abstract class AbstractIP implements IpInterface
         return MbString::getLength($parts[0]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isMapped(): bool
     {
-        return (new Strategy\Mapped)->isEmbedded($this->getBinary());
+        return (new Strategy\Mapped())->isEmbedded($this->getBinary());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isDerived(): bool
     {
-        return (new Strategy\Derived)->isEmbedded($this->getBinary());
+        return (new Strategy\Derived())->isEmbedded($this->getBinary());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isCompatible(): bool
     {
-        return (new Strategy\Compatible)->isEmbedded($this->getBinary());
+        return (new Strategy\Compatible())->isEmbedded($this->getBinary());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isEmbedded(): bool
     {
         return false;
@@ -193,7 +156,7 @@ abstract class AbstractIP implements IpInterface
      */
     protected function generateBinaryMask(int $cidr, int $lengthInBytes): string
     {
-        if ($cidr < 0    || $lengthInBytes < 0
+        if ($cidr < 0 || $lengthInBytes < 0
             // CIDR is measured in bits; we're describing the length in bytes.
             || $cidr > $lengthInBytes * 8
         ) {

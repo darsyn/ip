@@ -8,13 +8,13 @@ use Darsyn\IP\IpInterface;
 
 interface Version6Interface extends IpInterface
 {
-    const MULTICAST_INTERFACE_LOCAL = 1;
-    const MULTICAST_LINK_LOCAL = 2;
-    const MULTICAST_REALM_LOCAL = 3;
-    const MULTICAST_ADMIN_LOCAL = 4;
-    const MULTICAST_SITE_LOCAL = 5;
-    const MULTICAST_ORGANIZATION_LOCAL = 8;
-    const MULTICAST_GLOBAL = 14;
+    public const MULTICAST_INTERFACE_LOCAL = 1;
+    public const MULTICAST_LINK_LOCAL = 2;
+    public const MULTICAST_REALM_LOCAL = 3;
+    public const MULTICAST_ADMIN_LOCAL = 4;
+    public const MULTICAST_SITE_LOCAL = 5;
+    public const MULTICAST_ORGANIZATION_LOCAL = 8;
+    public const MULTICAST_GLOBAL = 14;
 
     /**
      * Get Compacted Address
@@ -43,14 +43,10 @@ interface Version6Interface extends IpInterface
      */
     public function getMulticastScope(): ?int;
 
-    /**
-     * Whether the IP is a unique local address, according to RFC 4193.
-     */
+    /** Whether the IP is a unique local address, according to RFC 4193. */
     public function isUniqueLocal(): bool;
 
-    /**
-     * Whether the IP is a unicast address, according to RFC 4291.
-     */
+    /** Whether the IP is a unicast address, according to RFC 4291. */
     public function isUnicast(): bool;
 
     /**

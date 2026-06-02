@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Darsyn\IP\Tests\Formatter;
 
 use Darsyn\IP\Exception\Formatter\FormatException;
@@ -14,22 +16,16 @@ class ConsistentFormatterTest extends TestCase
     /** @var \Darsyn\IP\Formatter\ProtocolFormatterInterface $formatter */
     private $formatter;
 
-    /**
-     * @before
-     * @return void
-     */
+    /** @before */
     #[PHPUnit\Before]
-    protected function setUpWithoutReturnDeclaration()
+    protected function setUpWithoutReturnDeclaration(): void
     {
-        $this->formatter = new Formatter;
+        $this->formatter = new Formatter();
     }
 
-    /**
-     * @test
-     * @return void
-     */
+    /** @test */
     #[PHPUnit\Test]
-    public function testFormatterIsInstanceOfInterface()
+    public function testFormatterIsInstanceOfInterface(): void
     {
         $this->assertInstanceOf(ProtocolFormatterInterface::class, $this->formatter);
     }
@@ -37,13 +33,10 @@ class ConsistentFormatterTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Formatter\ConsistentFormatter::getValidBinarySequences()
-     * @param string $value
-     * @param string $expected
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(ConsistentFormatterDataProvider::class, 'getValidBinarySequences')]
-    public function testFormatterReturnsCorrectProtocolString($value, $expected)
+    public function testFormatterReturnsCorrectProtocolString(string $value, string $expected): void
     {
         $this->assertSame($expected, $this->formatter->ntop($value));
     }
@@ -51,16 +44,13 @@ class ConsistentFormatterTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Formatter\ConsistentFormatter::getInvalidBinarySequences()
-     * @param mixed $value
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(ConsistentFormatterDataProvider::class, 'getInvalidBinarySequences')]
-    public function testFormatterThrowsExceptionOnInvalidBinarySequences($value)
+    public function testFormatterThrowsExceptionOnInvalidBinarySequences(string $value): void
     {
         $this->expectException(\Darsyn\IP\Exception\Formatter\FormatException::class);
         try {
-            /** @phpstan-ignore-next-line (@phpstan-ignore argument.type) */
             $this->formatter->ntop($value);
         } catch (FormatException $e) {
             $this->assertSame($value, $e->getSuppliedBinary());

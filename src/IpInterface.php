@@ -13,34 +13,22 @@ interface IpInterface
      */
     public static function factory(string $ip);
 
-    /**
-     * Get Binary Representation
-     */
+    /** Get Binary Representation */
     public function getBinary(): string;
 
-    /**
-     * Do two IP objects represent the same IP address?
-     */
+    /** Do two IP objects represent the same IP address? */
     public function equals(self $ip): bool;
 
-    /**
-     * Get the IP version from the binary value
-     */
+    /** Get the IP version from the binary value */
     public function getVersion(): int;
 
-    /**
-     * Is Version?
-     */
+    /** Is Version? */
     public function isVersion(int $version): bool;
 
-    /**
-     * Whether the IP is version 4
-     */
+    /** Whether the IP is version 4 */
     public function isVersion4(): bool;
 
-    /**
-     * Whether the IP is version 6
-     */
+    /** Whether the IP is version 6 */
     public function isVersion6(): bool;
 
     /**
@@ -58,7 +46,6 @@ interface IpInterface
      *
      * Get a new value object from the broadcast address of the original IP.
      *
-     * @param int $cidr
      * @throws \Darsyn\IP\Exception\InvalidCidrException
      * @return static
      */
@@ -86,19 +73,13 @@ interface IpInterface
      */
     public function getCommonCidr(self $ip): int;
 
-    /**
-     * Whether the IP is an IPv4-mapped IPv6 address (eg, "::ffff:7f00:1").
-     */
+    /** Whether the IP is an IPv4-mapped IPv6 address (eg, "::ffff:7f00:1"). */
     public function isMapped(): bool;
 
-    /**
-     * Whether the IP is a 6to4-derived address (eg, "2002:7f00:1::").
-     */
+    /** Whether the IP is a 6to4-derived address (eg, "2002:7f00:1::"). */
     public function isDerived(): bool;
 
-    /**
-     * Whether the IP is an IPv4-compatible IPv6 address (eg, `::7f00:1`).
-     */
+    /** Whether the IP is an IPv4-compatible IPv6 address (eg, `::7f00:1`). */
     public function isCompatible(): bool;
 
     /**
@@ -131,9 +112,7 @@ interface IpInterface
      */
     public function isPrivateUse(): bool;
 
-    /**
-     * Whether the IP is unspecified, according to RFC 5735/RFC 2373 (IPv4/IPv6).
-     */
+    /** Whether the IP is unspecified, according to RFC 5735/RFC 2373 (IPv4/IPv6). */
     public function isUnspecified(): bool;
 
     /**
@@ -157,8 +136,6 @@ interface IpInterface
      */
     public function isPublicUse(): bool;
 
-    /**
-     * Implement string casting for IP objects.
-     */
+    /** Implement string casting for IP objects. */
     public function __toString(): string;
 }

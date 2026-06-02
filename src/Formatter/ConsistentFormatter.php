@@ -10,16 +10,13 @@ use Darsyn\IP\Util\MbString;
 
 class ConsistentFormatter extends NativeFormatter
 {
-    /**
-     * {@inheritDoc}
-     */
     public function ntop(string $binary): string
     {
         $length = MbString::getLength($binary);
-        if ($length === 16) {
+        if (16 === $length) {
             return $this->ntopVersion6($binary);
         }
-        if ($length === 4) {
+        if (4 === $length) {
             return $this->ntopVersion4($binary);
         }
         throw new FormatException($binary);
@@ -29,8 +26,8 @@ class ConsistentFormatter extends NativeFormatter
     {
         $hex = Binary::toHex($binary);
         $parts = \str_split($hex, 4);
-        $zeroes = \array_map(function ($part) {
-            return $part === '0000';
+        $zeroes = \array_map(static function ($part) {
+            return '0000' === $part;
         }, $parts);
         $length = $i = 0;
         $sequences = [];
@@ -42,13 +39,13 @@ class ConsistentFormatter extends NativeFormatter
             $maxLength = \max($sequences);
             $endPosition = \array_search($maxLength, $sequences, true);
             if (!\is_int($endPosition)) {
-                throw new \RuntimeException;
+                throw new \RuntimeException();
             }
             $startPosition = $endPosition - $maxLength;
         } else {
             $maxLength = $startPosition = 0;
         }
-        $parts = \array_map(function ($part) {
+        $parts = \array_map(static function ($part) {
             return \ltrim($part, '0') ?: '0';
         }, $parts);
         // RFC 5952 § 4.2.2: a single 16-bit "0" field MUST NOT be shortened to

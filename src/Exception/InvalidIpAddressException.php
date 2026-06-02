@@ -6,23 +6,17 @@ namespace Darsyn\IP\Exception;
 
 class InvalidIpAddressException extends IpException
 {
-    /** @var mixed $ip */
+    /** @var scalar */
     private $ip;
 
-    /**
-     * Constructor
-     *
-     * @param scalar $ip
-     */
+    /** @param scalar $ip */
     public function __construct($ip, ?\Exception $previous = null)
     {
         $this->ip = $ip;
         parent::__construct('The IP address supplied is not valid.', 0, $previous);
     }
 
-    /**
-     * @return mixed
-     */
+    /** @return scalar */
     public function getSuppliedIp()
     {
         return $this->ip;

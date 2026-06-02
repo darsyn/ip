@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Darsyn\IP\Tests\DataProvider\Strategy;
 
 class Derived
@@ -7,11 +9,11 @@ class Derived
     /** @return list<array{string, bool}> */
     public static function getValidIpAddresses()
     {
-        $valid = array_map(function (array $row) {
+        $valid = array_map(static function (array $row) {
             $row[1] = true;
             return $row;
         }, self::getValidSequences());
-        $invalid = array_map(function (array $row) {
+        $invalid = array_map(static function (array $row) {
             $row[1] = false;
             return $row;
         }, self::getInvalidSequences());

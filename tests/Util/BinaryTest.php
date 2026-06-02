@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Darsyn\IP\Tests\Util;
 
 use Darsyn\IP\Tests\DataProvider\Util\Binary as BinaryDataProvider;
@@ -12,49 +14,37 @@ class BinaryTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Util\Binary::getInvalidHex()
-     * @param mixed $input
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(BinaryDataProvider::class, 'getInvalidHex')]
-    public function testInvalidHexInput($input)
+    public function testInvalidHexInput(string $input): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        /** @phpstan-ignore-next-line (@phpstan-ignore argument.type) */
         Binary::fromHex($input);
     }
 
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Util\Binary::getInvalidHumanReadable()
-     * @param mixed $input
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(BinaryDataProvider::class, 'getInvalidHumanReadable')]
-    public function testInvalidHumanReadableInput($input)
+    public function testInvalidHumanReadableInput(string $input): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        /** @phpstan-ignore-next-line (@phpstan-ignore argument.type) */
         Binary::fromHumanReadable($input);
     }
 
-    /**
-     * @test
-     * @return void
-     */
+    /** @test */
     #[PHPUnit\Test]
-    public function testEmptyHexInput()
+    public function testEmptyHexInput(): void
     {
         $this->assertSame('', Binary::fromHex(''));
     }
 
-    /**
-     * @test
-     * @return void
-     */
+    /** @test */
     #[PHPUnit\Test]
-    public function testEmptyHumanReadableInput()
+    public function testEmptyHumanReadableInput(): void
     {
         $this->assertSame('', Binary::fromHumanReadable(''));
     }
@@ -62,13 +52,10 @@ class BinaryTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Util\Binary::getBinaryData()
-     * @param string $hex
-     * @param string $humanReadable
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(BinaryDataProvider::class, 'getBinaryData')]
-    public function testHexCanConvertAndBackAgain($hex, $humanReadable)
+    public function testHexCanConvertAndBackAgain(string $hex, string $humanReadable): void
     {
         $converted = Binary::fromHex($hex);
         $this->assertSame(strtolower($hex), Binary::toHex($converted));
@@ -77,13 +64,10 @@ class BinaryTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Util\Binary::getBinaryData()
-     * @param string $hex
-     * @param string $humanReadable
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(BinaryDataProvider::class, 'getBinaryData')]
-    public function testHumanReadableCanConvertAndBackAgain($hex, $humanReadable)
+    public function testHumanReadableCanConvertAndBackAgain(string $hex, string $humanReadable): void
     {
         $converted = Binary::fromHumanReadable($humanReadable);
         $this->assertSame($humanReadable, Binary::toHumanReadable($converted));
@@ -92,13 +76,10 @@ class BinaryTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Util\Binary::getBinaryData()
-     * @param string $hex
-     * @param string $humanReadable
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(BinaryDataProvider::class, 'getBinaryData')]
-    public function testHexCanConvertToHumanReadable($hex, $humanReadable)
+    public function testHexCanConvertToHumanReadable(string $hex, string $humanReadable): void
     {
         $converted = Binary::fromHex($hex);
         $this->assertSame($humanReadable, Binary::toHumanReadable($converted));
@@ -107,13 +88,10 @@ class BinaryTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Util\Binary::getBinaryData()
-     * @param string $hex
-     * @param string $humanReadable
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(BinaryDataProvider::class, 'getBinaryData')]
-    public function testHumanReadableCanConvertToHex($hex, $humanReadable)
+    public function testHumanReadableCanConvertToHex(string $hex, string $humanReadable): void
     {
         $converted = Binary::fromHumanReadable($humanReadable);
         $this->assertSame(strtolower($hex), Binary::toHex($converted));

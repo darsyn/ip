@@ -6,12 +6,10 @@ namespace Darsyn\IP\Exception;
 
 class InvalidCidrException extends IpException
 {
-    /** @var mixed $cidr */
+    /** @var mixed */
     private $cidr;
 
     /**
-     * Constructor
-     *
      * @param mixed $cidr
      * @param mixed $addressLengthInBytes
      */
@@ -27,9 +25,7 @@ class InvalidCidrException extends IpException
         parent::__construct($message, 0, $previous);
     }
 
-    /**
-     * @return mixed
-     */
+    /** @return mixed */
     public function getSuppliedCidr()
     {
         return $this->cidr;
