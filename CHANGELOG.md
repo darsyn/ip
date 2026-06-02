@@ -18,6 +18,8 @@
   code style to the entire codebase, and enable checking as another CI job in
   GitHub Actions.
 - Bugfix: classify full `fc00::/7` block as private use.
+- Add (or update) community standards: `SECURITY.md`, `CODE_OF_CONDUCT.md` and
+  `CONTRIBUTING.md`
 
 ## `6.0.0`
 
