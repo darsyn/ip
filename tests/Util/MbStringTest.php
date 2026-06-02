@@ -89,6 +89,18 @@ class MbStringTest extends TestCase
      * @return void
      */
     #[PHPUnit\Test]
+    public function testSubStringPreservesZeroByte()
+    {
+        $this->assertSame('0', MbString::subString('0', 0, 1));
+        $this->assertSame('0', MbString::subString('0', 0));
+        $this->assertSame('0', MbString::subString('109', 1, 1));
+    }
+
+    /**
+     * @test
+     * @return void
+     */
+    #[PHPUnit\Test]
     public function testPadStringAscii()
     {
         $this->assertSame('-0--Hello', $result = MbString::padString('Hello', 9, '-0-', STR_PAD_LEFT));

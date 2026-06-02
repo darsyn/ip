@@ -16,13 +16,15 @@ class MbString
     public static function subString(string $str, int $start, ?int $length = null): string
     {
         if (\function_exists('\\mb_substr')) {
-            return (\mb_substr($str, $start, $length, '8bit') ?: '');
+            return \mb_substr($str, $start, $length, '8bit');
         }
+        // Note: concatenating an empty string is intentional to type-coerce
+        // `string|false` to `string` on PHP 7.x
         return is_int($length)
-            ? (\substr($str, $start, $length) ?: '')
+            ? \substr($str, $start, $length) . ''
             // On PHP versions 7.2 to 7.4, the $length argument cannot be null.
             // The official PHP docs do not mention this peculiarity.
-            : (\substr($str, $start) ?: '');
+            : \substr($str, $start) . '';
     }
 
     /**
