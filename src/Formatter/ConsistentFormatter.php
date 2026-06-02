@@ -51,7 +51,9 @@ class ConsistentFormatter extends NativeFormatter
         $parts = \array_map(function ($part) {
             return \ltrim($part, '0') ?: '0';
         }, $parts);
-        if ($maxLength > 0) {
+        // RFC 5952 § 4.2.2: a single 16-bit "0" field MUST NOT be shortened to
+        // "::" (leading, middle, and trailing positions).
+        if ($maxLength > 1) {
             \array_splice($parts, $startPosition, $maxLength, ':');
         }
         if (null === $shortened = \preg_replace('/\:{2,}/', '::', \implode(':', $parts))) {
