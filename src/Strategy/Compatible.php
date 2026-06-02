@@ -9,32 +9,23 @@ use Darsyn\IP\Util\MbString;
 
 class Compatible implements EmbeddingStrategyInterface
 {
-    /**
-     * {@inheritDoc}
-     */
     public function isEmbedded(string $binary): bool
     {
-        return MbString::getLength($binary) === 16
-            && MbString::subString($binary, 0, 12) === "\0\0\0\0\0\0\0\0\0\0\0\0";
+        return 16 === MbString::getLength($binary)
+            && "\0\0\0\0\0\0\0\0\0\0\0\0" === MbString::subString($binary, 0, 12);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function extract(string $binary): string
     {
-        if (MbString::getLength($binary) === 16) {
+        if (16 === MbString::getLength($binary)) {
             return MbString::subString($binary, 12, 4);
         }
         throw new StrategyException\ExtractionException($binary, $this);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function pack(string $binary): string
     {
-        if (MbString::getLength($binary) === 4) {
+        if (4 === MbString::getLength($binary)) {
             return "\0\0\0\0\0\0\0\0\0\0\0\0" . $binary;
         }
         throw new StrategyException\PackingException($binary, $this);

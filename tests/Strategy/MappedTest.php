@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Darsyn\IP\Tests\Strategy;
 
 use Darsyn\IP\Strategy\Mapped;
@@ -12,40 +14,31 @@ class MappedTest extends TestCase
     /** @var \Darsyn\IP\Strategy\EmbeddingStrategyInterface $strategy */
     private $strategy;
 
-    /**
-     * @before
-     * @return void
-     */
+    /** @before */
     #[PHPUnit\Before]
-    protected function setUpWithoutReturnDeclaration()
+    protected function setUpWithoutReturnDeclaration(): void
     {
-        $this->strategy = new Mapped;
+        $this->strategy = new Mapped();
     }
 
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Mapped::getInvalidIpAddresses()
-     * @param mixed $value
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MappedDataProvider::class, 'getInvalidIpAddresses')]
-    public function testIsEmbeddedReturnsFalseForAStringOtherThan16BytesLong($value)
+    public function testIsEmbeddedReturnsFalseForAStringOtherThan16BytesLong(string $value): void
     {
-        /** @phpstan-ignore-next-line (@phpstan-ignore argument.type) */
         $this->assertFalse($this->strategy->isEmbedded($value));
     }
 
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Mapped::getValidIpAddresses()
-     * @param string $value
-     * @param bool $isEmbedded
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MappedDataProvider::class, 'getValidIpAddresses')]
-    public function testIsEmbedded($value, $isEmbedded)
+    public function testIsEmbedded(string $value, bool $isEmbedded): void
     {
         $this->assertSame($isEmbedded, $this->strategy->isEmbedded($value));
     }
@@ -53,28 +46,22 @@ class MappedTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Mapped::getInvalidIpAddresses()
-     * @param mixed $value
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MappedDataProvider::class, 'getInvalidIpAddresses')]
-    public function testExceptionIsThrownWhenTryingToExtractFromStringsNot16Bytes($value)
+    public function testExceptionIsThrownWhenTryingToExtractFromStringsNot16Bytes(string $value): void
     {
         $this->expectException(\Darsyn\IP\Exception\Strategy\ExtractionException::class);
-        /** @phpstan-ignore-next-line (@phpstan-ignore argument.type) */
         $this->strategy->extract($value);
     }
 
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Mapped::getValidSequences()
-     * @param string $ipv6
-     * @param string $ipv4
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MappedDataProvider::class, 'getValidSequences')]
-    public function testCorrectSequenceExtractedFromIpBinary($ipv6, $ipv4)
+    public function testCorrectSequenceExtractedFromIpBinary(string $ipv6, string $ipv4): void
     {
         $this->assertSame($ipv4, $this->strategy->extract($ipv6));
     }
@@ -82,28 +69,22 @@ class MappedTest extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Mapped::getInvalidIpAddresses()
-     * @param mixed $value
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MappedDataProvider::class, 'getInvalidIpAddresses')]
-    public function testExceptionIsThrownWhenTryingToPackStringsNot4Bytes($value)
+    public function testExceptionIsThrownWhenTryingToPackStringsNot4Bytes(string $value): void
     {
         $this->expectException(\Darsyn\IP\Exception\Strategy\PackingException::class);
-        /** @phpstan-ignore-next-line (@phpstan-ignore argument.type) */
         $this->strategy->pack($value);
     }
 
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Mapped::getValidSequences()
-     * @param string $ipv6
-     * @param string $ipv4
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MappedDataProvider::class, 'getValidSequences')]
-    public function testSequenceCorrectlyPackedIntoIpBinaryFromIpBinary($ipv6, $ipv4)
+    public function testSequenceCorrectlyPackedIntoIpBinaryFromIpBinary(string $ipv6, string $ipv4): void
     {
         $this->assertSame($ipv6, $this->strategy->pack($ipv4));
     }

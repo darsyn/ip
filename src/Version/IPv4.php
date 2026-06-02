@@ -28,9 +28,6 @@ use Darsyn\IP\Util\MbString;
  */
 class IPv4 extends AbstractIP implements Version4Interface
 {
-    /**
-     * {@inheritDoc}
-     */
     public static function factory(string $ip)
     {
         try {
@@ -39,21 +36,18 @@ class IPv4 extends AbstractIP implements Version4Interface
             // If the string was not 4 bytes long, then the IP supplied was
             // neither in protocol notation or binary sequence notation. Throw
             // an exception.
-            if (MbString::getLength($binary) !== 4) {
-                if (MbString::getLength($ip) !== 4) {
+            if (4 !== MbString::getLength($binary)) {
+                if (4 !== MbString::getLength($ip)) {
                     throw new Exception\WrongVersionException(4, 6, $ip);
                 }
                 $binary = $ip;
             }
-        } catch(Exception\IpException $e) {
+        } catch (Exception\IpException $e) {
             throw new Exception\InvalidIpAddressException($ip, $e);
         }
         return new static($binary);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getDotAddress(): string
     {
         try {
@@ -63,41 +57,26 @@ class IPv4 extends AbstractIP implements Version4Interface
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getVersion(): int
     {
         return 4;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isLinkLocal(): bool
     {
         return $this->inRange(new self(Binary::fromHex('a9fe0000')), 16);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isLoopback(): bool
     {
         return $this->inRange(new self(Binary::fromHex('7f000000')), 8);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isMulticast(): bool
     {
         return $this->inRange(new self(Binary::fromHex('e0000000')), 4);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isPrivateUse(): bool
     {
         return $this->inRange(new self(Binary::fromHex('0a000000')), 8)
@@ -105,25 +84,16 @@ class IPv4 extends AbstractIP implements Version4Interface
             || $this->inRange(new self(Binary::fromHex('c0a80000')), 16);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isUnspecified(): bool
     {
-        return $this->getBinary() === "\0\0\0\0";
+        return "\0\0\0\0" === $this->getBinary();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isBenchmarking(): bool
     {
         return $this->inRange(new self(Binary::fromHex('c6120000')), 15);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isDocumentation(): bool
     {
         return $this->inRange(new self(Binary::fromHex('c0000200')), 24)
@@ -131,9 +101,6 @@ class IPv4 extends AbstractIP implements Version4Interface
             || $this->inRange(new self(Binary::fromHex('cb007100')), 24);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isPublicUse(): bool
     {
         // Both 192.0.0.9 and 192.0.0.10 are globally routable, despite being in the future reserved block.
@@ -161,34 +128,22 @@ class IPv4 extends AbstractIP implements Version4Interface
             && !$this->isBenchmarking();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isBroadcast(): bool
     {
         return $this->getBinary() === Binary::fromHex('ffffffff');
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isShared(): bool
     {
         return $this->inRange(new self(Binary::fromHex('64400000')), 10);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isFutureReserved(): bool
     {
         return $this->getBinary() !== Binary::fromHex('ffffffff')
             && $this->inRange(new self(Binary::fromHex('f0000000')), 4);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function __toString(): string
     {
         return $this->getDotAddress();

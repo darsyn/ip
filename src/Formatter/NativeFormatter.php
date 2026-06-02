@@ -9,13 +9,10 @@ use Darsyn\IP\Util\MbString;
 
 class NativeFormatter implements ProtocolFormatterInterface
 {
-    /**
-     * {@inheritDoc}
-     */
     public function ntop(string $binary): string
     {
         $length = MbString::getLength($binary);
-        if ($length === 16 || $length === 4) {
+        if (16 === $length || 4 === $length) {
             $pack = \pack(\sprintf('A%d', $length), $binary);
             // $pack return type is `string|false` below PHP 8 and `string`
             // above PHP 8.
@@ -28,9 +25,6 @@ class NativeFormatter implements ProtocolFormatterInterface
         throw new FormatException($binary);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function pton(string $binary): string
     {
         if (\filter_var($binary, \FILTER_VALIDATE_IP, \FILTER_FLAG_IPV4)) {
@@ -54,7 +48,7 @@ class NativeFormatter implements ProtocolFormatterInterface
             return $return;
         }
         $length = MbString::getLength($binary);
-        if ($length === 4 || $length === 16) {
+        if (4 === $length || 16 === $length) {
             return $binary;
         }
         throw new FormatException($binary);

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Darsyn\IP\Tests\Version;
 
 use Darsyn\IP\Exception\InvalidCidrException;
@@ -21,15 +23,10 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidIpAddresses()
-     * @param string $value
-     * @param string $hex
-     * @param string $expanded
-     * @param string $compacted
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidIpAddresses')]
-    public function testInstantiationWithValidAddresses($value, $hex, $expanded, $compacted)
+    public function testInstantiationWithValidAddresses(string $value, string $hex, string $expanded, string $compacted): void
     {
         $ip = IP::factory($value);
         $this->assertInstanceOf(IpInterface::class, $ip);
@@ -39,15 +36,10 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidBinarySequences()
-     * @param string $value
-     * @param string $hex
-     * @param string $expanded
-     * @param string $compacted
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidBinarySequences')]
-    public function testBinarySequenceIsTheSameOnceInstantiated($value, $hex, $expanded, $compacted)
+    public function testBinarySequenceIsTheSameOnceInstantiated(string $value, string $hex, string $expanded, string $compacted): void
     {
         $ip = IP::factory($value);
         $this->assertSame($value, $ip->getBinary());
@@ -56,15 +48,10 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidProtocolIpAddresses()
-     * @param string $value
-     * @param string $hex
-     * @param string $expanded
-     * @param string $compacted
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidProtocolIpAddresses')]
-    public function testProtocolNotationConvertsToCorrectBinarySequence($value, $hex, $expanded, $compacted)
+    public function testProtocolNotationConvertsToCorrectBinarySequence(string $value, string $hex, string $expanded, string $compacted): void
     {
         $ip = IP::factory($value);
         $actualHex = unpack('H*hex', $ip->getBinary());
@@ -74,17 +61,14 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getInvalidIpAddresses()
-     * @param mixed $value
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getInvalidIpAddresses')]
-    public function testExceptionIsThrownOnInstantiationWithInvalidAddresses($value)
+    public function testExceptionIsThrownOnInstantiationWithInvalidAddresses(string $value): void
     {
         $this->expectException(\Darsyn\IP\Exception\InvalidIpAddressException::class);
         $this->expectExceptionMessage('The IP address supplied is not valid.');
         try {
-            // @phpstan-ignore argument.type
             $ip = IP::factory($value);
         } catch (InvalidIpAddressException $e) {
             $this->assertSame($value, $e->getSuppliedIp());
@@ -98,10 +82,9 @@ class IPv6Test extends TestCase
      * @covers \Darsyn\IP\Version\IPv6::fromEmbedded()
      * @covers \Darsyn\IP\Version\Multi::factory()
      * @covers \Darsyn\IP\Version\Multi::getBinary()
-     * @return void
      */
     #[PHPUnit\Test]
-    public function testInstantiationFromEmbeddedIpAddress()
+    public function testInstantiationFromEmbeddedIpAddress(): void
     {
         try {
             $ip = IP::factory('12.34.56.78');
@@ -110,12 +93,12 @@ class IPv6Test extends TestCase
         }
 
         // IPv4 address can be embedded into IPv6 objects using the fromEmbedded() static instantiator.
-        $embedded = IP::fromEmbedded('12.34.56.78', new Mapped);
+        $embedded = IP::fromEmbedded('12.34.56.78', new Mapped());
         // But IPv6 objects should ignore the fact that it's embedded and only work with the full IPv6 address.
         $this->assertSame('0000:1fff:ffff:ffff:ffff:ffff:ffff:ffff', $embedded->getBroadcastIp(19)->getExpandedAddress());
 
         // Multi objects understand both IPv4 and IPv6 addresses.
-        $multi = Multi::factory('12.34.56.78', new Mapped);
+        $multi = Multi::factory('12.34.56.78', new Mapped());
         // So therefore, if a Multi object detects that it holds an embedded IPv4 address it will attempt to work with
         // the IPv4 address before falling back on the full IPv6 address.
         $this->assertSame('0000:0000:0000:0000:0000:ffff:0c22:3fff', $multi->getBroadcastIp(19)->getExpandedAddress());
@@ -125,15 +108,10 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidIpAddresses()
-     * @param string $value
-     * @param string $hex
-     * @param string $expanded
-     * @param string $compacted
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidIpAddresses')]
-    public function testGetBinaryAlwaysReturnsA16ByteString($value, $hex, $expanded, $compacted)
+    public function testGetBinaryAlwaysReturnsA16ByteString(string $value, string $hex, string $expanded, string $compacted): void
     {
         $ip = IP::factory($value);
         $this->assertSame(16, strlen(bin2hex($ip->getBinary())) / 2);
@@ -142,15 +120,10 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidIpAddresses()
-     * @param string $value
-     * @param string $hex
-     * @param string $expanded
-     * @param string $compacted
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidIpAddresses')]
-    public function testGetCompactedAddressReturnsCorrectString($value, $hex, $expanded, $compacted)
+    public function testGetCompactedAddressReturnsCorrectString(string $value, string $hex, string $expanded, string $compacted): void
     {
         $ip = IP::factory($value);
         $this->assertSame($compacted, $ip->getCompactedAddress());
@@ -159,15 +132,10 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidProtocolIpAddresses()
-     * @param string $value
-     * @param string $hex
-     * @param string $expanded
-     * @param string $compacted
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidProtocolIpAddresses')]
-    public function testGetExpandedAddressReturnsCorrectString($value, $hex, $expanded, $compacted)
+    public function testGetExpandedAddressReturnsCorrectString(string $value, string $hex, string $expanded, string $compacted): void
     {
         $ip = IP::factory($value);
         $this->assertSame($expanded, $ip->getExpandedAddress());
@@ -176,15 +144,10 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidIpAddresses()
-     * @param string $value
-     * @param string $hex
-     * @param string $expanded
-     * @param string $compacted
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidIpAddresses')]
-    public function testGetVersionAlwaysReturns6($value, $hex, $expanded, $compacted)
+    public function testGetVersionAlwaysReturns6(string $value, string $hex, string $expanded, string $compacted): void
     {
         $ip = IP::factory($value);
         $this->assertSame(6, $ip->getVersion());
@@ -193,15 +156,10 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidIpAddresses()
-     * @param string $value
-     * @param string $hex
-     * @param string $expanded
-     * @param string $compacted
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidIpAddresses')]
-    public function testIsVersionOnlyReturnsTrueFor6($value, $hex, $expanded, $compacted)
+    public function testIsVersionOnlyReturnsTrueFor6(string $value, string $hex, string $expanded, string $compacted): void
     {
         $ip = IP::factory($value);
         $this->assertTrue($ip->isVersion(6));
@@ -210,15 +168,10 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidIpAddresses()
-     * @param string $value
-     * @param string $hex
-     * @param string $expanded
-     * @param string $compacted
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidIpAddresses')]
-    public function testIsVersionOnlyReturnsFalseFor4($value, $hex, $expanded, $compacted)
+    public function testIsVersionOnlyReturnsFalseFor4(string $value, string $hex, string $expanded, string $compacted): void
     {
         $ip = IP::factory($value);
         $this->assertFalse($ip->isVersion(4));
@@ -227,15 +180,10 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidIpAddresses()
-     * @param string $value
-     * @param string $hex
-     * @param string $expanded
-     * @param string $compacted
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidIpAddresses')]
-    public function testIsVersion6AlwaysReturnsTrue($value, $hex, $expanded, $compacted)
+    public function testIsVersion6AlwaysReturnsTrue(string $value, string $hex, string $expanded, string $compacted): void
     {
         $ip = IP::factory($value);
         $this->assertTrue($ip->isVersion6());
@@ -244,15 +192,10 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidIpAddresses()
-     * @param string $value
-     * @param string $hex
-     * @param string $expanded
-     * @param string $compacted
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidIpAddresses')]
-    public function testIsVersion4AlwaysReturnsFalse($value, $hex, $expanded, $compacted)
+    public function testIsVersion4AlwaysReturnsFalse(string $value, string $hex, string $expanded, string $compacted): void
     {
         $ip = IP::factory($value);
         $this->assertFalse($ip->isVersion4());
@@ -261,13 +204,10 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidCidrValues()
-     * @param int $cidr
-     * @param string $expectedMaskHex
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidCidrValues')]
-    public function testCidrMasks($cidr, $expectedMaskHex)
+    public function testCidrMasks(int $cidr, string $expectedMaskHex): void
     {
         $ip = IP::factory('::1');
         $mask = (function () use ($cidr): string {
@@ -280,12 +220,10 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getOutOfRangeCidrValues()
-     * @param int $cidr
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getOutOfRangeCidrValues')]
-    public function testExceptionIsThrownFromOutOfRangeCidrValues($cidr)
+    public function testExceptionIsThrownFromOutOfRangeCidrValues(int $cidr): void
     {
         $this->expectException(\Darsyn\IP\Exception\InvalidCidrException::class);
         $this->expectExceptionMessage('The supplied CIDR is not valid; it must be an integer (between 0 and 128).');
@@ -304,13 +242,10 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getNetworkIpAddresses()
-     * @param string $expected
-     * @param int $cidr
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getNetworkIpAddresses')]
-    public function testNetworkIp($expected, $cidr)
+    public function testNetworkIp(string $expected, int $cidr): void
     {
         $ip = IP::factory('2001:db8::a60:8a2e:370:7334');
         $this->assertSame($expected, $ip->getNetworkIp($cidr)->getCompactedAddress());
@@ -319,13 +254,10 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getBroadcastIpAddresses()
-     * @param string $expected
-     * @param int $cidr
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getBroadcastIpAddresses')]
-    public function testBroadcastIp($expected, $cidr)
+    public function testBroadcastIp(string $expected, int $cidr): void
     {
         $ip = IP::factory('2001:db8::a60:8a2e:370:7334');
         $this->assertSame($expected, $ip->getBroadcastIp($cidr)->getCompactedAddress());
@@ -334,26 +266,19 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidInRangeIpAddresses()
-     * @param string $first
-     * @param string $second
-     * @param int $cidr
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidInRangeIpAddresses')]
-    public function testInRange($first, $second, $cidr)
+    public function testInRange(string $first, string $second, int $cidr): void
     {
         $first = IP::factory($first);
         $second = IP::factory($second);
         $this->assertTrue($first->inRange($second, $cidr));
     }
 
-    /**
-     * @test
-     * @return void
-     */
+    /** @test */
     #[PHPUnit\Test]
-    public function testDifferentVersionsAreNotInRange()
+    public function testDifferentVersionsAreNotInRange(): void
     {
         $ip = IP::factory('::12.34.56.78');
         $other = IPv4::factory('12.34.56.78');
@@ -364,14 +289,10 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getCommonCidrValues()
-     * @param string $first
-     * @param string $second
-     * @param int $expectedCidr
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getCommonCidrValues')]
-    public function testCommonCidr($first, $second, $expectedCidr)
+    public function testCommonCidr(string $first, string $second, int $expectedCidr): void
     {
         $first = IP::factory($first);
         $second = IP::factory($second);
@@ -381,26 +302,19 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getCommonCidrValues()
-     * @param string $first
-     * @param string $second
-     * @param int $expectedCidr
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getCommonCidrValues')]
-    public function testEmbeddedCommonCidr($first, $second, $expectedCidr)
+    public function testEmbeddedCommonCidr(string $first, string $second, int $expectedCidr): void
     {
         $first = IP::fromEmbedded($first);
         $second = IP::fromEmbedded($second);
         $this->assertSame(96 + $expectedCidr, $first->getCommonCidr($second));
     }
 
-    /**
-     * @test
-     * @return void
-     */
+    /** @test */
     #[PHPUnit\Test]
-    public function testCommonCidrThrowsException()
+    public function testCommonCidrThrowsException(): void
     {
         $first = IP::factory('2001:db8::a60:8a2e:370:7334');
         $second = IPv4::factory('12.34.56.78');
@@ -411,13 +325,10 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getMappedIpAddresses()
-     * @param string $value
-     * @param bool $isMapped
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getMappedIpAddresses')]
-    public function testIsMapped($value, $isMapped)
+    public function testIsMapped(string $value, bool $isMapped): void
     {
         $ip = IP::factory($value);
         $this->assertSame($isMapped, $ip->isMapped());
@@ -426,13 +337,10 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getDerivedIpAddresses()
-     * @param string $value
-     * @param bool $isDerived
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getDerivedIpAddresses')]
-    public function testIsDerived($value, $isDerived)
+    public function testIsDerived(string $value, bool $isDerived): void
     {
         $ip = IP::factory($value);
         $this->assertSame($isDerived, $ip->isDerived());
@@ -441,13 +349,10 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getCompatibleIpAddresses()
-     * @param string $value
-     * @param bool $isCompatible
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getCompatibleIpAddresses')]
-    public function testIsCompatible($value, $isCompatible)
+    public function testIsCompatible(string $value, bool $isCompatible): void
     {
         $ip = IP::factory($value);
         $this->assertSame($isCompatible, $ip->isCompatible());
@@ -456,15 +361,10 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidIpAddresses()
-     * @param string $value
-     * @param string $hex
-     * @param string $expanded
-     * @param string $compacted
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidIpAddresses')]
-    public function testIsEmbeddedAlwaysReturnsFalse($value, $hex, $expanded, $compacted)
+    public function testIsEmbeddedAlwaysReturnsFalse(string $value, string $hex, string $expanded, string $compacted): void
     {
         $ip = IP::factory($value);
         $this->assertFalse($ip->isEmbedded());
@@ -473,13 +373,10 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getLinkLocalIpAddresses()
-     * @param string $value
-     * @param bool $isLinkLocal
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getLinkLocalIpAddresses')]
-    public function testIsLinkLocal($value, $isLinkLocal)
+    public function testIsLinkLocal(string $value, bool $isLinkLocal): void
     {
         $ip = IP::factory($value);
         $this->assertSame($isLinkLocal, $ip->isLinkLocal());
@@ -488,13 +385,10 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getLoopbackIpAddresses()
-     * @param string $value
-     * @param bool $isLoopback
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getLoopbackIpAddresses')]
-    public function testIsLoopback($value, $isLoopback)
+    public function testIsLoopback(string $value, bool $isLoopback): void
     {
         $ip = IP::factory($value);
         $this->assertSame($isLoopback, $ip->isLoopback());
@@ -503,13 +397,10 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getMulticastIpAddresses()
-     * @param string $value
-     * @param bool $isMulticast
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getMulticastIpAddresses')]
-    public function testIsMulticast($value, $isMulticast)
+    public function testIsMulticast(string $value, bool $isMulticast): void
     {
         $ip = IP::factory($value);
         $this->assertSame($isMulticast, $ip->isMulticast());
@@ -519,13 +410,10 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getPrivateUseIpAddresses()
-     * @param string $value
-     * @param bool $isPrivateUse
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getPrivateUseIpAddresses')]
-    public function testIsPrivateUse($value, $isPrivateUse)
+    public function testIsPrivateUse(string $value, bool $isPrivateUse): void
     {
         $ip = IP::factory($value);
         $this->assertSame($isPrivateUse, $ip->isPrivateUse());
@@ -534,13 +422,10 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getUnspecifiedIpAddresses()
-     * @param string $value
-     * @param bool $isUnspecified
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getUnspecifiedIpAddresses')]
-    public function testIsUnspecified($value, $isUnspecified)
+    public function testIsUnspecified(string $value, bool $isUnspecified): void
     {
         $ip = IP::factory($value);
         $this->assertSame($isUnspecified, $ip->isUnspecified());
@@ -549,13 +434,10 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getBenchmarkingIpAddresses()
-     * @param string $value
-     * @param bool $isBenchmarking
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getBenchmarkingIpAddresses')]
-    public function testIsBenchmarking($value, $isBenchmarking)
+    public function testIsBenchmarking(string $value, bool $isBenchmarking): void
     {
         $ip = IP::factory($value);
         $this->assertSame($isBenchmarking, $ip->isBenchmarking());
@@ -564,13 +446,10 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getDocumentationIpAddresses()
-     * @param string $value
-     * @param bool $isDocumentation
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getDocumentationIpAddresses')]
-    public function testIsDocumentation($value, $isDocumentation)
+    public function testIsDocumentation(string $value, bool $isDocumentation): void
     {
         $ip = IP::factory($value);
         $this->assertSame($isDocumentation, $ip->isDocumentation());
@@ -579,13 +458,10 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getPublicUseIpAddresses()
-     * @param string $value
-     * @param bool $isPublicUse
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getPublicUseIpAddresses')]
-    public function testIsPublicUse($value, $isPublicUse)
+    public function testIsPublicUse(string $value, bool $isPublicUse): void
     {
         $ip = IP::factory($value);
         $this->assertSame($isPublicUse, $ip->isPublicUse());
@@ -594,13 +470,10 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getUniqueLocalIpAddresses()
-     * @param string $value
-     * @param bool $isUniqueLocal
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getUniqueLocalIpAddresses')]
-    public function testIsUniqueLocal($value, $isUniqueLocal)
+    public function testIsUniqueLocal(string $value, bool $isUniqueLocal): void
     {
         $ip = IP::factory($value);
         $this->assertSame($isUniqueLocal, $ip->isUniqueLocal());
@@ -609,13 +482,10 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getUnicastIpAddresses()
-     * @param string $value
-     * @param bool $isUnicast
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getUnicastIpAddresses')]
-    public function testIsUnicast($value, $isUnicast)
+    public function testIsUnicast(string $value, bool $isUnicast): void
     {
         $ip = IP::factory($value);
         $this->assertSame($isUnicast, $ip->isUnicast());
@@ -624,13 +494,10 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getUnicastGlobalIpAddresses()
-     * @param string $value
-     * @param bool $isUnicastGlobal
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getUnicastGlobalIpAddresses')]
-    public function testIsUnicastGlobal($value, $isUnicastGlobal)
+    public function testIsUnicastGlobal(string $value, bool $isUnicastGlobal): void
     {
         $ip = IP::factory($value);
         $this->assertSame($isUnicastGlobal, $ip->isUnicastGlobal());
@@ -639,15 +506,10 @@ class IPv6Test extends TestCase
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidIpAddresses()
-     * @param string $value
-     * @param string $hex
-     * @param string $expanded
-     * @param string $compacted
-     * @return void
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidIpAddresses')]
-    public function testStringCasting($value, $hex, $expanded, $compacted)
+    public function testStringCasting(string $value, string $hex, string $expanded, string $compacted): void
     {
         $ip = IP::factory($value);
         $this->assertSame($compacted, (string) $ip);
