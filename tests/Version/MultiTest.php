@@ -341,6 +341,31 @@ class MultiTest extends TestCase
 
     /**
      * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getTeredoLoopbackIpAddresses()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getTeredoLoopbackIpAddresses')]
+    public function testIsLoopbackTeredo(string $value, bool $isLoopback): void
+    {
+        $ip = IP::factory($value, new Strategy\Teredo());
+        $this->assertSame($isLoopback, $ip->isLoopback());
+    }
+
+    /**
+     * Teredo is an extraction-only strategy, so an IPv4 address cannot be
+     * packed into a Multi instance with it.
+     *
+     * @test
+     */
+    #[PHPUnit\Test]
+    public function testExceptionIsThrownWhenInstantiatingFromIpv4WithTeredoStrategy(): void
+    {
+        $this->expectException(InvalidIpAddressException::class);
+        IP::factory('127.0.0.1', new Strategy\Teredo());
+    }
+
+    /**
+     * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getMulticastIpAddresses()
      */
     #[PHPUnit\Test]

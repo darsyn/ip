@@ -6,14 +6,15 @@ that both versions are stored as 16-byte binary sequences.
 
 Unfortunately there are several different strategies for embedding a version 4
 address into version 6, so this library offers various strategy implementations
-for the main three (and one deprecated):
+for the main four (and one deprecated):
 
-| Strategy Name   | Implementation                  | Format                                    | Notes      |
-|-----------------|---------------------------------|-------------------------------------------|------------|
-| IPv4-mapped     | `Darsyn\IP\Strategy\Mapped`     | `0000:0000:0000:0000:0000:ffff:XXXX:XXXX` | Default    |
-| NAT64           | `Darsyn\IP\Strategy\Nat64`      | `0064:ff9b:0000:0000:0000:0000:XXXX:XXXX` | Translator |
-| 6to4-derived    | `Darsyn\IP\Strategy\Derived`    | `2002:XXXX:XXXX:0000:0000:0000:0000:0000` | Relay      |
-| IPv4-compatible | `Darsyn\IP\Strategy\Compatible` | `0000:0000:0000:0000:0000:0000:XXXX:XXXX` | Deprecated |
+| Strategy Name   | Implementation                  | Format                                    | Notes                 |
+|-----------------|---------------------------------|-------------------------------------------|-----------------------|
+| IPv4-mapped     | `Darsyn\IP\Strategy\Mapped`     | `0000:0000:0000:0000:0000:ffff:XXXX:XXXX` | Default               |
+| NAT64           | `Darsyn\IP\Strategy\Nat64`      | `0064:ff9b:0000:0000:0000:0000:XXXX:XXXX` | Translator            |
+| 6to4-derived    | `Darsyn\IP\Strategy\Derived`    | `2002:XXXX:XXXX:0000:0000:0000:0000:0000` | Relay                 |
+| Teredo          | `Darsyn\IP\Strategy\Teredo`     | `2001:0000:xxxx:xxxx:xxxx:xxxx:XXXX:XXXX` | Tunnel (extract-only) |
+| IPv4-compatible | `Darsyn\IP\Strategy\Compatible` | `0000:0000:0000:0000:0000:0000:XXXX:XXXX` | Deprecated            |
 
 Each embedding strategy implements the
 `Darsyn\IP\Strategy\EmbeddingStrategyInterface` which defines methods to:
@@ -77,22 +78,24 @@ IP::factory('64:ff9b::7f00:1', $strategy)->getCompactedAddress(); // string("64:
 `Composite::all()` returns a composite of every **unambiguous, non-deprecated**
 strategy:
 - IPv4-mapped (`::ffff:0:0/96`) as the packer,
-- 6to4 (`2002::/16`), and
-- the NAT64 Well-Known Prefix (`64:ff9b::/96`).
+- 6to4 (`2002::/16`),
+- the NAT64 Well-Known Prefix (`64:ff9b::/96`), and
+- Teredo (`2001::/32`).
 
 ```php
 <?php
 use Darsyn\IP\Strategy\Composite;
 use Darsyn\IP\Version\Multi as IP;
 
-// Equivalent to: new Composite(new Mapped, new Derived, new Nat64).
+// Equivalent to: new Composite(new Mapped, new Derived, new Nat64, new Teredo).
 $strategy = Composite::all();
 
-// An address embedded under any of the three schemes is recognised and
+// An address embedded under any of the four schemes is recognised and
 // resolves to the same version 4 address.
 IP::factory('::ffff:7f00:1', $strategy)->getProtocolAppropriateAddress();   // string("127.0.0.1")
 IP::factory('2002:7f00:1::', $strategy)->getProtocolAppropriateAddress();   // string("127.0.0.1")
 IP::factory('64:ff9b::7f00:1', $strategy)->getProtocolAppropriateAddress(); // string("127.0.0.1")
+IP::factory('2001:0:4136:e378:8000:63bf:80ff:fffe', $strategy)->getProtocolAppropriateAddress(); // string("127.0.0.1")
 ```
 
 > **Note:** `all()` deliberately **excludes** the ambiguous, deprecated

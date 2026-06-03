@@ -307,6 +307,9 @@ class IPv6 implements IpDataProviderInterface
             // recognised by Composite::all(), so it canonicalises like the others.
             '64:ff9b::1234:5678' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL,
             '64:ff9b::7f00:1' => self::UNICAST_OTHER | self::NAT64 | self::LOOPBACK_NAT64,
+            // Teredo (2001::/32).
+            '2001:0:4136:e378:8000:63bf:edcb:a987' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL,
+            '2001:0:4136:e378:8000:63bf:80ff:fffe' => self::UNICAST_OTHER | self::TEREDO | self::LOOPBACK_TEREDO,
             '::7f00:1' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::COMPATIBLE | self::LOOPBACK_COMPATIBLE,
             '::12.34.56.78' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::COMPATIBLE,
             '0::000:0000:b12:cab' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::COMPATIBLE,

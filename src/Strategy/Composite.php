@@ -31,7 +31,7 @@ class Composite implements EmbeddingStrategyInterface
         // Explicitly NOT including the ambiguous, deprecated "Compatible"
         // embedding strategy, and using Mapped as the canonical strategy for
         // packing.
-        return new self(new Mapped(), new Derived(), new Nat64());
+        return new self(new Mapped(), new Derived(), new Nat64(), new Teredo());
     }
 
     public function isEmbedded(string $binary): bool

@@ -42,6 +42,8 @@ interface IpDataProviderInterface
     public const LOOPBACK_COMPATIBLE = 1 << 28;
     public const LOOPBACK_DERIVED = 1 << 29;
     public const LOOPBACK_NAT64 = 1 << 30;
+    public const TEREDO = 1 << 31;
+    public const LOOPBACK_TEREDO = 1 << 32;
 
     // Combinations
     public const PUBLIC_USE = 0
@@ -51,7 +53,8 @@ interface IpDataProviderInterface
         | self::LOOPBACK_MAPPED
         | self::LOOPBACK_COMPATIBLE
         | self::LOOPBACK_DERIVED
-        | self::LOOPBACK_NAT64;
+        | self::LOOPBACK_NAT64
+        | self::LOOPBACK_TEREDO;
     public const MULTICAST = 0
         | self::MULTICAST_IPV4
         | self::MULTICAST_INTERFACE_LOCAL

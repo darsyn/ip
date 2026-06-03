@@ -249,6 +249,15 @@ class Multi
     }
 
     /** @return list<array{string, bool}> */
+    public static function getTeredoLoopbackIpAddresses()
+    {
+        // Teredo is an extraction-only strategy (pack() always throws), so
+        // IPv4 addresses cannot be merged in like the other strategies above:
+        // Multi::factory() would fail trying to pack them into 16 bytes.
+        return IPv6::getCategoryOfIpAddresses(IPv6::LOOPBACK | IPv6::LOOPBACK_TEREDO);
+    }
+
+    /** @return list<array{string, bool}> */
     public static function getMulticastIpAddresses()
     {
         return array_merge(IPv4::getMulticastIpAddresses(), IPv6::getMulticastIpAddresses());

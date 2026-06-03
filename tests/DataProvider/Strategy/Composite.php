@@ -29,8 +29,8 @@ class Composite
     }
 
     /**
-     * Composite::all() recognises the Mapped, Derived (6to4) and NAT64
-     * embeddings, so its valid sequences are the union of all three.
+     * Composite::all() recognises the Mapped, Derived (6to4), NAT64 and
+     * Teredo embeddings, so its valid sequences are the union of all four.
      *
      * @return list<array{string, string}>
      */
@@ -39,7 +39,8 @@ class Composite
         return array_merge(
             Mapped::getValidSequences(),
             Derived::getValidSequences(),
-            Nat64::getValidSequences()
+            Nat64::getValidSequences(),
+            Teredo::getValidSequences()
         );
     }
 
