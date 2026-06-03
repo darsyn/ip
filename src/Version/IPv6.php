@@ -157,7 +157,18 @@ class IPv6 extends AbstractIP implements Version6Interface
             && !$this->isLinkLocal()
             && !$this->isUniqueLocal()
             && !$this->isUnspecified()
-            && !$this->isDocumentation();
+            && !$this->isDocumentation()
+            && !$this->isNat64LocalUse();
+    }
+
+    /** The IANA special-purpose registry lists `64:ff9b:1::/48` as not globally reachable. */
+    private function isNat64LocalUse(): bool
+    {
+        // RFC 8215 reserves the /48 block for local use, but operators subdivide
+        // it into Network-Specific Prefixes of any RFC 6052 length (/48, /56,
+        // /64, /96…), and each length places the IPv4 bytes at a different offset
+        // when embedding.
+        return $this->inRange(new self(Binary::fromHex('0064ff9b000100000000000000000000')), 48);
     }
 
     public function __toString(): string

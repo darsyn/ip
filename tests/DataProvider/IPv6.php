@@ -310,6 +310,10 @@ class IPv6 implements IpDataProviderInterface
             // Teredo (2001::/32).
             '2001:0:4136:e378:8000:63bf:edcb:a987' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL,
             '2001:0:4136:e378:8000:63bf:80ff:fffe' => self::UNICAST_OTHER | self::TEREDO | self::LOOPBACK_TEREDO,
+            // NAT64 local-use (64:ff9b:1::/48, RFC 8215): never globally reachable.
+            '64:ff9b:1::1' => self::UNICAST_OTHER,
+            '64:ff9b:1:ffff:ffff:ffff:ffff:ffff' => self::UNICAST_OTHER,
+            '64:ff9b:2::' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL,
             '::7f00:1' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::COMPATIBLE | self::LOOPBACK_COMPATIBLE,
             '::12.34.56.78' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::COMPATIBLE,
             '0::000:0000:b12:cab' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::COMPATIBLE,
