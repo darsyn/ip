@@ -20,6 +20,20 @@
 - Bugfix: classify full `fc00::/7` block as private use.
 - Add (or update) community standards: `SECURITY.md`, `CODE_OF_CONDUCT.md` and
   `CONTRIBUTING.md`
+- Add `Nat64` embedding strategy for the NAT64 well-known prefix `64:ff9b::/96`
+  (according to RFC 6052 § `2.1`).
+- Add `Composite` embedding strategy that delegates to multiple underlying
+  embedding strategies; `Composite::all()` covers all unambiguous,
+  non-deprecated embeddings.
+- Bugfix: classify IPv4-embedded IPv6 addresses (mapped, 6to4, NAT64) according
+  to the IPv4 address they embed in `isUnicastGlobal()` and `isPublicUse()`,
+  preventing non-global embedded addresses from being reported as global.
+  Inspired by [CVE-2026-48736](https://symfony.com/blog/cve-2026-48736-iputils-private-subnets-omits-ipv6-transition-forms-ssrf-bypass-in-noprivatenetworkhttpclient).
+- Add `Teredo` embedding strategy for `2001::/32` (according to RFC 4380 § `4`,
+  extraction-only). Classification now also canonicalises Teredo embeddings via
+  `Composite::all()`.
+- Classify the NAT64 local-use block `64:ff9b:1::/48` (according to RFC 8215) as
+  not globally reachable.
 
 ## `6.0.0`
 
