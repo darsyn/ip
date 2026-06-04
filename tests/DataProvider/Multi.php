@@ -240,6 +240,15 @@ class Multi
     }
 
     /** @return list<array{string, bool}> */
+    public static function getTeredoLoopbackIpAddresses()
+    {
+        return array_merge(
+            IPv4::getLoopbackIpAddresses(),
+            IPv6::getCategoryOfIpAddresses(IPv6::LOOPBACK | IPv6::LOOPBACK_TEREDO)
+        );
+    }
+
+    /** @return list<array{string, bool}> */
     public static function getMulticastIpAddresses()
     {
         return array_merge(IPv4::getMulticastIpAddresses(), IPv6::getMulticastIpAddresses());

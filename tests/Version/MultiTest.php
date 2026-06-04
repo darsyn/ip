@@ -329,6 +329,18 @@ class MultiTest extends TestCase
 
     /**
      * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getTeredoLoopbackIpAddresses()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getTeredoLoopbackIpAddresses')]
+    public function testIsLoopbackTeredo(string $value, bool $isLoopback): void
+    {
+        $ip = IP::factory($value, new Strategy\Teredo());
+        $this->assertSame($isLoopback, $ip->isLoopback());
+    }
+
+    /**
+     * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getMulticastIpAddresses()
      */
     #[PHPUnit\Test]

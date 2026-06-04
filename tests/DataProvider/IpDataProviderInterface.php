@@ -37,9 +37,11 @@ interface IpDataProviderInterface
     public const MAPPED = 1 << 23;
     public const DERIVED = 1 << 24;
     public const COMPATIBLE = 1 << 25;
-    public const LOOPBACK_MAPPED = 1 << 26;
-    public const LOOPBACK_COMPATIBLE = 1 << 27;
-    public const LOOPBACK_DERIVED = 1 << 28;
+    public const TEREDO = 1 << 26;
+    public const LOOPBACK_MAPPED = 1 << 27;
+    public const LOOPBACK_COMPATIBLE = 1 << 28;
+    public const LOOPBACK_DERIVED = 1 << 29;
+    public const LOOPBACK_TEREDO = 1 << 30;
 
     // Combinations
     public const GLOBALLY_REACHABLE = 0
@@ -48,7 +50,8 @@ interface IpDataProviderInterface
     public const LOOPBACK_EMBEDDED = 0
         | self::LOOPBACK_MAPPED
         | self::LOOPBACK_COMPATIBLE
-        | self::LOOPBACK_DERIVED;
+        | self::LOOPBACK_DERIVED
+        | self::LOOPBACK_TEREDO;
     public const MULTICAST = 0
         | self::MULTICAST_IPV4
         | self::MULTICAST_INTERFACE_LOCAL

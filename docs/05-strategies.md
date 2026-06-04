@@ -5,18 +5,18 @@ When using version 4 and version 6 addresses interchangeably (via the
 that both versions are stored as 16-byte binary sequences.
 
 Unfortunately there are several different strategies for embedding a version 4
-address into version 6, so this library offers various strategy implementations
-for the main four:
+address into version 6, so this library offers various strategy implementations:
 
 > In the formats below, `X` marks the embedded version 4 address, and `?` marks
 > bits that play no part in detection/extraction.
 
 | Strategy Name   | Implementation                  | Format                                    |
 |-----------------|---------------------------------|-------------------------------------------|
-| 6to4-derived    | `Darsyn\IP\Strategy\Derived`    | `2002:XXXX:XXXX:????:????:????:????:????` |
-| IPv4-compatible | `Darsyn\IP\Strategy\Compatible` | `0000:0000:0000:0000:0000:0000:XXXX:XXXX` |
 | IPv4-mapped     | `Darsyn\IP\Strategy\Mapped`     | `0000:0000:0000:0000:0000:ffff:XXXX:XXXX` |
+| 6to4-derived    | `Darsyn\IP\Strategy\Derived`    | `2002:XXXX:XXXX:????:????:????:????:????` |
 | NAT64           | `Darsyn\IP\Strategy\Nat64`      | (see below)                               |
+| Teredo          | `Darsyn\IP\Strategy\Teredo`     | `2001:0000:????:????:????:????:XXXX:XXXX` |
+| IPv4-compatible | `Darsyn\IP\Strategy\Compatible` | `0000:0000:0000:0000:0000:0000:XXXX:XXXX` |
 
 Each embedding strategy implements the
 `Darsyn\IP\Strategy\EmbeddingStrategyInterface` which defines methods to:
