@@ -103,21 +103,31 @@ class IPv4 extends AbstractIP implements Version4Interface
 
     public function isPublicUse(): bool
     {
-        // Both 192.0.0.9 and 192.0.0.10 are globally routable, despite being in the future reserved block.
+        // The PCP anycast address `192.0.0.9` (RFC 7723) and the TURN anycast
+        // address `192.0.0.10` (RFC 8155) are globally routable, despite being
+        // within the IETF Protocol Assignments block.
         if (in_array(Binary::toHex($this->getBinary()), ['c0000009', 'c000000a'], true)) {
             return true;
         }
-
-        // The whole 0.0.0.0/8 block is not for public use.
+        // The whole "this network" block `0.0.0.0/8` (RFC 791 § 3.2) is not
+        // globally reachable.
         if ($this->inRange(new self(Binary::fromHex('00000000')), 8)) {
             return false;
         }
-
-        // Addresses reserved for future protocols are not globally routable (different to reserved for future use).
+        // Addresses reserved for future protocols — the IETF Protocol
+        // Assignments block `192.0.0.0/24` (RFC 6890 § 2.1) — are not
+        // globally routable (different to reserved for future use).
         if ($this->inRange(new self(Binary::fromHex('c0000000')), 24)) {
             return false;
         }
 
+        // Note: IPv4 multicast (`224.0.0.0/4`) is deliberately NOT excluded
+        // here. It is absent from the IANA IPv4 special-purpose address
+        // registry (which defines "globally reachable"). Unlike IPv6, IPv4
+        // multicast carries no in-address scope field so it cannot be
+        // scope-classified the way IPv6 multicast is via `getMulticastScope()`.
+        // > `239.0.0.0/8` is administratively scoped (RFC 2365), configured at
+        // > boundary routers rather than encoded in the address.
         return !$this->isPrivateUse()
             && !$this->isLoopback()
             && !$this->isLinkLocal()
@@ -140,6 +150,9 @@ class IPv4 extends AbstractIP implements Version4Interface
 
     public function isFutureReserved(): bool
     {
+        // `255.255.255.255` is carved out of `240.0.0.0/4` (RFC 1112 § 4): the
+        // IANA special-purpose registry lists the limited broadcast address as
+        // its own entry (RFC 8190, RFC 919 § 7).
         return $this->getBinary() !== Binary::fromHex('ffffffff')
             && $this->inRange(new self(Binary::fromHex('f0000000')), 4);
     }
