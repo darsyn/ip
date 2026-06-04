@@ -122,7 +122,11 @@ class IPv6 extends AbstractIP implements Version6Interface
 
     public function isDocumentation(): bool
     {
-        return $this->inRange(new self(Binary::fromHex('20010db8000000000000000000000000')), 32);
+        // Two blocks are reserved for documentation: `2001:db8::/32` (RFC 3849)
+        // and `3fff::/20` (RFC 9637, which updates RFC 3849). Both are listed
+        // as not globally reachable in the IANA special-purpose registry.
+        return $this->inRange(new self(Binary::fromHex('20010db8000000000000000000000000')), 32)
+            || $this->inRange(new self(Binary::fromHex('3fff0000000000000000000000000000')), 20);
     }
 
     public function isPublicUse(): bool
@@ -147,7 +151,90 @@ class IPv6 extends AbstractIP implements Version6Interface
             && !$this->isLinkLocal()
             && !$this->isUniqueLocal()
             && !$this->isUnspecified()
-            && !$this->isDocumentation();
+            // IPv4-mapped addresses (`::ffff:0:0/96`, RFC 4291 § 2.5.5.2) are
+            // listed as not globally reachable in the IANA special-purpose
+            // registry.
+            && !$this->isMapped()
+            && !$this->isDocumentation()
+            && !$this->isBenchmarking()
+            && !$this->isIetfProtocolAssignment()
+            // The IANA special-purpose registry lists the 6to4 (derived) block
+            // `2002::/16` (RFC 3056) with a globally-reachable value of "N/A"
+            // rather than "true"; when in doubt, do what the Rust standard
+            // library does.
+            && !$this->isDerived()
+            && !$this->isNat64LocalUse()
+            && !$this->isDiscardOnly()
+            && !$this->isDummyPrefix()
+            && !$this->isSegmentRoutingSid();
+    }
+
+    /**
+     * The IANA special-purpose registry lists the IETF Protocol Assignments
+     * block `2001::/23` (RFC 2928) as not globally reachable "unless allowed
+     * by a more specific allocation"; the allocations within it marked as
+     * globally reachable are the PCP anycast address `2001:1::1/128` (RFC
+     * 7723), the TURN anycast address `2001:1::2/128` (RFC 8155), the DNS-SD
+     * SRP anycast address `2001:1::3/128` (RFC 9665), AMT `2001:3::/32` (RFC
+     * 7450), AS112-v6 `2001:4:112::/48` (RFC 7535), ORCHIDv2 `2001:20::/28`
+     * (RFC 7343), and Drone Remote ID Protocol Entity Tags `2001:30::/28` (RFC
+     * 9374).
+     * Everything else in the block is treated as not globally reachable;
+     * including TEREDO `2001::/32` (whose globally-reachable value is "N/A")
+     * and the terminated ORCHID entry `2001:10::/28`.
+     */
+    private function isIetfProtocolAssignment(): bool
+    {
+        return $this->inRange(new self(Binary::fromHex('20010000000000000000000000000000')), 23)
+            && !in_array(Binary::toHex($this->getBinary()), [
+                '20010001000000000000000000000001',
+                '20010001000000000000000000000002',
+                '20010001000000000000000000000003',
+            ], true)
+            && !$this->inRange(new self(Binary::fromHex('20010003000000000000000000000000')), 32)
+            && !$this->inRange(new self(Binary::fromHex('20010004011200000000000000000000')), 48)
+            && !$this->inRange(new self(Binary::fromHex('20010020000000000000000000000000')), 28)
+            && !$this->inRange(new self(Binary::fromHex('20010030000000000000000000000000')), 28);
+    }
+
+    /**
+     * The IANA special-purpose registry lists `64:ff9b:1::/48` as not globally
+     * reachable.
+     */
+    private function isNat64LocalUse(): bool
+    {
+        // RFC 8215 reserves the /48 block for local use, but operators
+        // subdivide it into Network-Specific Prefixes of any RFC 6052 § 2.2
+        // length that fits within a /48 (ie, /48, /56, /64, or /96), and each
+        // length places the IPv4 bytes at a different offset when embedding.
+        return $this->inRange(new self(Binary::fromHex('0064ff9b000100000000000000000000')), 48);
+    }
+
+    /**
+     * The IANA special-purpose registry lists the Discard-Only block `100::/64`
+     * (RFC 6666) as not globally reachable.
+     */
+    private function isDiscardOnly(): bool
+    {
+        return $this->inRange(new self(Binary::fromHex('01000000000000000000000000000000')), 64);
+    }
+
+    /**
+     * The IANA special-purpose registry lists the Dummy Prefix `100:0:0:1::/64`
+     * (RFC 9780) as not globally reachable.
+     */
+    private function isDummyPrefix(): bool
+    {
+        return $this->inRange(new self(Binary::fromHex('01000000000000010000000000000000')), 64);
+    }
+
+    /**
+     * The IANA special-purpose registry lists the Segment Routing (SRv6) SID
+     * block `5f00::/16` (RFC 9602) as not globally reachable.
+     */
+    private function isSegmentRoutingSid(): bool
+    {
+        return $this->inRange(new self(Binary::fromHex('5f000000000000000000000000000000')), 16);
     }
 
     public function __toString(): string
