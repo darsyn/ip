@@ -96,9 +96,14 @@ class IPv4 extends AbstractIP implements Version4Interface
 
     public function isDocumentation(): bool
     {
+        // The three TEST-NET blocks (RFC 5737), plus MCAST-TEST-NET
+        // 233.252.0.0/24 (RFC 5771 § 9.2), which is assigned for use in
+        // documentation and example code and MUST NOT appear on the public
+        // Internet.
         return $this->inRange(new self(Binary::fromHex('c0000200')), 24)
             || $this->inRange(new self(Binary::fromHex('c6336400')), 24)
-            || $this->inRange(new self(Binary::fromHex('cb007100')), 24);
+            || $this->inRange(new self(Binary::fromHex('cb007100')), 24)
+            || $this->inRange(new self(Binary::fromHex('e9fc0000')), 24);
     }
 
     public function isPublicUse(): bool
@@ -114,10 +119,20 @@ class IPv4 extends AbstractIP implements Version4Interface
         if ($this->inRange(new self(Binary::fromHex('00000000')), 8)) {
             return false;
         }
-        // Addresses reserved for future protocols — the IETF Protocol
-        // Assignments block `192.0.0.0/24` (RFC 6890 § 2.1) — are not
-        // globally routable (different to reserved for future use).
+        // Addresses reserved for future protocols are not globally routable.
+        // The IETF Protocol Assignments block `192.0.0.0/24` (RFC 6890 § 2.1)
+        // is different to "reserved for future use".
         if ($this->inRange(new self(Binary::fromHex('c0000000')), 24)) {
+            return false;
+        }
+        // The `6a44`-relay anycast address `192.88.99.2/32` (RFC 6751) is
+        // listed as not globally reachable. Note that the surrounding 6to4
+        // Relay Anycast block `192.88.99.0/24` was deprecated by RFC 7526 and
+        // its registry entry terminated (2015-03) with every attribute column
+        // left blank and is NOT listed as "globally reachable: false".
+        // The rest of that block falls through as globally reachable (when in
+        // doubt, do what the Rust standard library does).
+        if ($this->getBinary() === Binary::fromHex('c0586302')) {
             return false;
         }
 
