@@ -311,6 +311,7 @@ class IPv6 implements IpDataProviderInterface
             '::7f00:1' => self::GLOBALLY_REACHABLE_V6 | self::UNICAST_GLOBAL | self::COMPATIBLE | self::LOOPBACK_COMPATIBLE,
             '::12.34.56.78' => self::GLOBALLY_REACHABLE_V6 | self::UNICAST_GLOBAL | self::COMPATIBLE,
             '0::000:0000:b12:cab' => self::GLOBALLY_REACHABLE_V6 | self::UNICAST_GLOBAL | self::COMPATIBLE,
+            '2001:0:4136:e378:8000:63bf:80ff:fffe' => self::UNICAST_OTHER | self::TEREDO | self::LOOPBACK_TEREDO,
             '1cc9:7d7f:2a9f:cabd:9186:2be5:bef1:6a54' => self::GLOBALLY_REACHABLE_V6 | self::UNICAST_GLOBAL,
             'b638:cc70:716:c4d4:f69c:4ee3:6c65:a0b2' => self::GLOBALLY_REACHABLE_V6 | self::UNICAST_GLOBAL,
             '140c:12f1:6e6f:c0bb:980e:3816:3e52:1193' => self::GLOBALLY_REACHABLE_V6 | self::UNICAST_GLOBAL,
