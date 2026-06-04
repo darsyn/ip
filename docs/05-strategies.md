@@ -8,13 +8,21 @@ Unfortunately there are several different strategies for embedding a version 4
 address into version 6, so this library offers various strategy implementations
 for the main four (and one deprecated):
 
-| Strategy Name   | Implementation                  | Format                                    | Notes                 |
-|-----------------|---------------------------------|-------------------------------------------|-----------------------|
-| IPv4-mapped     | `Darsyn\IP\Strategy\Mapped`     | `0000:0000:0000:0000:0000:ffff:XXXX:XXXX` | Default               |
-| NAT64           | `Darsyn\IP\Strategy\Nat64`      | `0064:ff9b:0000:0000:0000:0000:XXXX:XXXX` | Translator            |
-| 6to4-derived    | `Darsyn\IP\Strategy\Derived`    | `2002:XXXX:XXXX:0000:0000:0000:0000:0000` | Relay                 |
-| Teredo          | `Darsyn\IP\Strategy\Teredo`     | `2001:0000:xxxx:xxxx:xxxx:xxxx:XXXX:XXXX` | Tunnel (extract-only) |
-| IPv4-compatible | `Darsyn\IP\Strategy\Compatible` | `0000:0000:0000:0000:0000:0000:XXXX:XXXX` | Deprecated            |
+| Strategy Name   | Implementation                  | Format                                    | RFC                                                                    | Notes                 |
+|-----------------|---------------------------------|-------------------------------------------|------------------------------------------------------------------------|-----------------------|
+| IPv4-mapped     | `Darsyn\IP\Strategy\Mapped`     | `0000:0000:0000:0000:0000:ffff:XXXX:XXXX` | [RFC 4291 § 2.5.5.2](https://tools.ietf.org/html/rfc4291)              | Default               |
+| NAT64           | `Darsyn\IP\Strategy\Nat64`      | `0064:ff9b:0000:0000:0000:0000:XXXX:XXXX` | [RFC 6052 § 2.1](https://tools.ietf.org/html/rfc6052)                  | Translator            |
+| 6to4-derived    | `Darsyn\IP\Strategy\Derived`    | `2002:XXXX:XXXX:0000:0000:0000:0000:0000` | [RFC 3056](https://tools.ietf.org/html/rfc3056)                        | Relay                 |
+| Teredo          | `Darsyn\IP\Strategy\Teredo`     | `2001:0000:xxxx:xxxx:xxxx:xxxx:XXXX:XXXX` | [RFC 4380 § 4](https://tools.ietf.org/html/rfc4380)                    | Tunnel (extract-only) |
+| IPv4-compatible | `Darsyn\IP\Strategy\Compatible` | `0000:0000:0000:0000:0000:0000:XXXX:XXXX` | [RFC 4291 § 2.5.5.1](https://tools.ietf.org/html/rfc4291)              | Deprecated            |
+
+> The 6to4-derived strategy detects only the canonical 6to4 network address
+> (zero SLA and interface identifier bits, as shown in the format column);
+> host addresses within a 6to4 `/48` are intentionally not treated as embedded.
+> The Teredo strategy stores the client's public IPv4 address XOR'd with
+> `0xFFFFFFFF` in the last four bytes (its flags field was later redefined by
+> [RFC 5991](https://tools.ietf.org/html/rfc5991), which does not affect
+> extraction).
 
 Each embedding strategy implements the
 `Darsyn\IP\Strategy\EmbeddingStrategyInterface` which defines methods to:

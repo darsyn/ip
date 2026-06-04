@@ -20,7 +20,7 @@ interface Version4Interface extends IpInterface
     public function getDotAddress(): string;
 
     /**
-     * Whether the IP is a broadcast address, according to RFC 919.
+     * Whether the IP is a broadcast address, according to RFC 919 § 7.
      *
      * @throws \Darsyn\IP\Exception\WrongVersionException
      */
@@ -34,7 +34,9 @@ interface Version4Interface extends IpInterface
     public function isShared(): bool;
 
     /**
-     * Whether the IP is reserved for future use, according to RFC 1112.
+     * Whether the IP is reserved for future use, according to RFC 1112 § 4
+     * (excluding the limited broadcast address, which is a separate
+     * special-purpose registry entry per RFC 8190).
      *
      * @throws \Darsyn\IP\Exception\WrongVersionException
      */

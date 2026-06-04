@@ -288,7 +288,25 @@ class IPv6 implements IpDataProviderInterface
             'ff08::' => self::MULTICAST_ORGANIZATION_LOCAL,
             'ff0e::' => self::PUBLIC_USE_V6 | self::MULTICAST_GLOBAL,
             '2001:db8:85a3::8a2e:370:7334' => self::DOCUMENTATION | self::UNICAST_OTHER,
-            '2001:2::ac32:23ff:21' => self::PUBLIC_USE_V6 | self::BENCHMARKING | self::UNICAST_GLOBAL,
+            // Benchmarking (2001:2::/48, RFC 5180) is marked as not globally
+            // reachable in the IANA special-purpose registry; it was previously
+            // (wrongly) pinned here as PUBLIC_USE_V6 | UNICAST_GLOBAL.
+            '2001:2::ac32:23ff:21' => self::BENCHMARKING | self::UNICAST_OTHER,
+            // Documentation now includes 3fff::/20 (RFC 9637) alongside
+            // 2001:db8::/32 (RFC 3849); 4000:: pins the upper boundary.
+            '3fff::1' => self::DOCUMENTATION | self::UNICAST_OTHER,
+            '3fff:fff:ffff:ffff:ffff:ffff:ffff:ffff' => self::DOCUMENTATION | self::UNICAST_OTHER,
+            '4000::' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL,
+            // Discard-Only 100::/64 (RFC 6666) and the Dummy Prefix
+            // 100:0:0:1::/64 (RFC 9780) are not globally reachable;
+            // 100:0:0:2:: sits outside both /64 blocks.
+            '100::1' => self::UNICAST_OTHER,
+            '100:0:0:1::1' => self::UNICAST_OTHER,
+            '100:0:0:2::' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL,
+            // Segment Routing (SRv6) SIDs 5f00::/16 (RFC 9602) are not globally
+            // reachable; 5f01:: sits outside the /16 block.
+            '5f00::1' => self::UNICAST_OTHER,
+            '5f01::' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL,
             '102:304:506:708:90a:b0c:d0e:f10' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL,
             'fd00::' => self::PRIVATE_USE | self::UNIQUE_LOCAL | self::UNICAST_OTHER,
             'fdff:ffff:ffff:ffff:ffff:ffff:ffff:ffff' => self::PRIVATE_USE | self::UNIQUE_LOCAL | self::UNICAST_OTHER,

@@ -14,6 +14,12 @@ use Darsyn\IP\Util\MbString;
  *
  * Legacy, but not formally deprecated (only 6to4 anycast was deprecated via
  * RFC 7526).
+ *
+ * Note: isEmbedded() detects only the canonical 6to4 network address
+ * (`2002:V4ADDR::` with zero SLA ID and interface ID — the exact inverse of
+ * pack()). RFC 3056 § 2 allows any host address within a 6to4 /48; addresses
+ * carrying non-zero subnet/interface bits are intentionally not treated as
+ * embedded, because they cannot round-trip through the IPv4 address alone.
  */
 class Derived implements EmbeddingStrategyInterface
 {

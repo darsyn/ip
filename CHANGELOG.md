@@ -34,6 +34,27 @@
   `Composite::all()`.
 - Classify the NAT64 local-use block `64:ff9b:1::/48` (according to RFC 8215) as
   not globally reachable.
+- Bugfix: classify the second IPv6 documentation block `3fff::/20` (according
+  to RFC 9637) as documentation, and therefore not globally reachable.
+- Bugfix: classify the following IPv6 blocks, listed in the IANA Special-Purpose
+  Address Registry, as not globally reachable in `isUnicastGlobal()` and
+  `isPublicUse()`: benchmarking `2001:2::/48` (according to RFC 5180),
+  discard-only `100::/64` (according to RFC 6666), the dummy prefix
+  `100:0:0:1::/64` (according to RFC 9780), and Segment Routing SIDs
+  `5f00::/16` (according to RFC 9602).
+- Bugfix: classify the deprecated 6to4 Relay Anycast block `192.88.99.0/24`
+  (according to RFC 7526) as not public use, matching the IANA Special-Purpose
+  Address Registry.
+- Classify the documentation-only multicast block `233.252.0.0/24`,
+  "MCAST-TEST-NET" (according to RFC 5771 § `9.2`), as documentation.
+- Correct RFC references throughout PHPDoc and documentation: `isUnicastGlobal()`
+  cited RFC `2941` (Telnet Authentication Option) instead of RFC 4291 § `2.5.4`;
+  `isLoopback()` cited obsoleted RFCs (in swapped IPv4/IPv6 order);
+  `isMulticast()` and `isUnspecified()` cited obsoleted RFCs; link-local IPv6
+  cited the wrong RFC 4291 section (`2.4` instead of `2.5.6`); the IANA IPv6
+  registry URL in `isPublicUse()` PHPDoc was malformed (404). Add RFC 7346
+  reference for multicast scope values, and RFC references for all embedding
+  strategies in documentation.
 
 ## `6.0.0`
 

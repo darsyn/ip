@@ -17,6 +17,11 @@ use Darsyn\IP\Util\MbString;
  * `0xFFFF`), and the client's obfuscated public IPv4 address (bits 96–127,
  * XOR'd with `0xFFFFFFFF`). This strategy extracts the client address (the
  * address the Teredo address stands for).
+ *
+ * The flags field was redefined by RFC 5991 ("Teredo Security Updates"), which
+ * replaces most of the formerly-reserved flag bits with two random fields to
+ * defend against address scanning; the prefix and the obfuscated client
+ * address (bits 96–127) are unchanged, so extraction is unaffected.
  */
 class Teredo implements EmbeddingStrategyInterface
 {
@@ -37,9 +42,8 @@ class Teredo implements EmbeddingStrategyInterface
 
     public function pack(string $binary): string
     {
-        // Per RFC 4380 the embedded client address is the public, post-NAT
-        // mapped address, so a non-global value is malformed by specification.
-        // The same reasoning as RFC 6052 § 3.1 for NAT64.
+        // Per RFC 4380 § 4 the embedded client address is the public, post-NAT
+        // "mapped IPv4 address".
 
         // Extraction-only: a Teredo address cannot be constructed from an IPv4
         // address alone (server, flags, and port are not derivable), so `pack()`

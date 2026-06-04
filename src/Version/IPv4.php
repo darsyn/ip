@@ -96,9 +96,14 @@ class IPv4 extends AbstractIP implements Version4Interface
 
     public function isDocumentation(): bool
     {
+        // The three TEST-NET blocks (RFC 5737), plus MCAST-TEST-NET
+        // 233.252.0.0/24 (RFC 5771 § 9.2), which is assigned for use in
+        // documentation and example code and MUST NOT appear on the public
+        // Internet.
         return $this->inRange(new self(Binary::fromHex('c0000200')), 24)
             || $this->inRange(new self(Binary::fromHex('c6336400')), 24)
-            || $this->inRange(new self(Binary::fromHex('cb007100')), 24);
+            || $this->inRange(new self(Binary::fromHex('cb007100')), 24)
+            || $this->inRange(new self(Binary::fromHex('e9fc0000')), 24);
     }
 
     public function isPublicUse(): bool
@@ -118,6 +123,20 @@ class IPv4 extends AbstractIP implements Version4Interface
             return false;
         }
 
+        // The deprecated 6to4 Relay Anycast block 192.88.99.0/24 (RFC 7526) is
+        // listed as not globally reachable in the IANA special-purpose registry
+        // (as is its 192.88.99.2/32 6a44-relay sub-entry, RFC 6751).
+        if ($this->inRange(new self(Binary::fromHex('c0586300')), 24)) {
+            return false;
+        }
+
+        // Note: IPv4 multicast (224.0.0.0/4) is deliberately NOT excluded here.
+        // It is absent from the IANA IPv4 Special-Purpose Address Registry
+        // (which defines "globally reachable"). Unlike IPv6, IPv4 multicast
+        // carries no in-address scope field — 239.0.0.0/8 is *administratively*
+        // scoped (RFC 2365), configured at boundary routers rather than encoded
+        // in the address — so it cannot be scope-classified the way IPv6
+        // multicast is via getMulticastScope().
         return !$this->isPrivateUse()
             && !$this->isLoopback()
             && !$this->isLinkLocal()
@@ -140,6 +159,9 @@ class IPv4 extends AbstractIP implements Version4Interface
 
     public function isFutureReserved(): bool
     {
+        // 255.255.255.255 is carved out of 240.0.0.0/4 (RFC 1112 § 4): the IANA
+        // special-purpose registry lists the limited broadcast address as its
+        // own entry (RFC 8190, RFC 919 § 7).
         return $this->getBinary() !== Binary::fromHex('ffffffff')
             && $this->inRange(new self(Binary::fromHex('f0000000')), 4);
     }

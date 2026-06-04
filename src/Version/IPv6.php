@@ -123,7 +123,11 @@ class IPv6 extends AbstractIP implements Version6Interface
 
     public function isDocumentation(): bool
     {
-        return $this->inRange(new self(Binary::fromHex('20010db8000000000000000000000000')), 32);
+        // Two blocks are reserved for documentation: 2001:db8::/32 (RFC 3849)
+        // and 3fff::/20 (RFC 9637, which updates RFC 3849). Both are listed as
+        // not globally reachable in the IANA special-purpose registry.
+        return $this->inRange(new self(Binary::fromHex('20010db8000000000000000000000000')), 32)
+            || $this->inRange(new self(Binary::fromHex('3fff0000000000000000000000000000')), 20);
     }
 
     public function isPublicUse(): bool
@@ -158,7 +162,14 @@ class IPv6 extends AbstractIP implements Version6Interface
             && !$this->isUniqueLocal()
             && !$this->isUnspecified()
             && !$this->isDocumentation()
-            && !$this->isNat64LocalUse();
+            // Benchmarking (2001:2::/48, RFC 5180) is listed as not globally
+            // reachable in the IANA special-purpose registry; the IPv4 method
+            // already excluded its benchmarking block but this was missed here.
+            && !$this->isBenchmarking()
+            && !$this->isNat64LocalUse()
+            && !$this->isDiscardOnly()
+            && !$this->isDummyPrefix()
+            && !$this->isSegmentRoutingSid();
     }
 
     /** The IANA special-purpose registry lists `64:ff9b:1::/48` as not globally reachable. */
@@ -169,6 +180,24 @@ class IPv6 extends AbstractIP implements Version6Interface
         // /64, /96…), and each length places the IPv4 bytes at a different offset
         // when embedding.
         return $this->inRange(new self(Binary::fromHex('0064ff9b000100000000000000000000')), 48);
+    }
+
+    /** The IANA special-purpose registry lists the Discard-Only block `100::/64` (RFC 6666) as not globally reachable. */
+    private function isDiscardOnly(): bool
+    {
+        return $this->inRange(new self(Binary::fromHex('01000000000000000000000000000000')), 64);
+    }
+
+    /** The IANA special-purpose registry lists the Dummy Prefix `100:0:0:1::/64` (RFC 9780) as not globally reachable. */
+    private function isDummyPrefix(): bool
+    {
+        return $this->inRange(new self(Binary::fromHex('01000000000000010000000000000000')), 64);
+    }
+
+    /** The IANA special-purpose registry lists the Segment Routing (SRv6) SID block `5f00::/16` (RFC 9602) as not globally reachable. */
+    private function isSegmentRoutingSid(): bool
+    {
+        return $this->inRange(new self(Binary::fromHex('5f000000000000000000000000000000')), 16);
     }
 
     public function __toString(): string

@@ -227,6 +227,17 @@ class IPv4 implements IpDataProviderInterface
             '169.254.253.242' => self::LINK_LOCAL,
             '192.0.2.183' => self::DOCUMENTATION,
             '192.1.2.183' => self::PUBLIC_USE,
+            // The deprecated 6to4 Relay Anycast block 192.88.99.0/24 (RFC 7526)
+            // is not globally reachable per the IANA special-purpose registry,
+            // and belongs to no other classified category; 192.88.100.1 pins
+            // the boundary.
+            '192.88.99.1' => 0,
+            '192.88.100.1' => self::PUBLIC_USE,
+            // MCAST-TEST-NET 233.252.0.0/24 (RFC 5771 § 9.2) is documentation-
+            // only multicast ("MUST NOT appear on the public Internet");
+            // 233.252.1.0 sits outside the /24 and remains public multicast.
+            '233.252.0.1' => self::DOCUMENTATION | self::MULTICAST_IPV4,
+            '233.252.1.0' => self::PUBLIC_USE | self::MULTICAST_IPV4,
             '192.168.254.253' => self::PRIVATE_USE,
             '198.51.100.0' => self::DOCUMENTATION,
             '203.0.113.0' => self::DOCUMENTATION,
