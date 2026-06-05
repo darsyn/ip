@@ -7,6 +7,12 @@ namespace Darsyn\IP\Strategy;
 use Darsyn\IP\Exception\Strategy as StrategyException;
 use Darsyn\IP\Util\MbString;
 
+/**
+ * Embeds an IPv4 address within the IPv4-compatible prefix `::/96`, as defined
+ * by RFC 4291 ("IP Version 6 Addressing Architecture"), § 2.5.5.1
+ *
+ * Note: this format is deprecated and retained only for backwards compatibility.
+ */
 class Compatible implements EmbeddingStrategyInterface
 {
     public function isEmbedded(string $binary): bool

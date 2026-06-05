@@ -20,6 +20,8 @@
 - Bugfix: classify full `fc00::/7` block as private use.
 - Add (or update) community standards: `SECURITY.md`, `CODE_OF_CONDUCT.md` and
   `CONTRIBUTING.md`
+- Bugfix: detect embedded IPv4 across the entire 6to4 block (`2002::/16`, RFC
+  3056 § 2), not just canonical 6to4 addresses with a zeroed 80-bit tail.
 
 ## `6.0.0`
 
