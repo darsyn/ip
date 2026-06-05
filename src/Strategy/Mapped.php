@@ -8,6 +8,12 @@ use Darsyn\IP\Exception\Strategy as StrategyException;
 use Darsyn\IP\Util\Binary;
 use Darsyn\IP\Util\MbString;
 
+/**
+ * Embeds an IPv4 address within the IPv4-mapped prefix `::ffff:0:0/96`, as
+ * defined by RFC 4291 ("IP Version 6 Addressing Architecture"), § 2.5.5.2
+ *
+ * Reserved by protocol, and not globally reachable (as an IPv6 address).
+ */
 class Mapped implements EmbeddingStrategyInterface
 {
     public function isEmbedded(string $binary): bool

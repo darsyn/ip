@@ -10,7 +10,7 @@ for the main three:
 
 | Strategy Name   | Implementation                  | Format                                    |
 |-----------------|---------------------------------|-------------------------------------------|
-| 6to4-derived    | `Darsyn\IP\Strategy\Derived`    | `2002:XXXX:XXXX:0000:0000:0000:0000:0000` |
+| 6to4-derived    | `Darsyn\IP\Strategy\Derived`    | `2002:XXXX:XXXX:????:????:????:????:????` |
 | IPv4-compatible | `Darsyn\IP\Strategy\Compatible` | `0000:0000:0000:0000:0000:0000:XXXX:XXXX` |
 | IPv4-mapped     | `Darsyn\IP\Strategy\Mapped`     | `0000:0000:0000:0000:0000:ffff:XXXX:XXXX` |
 
