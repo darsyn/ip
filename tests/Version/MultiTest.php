@@ -9,6 +9,7 @@ use Darsyn\IP\Exception\WrongVersionException;
 use Darsyn\IP\IpInterface;
 use Darsyn\IP\Strategy;
 use Darsyn\IP\Tests\DataProvider\Multi as MultiDataProvider;
+use Darsyn\IP\Tests\TestCase;
 use Darsyn\IP\Version\IPv4;
 use Darsyn\IP\Version\IPv6;
 use Darsyn\IP\Version\Multi as IP;
@@ -16,7 +17,6 @@ use Darsyn\IP\Version\MultiVersionInterface;
 use Darsyn\IP\Version\Version4Interface;
 use Darsyn\IP\Version\Version6Interface;
 use PHPUnit\Framework\Attributes as PHPUnit;
-use PHPUnit\Framework\TestCase;
 
 class MultiTest extends TestCase
 {
@@ -103,7 +103,7 @@ class MultiTest extends TestCase
     public function testExceptionIsThrownOnInstantiationWithInvalidAddresses(string $value): void
     {
         $this->expectException(InvalidIpAddressException::class);
-        $this->expectExceptionMessage('The IP address supplied is not valid.');
+        $this->legacyExpectExceptionMessage('The IP address supplied is not valid.');
         try {
             $ip = IP::factory($value);
         } catch (InvalidIpAddressException $e) {

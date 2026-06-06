@@ -11,12 +11,12 @@ use Darsyn\IP\IpInterface;
 use Darsyn\IP\Strategy\Mapped;
 use Darsyn\IP\Tests\DataProvider\IPv4 as IPv4DataProvider;
 use Darsyn\IP\Tests\DataProvider\IPv6 as IPv6DataProvider;
+use Darsyn\IP\Tests\TestCase;
 use Darsyn\IP\Version\IPv4;
 use Darsyn\IP\Version\IPv6 as IP;
 use Darsyn\IP\Version\Multi;
 use Darsyn\IP\Version\Version6Interface;
 use PHPUnit\Framework\Attributes as PHPUnit;
-use PHPUnit\Framework\TestCase;
 
 class IPv6Test extends TestCase
 {
@@ -67,7 +67,7 @@ class IPv6Test extends TestCase
     public function testExceptionIsThrownOnInstantiationWithInvalidAddresses(string $value): void
     {
         $this->expectException(\Darsyn\IP\Exception\InvalidIpAddressException::class);
-        $this->expectExceptionMessage('The IP address supplied is not valid.');
+        $this->legacyExpectExceptionMessage('The IP address supplied is not valid.');
         try {
             $ip = IP::factory($value);
         } catch (InvalidIpAddressException $e) {
@@ -226,7 +226,7 @@ class IPv6Test extends TestCase
     public function testExceptionIsThrownFromOutOfRangeCidrValues(int $cidr): void
     {
         $this->expectException(\Darsyn\IP\Exception\InvalidCidrException::class);
-        $this->expectExceptionMessage('The supplied CIDR is not valid; it must be an integer (between 0 and 128).');
+        $this->legacyExpectExceptionMessage('The supplied CIDR is not valid; it must be an integer (between 0 and 128).');
         $ip = IP::factory('::1');
         try {
             (function () use ($cidr): string {
