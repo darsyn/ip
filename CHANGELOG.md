@@ -35,6 +35,10 @@
 - Add `Composite` embedding strategy that recognises and extracts version 4
   addresses across several underlying strategies, while packing through a single
   canonical strategy.
+- Bugfix: classify a NAT64 Well-known Prefix (`64:ff9b::/96`, RFC 6052 § 2.1)
+  address by the version 4 address it embeds rather than trusting the prefix, so
+  an embedded non-globally-reachable address is no longer reported as globally
+  reachable (closes a potential SSRF deny-list bypass).
 
 ## `6.0.0`
 
