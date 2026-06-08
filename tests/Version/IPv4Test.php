@@ -415,14 +415,14 @@ class IPv4Test extends TestCase
 
     /**
      * @test
-     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getPublicUseIpAddresses()
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getGloballyReachableIpAddresses()
      */
     #[PHPUnit\Test]
-    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getPublicUseIpAddresses')]
-    public function testIsPublicUse(string $value, bool $isPublicUse): void
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getGloballyReachableIpAddresses')]
+    public function testIsGloballyReachable(string $value, bool $isGloballyReachable): void
     {
         $ip = IP::factory($value);
-        $this->assertSame($isPublicUse, $ip->isPublicUse());
+        $this->assertSame($isGloballyReachable, $ip->isGloballyReachable());
     }
 
     /**

@@ -25,6 +25,9 @@
 - Bugfix: align `isPublicUse()`, `isUnicastGlobal()` and `isDocumentation()`
   with the IANA special-purpose address registries, and update RFC
   references/citations for all address classification methods.
+- Rename `isPublicUse()` to `isGloballyReachable()`, conforming to the official
+  wording used in the IANA special-purpose address registries ("Public Use"
+  does not appear in them). Keep `isPublicUse()` as a deprecated alias.
 
 ## `6.0.0`
 

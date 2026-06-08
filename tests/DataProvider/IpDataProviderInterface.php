@@ -16,13 +16,13 @@ interface IpDataProviderInterface
     public const MULTICAST_IPV4 = 1 << 6;
 
     // IPv4
-    public const PUBLIC_USE_V4 = 1 << 7;
+    public const GLOBALLY_REACHABLE_V4 = 1 << 7;
     public const BROADCAST = 1 << 8;
     public const SHARED = 1 << 9;
     public const FUTURE_RESERVED = 1 << 10;
 
     // IPv6
-    public const PUBLIC_USE_V6 = 1 << 11;
+    public const GLOBALLY_REACHABLE_V6 = 1 << 11;
     public const MULTICAST_INTERFACE_LOCAL = 1 << 12;
     public const MULTICAST_LINK_LOCAL = 1 << 13;
     public const MULTICAST_REALM_LOCAL = 1 << 14;
@@ -42,9 +42,9 @@ interface IpDataProviderInterface
     public const LOOPBACK_DERIVED = 1 << 28;
 
     // Combinations
-    public const PUBLIC_USE = 0
-        | self::PUBLIC_USE_V4
-        | self::PUBLIC_USE_V6;
+    public const GLOBALLY_REACHABLE = 0
+        | self::GLOBALLY_REACHABLE_V4
+        | self::GLOBALLY_REACHABLE_V6;
     public const LOOPBACK_EMBEDDED = 0
         | self::LOOPBACK_MAPPED
         | self::LOOPBACK_COMPATIBLE

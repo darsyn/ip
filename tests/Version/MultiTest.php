@@ -390,14 +390,14 @@ class MultiTest extends TestCase
 
     /**
      * @test
-     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getPublicUseIpAddresses()
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getGloballyReachableIpAddresses()
      */
     #[PHPUnit\Test]
-    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getPublicUseIpAddresses')]
-    public function testIsPublicUse(string $value, bool $isPublicUse): void
+    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getGloballyReachableIpAddresses')]
+    public function testIsGloballyReachable(string $value, bool $isGloballyReachable): void
     {
         $ip = IP::factory($value, new Strategy\Mapped());
-        $this->assertSame($isPublicUse, $ip->isPublicUse());
+        $this->assertSame($isGloballyReachable, $ip->isGloballyReachable());
     }
 
     /**

@@ -142,13 +142,21 @@ interface IpInterface
     public function isDocumentation(): bool;
 
     /**
+     * Superseded by `isGloballyReachable()` which conforms to official wording;
+     * "Public Use" does not appear in the IANA special-purpose registries.
+     *
+     * @deprecated Use isGloballyReachable() instead.
+     */
+    public function isPublicUse(): bool;
+
+    /**
      * Whether the IP appears to be publicly/globally routable. Please refer to
      * the IANA Special-Purpose Address Registry documents.
      *
      * @see https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry.xhtml
      * @see https://www.iana.org/assignments/iana-ipv6-special-registry/iana-ipv6-special-registry.xhtml
      */
-    public function isPublicUse(): bool;
+    public function isGloballyReachable(): bool;
 
     /** Implement string casting for IP objects. */
     public function __toString(): string;

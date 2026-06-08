@@ -192,7 +192,7 @@ $ip = IP::factory('127.0.0.1');
 $ip->isDocumentation(); // bool(false)
 ```
 
-### Public Use (Global)
+### Globally Reachable
 
 Whether the IP appears to be publicly/globally routable (please refer to the
 following:
@@ -205,7 +205,7 @@ following:
 use Darsyn\IP\Version\Multi as IP;
 
 $ip = IP::factory('127.0.0.1');
-$ip->isPublicUse(); // bool(false)
+$ip->isGloballyReachable(); // bool(false)
 ```
 
 ## IPv4 Specific

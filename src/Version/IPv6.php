@@ -129,7 +129,13 @@ class IPv6 extends AbstractIP implements Version6Interface
             || $this->inRange(new self(Binary::fromHex('3fff0000000000000000000000000000')), 20);
     }
 
+    /** @deprecated Use isGloballyReachable() instead. */
     public function isPublicUse(): bool
+    {
+        return $this->isGloballyReachable();
+    }
+
+    public function isGloballyReachable(): bool
     {
         return self::MULTICAST_GLOBAL === $this->getMulticastScope() || $this->isUnicastGlobal();
     }

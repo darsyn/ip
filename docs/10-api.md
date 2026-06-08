@@ -24,7 +24,7 @@
 | `isUnspecified()`                     | `bool`               | ✓    | ✓    | ✓     |
 | `isBenchmarking()`                    | `bool`               | ✓    | ✓    | ✓     |
 | `isDocumentation()`                   | `bool`               | ✓    | ✓    | ✓     |
-| `isPublicUse()`                       | `bool`               | ✓    | ✓    | ✓     |
+| `isGloballyReachable()`               | `bool`               | ✓    | ✓    | ✓     |
 | `isBroadcast()`                       | `bool`               | ✓    |      | ✓     |
 | `isShared()`                          | `bool`               | ✓    |      | ✓     |
 | `isFutureReserved()`                  | `bool`               | ✓    |      | ✓     |

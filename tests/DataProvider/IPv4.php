@@ -195,9 +195,9 @@ class IPv4 implements IpDataProviderInterface
     }
 
     /** @return list<array{string, bool}> */
-    public static function getPublicUseIpAddresses()
+    public static function getGloballyReachableIpAddresses()
     {
-        return self::getCategoryOfIpAddresses(self::PUBLIC_USE_V4);
+        return self::getCategoryOfIpAddresses(self::GLOBALLY_REACHABLE_V4);
     }
 
     /** @return list<array{string, bool}> */
@@ -226,19 +226,19 @@ class IPv4 implements IpDataProviderInterface
             '172.31.254.253' => self::PRIVATE_USE,
             '169.254.253.242' => self::LINK_LOCAL,
             '192.0.2.183' => self::DOCUMENTATION,
-            '192.1.2.183' => self::PUBLIC_USE,
+            '192.1.2.183' => self::GLOBALLY_REACHABLE_V4,
             '192.168.254.253' => self::PRIVATE_USE,
             '198.51.100.0' => self::DOCUMENTATION,
             '203.0.113.0' => self::DOCUMENTATION,
-            '203.2.113.0' => self::PUBLIC_USE,
-            '192.88.99.1' => self::PUBLIC_USE,
+            '203.2.113.0' => self::GLOBALLY_REACHABLE_V4,
+            '192.88.99.1' => self::GLOBALLY_REACHABLE_V4,
             '192.88.99.2' => 0,
             '233.252.0.1' => self::MULTICAST_IPV4 | self::DOCUMENTATION,
             '255.255.255.255' => self::BROADCAST,
             '198.18.0.0' => self::BENCHMARKING,
             '198.18.54.2' => self::BENCHMARKING,
-            '224.0.0.0' => self::PUBLIC_USE | self::MULTICAST_IPV4,
-            '239.255.255.255' => self::PUBLIC_USE | self::MULTICAST_IPV4,
+            '224.0.0.0' => self::GLOBALLY_REACHABLE_V4 | self::MULTICAST_IPV4,
+            '239.255.255.255' => self::GLOBALLY_REACHABLE_V4 | self::MULTICAST_IPV4,
             '0.0.0.0' => self::UNSPECIFIED,
             '10.0.0.0' => self::PRIVATE_USE,
             '10.255.255.255' => self::PRIVATE_USE,
@@ -252,16 +252,16 @@ class IPv4 implements IpDataProviderInterface
             '169.254.255.255' => self::LINK_LOCAL,
             '100.64.91.200' => self::SHARED,
             '251.0.12.101' => self::FUTURE_RESERVED,
-            '192.18.0.0' => self::PUBLIC_USE,
+            '192.18.0.0' => self::GLOBALLY_REACHABLE_V4,
             '198.19.255.255' => self::BENCHMARKING,
-            '129.129.154.203' => self::PUBLIC_USE,
-            '239.248.153.114' => self::PUBLIC_USE | self::MULTICAST_IPV4,
-            '85.101.159.135' => self::PUBLIC_USE,
-            '72.64.156.77' => self::PUBLIC_USE,
-            '162.199.210.167' => self::PUBLIC_USE,
-            '2.12.191.95' => self::PUBLIC_USE,
-            '83.125.176.74' => self::PUBLIC_USE,
-            '224.0.65.129' => self::PUBLIC_USE | self::MULTICAST_IPV4,
+            '129.129.154.203' => self::GLOBALLY_REACHABLE_V4,
+            '239.248.153.114' => self::GLOBALLY_REACHABLE_V4 | self::MULTICAST_IPV4,
+            '85.101.159.135' => self::GLOBALLY_REACHABLE_V4,
+            '72.64.156.77' => self::GLOBALLY_REACHABLE_V4,
+            '162.199.210.167' => self::GLOBALLY_REACHABLE_V4,
+            '2.12.191.95' => self::GLOBALLY_REACHABLE_V4,
+            '83.125.176.74' => self::GLOBALLY_REACHABLE_V4,
+            '224.0.65.129' => self::GLOBALLY_REACHABLE_V4 | self::MULTICAST_IPV4,
         ];
     }
 
