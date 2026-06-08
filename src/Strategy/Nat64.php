@@ -58,7 +58,7 @@ class Nat64 implements EmbeddingStrategyInterface
     private function __construct(string $prefix, int $length)
     {
         if (16 !== $bytes = MbString::getLength($prefix)) {
-            throw new \InvalidArgumentException(sprintf(
+            throw new \InvalidArgumentException(\sprintf(
                 'NAT64 embedding strategy requires an IPv6 binary (16 bytes) as prefix; got %d bytes.',
                 $bytes
             ));

@@ -16,23 +16,23 @@ class Multi
     {
         return [
             // [ constructor value, expected hex, expected expanded address, expected compacted address, dot notation ].
-            [pack('H*', '00000000000000000000000000000000'), '00000000000000000000000000000000', '0000:0000:0000:0000:0000:0000:0000:0000', '::',                                      null],
-            [pack('H*', 'd6be058371a4aa6dc77d77dd0cecf897'), 'd6be058371a4aa6dc77d77dd0cecf897', 'd6be:0583:71a4:aa6d:c77d:77dd:0cec:f897', 'd6be:583:71a4:aa6d:c77d:77dd:cec:f897',   null],
-            [pack('H*', '2d7f424dc574632e8d9d847d9f30b62a'), '2d7f424dc574632e8d9d847d9f30b62a', '2d7f:424d:c574:632e:8d9d:847d:9f30:b62a', '2d7f:424d:c574:632e:8d9d:847d:9f30:b62a', null],
-            [pack('H*', '10d4ebf63401e851b3fd0d78ba5abf44'), '10d4ebf63401e851b3fd0d78ba5abf44', '10d4:ebf6:3401:e851:b3fd:0d78:ba5a:bf44', '10d4:ebf6:3401:e851:b3fd:d78:ba5a:bf44',  null],
-            [pack('H*', '7bf9a81f7047b07af891a84925c752c8'), '7bf9a81f7047b07af891a84925c752c8', '7bf9:a81f:7047:b07a:f891:a849:25c7:52c8', '7bf9:a81f:7047:b07a:f891:a849:25c7:52c8', null],
-            [pack('H*', '9800ea8800a5cbcc9d6868f3dc4ace01'), '9800ea8800a5cbcc9d6868f3dc4ace01', '9800:ea88:00a5:cbcc:9d68:68f3:dc4a:ce01', '9800:ea88:a5:cbcc:9d68:68f3:dc4a:ce01',   null],
-            [pack('H*', 'c3f889b050c8b06c043cff4f7f4ae66d'), 'c3f889b050c8b06c043cff4f7f4ae66d', 'c3f8:89b0:50c8:b06c:043c:ff4f:7f4a:e66d', 'c3f8:89b0:50c8:b06c:43c:ff4f:7f4a:e66d',  null],
-            [pack('H*', 'ffffffffffffffffffffffffffffffff'), 'ffffffffffffffffffffffffffffffff', 'ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', 'ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', null],
+            [\pack('H*', '00000000000000000000000000000000'), '00000000000000000000000000000000', '0000:0000:0000:0000:0000:0000:0000:0000', '::',                                      null],
+            [\pack('H*', 'd6be058371a4aa6dc77d77dd0cecf897'), 'd6be058371a4aa6dc77d77dd0cecf897', 'd6be:0583:71a4:aa6d:c77d:77dd:0cec:f897', 'd6be:583:71a4:aa6d:c77d:77dd:cec:f897',   null],
+            [\pack('H*', '2d7f424dc574632e8d9d847d9f30b62a'), '2d7f424dc574632e8d9d847d9f30b62a', '2d7f:424d:c574:632e:8d9d:847d:9f30:b62a', '2d7f:424d:c574:632e:8d9d:847d:9f30:b62a', null],
+            [\pack('H*', '10d4ebf63401e851b3fd0d78ba5abf44'), '10d4ebf63401e851b3fd0d78ba5abf44', '10d4:ebf6:3401:e851:b3fd:0d78:ba5a:bf44', '10d4:ebf6:3401:e851:b3fd:d78:ba5a:bf44',  null],
+            [\pack('H*', '7bf9a81f7047b07af891a84925c752c8'), '7bf9a81f7047b07af891a84925c752c8', '7bf9:a81f:7047:b07a:f891:a849:25c7:52c8', '7bf9:a81f:7047:b07a:f891:a849:25c7:52c8', null],
+            [\pack('H*', '9800ea8800a5cbcc9d6868f3dc4ace01'), '9800ea8800a5cbcc9d6868f3dc4ace01', '9800:ea88:00a5:cbcc:9d68:68f3:dc4a:ce01', '9800:ea88:a5:cbcc:9d68:68f3:dc4a:ce01',   null],
+            [\pack('H*', 'c3f889b050c8b06c043cff4f7f4ae66d'), 'c3f889b050c8b06c043cff4f7f4ae66d', 'c3f8:89b0:50c8:b06c:043c:ff4f:7f4a:e66d', 'c3f8:89b0:50c8:b06c:43c:ff4f:7f4a:e66d',  null],
+            [\pack('H*', 'ffffffffffffffffffffffffffffffff'), 'ffffffffffffffffffffffffffffffff', 'ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', 'ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', null],
             ['1234567890123456',                             '31323334353637383930313233343536', '3132:3334:3536:3738:3930:3132:3334:3536', '3132:3334:3536:3738:3930:3132:3334:3536',              null],
-            [pack('H*', '00000000000000000000ffff00000000'), '00000000000000000000ffff00000000', '0000:0000:0000:0000:0000:ffff:0000:0000', '::ffff:0:0',                              '0.0.0.0'],
-            [pack('H*', '00000000000000000000ffff71637a89'), '00000000000000000000ffff71637a89', '0000:0000:0000:0000:0000:ffff:7163:7a89', '::ffff:7163:7a89',                        '113.99.122.137'],
-            [pack('H*', '00000000000000000000ffff4708d36c'), '00000000000000000000ffff4708d36c', '0000:0000:0000:0000:0000:ffff:4708:d36c', '::ffff:4708:d36c',                        '71.8.211.108'],
-            [pack('H*', '00000000000000000000ffffc8fa3d9b'), '00000000000000000000ffffc8fa3d9b', '0000:0000:0000:0000:0000:ffff:c8fa:3d9b', '::ffff:c8fa:3d9b',                        '200.250.61.155'],
-            [pack('H*', '00000000000000000000ffffdb37478d'), '00000000000000000000ffffdb37478d', '0000:0000:0000:0000:0000:ffff:db37:478d', '::ffff:db37:478d',                        '219.55.71.141'],
-            [pack('H*', '00000000000000000000ffffae823cc4'), '00000000000000000000ffffae823cc4', '0000:0000:0000:0000:0000:ffff:ae82:3cc4', '::ffff:ae82:3cc4',                        '174.130.60.196'],
-            [pack('H*', '00000000000000000000ffff0c0679fc'), '00000000000000000000ffff0c0679fc', '0000:0000:0000:0000:0000:ffff:0c06:79fc', '::ffff:c06:79fc',                         '12.6.121.252'],
-            [pack('H*', '00000000000000000000ffffffffffff'), '00000000000000000000ffffffffffff', '0000:0000:0000:0000:0000:ffff:ffff:ffff', '::ffff:ffff:ffff',                        '255.255.255.255'],
+            [\pack('H*', '00000000000000000000ffff00000000'), '00000000000000000000ffff00000000', '0000:0000:0000:0000:0000:ffff:0000:0000', '::ffff:0:0',                              '0.0.0.0'],
+            [\pack('H*', '00000000000000000000ffff71637a89'), '00000000000000000000ffff71637a89', '0000:0000:0000:0000:0000:ffff:7163:7a89', '::ffff:7163:7a89',                        '113.99.122.137'],
+            [\pack('H*', '00000000000000000000ffff4708d36c'), '00000000000000000000ffff4708d36c', '0000:0000:0000:0000:0000:ffff:4708:d36c', '::ffff:4708:d36c',                        '71.8.211.108'],
+            [\pack('H*', '00000000000000000000ffffc8fa3d9b'), '00000000000000000000ffffc8fa3d9b', '0000:0000:0000:0000:0000:ffff:c8fa:3d9b', '::ffff:c8fa:3d9b',                        '200.250.61.155'],
+            [\pack('H*', '00000000000000000000ffffdb37478d'), '00000000000000000000ffffdb37478d', '0000:0000:0000:0000:0000:ffff:db37:478d', '::ffff:db37:478d',                        '219.55.71.141'],
+            [\pack('H*', '00000000000000000000ffffae823cc4'), '00000000000000000000ffffae823cc4', '0000:0000:0000:0000:0000:ffff:ae82:3cc4', '::ffff:ae82:3cc4',                        '174.130.60.196'],
+            [\pack('H*', '00000000000000000000ffff0c0679fc'), '00000000000000000000ffff0c0679fc', '0000:0000:0000:0000:0000:ffff:0c06:79fc', '::ffff:c06:79fc',                         '12.6.121.252'],
+            [\pack('H*', '00000000000000000000ffffffffffff'), '00000000000000000000ffffffffffff', '0000:0000:0000:0000:0000:ffff:ffff:ffff', '::ffff:ffff:ffff',                        '255.255.255.255'],
         ];
     }
 
@@ -63,22 +63,22 @@ class Multi
     /** @return list<array{string, string, string, string, string|null}> */
     public static function getValidIpAddresses()
     {
-        return array_merge(self::getValidBinarySequences(), self::getValidProtocolIpAddresses());
+        return \array_merge(self::getValidBinarySequences(), self::getValidProtocolIpAddresses());
     }
 
     /** @return list<array{string, string, string, string, string}> */
     public static function getValidIpVersion4Addresses()
     {
-        return array_values(array_filter(self::getValidIpAddresses(), static function (array $row) {
-            return is_string($row[4]);
+        return \array_values(\array_filter(self::getValidIpAddresses(), static function (array $row) {
+            return \is_string($row[4]);
         }));
     }
 
     /** @return list<array{string, string, string, string, null}> */
     public static function getValidIpVersion6Addresses()
     {
-        return array_values(array_filter(self::getValidIpAddresses(), static function (array $row) {
-            return !is_string($row[4]);
+        return \array_values(\array_filter(self::getValidIpAddresses(), static function (array $row) {
+            return !\is_string($row[4]);
         }));
     }
 
@@ -91,7 +91,7 @@ class Multi
             ['12.34.56.256'],
             ['This one is completely wrong.'],
             // 15 bytes instead of 16.
-            [pack('H*', '20010db8000000000a608a2e037073')],
+            [\pack('H*', '20010db8000000000a608a2e037073')],
             ['12345678901234567'],
             ['123456789012345'],
         ];
@@ -100,11 +100,11 @@ class Multi
     /** @return list<array{string, 4|6}> */
     public static function getIpAddressVersions()
     {
-        return array_merge(
-            array_map(static function ($row) {
+        return \array_merge(
+            \array_map(static function ($row) {
                 return [$row[0], 4];
             }, self::getValidIpVersion4Addresses()),
-            array_map(static function ($row) {
+            \array_map(static function ($row) {
                 return [$row[0], 6];
             }, self::getValidIpVersion6Addresses())
         );
@@ -125,13 +125,13 @@ class Multi
     /** @return list<array{string, string, int}> */
     public static function getNetworkIpAddresses()
     {
-        return array_merge(
-            array_map(static function ($row) {
-                array_unshift($row, '12.34.56.78');
+        return \array_merge(
+            \array_map(static function ($row) {
+                \array_unshift($row, '12.34.56.78');
                 return $row;
             }, IPv4::getNetworkIpAddresses()),
-            array_map(static function ($row) {
-                array_unshift($row, '2001:db8::a60:8a2e:370:7334');
+            \array_map(static function ($row) {
+                \array_unshift($row, '2001:db8::a60:8a2e:370:7334');
                 return $row;
             }, IPv6::getNetworkIpAddresses())
 
@@ -141,13 +141,13 @@ class Multi
     /** @return list<array{string, string, int}> */
     public static function getBroadcastIpAddresses()
     {
-        return array_merge(
-            array_map(static function ($row) {
-                array_unshift($row, '12.34.56.78');
+        return \array_merge(
+            \array_map(static function ($row) {
+                \array_unshift($row, '12.34.56.78');
                 return $row;
             }, IPv4::getBroadcastIpAddresses()),
-            array_map(static function ($row) {
-                array_unshift($row, '2001:db8::a60:8a2e:370:7334');
+            \array_map(static function ($row) {
+                \array_unshift($row, '2001:db8::a60:8a2e:370:7334');
                 return $row;
             }, IPv6::getBroadcastIpAddresses())
         );
@@ -156,7 +156,7 @@ class Multi
     /** @return list<array{string, string, int}> */
     public static function getValidInRangeIpAddresses()
     {
-        return array_merge(
+        return \array_merge(
             IPv4::getValidInRangeIpAddresses(),
             IPv6::getValidInRangeIpAddresses(),
             [
@@ -169,7 +169,7 @@ class Multi
     /** @return list<array{string, string, int}> */
     public static function getCommonCidrValues()
     {
-        return array_merge(
+        return \array_merge(
             IPv4::getCommonCidrValues(),
             IPv6::getCommonCidrValues()
         );
@@ -178,11 +178,11 @@ class Multi
     /** @return list<array{string, bool}> */
     public static function getEmbeddedAddresses()
     {
-        return array_merge(
-            array_map(static function ($row) {
+        return \array_merge(
+            \array_map(static function ($row) {
                 return [$row[0], true];
             }, self::getValidIpVersion4Addresses()),
-            array_map(static function ($row) {
+            \array_map(static function ($row) {
                 return [$row[0], false];
             }, self::getValidIpVersion6Addresses())
         );
@@ -209,13 +209,13 @@ class Multi
     /** @return list<array{string, bool}> */
     public static function getLinkLocalIpAddresses()
     {
-        return array_merge(IPv4::getLinkLocalIpAddresses(), IPv6::getLinkLocalIpAddresses());
+        return \array_merge(IPv4::getLinkLocalIpAddresses(), IPv6::getLinkLocalIpAddresses());
     }
 
     /** @return list<array{string, bool}> */
     public static function getMappedLoopbackIpAddresses()
     {
-        return array_merge(
+        return \array_merge(
             IPv4::getLoopbackIpAddresses(),
             IPv6::getCategoryOfIpAddresses(IPv6::LOOPBACK | IPv6::LOOPBACK_MAPPED)
         );
@@ -224,7 +224,7 @@ class Multi
     /** @return list<array{string, bool}> */
     public static function getCompatibleLoopbackIpAddresses()
     {
-        return array_merge(
+        return \array_merge(
             IPv4::getLoopbackIpAddresses(),
             IPv6::getCategoryOfIpAddresses(IPv6::LOOPBACK | IPv6::LOOPBACK_COMPATIBLE)
         );
@@ -233,7 +233,7 @@ class Multi
     /** @return list<array{string, bool}> */
     public static function getDerivedLoopbackIpAddresses()
     {
-        return array_merge(
+        return \array_merge(
             IPv4::getLoopbackIpAddresses(),
             IPv6::getCategoryOfIpAddresses(IPv6::LOOPBACK | IPv6::LOOPBACK_DERIVED)
         );
@@ -242,7 +242,7 @@ class Multi
     /** @return list<array{string, bool}> */
     public static function getTeredoLoopbackIpAddresses()
     {
-        return array_merge(
+        return \array_merge(
             IPv4::getLoopbackIpAddresses(),
             IPv6::getCategoryOfIpAddresses(IPv6::LOOPBACK | IPv6::LOOPBACK_TEREDO)
         );
@@ -251,47 +251,47 @@ class Multi
     /** @return list<array{string, bool}> */
     public static function getMulticastIpAddresses()
     {
-        return array_merge(IPv4::getMulticastIpAddresses(), IPv6::getMulticastIpAddresses());
+        return \array_merge(IPv4::getMulticastIpAddresses(), IPv6::getMulticastIpAddresses());
     }
 
     /** @return list<array{string, bool}> */
     public static function getPrivateUseIpAddresses()
     {
-        return array_merge(IPv4::getPrivateUseIpAddresses(), IPv6::getPrivateUseIpAddresses());
+        return \array_merge(IPv4::getPrivateUseIpAddresses(), IPv6::getPrivateUseIpAddresses());
     }
 
     /** @return list<array{string, bool}> */
     public static function getUnspecifiedIpAddresses()
     {
-        return array_merge(IPv4::getUnspecifiedIpAddresses(), IPv6::getUnspecifiedIpAddresses());
+        return \array_merge(IPv4::getUnspecifiedIpAddresses(), IPv6::getUnspecifiedIpAddresses());
     }
 
     /** @return list<array{string, bool}> */
     public static function getBenchmarkingIpAddresses()
     {
-        return array_merge(IPv4::getBenchmarkingIpAddresses(), IPv6::getBenchmarkingIpAddresses());
+        return \array_merge(IPv4::getBenchmarkingIpAddresses(), IPv6::getBenchmarkingIpAddresses());
     }
 
     /** @return list<array{string, bool}> */
     public static function getDocumentationIpAddresses()
     {
-        return array_merge(IPv4::getDocumentationIpAddresses(), IPv6::getDocumentationIpAddresses());
+        return \array_merge(IPv4::getDocumentationIpAddresses(), IPv6::getDocumentationIpAddresses());
     }
 
     /** @return list<array{string, bool}> */
     public static function getGloballyReachableIpAddresses()
     {
-        return array_merge(IPv4::getGloballyReachableIpAddresses(), IPv6::getGloballyReachableIpAddressesExcludingMapped());
+        return \array_merge(IPv4::getGloballyReachableIpAddresses(), IPv6::getGloballyReachableIpAddressesExcludingMapped());
     }
 
     /** @return list<array{string, bool, bool}> */
     public static function getUniqueLocalIpAddresses()
     {
-        return array_merge(
-            array_map(static function ($testData) {
+        return \array_merge(
+            \array_map(static function ($testData) {
                 return [$testData[0], false, true];
             }, self::getValidIpVersion4Addresses()),
-            array_map(static function ($testData) {
+            \array_map(static function ($testData) {
                 $testData[] = false;
                 return $testData;
             }, IPv6::getUniqueLocalIpAddressesExcludingMapped())
@@ -301,11 +301,11 @@ class Multi
     /** @return list<array{string, bool, bool}> */
     public static function getUnicastIpAddresses()
     {
-        return array_merge(
-            array_map(static function ($testData) {
+        return \array_merge(
+            \array_map(static function ($testData) {
                 return [$testData[0], false, true];
             }, self::getValidIpVersion4Addresses()),
-            array_map(static function ($testData) {
+            \array_map(static function ($testData) {
                 $testData[] = false;
                 return $testData;
             }, IPv6::getUnicastIpAddressesExcludingMapped())
@@ -315,11 +315,11 @@ class Multi
     /** @return list<array{string, bool, bool}> */
     public static function getUnicastGlobalIpAddresses()
     {
-        return array_merge(
-            array_map(static function ($testData) {
+        return \array_merge(
+            \array_map(static function ($testData) {
                 return [$testData[0], false, true];
             }, self::getValidIpVersion4Addresses()),
-            array_map(static function ($testData) {
+            \array_map(static function ($testData) {
                 $testData[] = false;
                 return $testData;
             }, IPv6::getUnicastGlobalIpAddressesExcludingMapped())
@@ -329,12 +329,12 @@ class Multi
     /** @return list<array{string, bool, bool}> */
     public static function getIsBroadcastIpAddresses()
     {
-        return array_merge(
-            array_map(static function ($testData) {
+        return \array_merge(
+            \array_map(static function ($testData) {
                 $testData[] = false;
                 return $testData;
             }, IPv4::getIsBroadcastIpAddresses()),
-            array_map(static function ($testData) {
+            \array_map(static function ($testData) {
                 return [$testData[0], false, true];
             }, self::getValidIpVersion6Addresses())
         );
@@ -343,12 +343,12 @@ class Multi
     /** @return list<array{string, bool, bool}> */
     public static function getSharedIpAddresses()
     {
-        return array_merge(
-            array_map(static function ($testData) {
+        return \array_merge(
+            \array_map(static function ($testData) {
                 $testData[] = false;
                 return $testData;
             }, IPv4::getSharedIpAddresses()),
-            array_map(static function ($testData) {
+            \array_map(static function ($testData) {
                 return [$testData[0], false, true];
             }, self::getValidIpVersion6Addresses())
         );
@@ -357,12 +357,12 @@ class Multi
     /** @return list<array{string, bool, bool}> */
     public static function getFutureReservedIpAddresses()
     {
-        return array_merge(
-            array_map(static function ($testData) {
+        return \array_merge(
+            \array_map(static function ($testData) {
                 $testData[] = false;
                 return $testData;
             }, IPv4::getFutureReservedIpAddresses()),
-            array_map(static function ($testData) {
+            \array_map(static function ($testData) {
                 return [$testData[0], false, true];
             }, self::getValidIpVersion6Addresses())
         );

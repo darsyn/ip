@@ -53,6 +53,7 @@ return (new PhpCsFixer\Config())
             'on_multiline' => 'ignore',
         ],
         'modernize_strpos' => true,
+        'native_function_invocation' => ['include' => ['@all'], 'scope' => 'namespaced', 'strict' => true],
         'no_blank_lines_after_class_opening' => true,
         'no_empty_phpdoc' => true,
         'no_empty_statement' => true,

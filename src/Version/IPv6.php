@@ -100,7 +100,7 @@ class IPv6 extends AbstractIP implements Version6Interface
             return null;
         }
         $firstSegment = MbString::subString($this->getBinary(), 0, 2);
-        return (int) hexdec(Binary::toHex($firstSegment & Binary::fromHex('000f')));
+        return (int) \hexdec(Binary::toHex($firstSegment & Binary::fromHex('000f')));
     }
 
     public function isPrivateUse(): bool
@@ -211,7 +211,7 @@ class IPv6 extends AbstractIP implements Version6Interface
     private function isIetfProtocolAssignment(): bool
     {
         return $this->inRange(new self(Binary::fromHex('20010000000000000000000000000000')), 23)
-            && !in_array(Binary::toHex($this->getBinary()), [
+            && !\in_array(Binary::toHex($this->getBinary()), [
                 '20010001000000000000000000000001',
                 '20010001000000000000000000000002',
                 '20010001000000000000000000000003',

@@ -90,8 +90,8 @@ class MultiTest extends TestCase
     public function testProtocolNotationConvertsToCorrectBinarySequence(string $value, string $hex, string $expanded, string $compacted, ?string $dot): void
     {
         $ip = IP::factory($value);
-        $actualHex = unpack('H*hex', $ip->getBinary());
-        $this->assertSame($hex, is_array($actualHex) ? $actualHex['hex'] : null);
+        $actualHex = \unpack('H*hex', $ip->getBinary());
+        $this->assertSame($hex, \is_array($actualHex) ? $actualHex['hex'] : null);
     }
 
     /**
@@ -121,7 +121,7 @@ class MultiTest extends TestCase
     public function testGetBinaryAlwaysReturnsA16ByteString(string $value, string $hex, string $expanded, string $compacted, ?string $dot): void
     {
         $ip = IP::factory($value);
-        $this->assertSame(16, strlen(bin2hex($ip->getBinary())) / 2);
+        $this->assertSame(16, \strlen(\bin2hex($ip->getBinary())) / 2);
     }
 
     /**

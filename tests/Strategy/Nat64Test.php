@@ -138,7 +138,7 @@ class Nat64Test extends TestCase
     public function testNetworkSpecificStrategyCorrectlyConstructed(string $prefixAddress, int $length, string $expectedPrefixHex): void
     {
         $strategy = Nat64::networkSpecific(IPv6::factory($prefixAddress), $length);
-        $this->assertSame(pack('H*', $expectedPrefixHex), $strategy->getPrefix());
+        $this->assertSame(\pack('H*', $expectedPrefixHex), $strategy->getPrefix());
         $this->assertSame($length, $strategy->getPrefixLength());
         $this->assertSame($prefixAddress, IPv6::factory($strategy->getPrefix())->getCompactedAddress());
     }
@@ -164,7 +164,7 @@ class Nat64Test extends TestCase
     public function testBitsSetAfterPrefixLengthAreZeroedForNetworkSpecificPrefixes(string $prefixAddress, int $length, string $expectedPrefixHex): void
     {
         $strategy = Nat64::networkSpecific(IPv6::factory($prefixAddress), $length);
-        $this->assertSame(pack('H*', $expectedPrefixHex), $strategy->getPrefix());
+        $this->assertSame(\pack('H*', $expectedPrefixHex), $strategy->getPrefix());
         $this->assertSame($length, $strategy->getPrefixLength());
     }
 
@@ -173,12 +173,12 @@ class Nat64Test extends TestCase
     public function testWellKnownNamedConstructor(): void
     {
         $wellKnown = Nat64::wellKnown();
-        $this->assertSame(pack('H*', Nat64::WELL_KNOWN_PREFIX), $wellKnown->getPrefix());
+        $this->assertSame(\pack('H*', Nat64::WELL_KNOWN_PREFIX), $wellKnown->getPrefix());
         $this->assertSame(96, $wellKnown->getPrefixLength());
         $this->assertSame('64:ff9b::', IPv6::factory($wellKnown->getPrefix())->getCompactedAddress());
         $this->assertSame(
-            Nat64::networkSpecific(IPv6::factory('64:ff9b::'), 96)->pack(pack('H*', 'c0000221')),
-            $wellKnown->pack(pack('H*', 'c0000221'))
+            Nat64::networkSpecific(IPv6::factory('64:ff9b::'), 96)->pack(\pack('H*', 'c0000221')),
+            $wellKnown->pack(\pack('H*', 'c0000221'))
         );
     }
 
@@ -187,7 +187,7 @@ class Nat64Test extends TestCase
     public function testLocalUseNamedConstructor(): void
     {
         $localUse = Nat64::localUse();
-        $this->assertSame(pack('H*', Nat64::LOCAL_USE_PREFIX), $localUse->getPrefix());
+        $this->assertSame(\pack('H*', Nat64::LOCAL_USE_PREFIX), $localUse->getPrefix());
         $this->assertSame(48, $localUse->getPrefixLength());
         $this->assertSame('64:ff9b:1::', IPv6::factory($localUse->getPrefix())->getCompactedAddress());
     }

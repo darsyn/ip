@@ -15,7 +15,7 @@ abstract class TestCase extends BaseTestCase
     {
         // This is what happens when you try to support a stupid number of
         // PHP and PHPUnit versions.
-        method_exists($this, 'expectExceptionMessageIsOrContains')
+        \method_exists($this, 'expectExceptionMessageIsOrContains')
             // Does not exist on older versions of PHPUnit.
             ? $this->expectExceptionMessageIsOrContains($contains)
             // Throws deprecation warnings on newer versions of PHPUnit.

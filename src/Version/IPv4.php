@@ -117,7 +117,7 @@ class IPv4 extends AbstractIP implements Version4Interface
         // The PCP anycast address `192.0.0.9` (RFC 7723) and the TURN anycast
         // address `192.0.0.10` (RFC 8155) are globally routable, despite being
         // within the IETF Protocol Assignments block.
-        if (in_array(Binary::toHex($this->getBinary()), ['c0000009', 'c000000a'], true)) {
+        if (\in_array(Binary::toHex($this->getBinary()), ['c0000009', 'c000000a'], true)) {
             return true;
         }
         // The whole "this network" block `0.0.0.0/8` (RFC 791 § 3.2) is not

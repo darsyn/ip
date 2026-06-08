@@ -11,18 +11,18 @@ class IPv6 implements IpDataProviderInterface
     {
         return [
             // [ constructor value, expected hex, expected expanded address, expected compacted address ].
-            [pack('H*', 'd6be058371a4aa6dc77d77dd0cecf897'), 'd6be058371a4aa6dc77d77dd0cecf897', 'd6be:0583:71a4:aa6d:c77d:77dd:0cec:f897', 'd6be:583:71a4:aa6d:c77d:77dd:cec:f897'],
-            [pack('H*', '2d7f424dc574632e8d9d847d9f30b62a'), '2d7f424dc574632e8d9d847d9f30b62a', '2d7f:424d:c574:632e:8d9d:847d:9f30:b62a', '2d7f:424d:c574:632e:8d9d:847d:9f30:b62a'],
-            [pack('H*', '10d4ebf63401e851b3fd0d78ba5abf44'), '10d4ebf63401e851b3fd0d78ba5abf44', '10d4:ebf6:3401:e851:b3fd:0d78:ba5a:bf44', '10d4:ebf6:3401:e851:b3fd:d78:ba5a:bf44'],
-            [pack('H*', '7bf9a81f7047b07af891a84925c752c8'), '7bf9a81f7047b07af891a84925c752c8', '7bf9:a81f:7047:b07a:f891:a849:25c7:52c8', '7bf9:a81f:7047:b07a:f891:a849:25c7:52c8'],
-            [pack('H*', '9800ea8800a5cbcc9d6868f3dc4ace01'), '9800ea8800a5cbcc9d6868f3dc4ace01', '9800:ea88:00a5:cbcc:9d68:68f3:dc4a:ce01', '9800:ea88:a5:cbcc:9d68:68f3:dc4a:ce01'],
-            [pack('H*', 'c3f889b050c8b06c043cff4f7f4ae66d'), 'c3f889b050c8b06c043cff4f7f4ae66d', 'c3f8:89b0:50c8:b06c:043c:ff4f:7f4a:e66d', 'c3f8:89b0:50c8:b06c:43c:ff4f:7f4a:e66d'],
-            [pack('H*', 'ffffffffffffffffffffffffffffffff'), 'ffffffffffffffffffffffffffffffff', 'ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', 'ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff'],
+            [\pack('H*', 'd6be058371a4aa6dc77d77dd0cecf897'), 'd6be058371a4aa6dc77d77dd0cecf897', 'd6be:0583:71a4:aa6d:c77d:77dd:0cec:f897', 'd6be:583:71a4:aa6d:c77d:77dd:cec:f897'],
+            [\pack('H*', '2d7f424dc574632e8d9d847d9f30b62a'), '2d7f424dc574632e8d9d847d9f30b62a', '2d7f:424d:c574:632e:8d9d:847d:9f30:b62a', '2d7f:424d:c574:632e:8d9d:847d:9f30:b62a'],
+            [\pack('H*', '10d4ebf63401e851b3fd0d78ba5abf44'), '10d4ebf63401e851b3fd0d78ba5abf44', '10d4:ebf6:3401:e851:b3fd:0d78:ba5a:bf44', '10d4:ebf6:3401:e851:b3fd:d78:ba5a:bf44'],
+            [\pack('H*', '7bf9a81f7047b07af891a84925c752c8'), '7bf9a81f7047b07af891a84925c752c8', '7bf9:a81f:7047:b07a:f891:a849:25c7:52c8', '7bf9:a81f:7047:b07a:f891:a849:25c7:52c8'],
+            [\pack('H*', '9800ea8800a5cbcc9d6868f3dc4ace01'), '9800ea8800a5cbcc9d6868f3dc4ace01', '9800:ea88:00a5:cbcc:9d68:68f3:dc4a:ce01', '9800:ea88:a5:cbcc:9d68:68f3:dc4a:ce01'],
+            [\pack('H*', 'c3f889b050c8b06c043cff4f7f4ae66d'), 'c3f889b050c8b06c043cff4f7f4ae66d', 'c3f8:89b0:50c8:b06c:043c:ff4f:7f4a:e66d', 'c3f8:89b0:50c8:b06c:43c:ff4f:7f4a:e66d'],
+            [\pack('H*', 'ffffffffffffffffffffffffffffffff'), 'ffffffffffffffffffffffffffffffff', 'ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', 'ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff'],
             ['1234567890123456',                             '31323334353637383930313233343536', '3132:3334:3536:3738:3930:3132:3334:3536', '3132:3334:3536:3738:3930:3132:3334:3536'],
             // Test for null-bytes.
-            [pack('H*', '00000000000000000000000000000000'), '00000000000000000000000000000000', '0000:0000:0000:0000:0000:0000:0000:0000', '::'],
-            [pack('H*', '00000000000000000000000000000001'), '00000000000000000000000000000001', '0000:0000:0000:0000:0000:0000:0000:0001', '::1'],
-            [pack('H*', '10000000000000000000000000000000'), '10000000000000000000000000000000', '1000:0000:0000:0000:0000:0000:0000:0000', '1000::'],
+            [\pack('H*', '00000000000000000000000000000000'), '00000000000000000000000000000000', '0000:0000:0000:0000:0000:0000:0000:0000', '::'],
+            [\pack('H*', '00000000000000000000000000000001'), '00000000000000000000000000000001', '0000:0000:0000:0000:0000:0000:0000:0001', '::1'],
+            [\pack('H*', '10000000000000000000000000000000'), '10000000000000000000000000000000', '1000:0000:0000:0000:0000:0000:0000:0000', '1000::'],
         ];
     }
 
@@ -47,7 +47,7 @@ class IPv6 implements IpDataProviderInterface
     /** @return list<array{string, string, string, string}> */
     public static function getValidIpAddresses()
     {
-        return array_merge(self::getValidBinarySequences(), self::getValidProtocolIpAddresses());
+        return \array_merge(self::getValidBinarySequences(), self::getValidProtocolIpAddresses());
     }
 
     /** @return list<array{string}> */
@@ -61,7 +61,7 @@ class IPv6 implements IpDataProviderInterface
             ['1.2.3'],
             ['This one is completely wrong.'],
             // 15 bytes instead of 16.
-            [pack('H*', '20010db8000000000a608a2e037073')],
+            [\pack('H*', '20010db8000000000a608a2e037073')],
             ['12345678901234567'],
             ['123456789012345'],
         ];
@@ -328,7 +328,7 @@ class IPv6 implements IpDataProviderInterface
         $data = [];
         $true = $false = 0;
         $ipAddresses = self::getCategorizedIpAddresses();
-        $ipAddresses = array_filter($ipAddresses, static function ($categories) use ($exclude) {
+        $ipAddresses = \array_filter($ipAddresses, static function ($categories) use ($exclude) {
             return !(($categories & $exclude) > 0);
         });
         foreach ($ipAddresses as $ipAddress => $categories) {
