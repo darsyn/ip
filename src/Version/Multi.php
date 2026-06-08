@@ -21,7 +21,7 @@ use Darsyn\IP\Util\MbString;
  * between the two protocol formats as it converts both of them to a 16-byte
  * binary sequence for easy mathematical operations and consistency (for
  * example, storing both IPv4 and IPv6 addresses' binary sequences in a
- * fixed-length database column). in the same column in a database).
+ * fixed-length database column).
  *
  * @author    Zan Baldwin <hello@zanbaldwin.com>
  * @link      https://github.com/darsyn/ip
@@ -102,7 +102,7 @@ class Multi extends IPv6 implements MultiVersionInterface
             try {
                 return self::getProtocolFormatter()->ntop($this->getShortBinary());
             } catch (Exception\Formatter\FormatException $e) {
-                throw new Exception\IpException('An unknown error occured internally.', 0, $e);
+                throw new Exception\IpException('An unknown error occurred internally.', 0, $e);
             }
         }
         throw new Exception\WrongVersionException(4, 6, (string) $this);
@@ -197,7 +197,6 @@ class Multi extends IPv6 implements MultiVersionInterface
             : parent::isLoopback();
     }
 
-    /** * {@inheritDoc} */
     public function isMulticast(): bool
     {
         return $this->isEmbedded()
