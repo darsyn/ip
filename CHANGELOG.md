@@ -28,6 +28,9 @@
 - Rename `isPublicUse()` to `isGloballyReachable()`, conforming to the official
   wording used in the IANA special-purpose address registries ("Public Use"
   does not appear in them). Keep `isPublicUse()` as a deprecated alias.
+- Add NAT64 (RFC 6052 § 2.2) embedding strategy, with named constructors for
+  the Well-known Prefix (`64:ff9b::/96`), operator Network-specific Prefixes,
+  and the RFC 8215 Local-use prefix (`64:ff9b:1::/48`).
 
 ## `6.0.0`
 
