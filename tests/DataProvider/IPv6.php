@@ -289,10 +289,30 @@ class IPv6 implements IpDataProviderInterface
             'ff0e::' => self::GLOBALLY_REACHABLE_V6 | self::MULTICAST_GLOBAL,
             '2001:db8:85a3::8a2e:370:7334' => self::DOCUMENTATION | self::UNICAST_OTHER,
             '2001:2::ac32:23ff:21' => self::BENCHMARKING | self::UNICAST_OTHER,
+            // Globally-reachable carve-outs within the IETF Protocol Assignments
+            // block `2001::/23` (RFC 2928): PCP, TURN and DNS-SD SRP anycast (RFC
+            // 7723/8155/9665), AMT (RFC 7450), AS112-v6 (RFC 7535), ORCHIDv2 (RFC
+            // 7343), and DRIP DETs (RFC 9374).
             '2001:1::1' => self::GLOBALLY_REACHABLE_V6 | self::UNICAST_GLOBAL,
+            '2001:1::2' => self::GLOBALLY_REACHABLE_V6 | self::UNICAST_GLOBAL,
+            '2001:1::3' => self::GLOBALLY_REACHABLE_V6 | self::UNICAST_GLOBAL,
+            '2001:3::1' => self::GLOBALLY_REACHABLE_V6 | self::UNICAST_GLOBAL,
+            '2001:4:112::1' => self::GLOBALLY_REACHABLE_V6 | self::UNICAST_GLOBAL,
+            '2001:20::1' => self::GLOBALLY_REACHABLE_V6 | self::UNICAST_GLOBAL,
+            '2001:30::1' => self::GLOBALLY_REACHABLE_V6 | self::UNICAST_GLOBAL,
+            // The remainder of `2001::/23` is not globally reachable: the deprecated
+            // ORCHID block `2001:10::/28`, and any other address within the block.
             '2001:10::' => self::UNICAST_OTHER,
+            '2001:5::1' => self::UNICAST_OTHER,
             '3fff::1' => self::DOCUMENTATION | self::UNICAST_OTHER,
             '64:ff9b:1::1' => self::UNICAST_OTHER,
+            // NAT64 Well-known Prefix (`64:ff9b::/96`, RFC 6052 § 2.1) is classified
+            // by the embedded IPv4 address, not the prefix: an embedded non-global
+            // address must not be reported globally reachable (SSRF deny-list bypass),
+            // while an embedded global address must be.
+            '64:ff9b::10.0.0.1' => self::UNICAST_OTHER,
+            '64:ff9b::8.8.8.8' => self::GLOBALLY_REACHABLE_V6 | self::UNICAST_GLOBAL,
+            '64:ff9b::192.0.0.9' => self::GLOBALLY_REACHABLE_V6 | self::UNICAST_GLOBAL,
             '100::1' => self::UNICAST_OTHER,
             '100:0:0:1::1' => self::UNICAST_OTHER,
             '5f00::1' => self::UNICAST_OTHER,
