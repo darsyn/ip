@@ -299,6 +299,7 @@ class IPv6 implements IpDataProviderInterface
             '0000:0000:0000:0000:0000:ffff:7f00:a001' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::MAPPED | self::LOOPBACK_MAPPED,
             '2002::' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::DERIVED,
             '2002:7f00:1::' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::DERIVED | self::LOOPBACK_DERIVED,
+            '2002:7f00:1:1::1' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::DERIVED | self::LOOPBACK_DERIVED,
             '2002:1234:4321:0:00:000:0000::' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::DERIVED,
             '::7f00:1' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::COMPATIBLE | self::LOOPBACK_COMPATIBLE,
             '::12.34.56.78' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::COMPATIBLE,

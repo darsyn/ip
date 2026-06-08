@@ -42,6 +42,18 @@ class Derived
         ];
     }
 
+    /** @return list<array{string, string, string}> */
+    public static function getNonCanonicalSequences()
+    {
+        return [
+            // [ non-canonical 6to4 binary, embedded IPv4 (bits 16-47), canonical 6to4 binary ].
+            // Non-zero SLA ID (subnet), zeroed interface ID.
+            [pack('H*', '2002c000020112340000000000000000'), pack('H*', 'c0000201'), pack('H*', '2002c000020100000000000000000000')],
+            // Zeroed SLA ID, non-zero interface ID.
+            [pack('H*', '2002c00002010000dead00000000beef'), pack('H*', 'c0000201'), pack('H*', '2002c000020100000000000000000000')],
+        ];
+    }
+
     /** @return list<array{string}> */
     public static function getInvalidSequences()
     {
