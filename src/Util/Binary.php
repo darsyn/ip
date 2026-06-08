@@ -18,7 +18,7 @@ class Binary
     /** @throws \InvalidArgumentException */
     public static function toHex(string $binary): string
     {
-        if (false === ($data = \unpack('H*', $binary)) || !is_string($hex = \reset($data))) {
+        if (false === ($data = \unpack('H*', $binary)) || !\is_string($hex = \reset($data))) {
             throw new \InvalidArgumentException('Unknown error converting string to hexadecimal.');
         }
         return $hex;

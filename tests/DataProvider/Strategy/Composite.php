@@ -9,15 +9,15 @@ class Composite
     /** @return list<array{string, bool}> */
     public static function getValidIpAddresses()
     {
-        $valid = array_map(static function (array $row) {
+        $valid = \array_map(static function (array $row) {
             $row[1] = true;
             return $row;
         }, self::getValidSequences());
-        $invalid = array_map(static function (array $row) {
+        $invalid = \array_map(static function (array $row) {
             $row[1] = false;
             return $row;
         }, self::getInvalidSequences());
-        return array_merge($valid, $invalid);
+        return \array_merge($valid, $invalid);
     }
 
     /** @return list<array{string}> */
@@ -37,7 +37,7 @@ class Composite
      */
     public static function getValidSequences()
     {
-        return array_merge(
+        return \array_merge(
             Mapped::getValidSequences(),
             Derived::getValidSequences(),
             Nat64::getValidSequences(),
@@ -54,7 +54,7 @@ class Composite
      */
     public static function getInvalidSequences()
     {
-        return array_map(static function (array $row) {
+        return \array_map(static function (array $row) {
             return [$row[0]];
         }, Compatible::getValidSequences());
     }

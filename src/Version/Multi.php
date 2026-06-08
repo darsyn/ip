@@ -8,7 +8,6 @@ use Darsyn\IP\Exception;
 use Darsyn\IP\IpInterface;
 use Darsyn\IP\Strategy\EmbeddingStrategyInterface;
 use Darsyn\IP\Strategy\Mapped as MappedEmbeddingStrategy;
-use Darsyn\IP\Util\Binary;
 use Darsyn\IP\Util\MbString;
 
 /**

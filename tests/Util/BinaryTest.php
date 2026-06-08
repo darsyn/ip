@@ -58,7 +58,7 @@ class BinaryTest extends TestCase
     public function testHexCanConvertAndBackAgain(string $hex, string $humanReadable): void
     {
         $converted = Binary::fromHex($hex);
-        $this->assertSame(strtolower($hex), Binary::toHex($converted));
+        $this->assertSame(\strtolower($hex), Binary::toHex($converted));
     }
 
     /**
@@ -94,6 +94,6 @@ class BinaryTest extends TestCase
     public function testHumanReadableCanConvertToHex(string $hex, string $humanReadable): void
     {
         $converted = Binary::fromHumanReadable($humanReadable);
-        $this->assertSame(strtolower($hex), Binary::toHex($converted));
+        $this->assertSame(\strtolower($hex), Binary::toHex($converted));
     }
 }

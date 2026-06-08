@@ -10,19 +10,19 @@ class IPv4 implements IpDataProviderInterface
     public static function getValidBinarySequences()
     {
         return [
-            [pack('H*', '71637a89'), '71637a89', '113.99.122.137'],
-            [pack('H*', '4708d36c'), '4708d36c', '71.8.211.108'],
-            [pack('H*', 'c8fa3d9b'), 'c8fa3d9b', '200.250.61.155'],
-            [pack('H*', 'db37478d'), 'db37478d', '219.55.71.141'],
-            [pack('H*', 'ae823cc4'), 'ae823cc4', '174.130.60.196'],
-            [pack('H*', '0c0679fc'), '0c0679fc', '12.6.121.252'],
-            [pack('H*', 'ffffffff'), 'ffffffff', '255.255.255.255'],
+            [\pack('H*', '71637a89'), '71637a89', '113.99.122.137'],
+            [\pack('H*', '4708d36c'), '4708d36c', '71.8.211.108'],
+            [\pack('H*', 'c8fa3d9b'), 'c8fa3d9b', '200.250.61.155'],
+            [\pack('H*', 'db37478d'), 'db37478d', '219.55.71.141'],
+            [\pack('H*', 'ae823cc4'), 'ae823cc4', '174.130.60.196'],
+            [\pack('H*', '0c0679fc'), '0c0679fc', '12.6.121.252'],
+            [\pack('H*', 'ffffffff'), 'ffffffff', '255.255.255.255'],
             ['abcd',                 '61626364', '97.98.99.100'],
             ['4d::',                 '34643a3a', '52.100.58.58'],
             // Test for null-bytes.
-            [pack('H*', '00000000'), '00000000', '0.0.0.0'],
-            [pack('H*', '00000001'), '00000001', '0.0.0.1'],
-            [pack('H*', '10000000'), '10000000', '16.0.0.0'],
+            [\pack('H*', '00000000'), '00000000', '0.0.0.0'],
+            [\pack('H*', '00000001'), '00000001', '0.0.0.1'],
+            [\pack('H*', '10000000'), '10000000', '16.0.0.0'],
         ];
     }
 
@@ -48,7 +48,7 @@ class IPv4 implements IpDataProviderInterface
     /** @return list<array{string, string, string}> */
     public static function getValidIpAddresses()
     {
-        return array_merge(self::getValidBinarySequences(), self::getValidProtocolIpAddresses());
+        return \array_merge(self::getValidBinarySequences(), self::getValidProtocolIpAddresses());
     }
 
     /** @return list<array{string}> */
@@ -61,7 +61,7 @@ class IPv4 implements IpDataProviderInterface
             ['1.2.3'],
             ['This one is completely wrong.'],
             // 5 bytes instead of 4.
-            [pack('H*', '20010db80')],
+            [\pack('H*', '20010db80')],
             ['12345'],
             ['123'],
         ];
@@ -270,7 +270,7 @@ class IPv4 implements IpDataProviderInterface
         $data = [];
         $true = $false = 0;
         $ipAddresses = self::getCategorizedIpAddresses();
-        $ipAddresses = array_filter($ipAddresses, static function ($categories) use ($exclude) {
+        $ipAddresses = \array_filter($ipAddresses, static function ($categories) use ($exclude) {
             return !(($categories & $exclude) > 0);
         });
         foreach ($ipAddresses as $ipAddress => $categories) {

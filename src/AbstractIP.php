@@ -118,7 +118,7 @@ abstract class AbstractIP implements IpInterface
             );
         }
         $mask = $this->getBinary() ^ $ip->getBinary();
-        $parts = explode('1', Binary::toHumanReadable($mask), 2);
+        $parts = \explode('1', Binary::toHumanReadable($mask), 2);
         return MbString::getLength($parts[0]);
     }
 

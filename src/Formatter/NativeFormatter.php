@@ -31,7 +31,7 @@ class NativeFormatter implements ProtocolFormatterInterface
             $number = \inet_pton($binary);
             if (false === $number
                 || false === ($sequence = \unpack('a4', $number))
-                || !is_string($return = \current($sequence))
+                || !\is_string($return = \current($sequence))
             ) {
                 throw new FormatException($binary);
             }
@@ -41,7 +41,7 @@ class NativeFormatter implements ProtocolFormatterInterface
             $number = \inet_pton($binary);
             if (false === $number
                 || false === ($sequence = \unpack('a16', $number))
-                || !is_string($return = \current($sequence))
+                || !\is_string($return = \current($sequence))
             ) {
                 throw new FormatException($binary);
             }

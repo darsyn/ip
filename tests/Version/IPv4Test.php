@@ -51,8 +51,8 @@ class IPv4Test extends TestCase
     public function testProtocolNotationConvertsToCorrectBinarySequence(string $value, string $expectedHex, string $expectedDot): void
     {
         $ip = IP::factory($value);
-        $actualHex = unpack('H*hex', $ip->getBinary());
-        $this->assertSame($expectedHex, is_array($actualHex) ? $actualHex['hex'] : null);
+        $actualHex = \unpack('H*hex', $ip->getBinary());
+        $this->assertSame($expectedHex, \is_array($actualHex) ? $actualHex['hex'] : null);
     }
 
     /**
@@ -83,7 +83,7 @@ class IPv4Test extends TestCase
     public function testGetBinaryAlwaysReturnsA4ByteString(string $value, string $expectedHex, string $expectedDot): void
     {
         $ip = IP::factory($value);
-        $this->assertSame(4, strlen(bin2hex($ip->getBinary())) / 2);
+        $this->assertSame(4, \strlen(\bin2hex($ip->getBinary())) / 2);
     }
 
     /**
@@ -170,8 +170,8 @@ class IPv4Test extends TestCase
         $mask = (function () use ($cidr): string {
             return $this->generateBinaryMask($cidr, 4);
         })->call($ip);
-        $actualMask = unpack('H*hex', $mask);
-        $this->assertSame($expectedMaskHex, is_array($actualMask) ? $actualMask['hex'] : null);
+        $actualMask = \unpack('H*hex', $mask);
+        $this->assertSame($expectedMaskHex, \is_array($actualMask) ? $actualMask['hex'] : null);
     }
 
     /**

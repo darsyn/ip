@@ -20,7 +20,7 @@ class MbString
         }
         // Note: concatenating an empty string is intentional to type-coerce
         // `string|false` to `string` on PHP 7.x
-        return is_int($length)
+        return \is_int($length)
             ? \substr($str, $start, $length) . ''
             // On PHP versions 7.2 to 7.4, the $length argument cannot be null.
             // The official PHP docs do not mention this peculiarity.
