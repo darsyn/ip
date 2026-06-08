@@ -88,4 +88,38 @@ class DerivedTest extends TestCase
     {
         $this->assertSame($ipv6, $this->strategy->pack($ipv4));
     }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Derived::getNonCanonicalSequences()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(DerivedDataProvider::class, 'getNonCanonicalSequences')]
+    public function testNonCanonical6to4IsEmbedded(string $ipv6, string $ipv4, string $canonical): void
+    {
+        $this->assertTrue($this->strategy->isEmbedded($ipv6));
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Derived::getNonCanonicalSequences()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(DerivedDataProvider::class, 'getNonCanonicalSequences')]
+    public function testCorrectSequenceExtractedFromNonCanonical6to4(string $ipv6, string $ipv4, string $canonical): void
+    {
+        $this->assertSame($ipv4, $this->strategy->extract($ipv6));
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Derived::getNonCanonicalSequences()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(DerivedDataProvider::class, 'getNonCanonicalSequences')]
+    public function testNonCanonical6to4CanonicalisedByExtractThenPack(string $ipv6, string $ipv4, string $canonical): void
+    {
+        $this->assertNotSame($canonical, $ipv6);
+        $this->assertSame($canonical, $this->strategy->pack($this->strategy->extract($ipv6)));
+    }
 }
