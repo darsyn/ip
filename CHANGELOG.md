@@ -32,6 +32,9 @@
   the Well-known Prefix (`64:ff9b::/96`), operator Network-specific Prefixes,
   and the RFC 8215 Local-use prefix (`64:ff9b:1::/48`).
 - Add `Teredo` embedding strategy for `2001::/32` (according to RFC 4380 § 4).
+- Add `Composite` embedding strategy that recognises and extracts version 4
+  addresses across several underlying strategies, while packing through a single
+  canonical strategy.
 
 ## `6.0.0`
 
