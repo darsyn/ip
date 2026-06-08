@@ -212,18 +212,18 @@ class IPv6 implements IpDataProviderInterface
     }
 
     /** @return list<array{string, bool}> */
-    public static function getPublicUseIpAddresses()
+    public static function getGloballyReachableIpAddresses()
     {
-        return self::getCategoryOfIpAddresses(self::PUBLIC_USE_V6);
+        return self::getCategoryOfIpAddresses(self::GLOBALLY_REACHABLE_V6);
     }
 
     /** @return list<array{string, bool}> */
-    public static function getPublicUseIpAddressesExcludingMapped()
+    public static function getGloballyReachableIpAddressesExcludingMapped()
     {
         // Exclude IPv4-embedded addresses embedded using the Mapped strategy,
         // they may fail the test because the IPv4 equivalent is not public (eg,
         // "::ffff:7f00:1").
-        return self::getCategoryOfIpAddresses(self::PUBLIC_USE_V6, self::MAPPED);
+        return self::getCategoryOfIpAddresses(self::GLOBALLY_REACHABLE_V6, self::MAPPED);
     }
 
     /** @return list<array{string, bool}> */
@@ -268,8 +268,8 @@ class IPv6 implements IpDataProviderInterface
             '::' => self::UNSPECIFIED | self::UNICAST_OTHER | self::COMPATIBLE,
             '::0' => self::UNSPECIFIED | self::UNICAST_OTHER | self::COMPATIBLE,
             '::1' => self::LOOPBACK | self::UNICAST_OTHER | self::COMPATIBLE,
-            '::0.0.0.2' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::COMPATIBLE,
-            '1::' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL,
+            '::0.0.0.2' => self::GLOBALLY_REACHABLE_V6 | self::UNICAST_GLOBAL | self::COMPATIBLE,
+            '1::' => self::GLOBALLY_REACHABLE_V6 | self::UNICAST_GLOBAL,
             'fc00::' => self::PRIVATE_USE | self::UNIQUE_LOCAL | self::UNICAST_OTHER,
             'fdff:ffff::' => self::PRIVATE_USE | self::UNIQUE_LOCAL | self::UNICAST_OTHER,
             'fe80:ffff::' => self::LINK_LOCAL,
@@ -279,24 +279,24 @@ class IPv6 implements IpDataProviderInterface
             'febf:ffff:ffff:ffff:ffff:ffff:ffff:ffff' => self::LINK_LOCAL,
             'fe80::ffff:ffff:ffff:ffff' => self::LINK_LOCAL,
             'fe80:0:0:1::' => self::LINK_LOCAL,
-            'fec0::' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL,
+            'fec0::' => self::GLOBALLY_REACHABLE_V6 | self::UNICAST_GLOBAL,
             'ff01::' => self::MULTICAST_INTERFACE_LOCAL,
             'ff02::' => self::MULTICAST_LINK_LOCAL,
             'ff03::' => self::MULTICAST_REALM_LOCAL,
             'ff04::' => self::MULTICAST_ADMIN_LOCAL,
             'ff05::' => self::MULTICAST_SITE_LOCAL,
             'ff08::' => self::MULTICAST_ORGANIZATION_LOCAL,
-            'ff0e::' => self::PUBLIC_USE_V6 | self::MULTICAST_GLOBAL,
+            'ff0e::' => self::GLOBALLY_REACHABLE_V6 | self::MULTICAST_GLOBAL,
             '2001:db8:85a3::8a2e:370:7334' => self::DOCUMENTATION | self::UNICAST_OTHER,
             '2001:2::ac32:23ff:21' => self::BENCHMARKING | self::UNICAST_OTHER,
-            '2001:1::1' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL,
+            '2001:1::1' => self::GLOBALLY_REACHABLE_V6 | self::UNICAST_GLOBAL,
             '2001:10::' => self::UNICAST_OTHER,
             '3fff::1' => self::DOCUMENTATION | self::UNICAST_OTHER,
             '64:ff9b:1::1' => self::UNICAST_OTHER,
             '100::1' => self::UNICAST_OTHER,
             '100:0:0:1::1' => self::UNICAST_OTHER,
             '5f00::1' => self::UNICAST_OTHER,
-            '102:304:506:708:90a:b0c:d0e:f10' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL,
+            '102:304:506:708:90a:b0c:d0e:f10' => self::GLOBALLY_REACHABLE_V6 | self::UNICAST_GLOBAL,
             'fd00::' => self::PRIVATE_USE | self::UNIQUE_LOCAL | self::UNICAST_OTHER,
             'fdff:ffff:ffff:ffff:ffff:ffff:ffff:ffff' => self::PRIVATE_USE | self::UNIQUE_LOCAL | self::UNICAST_OTHER,
             'ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff' => self::MULTICAST_OTHER,
@@ -308,17 +308,17 @@ class IPv6 implements IpDataProviderInterface
             '2002:7f00:1::' => self::UNICAST_OTHER | self::DERIVED | self::LOOPBACK_DERIVED,
             '2002:7f00:1:1::1' => self::UNICAST_OTHER | self::DERIVED | self::LOOPBACK_DERIVED,
             '2002:1234:4321:0:00:000:0000::' => self::UNICAST_OTHER | self::DERIVED,
-            '::7f00:1' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::COMPATIBLE | self::LOOPBACK_COMPATIBLE,
-            '::12.34.56.78' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::COMPATIBLE,
-            '0::000:0000:b12:cab' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL | self::COMPATIBLE,
-            '1cc9:7d7f:2a9f:cabd:9186:2be5:bef1:6a54' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL,
-            'b638:cc70:716:c4d4:f69c:4ee3:6c65:a0b2' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL,
-            '140c:12f1:6e6f:c0bb:980e:3816:3e52:1193' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL,
-            '7a30:bf4:4c6c:8dc1:e340:774d:6487:3822' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL,
-            '6af8:1ceb:eaae:104a:829c:e76e:5802:13f8' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL,
-            '3e48:c9fd:c569:f5dd:ee36:8075:691b:8234' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL,
-            'cab2:4f27:790f:cf03:5241:9eff:aba5:bb5c' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL,
-            'e896:8866:872b:bd4f:6d60:7aa8:ebe5:36f1' => self::PUBLIC_USE_V6 | self::UNICAST_GLOBAL,
+            '::7f00:1' => self::GLOBALLY_REACHABLE_V6 | self::UNICAST_GLOBAL | self::COMPATIBLE | self::LOOPBACK_COMPATIBLE,
+            '::12.34.56.78' => self::GLOBALLY_REACHABLE_V6 | self::UNICAST_GLOBAL | self::COMPATIBLE,
+            '0::000:0000:b12:cab' => self::GLOBALLY_REACHABLE_V6 | self::UNICAST_GLOBAL | self::COMPATIBLE,
+            '1cc9:7d7f:2a9f:cabd:9186:2be5:bef1:6a54' => self::GLOBALLY_REACHABLE_V6 | self::UNICAST_GLOBAL,
+            'b638:cc70:716:c4d4:f69c:4ee3:6c65:a0b2' => self::GLOBALLY_REACHABLE_V6 | self::UNICAST_GLOBAL,
+            '140c:12f1:6e6f:c0bb:980e:3816:3e52:1193' => self::GLOBALLY_REACHABLE_V6 | self::UNICAST_GLOBAL,
+            '7a30:bf4:4c6c:8dc1:e340:774d:6487:3822' => self::GLOBALLY_REACHABLE_V6 | self::UNICAST_GLOBAL,
+            '6af8:1ceb:eaae:104a:829c:e76e:5802:13f8' => self::GLOBALLY_REACHABLE_V6 | self::UNICAST_GLOBAL,
+            '3e48:c9fd:c569:f5dd:ee36:8075:691b:8234' => self::GLOBALLY_REACHABLE_V6 | self::UNICAST_GLOBAL,
+            'cab2:4f27:790f:cf03:5241:9eff:aba5:bb5c' => self::GLOBALLY_REACHABLE_V6 | self::UNICAST_GLOBAL,
+            'e896:8866:872b:bd4f:6d60:7aa8:ebe5:36f1' => self::GLOBALLY_REACHABLE_V6 | self::UNICAST_GLOBAL,
         ];
     }
 

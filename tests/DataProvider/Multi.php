@@ -270,9 +270,9 @@ class Multi
     }
 
     /** @return list<array{string, bool}> */
-    public static function getPublicUseIpAddresses()
+    public static function getGloballyReachableIpAddresses()
     {
-        return array_merge(IPv4::getPublicUseIpAddresses(), IPv6::getPublicUseIpAddressesExcludingMapped());
+        return array_merge(IPv4::getGloballyReachableIpAddresses(), IPv6::getGloballyReachableIpAddressesExcludingMapped());
     }
 
     /** @return list<array{string, bool, bool}> */

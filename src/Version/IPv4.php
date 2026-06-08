@@ -106,7 +106,13 @@ class IPv4 extends AbstractIP implements Version4Interface
             || $this->inRange(new self(Binary::fromHex('e9fc0000')), 24);
     }
 
+    /** @deprecated Use isGloballyReachable() instead. */
     public function isPublicUse(): bool
+    {
+        return $this->isGloballyReachable();
+    }
+
+    public function isGloballyReachable(): bool
     {
         // The PCP anycast address `192.0.0.9` (RFC 7723) and the TURN anycast
         // address `192.0.0.10` (RFC 8155) are globally routable, despite being

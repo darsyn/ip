@@ -234,11 +234,17 @@ class Multi extends IPv6 implements MultiVersionInterface
             : parent::isDocumentation();
     }
 
+    /** @deprecated Use isGloballyReachable() instead. */
     public function isPublicUse(): bool
     {
+        return $this->isGloballyReachable();
+    }
+
+    public function isGloballyReachable(): bool
+    {
         return $this->isEmbedded()
-            ? (new IPv4($this->getShortBinary()))->isPublicUse()
-            : parent::isPublicUse();
+            ? (new IPv4($this->getShortBinary()))->isGloballyReachable()
+            : parent::isGloballyReachable();
     }
 
     public function isUniqueLocal(): bool
