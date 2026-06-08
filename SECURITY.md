@@ -52,7 +52,7 @@ issues in third-party or bundled dependencies (please report those to their
 respective maintainers), and the documentation site's hosting infrastructure.
 
 A note on using this library for security decisions: the classification helpers
-(`isPublicUse()`, `isPrivateUse()`, etc) and CIDR helpers (`inRange()`, etc)
+(`isGloballyReachable()`, `isPrivateUse()`, etc) and CIDR helpers (`inRange()`, etc)
 report **RFC-defined categories**. When you rely on them for an access-control
 decision (allow/deny-list, SSRF guard, etc), canonicalise the address first and
 treat the result as **one layer of defence**, not the only one.
