@@ -31,6 +31,17 @@ is_static_analysis_version() {
     return 1
 }
 
+docker() {
+    if type -P 'docker' >'/dev/null' 2>&1; then
+        command 'docker' "$@"
+    elif command -v 'flatpak-spawn' >'/dev/null' 2>&1 && flatpak-spawn --host 'docker' --version >'/dev/null' 2>&1; then
+        command 'flatpak-spawn' --host 'docker' "$@"
+    else
+        echo >&2 'Docker not available.'
+        return 1
+    fi
+}
+
 docker_composer() {
     mkdir -p '/tmp/composer' 2>'/dev/null' || true
     docker run --rm \
