@@ -22,6 +22,9 @@
   `CONTRIBUTING.md`
 - Bugfix: detect embedded IPv4 across the entire 6to4 block (`2002::/16`, RFC
   3056 § 2), not just canonical 6to4 addresses with a zeroed 80-bit tail.
+- Bugfix: align `isPublicUse()`, `isUnicastGlobal()` and `isDocumentation()`
+  with the IANA special-purpose address registries, and update RFC
+  references/citations for all address classification methods.
 
 ## `6.0.0`
 
