@@ -89,3 +89,35 @@ The position of the embedded IPv4 address depends on the prefix length (RFC 6052
 | `/56`       | `PPPP:PPPP:PPPP:PPXX:??XX:XXXX:????:????` |
 | `/64`       | `PPPP:PPPP:PPPP:PPPP:??XX:XXXX:XX??:????` |
 | `/96`       | `PPPP:PPPP:PPPP:PPPP:PPPP:PPPP:XXXX:XXXX` |
+
+## Composite
+
+The `Composite` strategy combines several embedding strategies behind a single
+strategy. An address is recognised as embedded if **any** of the underlying
+strategies recognises it, and extraction is delegated to the **first** strategy
+(in constructor order) that recognises the address.
+
+Packing is asymmetric: only the first strategy supplied — the *packer* — is ever
+used to embed a version 4 address into version 6. A `Composite` can therefore
+recognise several embedding schemes on input while always producing a single
+canonical form on output.
+
+```php
+<?php
+use Darsyn\IP\Strategy\Composite;
+use Darsyn\IP\Strategy\Mapped;
+use Darsyn\IP\Strategy\Nat64;
+use Darsyn\IP\Version\Multi as IP;
+
+// Recognise both IPv4-mapped and NAT64 (Well-known Prefix) embeddings, but
+// always pack as IPv4-mapped.
+$strategy = new Composite(new Mapped, Nat64::wellKnown());
+
+// Addresses embedded under either scheme are recognised as version 4.
+IP::factory('::ffff:7f00:1', $strategy)->getDotAddress();   // string("127.0.0.1")
+IP::factory('64:ff9b::7f00:1', $strategy)->getDotAddress(); // string("127.0.0.1")
+
+// But only the first strategy (here, Mapped) is ever used to pack a version 4
+// address into version 6.
+IP::factory('127.0.0.1', $strategy)->getCompactedAddress(); // string("::ffff:7f00:1")
+```
