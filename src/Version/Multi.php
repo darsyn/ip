@@ -81,7 +81,7 @@ class Multi extends IPv6 implements MultiVersionInterface
         parent::__construct($ip);
     }
 
-    public function getProtocolAppropriateAddress(): string
+    public function getProtocolAppropriateAddress(/* ?ProtocolFormatterInterface $formatter = null */): string
     {
         // If binary string contains an embedded IPv4 address, then extract it.
         $ip = $this->isEmbedded()
@@ -89,18 +89,21 @@ class Multi extends IPv6 implements MultiVersionInterface
             : $this->getBinary();
         // Render the IP address in the correct notation according to its
         // protocol (based on how long the binary string is).
-        return self::getProtocolFormatter()->ntop($ip);
+        return self::resolveProtocolFormatter(\func_get_args())->ntop($ip);
     }
 
     /**
      * @throws \Darsyn\IP\Exception\WrongVersionException
      * @throws \Darsyn\IP\Exception\IpException
      */
-    public function getDotAddress(): string
+    public function getDotAddress(/* ?ProtocolFormatterInterface $formatter = null */): string
     {
+        // Resolve the per-call formatter argument before the version check so a
+        // deprecated (non-formatter) argument is flagged regardless of embedded state.
+        $formatter = self::resolveProtocolFormatter(\func_get_args());
         if ($this->isEmbedded()) {
             try {
-                return self::getProtocolFormatter()->ntop($this->getShortBinary());
+                return $formatter->ntop($this->getShortBinary());
             } catch (Exception\Formatter\FormatException $e) {
                 throw new Exception\IpException('An unknown error occurred internally.', 0, $e);
             }

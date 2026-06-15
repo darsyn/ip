@@ -7,8 +7,10 @@ namespace Darsyn\IP\Tests\Version;
 use Darsyn\IP\Exception\InvalidCidrException;
 use Darsyn\IP\Exception\InvalidIpAddressException;
 use Darsyn\IP\Exception\WrongVersionException;
+use Darsyn\IP\Formatter\ConsistentFormatter;
 use Darsyn\IP\IpInterface;
 use Darsyn\IP\Tests\DataProvider\IPv4 as IPv4DataProvider;
+use Darsyn\IP\Tests\Stub\StubFormatter;
 use Darsyn\IP\Tests\TestCase;
 use Darsyn\IP\Util\Binary;
 use Darsyn\IP\Version\IPv4 as IP;
@@ -18,6 +20,13 @@ use PHPUnit\Framework\Attributes as PHPUnit;
 
 class IPv4Test extends TestCase
 {
+    /** @before */
+    #[PHPUnit\Before]
+    public function resetProtocolFormatter(): void
+    {
+        IP::setProtocolFormatter(new ConsistentFormatter());
+    }
+
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidIpAddresses()
@@ -466,5 +475,55 @@ class IPv4Test extends TestCase
     {
         $ip = IP::factory($value);
         $this->assertSame($expectedDot, (string) $ip);
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testPerCallFormatterOverridesGlobal(): void
+    {
+        $ip = IP::factory('12.34.56.78');
+        $this->assertSame(StubFormatter::SENTINEL, $ip->getDotAddress(new StubFormatter()));
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testPerCallFormatterDoesNotMutateGlobal(): void
+    {
+        $ip = IP::factory('12.34.56.78');
+        $this->assertSame(StubFormatter::SENTINEL, $ip->getDotAddress(new StubFormatter()));
+        $this->assertSame('12.34.56.78', $ip->getDotAddress());
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testExplicitNullPerCallFormatterFallsBackToGlobal(): void
+    {
+        $ip = IP::factory('12.34.56.78');
+        $this->assertSame('12.34.56.78', $ip->getDotAddress(null));
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testInvalidPerCallFormatterTriggersDeprecationAndFallsBack(): void
+    {
+        $ip = IP::factory('12.34.56.78');
+        $result = null;
+        $message = $this->captureDeprecation(static function () use ($ip, &$result): void {
+            $result = $ip->getDotAddress(new \stdClass());
+        });
+        $this->assertNotNull($message);
+        $this->assertSame('12.34.56.78', $result);
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testInvalidScalarPerCallFormatterMentionsTypeInDeprecation(): void
+    {
+        $ip = IP::factory('12.34.56.78');
+        $message = $this->captureDeprecation(static function () use ($ip): void {
+            $ip->getDotAddress(42);
+        });
+        $this->assertNotNull($message);
+        $this->assertStringContainsString('integer', (string) $message);
     }
 }

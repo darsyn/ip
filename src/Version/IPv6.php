@@ -65,10 +65,10 @@ class IPv6 extends AbstractIP implements Version6Interface
         return MbString::subString(\is_string($expanded) ? $expanded : '', 0, -1);
     }
 
-    public function getCompactedAddress(): string
+    public function getCompactedAddress(/* ?ProtocolFormatterInterface $formatter = null */): string
     {
         try {
-            return self::getProtocolFormatter()->ntop($this->getBinary());
+            return self::resolveProtocolFormatter(\func_get_args())->ntop($this->getBinary());
         } catch (Exception\Formatter\FormatException $e) {
             throw new Exception\IpException('An unknown error occurred internally.', 0, $e);
         }

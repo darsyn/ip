@@ -2,6 +2,10 @@
 
 ## `6.x`
 
+- Allow overriding the global formatter per call by passing a
+  `Formatter\ProtocolFormatterInterface` as the first argument to
+  `IPv4::getDotAddress()`, `IPv6::getCompactedAddress()`,
+  `Multi::getDotAddress()` and `Multi::getProtocolAppropriateAddress()`.
 - Move CIDR mask generation from the protected `AbstractIP::generateBinaryMask()`
   to the public static `Util\Binary::mask()`.
 - Performance: compute network masks (`getNetworkIp()` / `getBroadcastIp()`)

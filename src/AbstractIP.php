@@ -40,6 +40,30 @@ abstract class AbstractIP implements IpInterface
         return self::$formatter;
     }
 
+    /**
+     * Resolve the formatter for a single formatting call.
+     * Passing a non-null argument that is not a ProtocolFormatterInterface is
+     * deprecated; the global formatter is used instead.
+     *
+     * @param list<mixed> $arguments The calling method's func_get_args().
+     */
+    protected static function resolveProtocolFormatter(array $arguments): ProtocolFormatterInterface
+    {
+        $formatter = $arguments[0] ?? null;
+        if (null === $formatter) {
+            return self::getProtocolFormatter();
+        }
+        if (!$formatter instanceof ProtocolFormatterInterface) {
+            \trigger_error(\sprintf(
+                'Passing a non-null value that is not an instance of %s to a formatting method is deprecated; %s given. The global formatter was used instead.',
+                ProtocolFormatterInterface::class,
+                \is_object($formatter) ? \get_class($formatter) : \gettype($formatter)
+            ), \E_USER_DEPRECATED);
+            return self::getProtocolFormatter();
+        }
+        return $formatter;
+    }
+
     protected function __construct(string $ip)
     {
         $this->ip = $ip;

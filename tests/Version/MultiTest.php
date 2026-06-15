@@ -6,9 +6,11 @@ namespace Darsyn\IP\Tests\Version;
 
 use Darsyn\IP\Exception\InvalidIpAddressException;
 use Darsyn\IP\Exception\WrongVersionException;
+use Darsyn\IP\Formatter\ConsistentFormatter;
 use Darsyn\IP\IpInterface;
 use Darsyn\IP\Strategy;
 use Darsyn\IP\Tests\DataProvider\Multi as MultiDataProvider;
+use Darsyn\IP\Tests\Stub\StubFormatter;
 use Darsyn\IP\Tests\TestCase;
 use Darsyn\IP\Version\IPv4;
 use Darsyn\IP\Version\IPv6;
@@ -25,6 +27,13 @@ class MultiTest extends TestCase
     public function resetDefaultEmbeddingStrategy(): void
     {
         IP::setDefaultEmbeddingStrategy(new Strategy\Mapped());
+    }
+
+    /** @before */
+    #[PHPUnit\Before]
+    public function resetProtocolFormatter(): void
+    {
+        IP::setProtocolFormatter(new ConsistentFormatter());
     }
 
     /**
@@ -502,5 +511,101 @@ class MultiTest extends TestCase
         null !== $dot
             ? $this->assertSame($dot, (string) $ip)
             : $this->assertSame($compacted, (string) $ip);
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testPerCallFormatterOverridesGlobalForProtocolAppropriateAddress(): void
+    {
+        $ip = IP::factory('12.34.56.78');
+        $this->assertSame(StubFormatter::SENTINEL, $ip->getProtocolAppropriateAddress(new StubFormatter()));
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testPerCallFormatterDoesNotMutateGlobalForProtocolAppropriateAddress(): void
+    {
+        $ip = IP::factory('12.34.56.78');
+        $this->assertSame(StubFormatter::SENTINEL, $ip->getProtocolAppropriateAddress(new StubFormatter()));
+        $this->assertSame('12.34.56.78', $ip->getProtocolAppropriateAddress());
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testExplicitNullPerCallFormatterFallsBackToGlobalForProtocolAppropriateAddress(): void
+    {
+        $ip = IP::factory('12.34.56.78');
+        $this->assertSame('12.34.56.78', $ip->getProtocolAppropriateAddress(null));
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testInvalidPerCallFormatterTriggersDeprecationForProtocolAppropriateAddress(): void
+    {
+        $ip = IP::factory('12.34.56.78');
+        $result = null;
+        $message = $this->captureDeprecation(static function () use ($ip, &$result): void {
+            $result = $ip->getProtocolAppropriateAddress(new \stdClass());
+        });
+        $this->assertNotNull($message);
+        $this->assertSame('12.34.56.78', $result);
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testPerCallFormatterOverridesGlobalForDotAddress(): void
+    {
+        $ip = IP::factory('12.34.56.78');
+        $this->assertSame(StubFormatter::SENTINEL, $ip->getDotAddress(new StubFormatter()));
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testPerCallFormatterDoesNotMutateGlobalForDotAddress(): void
+    {
+        $ip = IP::factory('12.34.56.78');
+        $this->assertSame(StubFormatter::SENTINEL, $ip->getDotAddress(new StubFormatter()));
+        $this->assertSame('12.34.56.78', $ip->getDotAddress());
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testExplicitNullPerCallFormatterFallsBackToGlobalForDotAddress(): void
+    {
+        $ip = IP::factory('12.34.56.78');
+        $this->assertSame('12.34.56.78', $ip->getDotAddress(null));
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testInvalidPerCallFormatterTriggersDeprecationForDotAddress(): void
+    {
+        $ip = IP::factory('12.34.56.78');
+        $result = null;
+        $message = $this->captureDeprecation(static function () use ($ip, &$result): void {
+            $result = $ip->getDotAddress(new \stdClass());
+        });
+        $this->assertNotNull($message);
+        $this->assertSame('12.34.56.78', $result);
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testInvalidPerCallFormatterTriggersDeprecationForDotAddressOnNonEmbedded(): void
+    {
+        // The formatter argument is validated before the version check, so the
+        // deprecation fires even though the IPv6 address ultimately rejects
+        // dotted notation with a WrongVersionException.
+        $ip = IP::factory('2001:db8::1');
+        $thrown = null;
+        $message = $this->captureDeprecation(static function () use ($ip, &$thrown): void {
+            try {
+                $ip->getDotAddress(new \stdClass());
+            } catch (WrongVersionException $e) {
+                $thrown = $e;
+            }
+        });
+        $this->assertNotNull($message);
+        $this->assertInstanceOf(WrongVersionException::class, $thrown);
     }
 }
