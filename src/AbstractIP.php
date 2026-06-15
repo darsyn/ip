@@ -7,7 +7,6 @@ namespace Darsyn\IP;
 use Darsyn\IP\Exception\WrongVersionException;
 use Darsyn\IP\Formatter\ConsistentFormatter;
 use Darsyn\IP\Formatter\ProtocolFormatterInterface;
-use Darsyn\IP\Util\Binary;
 use Darsyn\IP\Util\MbString;
 
 abstract class AbstractIP implements IpInterface
@@ -117,9 +116,15 @@ abstract class AbstractIP implements IpInterface
                 (string) $ip
             );
         }
-        $mask = $this->getBinary() ^ $ip->getBinary();
-        $parts = \explode('1', Binary::toHumanReadable($mask), 2);
-        return MbString::getLength($parts[0]);
+        // The greatest common CIDR is the number of leading zero bits in the
+        // XOR of the two addresses.
+        $xor = $this->getBinary() ^ $ip->getBinary();
+        $commonBytes = \strspn($xor, "\x00");
+        $commonCidr = $commonBytes * 8;
+        if ($commonBytes < MbString::getLength($xor)) {
+            $commonCidr += 8 - MbString::getLength(\decbin(\ord($xor[$commonBytes])));
+        }
+        return $commonCidr;
     }
 
     public function isMapped(): bool
@@ -164,12 +169,10 @@ abstract class AbstractIP implements IpInterface
         }
         // Eg, a CIDR of 24 and length of 4 bytes (IPv4) would make a mask of:
         // 11111111111111111111111100000000.
-        $asciiBinarySequence = MbString::padString(
-            \str_repeat('1', $cidr),
-            $lengthInBytes * 8,
-            '0',
-            \STR_PAD_RIGHT
-        );
-        return Binary::fromHumanReadable($asciiBinarySequence);
+        $mask = \str_repeat("\xff", \intdiv($cidr, 8));
+        if (0 !== ($remainder = $cidr % 8)) {
+            $mask .= \chr(0xff << (8 - $remainder) & 0xff);
+        }
+        return MbString::padString($mask, $lengthInBytes, "\x00", \STR_PAD_RIGHT);
     }
 }
