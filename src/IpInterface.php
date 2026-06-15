@@ -4,7 +4,13 @@ declare(strict_types=1);
 
 namespace Darsyn\IP;
 
-interface IpInterface
+use Darsyn\IP\Contracts\ArithmeticInterface;
+use Darsyn\IP\Contracts\ClassificationInterface;
+use Darsyn\IP\Contracts\ComparisonInterface;
+use Darsyn\IP\Contracts\OutputInterface;
+use Darsyn\IP\Contracts\VersionIdentityInterface;
+
+interface IpInterface extends ArithmeticInterface, ClassificationInterface, ComparisonInterface, OutputInterface, VersionIdentityInterface
 {
     /**
      * @throws \Darsyn\IP\Exception\InvalidIpAddressException
@@ -12,66 +18,6 @@ interface IpInterface
      * @return static
      */
     public static function factory(string $ip);
-
-    /** Get Binary Representation */
-    public function getBinary(): string;
-
-    /** Do two IP objects represent the same IP address? */
-    public function equals(self $ip): bool;
-
-    /** Get the IP version from the binary value */
-    public function getVersion(): int;
-
-    /** Is Version? */
-    public function isVersion(int $version): bool;
-
-    /** Whether the IP is version 4 */
-    public function isVersion4(): bool;
-
-    /** Whether the IP is version 6 */
-    public function isVersion6(): bool;
-
-    /**
-     * Get Network Address
-     *
-     * Get a new value object from the network address of the original IP.
-     *
-     * @throws \Darsyn\IP\Exception\InvalidCidrException
-     * @return static
-     */
-    public function getNetworkIp(int $cidr);
-
-    /**
-     * Get Broadcast Address
-     *
-     * Get a new value object from the broadcast address of the original IP.
-     *
-     * @throws \Darsyn\IP\Exception\InvalidCidrException
-     * @return static
-     */
-    public function getBroadcastIp(int $cidr);
-
-    /**
-     * Is IP Address In Range?
-     *
-     * Returns a boolean value depending on whether the IP address in question
-     * is within the range of the target IP/CIDR combination.
-     * Comparing two IPs of different byte-lengths (IPv4 vs IPv6/IPv4-embedded)
-     * will throw a WrongVersionException.
-     *
-     * @throws \Darsyn\IP\Exception\InvalidCidrException
-     * @throws \Darsyn\IP\Exception\WrongVersionException
-     */
-    public function inRange(self $ip, int $cidr): bool;
-
-    /**
-     * Get Common CIDR Between IP Addresses
-     *
-     * Returns the highest common CIDR between the current IP address and another
-     *
-     * @throws \Darsyn\IP\Exception\WrongVersionException
-     */
-    public function getCommonCidr(self $ip): int;
 
     /**
      * Whether the IP is an IPv4-mapped IPv6 address, according to
@@ -99,65 +45,10 @@ interface IpInterface
     public function isEmbedded(): bool;
 
     /**
-     * Whether the IP is reserved for link-local usage, according to RFC 3927
-     * (IPv4) or RFC 4291 § 2.5.6 (IPv6).
-     */
-    public function isLinkLocal(): bool;
-
-    /**
-     * Whether the IP is a loopback address, according to RFC 1122 § 3.2.1.3
-     * (IPv4) or RFC 4291 § 2.5.3 (IPv6).
-     */
-    public function isLoopback(): bool;
-
-    /**
-     * Whether the IP is a multicast address, according to RFC 5771 (IPv4) or
-     * RFC 4291 § 2.7 (IPv6).
-     */
-    public function isMulticast(): bool;
-
-    /**
-     * Whether the IP is for private use, according to RFC 1918/RFC 4193
-     * (IPv4/IPv6).
-     */
-    public function isPrivateUse(): bool;
-
-    /**
-     * Whether the IP is unspecified ("this host on this network"), according
-     * to RFC 1122 § 3.2.1.3 (IPv4) or RFC 4291 § 2.5.2 (IPv6).
-     */
-    public function isUnspecified(): bool;
-
-    /**
-     * Whether the IP is reserved for network devices benchmarking, according
-     * to RFC 2544 (IPv4) or RFC 5180 (IPv6). The IPv6 block printed in RFC 5180
-     * itself is wrong; RFC Errata 1752 corrects it to `2001:2::/48`.
-     */
-    public function isBenchmarking(): bool;
-
-    /**
-     * Whether the IP is in a range designated for documentation, according to
-     * RFC 5737 and RFC 5771 § 9.2 (IPv4), or RFC 3849 and RFC 9637 (IPv6).
-     */
-    public function isDocumentation(): bool;
-
-    /**
      * Superseded by `isGloballyReachable()` which conforms to official wording;
      * "Public Use" does not appear in the IANA special-purpose registries.
      *
      * @deprecated Use isGloballyReachable() instead.
      */
     public function isPublicUse(): bool;
-
-    /**
-     * Whether the IP appears to be publicly/globally routable. Please refer to
-     * the IANA Special-Purpose Address Registry documents.
-     *
-     * @see https://www.iana.org/assignments/iana-ipv4-special-registry/iana-ipv4-special-registry.xhtml
-     * @see https://www.iana.org/assignments/iana-ipv6-special-registry/iana-ipv6-special-registry.xhtml
-     */
-    public function isGloballyReachable(): bool;
-
-    /** Implement string casting for IP objects. */
-    public function __toString(): string;
 }
