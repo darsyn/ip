@@ -2,6 +2,8 @@
 
 ## `6.x`
 
+- Move CIDR mask generation from the protected `AbstractIP::generateBinaryMask()`
+  to the public static `Util\Binary::mask()`.
 - Performance: compute network masks (`getNetworkIp()` / `getBroadcastIp()`)
   and the greatest common CIDR (`getCommonCidr()`) directly on raw bytes.
 - Add arithmetic primitives to `Util\Binary`: `increment()`, `decrement()` and

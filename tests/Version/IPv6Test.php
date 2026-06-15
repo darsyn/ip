@@ -12,6 +12,7 @@ use Darsyn\IP\Strategy\Mapped;
 use Darsyn\IP\Tests\DataProvider\IPv4 as IPv4DataProvider;
 use Darsyn\IP\Tests\DataProvider\IPv6 as IPv6DataProvider;
 use Darsyn\IP\Tests\TestCase;
+use Darsyn\IP\Util\Binary;
 use Darsyn\IP\Version\IPv4;
 use Darsyn\IP\Version\IPv6 as IP;
 use Darsyn\IP\Version\Multi;
@@ -209,10 +210,7 @@ class IPv6Test extends TestCase
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidCidrValues')]
     public function testCidrMasks(int $cidr, string $expectedMaskHex): void
     {
-        $ip = IP::factory('::1');
-        $mask = (function () use ($cidr): string {
-            return $this->generateBinaryMask($cidr, 16);
-        })->call($ip);
+        $mask = Binary::mask($cidr, 16);
         $actualMask = \unpack('H*hex', $mask);
         $this->assertSame($expectedMaskHex, \is_array($actualMask) ? $actualMask['hex'] : null);
     }
@@ -227,11 +225,8 @@ class IPv6Test extends TestCase
     {
         $this->expectException(\Darsyn\IP\Exception\InvalidCidrException::class);
         $this->legacyExpectExceptionMessage('The supplied CIDR is not valid; it must be an integer (between 0 and 128).');
-        $ip = IP::factory('::1');
         try {
-            (function () use ($cidr): string {
-                return $this->generateBinaryMask($cidr, 16);
-            })->call($ip);
+            Binary::mask($cidr, 16);
         } catch (InvalidCidrException $e) {
             $this->assertSame($cidr, $e->getSuppliedCidr());
             throw $e;

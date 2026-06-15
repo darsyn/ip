@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Darsyn\IP\Util;
 
+use Darsyn\IP\Exception\InvalidCidrException;
 use Darsyn\IP\Exception\OverflowException;
 
 class Binary
@@ -46,6 +47,30 @@ class Binary
         return \implode('', \array_map(static function ($character) {
             return MbString::padString(\decbin((int) \hexdec($character)), 8, '0', \STR_PAD_LEFT);
         }, \function_exists('mb_str_split') ? \mb_str_split($hex, 2, '8bit') : \str_split($hex, 2)));
+    }
+
+    /**
+     * 128-bit masks can often evaluate to integers over PHP_MAX_INT, so we have
+     * to construct the bitmask as a string instead of doing any mathematical
+     * operations (such as base_convert).
+     *
+     * @throws \Darsyn\IP\Exception\InvalidCidrException
+     */
+    public static function mask(int $cidr, int $lengthInBytes): string
+    {
+        if ($cidr < 0 || $lengthInBytes < 0
+            // CIDR is measured in bits; we're describing the length in bytes.
+            || $cidr > $lengthInBytes * 8
+        ) {
+            throw new InvalidCidrException($cidr, $lengthInBytes);
+        }
+        // Eg, a CIDR of 24 and length of 4 bytes (IPv4) would make a mask of:
+        // 11111111111111111111111100000000.
+        $mask = \str_repeat("\xff", \intdiv($cidr, 8));
+        if (0 !== ($remainder = $cidr % 8)) {
+            $mask .= \chr(0xff << (8 - $remainder) & 0xff);
+        }
+        return MbString::padString($mask, $lengthInBytes, "\x00", \STR_PAD_RIGHT);
     }
 
     /** @throws \Darsyn\IP\Exception\OverflowException */
