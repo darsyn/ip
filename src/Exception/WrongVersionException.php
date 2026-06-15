@@ -13,7 +13,7 @@ class WrongVersionException extends InvalidIpAddressException
     private $actual;
 
     /** @param scalar $ip */
-    public function __construct(int $expected, int $actual, $ip, ?\Exception $previous = null)
+    public function __construct(int $expected, int $actual, $ip, ?\Throwable $previous = null)
     {
         $this->expected = $expected;
         $this->actual = $actual;

@@ -13,7 +13,7 @@ class InvalidCidrException extends IpException
      * @param mixed $cidr
      * @param mixed $addressLengthInBytes
      */
-    public function __construct($cidr, $addressLengthInBytes, ?\Exception $previous = null)
+    public function __construct($cidr, $addressLengthInBytes, ?\Throwable $previous = null)
     {
         $this->cidr = $cidr;
         $message = 'The supplied CIDR is not valid; it must be an integer ';

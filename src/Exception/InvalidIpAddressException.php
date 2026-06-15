@@ -10,7 +10,7 @@ class InvalidIpAddressException extends IpException
     private $ip;
 
     /** @param scalar $ip */
-    public function __construct($ip, ?\Exception $previous = null)
+    public function __construct($ip, ?\Throwable $previous = null)
     {
         $this->ip = $ip;
         parent::__construct('The IP address supplied is not valid.', 0, $previous);

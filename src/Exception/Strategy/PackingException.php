@@ -15,7 +15,7 @@ class PackingException extends IpException
     /** @var \Darsyn\IP\Strategy\EmbeddingStrategyInterface $embeddingStrategy */
     private $embeddingStrategy;
 
-    public function __construct(string $binary, EmbeddingStrategyInterface $embeddingStrategy, ?\Exception $previous = null)
+    public function __construct(string $binary, EmbeddingStrategyInterface $embeddingStrategy, ?\Throwable $previous = null)
     {
         $this->binary = $binary;
         $this->embeddingStrategy = $embeddingStrategy;
