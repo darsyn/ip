@@ -4,6 +4,13 @@ declare(strict_types=1);
 
 namespace Darsyn\IP\Tests\Version;
 
+use Darsyn\IP\Contracts\ArithmeticInterface;
+use Darsyn\IP\Contracts\Classification6Interface;
+use Darsyn\IP\Contracts\ClassificationInterface;
+use Darsyn\IP\Contracts\ComparisonInterface;
+use Darsyn\IP\Contracts\Output6Interface;
+use Darsyn\IP\Contracts\OutputInterface;
+use Darsyn\IP\Contracts\VersionIdentityInterface;
 use Darsyn\IP\Exception\InvalidCidrException;
 use Darsyn\IP\Exception\InvalidIpAddressException;
 use Darsyn\IP\Exception\WrongVersionException;
@@ -29,6 +36,20 @@ class IPv6Test extends TestCase
     public function resetProtocolFormatter(): void
     {
         IP::setProtocolFormatter(new ConsistentFormatter());
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testImplementsCapabilityInterfaces(): void
+    {
+        $ip = IP::factory('::1');
+        $this->assertInstanceOf(VersionIdentityInterface::class, $ip);
+        $this->assertInstanceOf(ComparisonInterface::class, $ip);
+        $this->assertInstanceOf(ArithmeticInterface::class, $ip);
+        $this->assertInstanceOf(OutputInterface::class, $ip);
+        $this->assertInstanceOf(Output6Interface::class, $ip);
+        $this->assertInstanceOf(ClassificationInterface::class, $ip);
+        $this->assertInstanceOf(Classification6Interface::class, $ip);
     }
 
     /**

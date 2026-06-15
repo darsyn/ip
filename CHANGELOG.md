@@ -2,6 +2,8 @@
 
 ## `6.x`
 
+- Introduce `@experimental` capability interfaces under `Darsyn\IP\Contracts\`.
+  Their shape may change before `7.0`, but remains backwards compatible for `6.x`
 - Allow overriding the global formatter per call by passing a
   `Formatter\ProtocolFormatterInterface` as the first argument to
   `IPv4::getDotAddress()`, `IPv6::getCompactedAddress()`,
