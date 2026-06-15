@@ -55,4 +55,91 @@ class Binary
             ['101 011'],
         ];
     }
+
+    /** @return list<array{string, string}> */
+    public static function getIncrementData()
+    {
+        return [
+            // [input, expected]
+            ['00000000', '00000001'],
+            ['000000ff', '00000100'],
+            ['0000ffff', '00010000'],
+            ['fffffffe', 'ffffffff'],
+            ['7fffffff', '80000000'],
+            ['000000000000000000000000000000ff', '00000000000000000000000000000100'],
+            ['fffffffffffffffffffffffffffffffe', 'ffffffffffffffffffffffffffffffff'],
+        ];
+    }
+
+    /** @return list<array{string, string}> */
+    public static function getDecrementData()
+    {
+        return [
+            // [input, expected]
+            ['00000001', '00000000'],
+            ['00000100', '000000ff'],
+            ['00010000', '0000ffff'],
+            ['ffffffff', 'fffffffe'],
+            ['80000000', '7fffffff'],
+            ['00000000000000000000000000000100', '000000000000000000000000000000ff'],
+            ['ffffffffffffffffffffffffffffffff', 'fffffffffffffffffffffffffffffffe'],
+        ];
+    }
+
+    /** @return list<array{string, int, string}> */
+    public static function getOffsetData()
+    {
+        return [
+            // [input, offset, expected]
+            ['12345678', 0, '12345678'],
+            ['00000000', 1, '00000001'],
+            ['00000000', 255, '000000ff'],
+            ['00000000', 256, '00000100'],
+            ['00000000', 65535, '0000ffff'],
+            ['0000ffff', 1, '00010000'],
+            ['ffffffff', -1, 'fffffffe'],
+            ['00000100', -256, '00000000'],
+            ['7fffffff', 1, '80000000'],
+            ['80000000', -1, '7fffffff'],
+            // Full 64-bit offsets, including the PHP_INT_MIN edge that cannot be
+            // negated without overflow.
+            ['0000000000000000', \PHP_INT_MAX, '7fffffffffffffff'],
+            ['8000000000000000', \PHP_INT_MIN, '0000000000000000'],
+            ['ffffffffffffffff', \PHP_INT_MIN, '7fffffffffffffff'],
+        ];
+    }
+
+    /** @return list<array{string}> */
+    public static function getIncrementOverflowData()
+    {
+        return [
+            ['ffffffff'],
+            ['ffffffffffffffffffffffffffffffff'],
+            ['ff'],
+        ];
+    }
+
+    /** @return list<array{string}> */
+    public static function getDecrementUnderflowData()
+    {
+        return [
+            ['00000000'],
+            ['00000000000000000000000000000000'],
+            ['00'],
+        ];
+    }
+
+    /** @return list<array{string, int}> */
+    public static function getOffsetOverflowData()
+    {
+        return [
+            // [input, offset]
+            ['ffffffff', 1],
+            ['00000000', -1],
+            ['00000001', -2],
+            ['fffffffe', 2],
+            ['ffffffffffffffff', 1],
+            ['0000000000000000', -1],
+        ];
+    }
 }
