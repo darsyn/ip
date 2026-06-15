@@ -7,6 +7,7 @@ namespace Darsyn\IP;
 use Darsyn\IP\Exception\WrongVersionException;
 use Darsyn\IP\Formatter\ConsistentFormatter;
 use Darsyn\IP\Formatter\ProtocolFormatterInterface;
+use Darsyn\IP\Util\Binary;
 use Darsyn\IP\Util\MbString;
 
 abstract class AbstractIP implements IpInterface
@@ -73,7 +74,7 @@ abstract class AbstractIP implements IpInterface
     {
         // Providing that the CIDR is valid, bitwise AND the IP address binary
         // sequence with the mask generated from the CIDR.
-        return new static($this->getBinary() & $this->generateBinaryMask(
+        return new static($this->getBinary() & Binary::mask(
             $cidr,
             MbString::getLength($this->getBinary())
         ));
@@ -83,7 +84,7 @@ abstract class AbstractIP implements IpInterface
     {
         // Providing that the CIDR is valid, bitwise OR the IP address binary
         // sequence with the inverse of the mask generated from the CIDR.
-        return new static($this->getBinary() | ~$this->generateBinaryMask(
+        return new static($this->getBinary() | ~Binary::mask(
             $cidr,
             MbString::getLength($this->getBinary())
         ));
@@ -150,29 +151,5 @@ abstract class AbstractIP implements IpInterface
     protected function isSameByteLength(IpInterface $ip): bool
     {
         return MbString::getLength($this->getBinary()) === MbString::getLength($ip->getBinary());
-    }
-
-    /**
-     * 128-bit masks can often evaluate to integers over PHP_MAX_INT, so we have
-     * to construct the bitmask as a string instead of doing any mathematical
-     * operations (such as base_convert).
-     *
-     * @throws \Darsyn\IP\Exception\InvalidCidrException
-     */
-    protected function generateBinaryMask(int $cidr, int $lengthInBytes): string
-    {
-        if ($cidr < 0 || $lengthInBytes < 0
-            // CIDR is measured in bits; we're describing the length in bytes.
-            || $cidr > $lengthInBytes * 8
-        ) {
-            throw new Exception\InvalidCidrException($cidr, $lengthInBytes);
-        }
-        // Eg, a CIDR of 24 and length of 4 bytes (IPv4) would make a mask of:
-        // 11111111111111111111111100000000.
-        $mask = \str_repeat("\xff", \intdiv($cidr, 8));
-        if (0 !== ($remainder = $cidr % 8)) {
-            $mask .= \chr(0xff << (8 - $remainder) & 0xff);
-        }
-        return MbString::padString($mask, $lengthInBytes, "\x00", \STR_PAD_RIGHT);
     }
 }
