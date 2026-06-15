@@ -2,6 +2,8 @@
 
 ## `6.x`
 
+- Performance: compute network masks (`getNetworkIp()` / `getBroadcastIp()`)
+  and the greatest common CIDR (`getCommonCidr()`) directly on raw bytes.
 - Add arithmetic primitives to `Util\Binary`: `increment()`, `decrement()` and
   `addIntegerOffset()`. Over/underflowing throws new exception.
 - Widen the `$previous` constructor argument on all exception classes from
