@@ -21,4 +21,24 @@ abstract class TestCase extends BaseTestCase
             // Throws deprecation warnings on newer versions of PHPUnit.
             : $this->expectExceptionMessage($contains);
     }
+
+    /**
+     * This is what happens when you try to be smart and trigger
+     * E_USER_DEPRECATED like Symfony does. Be backwards compatible they said,
+     * it'll be fun they said.
+     */
+    protected function captureDeprecation(callable $callback): ?string
+    {
+        $message = null;
+        \set_error_handler(static function (int $errno, string $errstr) use (&$message): bool {
+            $message = $errstr;
+            return true;
+        }, \E_USER_DEPRECATED);
+        try {
+            $callback();
+        } finally {
+            \restore_error_handler();
+        }
+        return $message;
+    }
 }

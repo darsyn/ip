@@ -7,10 +7,13 @@ namespace Darsyn\IP\Tests\Version;
 use Darsyn\IP\Exception\InvalidCidrException;
 use Darsyn\IP\Exception\InvalidIpAddressException;
 use Darsyn\IP\Exception\WrongVersionException;
+use Darsyn\IP\Formatter\ConsistentFormatter;
+use Darsyn\IP\Formatter\NativeFormatter;
 use Darsyn\IP\IpInterface;
 use Darsyn\IP\Strategy\Mapped;
 use Darsyn\IP\Tests\DataProvider\IPv4 as IPv4DataProvider;
 use Darsyn\IP\Tests\DataProvider\IPv6 as IPv6DataProvider;
+use Darsyn\IP\Tests\Stub\StubFormatter;
 use Darsyn\IP\Tests\TestCase;
 use Darsyn\IP\Util\Binary;
 use Darsyn\IP\Version\IPv4;
@@ -21,6 +24,13 @@ use PHPUnit\Framework\Attributes as PHPUnit;
 
 class IPv6Test extends TestCase
 {
+    /** @before */
+    #[PHPUnit\Before]
+    public function resetProtocolFormatter(): void
+    {
+        IP::setProtocolFormatter(new ConsistentFormatter());
+    }
+
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidIpAddresses()
@@ -508,5 +518,44 @@ class IPv6Test extends TestCase
     {
         $ip = IP::factory($value);
         $this->assertSame($compacted, (string) $ip);
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testPerCallFormatterOverridesGlobal(): void
+    {
+        $ip = IP::factory('2001:db8::a60:8a2e:370:7334');
+        $this->assertSame(StubFormatter::SENTINEL, $ip->getCompactedAddress(new StubFormatter()));
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testPerCallNativeFormatterProducesNativeOutput(): void
+    {
+        $ip = IP::factory('::ffff:c22:384e');
+        $this->assertSame('::ffff:c22:384e', $ip->getCompactedAddress());
+        $this->assertSame('::ffff:12.34.56.78', $ip->getCompactedAddress(new NativeFormatter()));
+        $this->assertSame('::ffff:c22:384e', $ip->getCompactedAddress());
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testExplicitNullPerCallFormatterFallsBackToGlobal(): void
+    {
+        $ip = IP::factory('::ffff:c22:384e');
+        $this->assertSame('::ffff:c22:384e', $ip->getCompactedAddress(null));
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testInvalidPerCallFormatterTriggersDeprecationAndFallsBack(): void
+    {
+        $ip = IP::factory('2001:db8::a60:8a2e:370:7334');
+        $result = null;
+        $message = $this->captureDeprecation(static function () use ($ip, &$result): void {
+            $result = $ip->getCompactedAddress(new \stdClass());
+        });
+        $this->assertNotNull($message);
+        $this->assertSame('2001:db8::a60:8a2e:370:7334', $result);
     }
 }

@@ -48,10 +48,10 @@ class IPv4 extends AbstractIP implements Version4Interface
         return new static($binary);
     }
 
-    public function getDotAddress(): string
+    public function getDotAddress(/* ?ProtocolFormatterInterface $formatter = null */): string
     {
         try {
-            return self::getProtocolFormatter()->ntop($this->getBinary());
+            return self::resolveProtocolFormatter(\func_get_args())->ntop($this->getBinary());
         } catch (Exception\Formatter\FormatException $e) {
             throw new Exception\IpException('An unknown error occurred internally.', 0, $e);
         }
