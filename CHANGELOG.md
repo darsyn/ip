@@ -4,6 +4,8 @@
 
 - Add arithmetic primitives to `Util\Binary`: `increment()`, `decrement()` and
   `addIntegerOffset()`. Over/underflowing throws new exception.
+- Widen the `$previous` constructor argument on all exception classes from
+  `?\Exception` to `?\Throwable`.
 - Add support for PHP `8.5` in README, and GitHub Action CI workflows.
 - Access protected method via Closure in unit tests, instead of reflection, to
   fix deprecation warnings in PHP `8.5`.
