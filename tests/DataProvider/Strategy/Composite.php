@@ -69,4 +69,22 @@ class Composite
     {
         return Mapped::getValidSequences();
     }
+
+    /**
+     * Non-canonical addresses recognised by a sub-strategy of the composite under
+     * test (6to4 with interface ID set, and Teredo with server/flags/port set);
+     * packIntoNonCanonical() must delegate to the recognising sub-strategy and
+     * preserve the non-embedded bits.
+     *
+     * @return list<array{string, string}>
+     */
+    public static function getNonCanonicalDelegationSequences()
+    {
+        return [
+            // [ non-canonical IPv6 binary, embedded IPv4 binary ]. Re-embedding the
+            // address's own extracted IPv4 must reproduce the original exactly.
+            [\pack('H*', '2002c00002010000dead00000000beef'), \pack('H*', 'c0000201')],
+            [\pack('H*', '200100004136e378800063bf3ffffdd2'), \pack('H*', 'c000022d')],
+        ];
+    }
 }

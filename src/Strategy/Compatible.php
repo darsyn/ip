@@ -13,7 +13,7 @@ use Darsyn\IP\Util\MbString;
  *
  * Note: this format is deprecated and retained only for backwards compatibility.
  */
-class Compatible implements EmbeddingStrategyInterface
+class Compatible implements CanonicalEmbeddingInterface
 {
     public function isEmbedded(string $binary): bool
     {
@@ -29,11 +29,27 @@ class Compatible implements EmbeddingStrategyInterface
         throw new StrategyException\ExtractionException($binary, $this);
     }
 
+    /** @deprecated Use packIntoCanonical() instead. */
     public function pack(string $binary): string
     {
-        if (4 === MbString::getLength($binary)) {
-            return "\0\0\0\0\0\0\0\0\0\0\0\0" . $binary;
+        return $this->packIntoCanonical($binary);
+    }
+
+    public function packIntoCanonical(string $ipv4): string
+    {
+        if (4 === MbString::getLength($ipv4)) {
+            return "\0\0\0\0\0\0\0\0\0\0\0\0" . $ipv4;
         }
-        throw new StrategyException\PackingException($binary, $this);
+        throw new StrategyException\PackingException($ipv4, $this);
+    }
+
+    public function packIntoNonCanonical(string $ipv6, string $ipv4): string
+    {
+        if (!$this->isEmbedded($ipv6)) {
+            throw new StrategyException\PackingException($ipv6, $this);
+        }
+        // The prefix (bytes 0-11) + the IPv4 address (bytes 12-15) occupy the
+        // entire IPv6 address space; defer to canonical.
+        return $this->packIntoCanonical($ipv4);
     }
 }

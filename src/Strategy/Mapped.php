@@ -14,7 +14,7 @@ use Darsyn\IP\Util\MbString;
  *
  * Reserved by protocol, and not globally reachable (as an IPv6 address).
  */
-class Mapped implements EmbeddingStrategyInterface
+class Mapped implements CanonicalEmbeddingInterface
 {
     public function isEmbedded(string $binary): bool
     {
@@ -30,11 +30,27 @@ class Mapped implements EmbeddingStrategyInterface
         throw new StrategyException\ExtractionException($binary, $this);
     }
 
+    /** @deprecated Use packIntoCanonical() instead. */
     public function pack(string $binary): string
     {
-        if (4 === MbString::getLength($binary)) {
-            return Binary::fromHex('00000000000000000000ffff') . $binary;
+        return $this->packIntoCanonical($binary);
+    }
+
+    public function packIntoCanonical(string $ipv4): string
+    {
+        if (4 === MbString::getLength($ipv4)) {
+            return Binary::fromHex('00000000000000000000ffff') . $ipv4;
         }
-        throw new StrategyException\PackingException($binary, $this);
+        throw new StrategyException\PackingException($ipv4, $this);
+    }
+
+    public function packIntoNonCanonical(string $ipv6, string $ipv4): string
+    {
+        if (!$this->isEmbedded($ipv6)) {
+            throw new StrategyException\PackingException($ipv6, $this);
+        }
+        // The prefix (bytes 0-11) + the IPv4 address (bytes 12-15) occupy the
+        // entire IPv6 address space; defer to canonical.
+        return $this->packIntoCanonical($ipv4);
     }
 }

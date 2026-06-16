@@ -23,7 +23,7 @@ use Darsyn\IP\Util\MbString;
  * treat every Teredo address as an embedded IPv4 address, even though only the
  * canonical form can round-trip through extraction.
  */
-class Teredo implements EmbeddingStrategyInterface
+class Teredo implements CanonicalEmbeddingInterface
 {
     private const INVERSE_MASK = "\xff\xff\xff\xff";
 
@@ -49,15 +49,34 @@ class Teredo implements EmbeddingStrategyInterface
      * The tunnel server's IPv4 address, the flags, and the obfuscated UDP port
      * are lost so a direct pass-through (extract-pack) reconstructs the
      * canonical Teredo address (`2001::XXXX:XXXX`), not the original.
+     *
+     * @deprecated Use packIntoCanonical() instead.
      */
     public function pack(string $binary): string
     {
-        if (4 === MbString::getLength($binary)) {
+        return $this->packIntoCanonical($binary);
+    }
+
+    public function packIntoCanonical(string $ipv4): string
+    {
+        if (4 === MbString::getLength($ipv4)) {
             // Zero the server/flags/port fields.
             $serverFlagsPort = Binary::fromHex('0000000000000000');
             // Re-obfuscate the client IPv4 (XOR 0xFFFFFFFF).
-            return Binary::fromHex('20010000') . $serverFlagsPort . ($binary ^ self::INVERSE_MASK);
+            return Binary::fromHex('20010000') . $serverFlagsPort . ($ipv4 ^ self::INVERSE_MASK);
         }
-        throw new StrategyException\PackingException($binary, $this);
+        throw new StrategyException\PackingException($ipv4, $this);
+    }
+
+    public function packIntoNonCanonical(string $ipv6, string $ipv4): string
+    {
+        if (!$this->isEmbedded($ipv6)) {
+            throw new StrategyException\PackingException($ipv6, $this);
+        }
+        if (4 !== MbString::getLength($ipv4)) {
+            throw new StrategyException\PackingException($ipv4, $this);
+        }
+        // Re-obfuscate the client IPv4 (XOR 0xFFFFFFFF with bits 96-127).
+        return MbString::subString($ipv6, 0, 12) . ($ipv4 ^ self::INVERSE_MASK);
     }
 }
