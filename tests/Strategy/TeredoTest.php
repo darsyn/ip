@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 
 class TeredoTest extends TestCase
 {
-    /** @var \Darsyn\IP\Strategy\EmbeddingStrategyInterface $strategy */
+    /** @var \Darsyn\IP\Strategy\CanonicalEmbeddingInterface $strategy */
     private $strategy;
 
     /** @before */
@@ -67,6 +67,7 @@ class TeredoTest extends TestCase
     }
 
     /**
+     * @deprecated Covers the deprecated pack(); see `testPackIntoCanonical*` methods.
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Teredo::getInvalidIpAddresses()
      */
@@ -79,6 +80,7 @@ class TeredoTest extends TestCase
     }
 
     /**
+     * @deprecated Covers the deprecated pack(); see `testPackIntoCanonical*` methods.
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Teredo::getValidPackSequences()
      */
@@ -87,5 +89,85 @@ class TeredoTest extends TestCase
     public function testSequenceCorrectlyPackedIntoIpBinaryFromIpBinary(string $ipv4, string $ipv6): void
     {
         $this->assertSame($ipv6, $this->strategy->pack($ipv4));
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Teredo::getInvalidIpAddresses()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(TeredoDataProvider::class, 'getInvalidIpAddresses')]
+    public function testPackIntoCanonicalThrowsForStringsNot4Bytes(string $value): void
+    {
+        $this->expectException(\Darsyn\IP\Exception\Strategy\PackingException::class);
+        $this->strategy->packIntoCanonical($value);
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Teredo::getValidPackSequences()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(TeredoDataProvider::class, 'getValidPackSequences')]
+    public function testPackIntoCanonicalProducesCanonicalForm(string $ipv4, string $ipv6): void
+    {
+        $this->assertSame($ipv6, $this->strategy->packIntoCanonical($ipv4));
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Teredo::getInvalidSequences()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(TeredoDataProvider::class, 'getInvalidSequences')]
+    public function testPackIntoNonCanonicalThrowsForUnrecognisedIpv6(string $value): void
+    {
+        $this->expectException(\Darsyn\IP\Exception\Strategy\PackingException::class);
+        $this->strategy->packIntoNonCanonical($value, \pack('H*', '7f000001'));
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Teredo::getValidSequences()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(TeredoDataProvider::class, 'getValidSequences')]
+    public function testPackIntoNonCanonicalReportsInvalidIpv4(string $ipv6, string $ipv4): void
+    {
+        $invalid = \pack('H*', '7f0000');
+        $this->expectException(\Darsyn\IP\Exception\Strategy\PackingException::class);
+        try {
+            $this->strategy->packIntoNonCanonical($ipv6, $invalid);
+        } catch (\Darsyn\IP\Exception\Strategy\PackingException $e) {
+            $this->assertSame($this->strategy, $e->getEmbeddingStrategy());
+            $this->assertSame($invalid, $e->getSuppliedBinary());
+            throw $e;
+        }
+        $this->fail();
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Teredo::getValidSequences()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(TeredoDataProvider::class, 'getValidSequences')]
+    public function testPackIntoNonCanonicalPreservesNonEmbeddedBits(string $ipv6, string $ipv4): void
+    {
+        $this->assertSame($ipv6, $this->strategy->packIntoNonCanonical($ipv6, $this->strategy->extract($ipv6)));
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Teredo::getValidSequences()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(TeredoDataProvider::class, 'getValidSequences')]
+    public function testPackIntoNonCanonicalEmbedsNewAddress(string $ipv6, string $ipv4): void
+    {
+        $newV4 = \pack('H*', '08080808');
+        $result = $this->strategy->packIntoNonCanonical($ipv6, $newV4);
+        $this->assertSame($newV4, $this->strategy->extract($result));
+        $this->assertSame(\substr($ipv6, 0, 12), \substr($result, 0, 12));
     }
 }

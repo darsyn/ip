@@ -24,7 +24,7 @@ Each embedding strategy implements the
 - Detect whether a version 4 address is embedded into a version 6 address,
 - Extracting a version 4 address from a version 6 address, and
 - Packing a version 4 address into a version 6 address according to the given
-  strategy.
+  strategy (see [Canonical and Non-Canonical Packing](#canonical-and-non-canonical-packing)).
 
 ## Specifying a Strategy
 
@@ -43,6 +43,50 @@ IP::setDefaultEmbeddingStrategy(new Strategy\Compatible);
 
 // But for this specific instance use the 6to4-derived embedding strategy.
 $ip = IP::factory('127.0.0.1', new Strategy\Derived);
+```
+
+## Canonical and Non-Canonical Packing
+
+Some embedding strategies (6to4-derived, Teredo, and NAT64 with a prefix shorter
+than `/96`) carry bits *outside* the embedded version 4 address — a Teredo
+address, for example, also carries the tunnel server's address, flags, and the
+client's UDP port. The original `pack()` always produces the **canonical** form,
+zeroing every such bit; this is the right behaviour when constructing an address
+from a bare version 4 address, but it silently discards information when re-packing
+an existing version 6 address.
+
+`Darsyn\IP\Strategy\CanonicalEmbeddingInterface` provides methods (and
+deprecates `pack()`):
+- `packIntoCanonical(string $ipv4): string` is identical to `pack()`: every bit
+  outside the embedded version 4 address is normalised/zeroed.
+- `packIntoNonCanonical(string $ipv6, string $ipv4): string` replaces only the
+  embedded version 4 bit positions of `$ipv6`, preserving every other bit. A
+  `PackingException` is thrown if `$ipv6` is not recognised by the strategy.
+
+> `CanonicalEmbeddingInterface` is a _temporary scaffolding_ (a bridge interface)
+> to maintain backwards compatibility for `EmbeddingStrategyInterface` on the
+> `6.x` branch. Both interfaces will be combined back into `EmbeddingStrategyInterface`
+> with `pack()` removed on the next major version bump.
+>
+> Type-hint `EmbeddingStrategyInterface` and use feature detection
+> (`instanceof CanonicalEmbeddingInterface`) if you wish to use the new methods
+> in custom strategies.
+
+```php
+<?php
+use Darsyn\IP\Strategy\Teredo;
+
+$strategy = new Teredo;
+// A Teredo address carrying server 65.54.227.120, flags, and client port 40000.
+$ipv6 = pack('H*', '200100004136e378800063bf3ffffdd2');
+$ipv4 = pack('H*', '7f000001'); // 127.0.0.1
+
+// Canonical packing keeps only the client address, zeroing server/flags/port.
+bin2hex($strategy->packIntoCanonical($ipv4)); // string("20010000000000000000000080fffffe")
+
+// Non-canonical packing embeds the new client but preserves the server, flags,
+// and port carried by the original address.
+bin2hex($strategy->packIntoNonCanonical($ipv6, $ipv4)); // string("200100004136e378800063bf80fffffe")
 ```
 
 ## NAT64 (RFC 6052)

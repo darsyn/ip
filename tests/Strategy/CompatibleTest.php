@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 
 class CompatibleTest extends TestCase
 {
-    /** @var \Darsyn\IP\Strategy\EmbeddingStrategyInterface $strategy */
+    /** @var \Darsyn\IP\Strategy\CanonicalEmbeddingInterface $strategy */
     private $strategy;
 
     /** @before */
@@ -76,6 +76,7 @@ class CompatibleTest extends TestCase
     }
 
     /**
+     * @deprecated Covers the deprecated pack(); see `testPackIntoCanonical*` methods.
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Compatible::getInvalidIpAddresses()
      */
@@ -95,6 +96,7 @@ class CompatibleTest extends TestCase
     }
 
     /**
+     * @deprecated Covers the deprecated pack(); see `testPackIntoCanonical*` methods.
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Compatible::getValidSequences()
      */
@@ -103,5 +105,51 @@ class CompatibleTest extends TestCase
     public function testSequenceCorrectlyPackedIntoIpBinaryFromIpBinary(string $ipv6, string $ipv4): void
     {
         $this->assertSame($ipv6, $this->strategy->pack($ipv4));
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Compatible::getInvalidIpAddresses()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(CompatibleDataProvider::class, 'getInvalidIpAddresses')]
+    public function testPackIntoCanonicalThrowsForStringsNot4Bytes(string $value): void
+    {
+        $this->expectException(\Darsyn\IP\Exception\Strategy\PackingException::class);
+        $this->strategy->packIntoCanonical($value);
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Compatible::getValidSequences()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(CompatibleDataProvider::class, 'getValidSequences')]
+    public function testPackIntoCanonicalProducesCanonicalForm(string $ipv6, string $ipv4): void
+    {
+        $this->assertSame($ipv6, $this->strategy->packIntoCanonical($ipv4));
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Compatible::getInvalidSequences()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(CompatibleDataProvider::class, 'getInvalidSequences')]
+    public function testPackIntoNonCanonicalThrowsForUnrecognisedIpv6(string $value): void
+    {
+        $this->expectException(\Darsyn\IP\Exception\Strategy\PackingException::class);
+        $this->strategy->packIntoNonCanonical($value, \pack('H*', '7f000001'));
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Compatible::getValidSequences()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(CompatibleDataProvider::class, 'getValidSequences')]
+    public function testPackIntoNonCanonicalEqualsCanonical(string $ipv6, string $ipv4): void
+    {
+        $this->assertSame($this->strategy->packIntoCanonical($ipv4), $this->strategy->packIntoNonCanonical($ipv6, $ipv4));
     }
 }

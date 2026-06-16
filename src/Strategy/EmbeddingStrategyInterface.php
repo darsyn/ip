@@ -24,6 +24,10 @@ interface EmbeddingStrategyInterface
      * Convert the supplied IPv4 binary string into an embedded IPv6 binary
      * string, according to the implemented embedding strategy.
      *
+     * @deprecated Implement `CanonicalEmbeddingInterface` and use
+     *     `packIntoCanonical()` (identical behaviour) or `packIntoNonCanonical()`
+     *     instead. This method will be replaced by the two split packers in the
+     *     next major version.
      * @throws \Darsyn\IP\Exception\Strategy\PackingException
      */
     public function pack(string $binary): string;

@@ -2,6 +2,8 @@
 
 ## `6.x`
 
+- Split embedding strategies into canonical and non-canonical packers via the
+  new `Strategy\CanonicalEmbeddingInterface` bridge.
 - Add strict parsing methods to the new `Contracts\FactoryInterface` interface:
   try/from protocol, binary, hex.
 - Deprecate `factory()` in favour of the strict named constructors

@@ -6,6 +6,7 @@ namespace Darsyn\IP\Version;
 
 use Darsyn\IP\Exception;
 use Darsyn\IP\IpInterface;
+use Darsyn\IP\Strategy\CanonicalEmbeddingInterface;
 use Darsyn\IP\Strategy\EmbeddingStrategyInterface;
 use Darsyn\IP\Strategy\Mapped as MappedEmbeddingStrategy;
 use Darsyn\IP\Util\Binary;
@@ -54,6 +55,16 @@ class Multi extends IPv6 implements MultiVersionInterface
         return self::$defaultEmbeddingStrategy ?: new MappedEmbeddingStrategy();
     }
 
+    /** Graceful degradation for a user-defined embedding strategy that doesn't implement the CanonicalEmbeddingInterface. */
+    private static function packIntoCanonical(EmbeddingStrategyInterface $strategy, string $binary): string
+    {
+        if ($strategy instanceof CanonicalEmbeddingInterface) {
+            return $strategy->packIntoCanonical($binary);
+        }
+        /** @phpstan-ignore method.deprecated */
+        return $strategy->pack($binary);
+    }
+
     /** @deprecated Use fromProtocol() or fromBinary() instead. */
     public static function factory(string $ip, ?EmbeddingStrategyInterface $strategy = null): self
     {
@@ -67,7 +78,7 @@ class Multi extends IPv6 implements MultiVersionInterface
             // If the IP address is a binary sequence of 4 bytes, then pack it into
             // a 16 byte IPv6 binary sequence according to the embedding strategy.
             if (4 === MbString::getLength($binary)) {
-                $binary = $strategy->pack($binary);
+                $binary = self::packIntoCanonical($strategy, $binary);
             }
         } catch (Exception\IpException $e) {
             throw new Exception\InvalidIpAddressException($ip, $e);
@@ -89,7 +100,7 @@ class Multi extends IPv6 implements MultiVersionInterface
         }
         $length = MbString::getLength($binary);
         if (4 === $length) {
-            $binary = $strategy->pack($binary);
+            $binary = self::packIntoCanonical($strategy, $binary);
         } elseif (16 !== $length) {
             throw new Exception\InvalidBinaryException($binary);
         }
@@ -110,7 +121,7 @@ class Multi extends IPv6 implements MultiVersionInterface
         $strategy = $strategy ?: self::getDefaultEmbeddingStrategy();
         $length = MbString::getLength($binary);
         if (4 === $length) {
-            $binary = $strategy->pack($binary);
+            $binary = self::packIntoCanonical($strategy, $binary);
         } elseif (16 !== $length) {
             throw new Exception\InvalidBinaryException($binary);
         }
@@ -199,7 +210,7 @@ class Multi extends IPv6 implements MultiVersionInterface
             if ($this->isVersion4WithAppropriateCidr($cidr)) {
                 $v4 = (new IPv4($this->getShortBinary()))->getNetworkIp($cidr)->getBinary();
                 return new static(
-                    $this->embeddingStrategy->pack($v4),
+                    self::packIntoCanonical($this->embeddingStrategy, $v4),
                     clone $this->embeddingStrategy
                 );
             }
@@ -214,7 +225,7 @@ class Multi extends IPv6 implements MultiVersionInterface
             if ($this->isVersion4WithAppropriateCidr($cidr)) {
                 $v4 = (new IPv4($this->getShortBinary()))->getBroadcastIp($cidr)->getBinary();
                 return new static(
-                    $this->embeddingStrategy->pack($v4),
+                    self::packIntoCanonical($this->embeddingStrategy, $v4),
                     clone $this->embeddingStrategy
                 );
             }

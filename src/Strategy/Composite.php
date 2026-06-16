@@ -17,7 +17,7 @@ use Darsyn\IP\Exception\Strategy as StrategyException;
  * several embedding schemes on input while always producing a single canonical
  * form on output.
  */
-class Composite implements EmbeddingStrategyInterface
+class Composite implements CanonicalEmbeddingInterface
 {
     /** @var EmbeddingStrategyInterface $packer */
     private $packer;
@@ -54,8 +54,37 @@ class Composite implements EmbeddingStrategyInterface
         throw new StrategyException\ExtractionException($binary, $this);
     }
 
+    /** @deprecated Use packIntoCanonical() instead. */
     public function pack(string $binary): string
     {
-        return $this->packer->pack($binary);
+        return $this->packIntoCanonical($binary);
+    }
+
+    public function packIntoCanonical(string $ipv4): string
+    {
+        if ($this->packer instanceof CanonicalEmbeddingInterface) {
+            return $this->packer->packIntoCanonical($ipv4);
+        }
+        // Graceful degradation for a userland packer predating the bridge.
+        /** @phpstan-ignore method.deprecated */
+        return $this->packer->pack($ipv4);
+    }
+
+    /**
+     * Delegate to the first strategy (in constructor order) that recognises the
+     * supplied IPv6 address, mirroring extract().
+     */
+    public function packIntoNonCanonical(string $ipv6, string $ipv4): string
+    {
+        foreach ($this->strategies as $strategy) {
+            if ($strategy->isEmbedded($ipv6)) {
+                if ($strategy instanceof CanonicalEmbeddingInterface) {
+                    return $strategy->packIntoNonCanonical($ipv6, $ipv4);
+                }
+                /** @phpstan-ignore method.deprecated */
+                return $strategy->pack($ipv4);
+            }
+        }
+        throw new StrategyException\PackingException($ipv6, $this);
     }
 }

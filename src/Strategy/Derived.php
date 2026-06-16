@@ -24,7 +24,7 @@ use Darsyn\IP\Util\MbString;
  * N.B. Legacy, but not formally deprecated (only 6to4 anycast was deprecated
  * via RFC 7526).
  */
-class Derived implements EmbeddingStrategyInterface
+class Derived implements CanonicalEmbeddingInterface
 {
     public function isEmbedded(string $binary): bool
     {
@@ -46,15 +46,39 @@ class Derived implements EmbeddingStrategyInterface
      * in bits 16-47 of a 6to4 address.
      * The SLA ID and interface ID bits are lost so a direct pass-through
      * (extract-pack) reconstructs the canonical Derived address
-     * (`2002:XXXX:XXXX::`), not the original.
+     * (`2002:XXXX:XXXX::`), not the original. Use `packIntoNonCanonical()` to
+     * preserve the SLA ID and interface ID bits.
+     *
+     * @deprecated Use packIntoCanonical() instead.
      */
     public function pack(string $binary): string
     {
-        if (4 === MbString::getLength($binary)) {
+        return $this->packIntoCanonical($binary);
+    }
+
+    public function packIntoCanonical(string $ipv4): string
+    {
+        if (4 === MbString::getLength($ipv4)) {
             // Zero the SLA ID (subnet) and interface ID fields.
             $subnetInterface = "\0\0\0\0\0\0\0\0\0\0";
-            return Binary::fromHex('2002') . $binary . $subnetInterface;
+            return Binary::fromHex('2002') . $ipv4 . $subnetInterface;
         }
-        throw new StrategyException\PackingException($binary, $this);
+        throw new StrategyException\PackingException($ipv4, $this);
+    }
+
+    /**
+     * Replace only the embedded IPv4 address (bits 16-47); the 6to4 prefix
+     * (bits 0-15) and the SLA ID and interface ID fields (bits 48-127) of the
+     * supplied IPv6 address pass through unchanged.
+     */
+    public function packIntoNonCanonical(string $ipv6, string $ipv4): string
+    {
+        if (!$this->isEmbedded($ipv6)) {
+            throw new StrategyException\PackingException($ipv6, $this);
+        }
+        if (4 !== MbString::getLength($ipv4)) {
+            throw new StrategyException\PackingException($ipv4, $this);
+        }
+        return MbString::subString($ipv6, 0, 2) . $ipv4 . MbString::subString($ipv6, 6, 10);
     }
 }

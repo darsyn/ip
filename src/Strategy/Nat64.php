@@ -38,7 +38,7 @@ use Darsyn\IP\Version\IPv6;
  * within the Well-Known Prefix; the restriction does not apply to
  * Network-Specific Prefixes. This library deliberately does not enforce it.
  */
-class Nat64 implements EmbeddingStrategyInterface
+class Nat64 implements CanonicalEmbeddingInterface
 {
     /** Hex representation of the Well-Known Prefix `64:ff9b::/96` (RFC 6052 § 2.1). */
     public const WELL_KNOWN_PREFIX = '0064ff9b000000000000000000000000';
@@ -165,29 +165,66 @@ class Nat64 implements EmbeddingStrategyInterface
      * address; the reserved octet (bits 64 to 71) and the suffix are
      * zero-filled, so a direct pass-through (extract-pack) of a non-canonical
      * address reconstructs the canonical form, not the original.
+     *
+     * @deprecated Use packIntoCanonical() instead.
      */
     public function pack(string $binary): string
+    {
+        return $this->packIntoCanonical($binary);
+    }
+
+    public function packIntoCanonical(string $ipv4): string
     {
         // Note: non-global IPv4 addresses should not be packed into the
         // Well-Known Prefix (the restriction does not apply to
         // Network-Specific Prefixes), but is not enforced here. It is down to
         // the user of this library to know when to use which embedding
         // strategy.
-        if (4 !== MbString::getLength($binary)) {
-            throw new StrategyException\PackingException($binary, $this);
+        if (4 !== MbString::getLength($ipv4)) {
+            throw new StrategyException\PackingException($ipv4, $this);
         }
         $bytes = \intdiv($this->length, 8);
         $prefix = MbString::subString($this->prefix, 0, $bytes);
         if (96 === $this->length) {
-            return $prefix . $binary;
+            return $prefix . $ipv4;
         }
         // The reserved octet (bits 64 to 71) must be zero (RFC 6052 § 2.2),
         // and the suffix should be zero; zero-fill both.
         $split = 8 - $bytes;
         $withoutSuffix = $prefix
-            . MbString::subString($binary, 0, $split)
+            . MbString::subString($ipv4, 0, $split)
             . "\0"
-            . MbString::subString($binary, $split);
+            . MbString::subString($ipv4, $split);
         return MbString::padString($withoutSuffix, 16, "\0");
+    }
+
+    /**
+     * Replace only the embedded IPv4 address; the configured prefix and the
+     * suffix bits of the supplied IPv6 address pass through unchanged. The
+     * reserved octet (bits 64 to 71) is NOT preservation space: RFC 6052 § 2.2
+     * mandates it be zero, so it stays zero regardless of the supplied address.
+     */
+    public function packIntoNonCanonical(string $ipv6, string $ipv4): string
+    {
+        if (!$this->isEmbedded($ipv6)) {
+            throw new StrategyException\PackingException($ipv6, $this);
+        }
+        if (4 !== MbString::getLength($ipv4)) {
+            throw new StrategyException\PackingException($ipv4, $this);
+        }
+        $bytes = \intdiv($this->length, 8);
+        $prefix = MbString::subString($this->prefix, 0, $bytes);
+        if (96 === $this->length) {
+            // No reserved octet and no suffix at /96: identical to canonical.
+            return $prefix . $ipv4;
+        }
+        // The reserved octet (bits 64 to 71) stays zero; the suffix (the bits
+        // after the embedded address) is taken from the supplied IPv6 address.
+        $split = 8 - $bytes;
+        return $prefix
+            . MbString::subString($ipv4, 0, $split)
+            . "\0"
+            . MbString::subString($ipv4, $split)
+            . MbString::subString($ipv6, $bytes + 5);
     }
 }
