@@ -2,6 +2,9 @@
 
 ## `6.x`
 
+- Add address arithmetic methods `next()`, `previous()` and `offset(int $offset)`
+  to `Contracts\ArithmeticInterface`. Over/underflowing the address space throws
+  `Exception\OverflowException`.
 - Split embedding strategies into canonical and non-canonical packers via the
   new `Strategy\CanonicalEmbeddingInterface` bridge.
 - Add strict parsing methods to the new `Contracts\FactoryInterface` interface:

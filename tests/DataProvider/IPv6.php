@@ -119,6 +119,36 @@ class IPv6 implements IpDataProviderInterface
         ];
     }
 
+    /** @return list<array{string, int, string}> */
+    public static function getOffsetAddresses()
+    {
+        return [
+            ['2001:db8::1',    1,   '2001:db8::2'],
+            ['2001:db8::2',    -1,  '2001:db8::1'],
+            ['2001:db8::1',    0,   '2001:db8::1'],
+            ['2001:db8::ff',   1,   '2001:db8::100'],
+            ['2001:db8::100',  -1,  '2001:db8::ff'],
+            ['2001:db8::ffff', 1,   '2001:db8::1:0'],
+            ['2001:db8::1:0',  -1,  '2001:db8::ffff'],
+            ['2001:db8::1',    256, '2001:db8::101'],
+            ['::',             1,   '::1'],
+            ['::1',            -1,  '::'],
+        ];
+    }
+
+    /** @return list<array{string, int}> */
+    public static function getOffsetOverflowValues()
+    {
+        return [
+            ['ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', 1],
+            ['ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', 2],
+            ['ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', \PHP_INT_MAX],
+            ['::', -1],
+            ['::', -2],
+            ['::', \PHP_INT_MIN],
+        ];
+    }
+
     /** @return list<array{string, string, int}> */
     public static function getValidInRangeIpAddresses()
     {

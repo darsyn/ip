@@ -15,6 +15,7 @@ use Darsyn\IP\Contracts\VersionIdentityInterface;
 use Darsyn\IP\Exception\InvalidBinaryException;
 use Darsyn\IP\Exception\InvalidCidrException;
 use Darsyn\IP\Exception\InvalidIpAddressException;
+use Darsyn\IP\Exception\OverflowException;
 use Darsyn\IP\Exception\WrongVersionException;
 use Darsyn\IP\Formatter\ConsistentFormatter;
 use Darsyn\IP\Formatter\NativeFormatter;
@@ -314,6 +315,41 @@ class IPv6Test extends TestCase
     {
         $ip = IP::fromProtocol('2001:db8::a60:8a2e:370:7334');
         $this->assertSame($expected, $ip->getBroadcastIp($cidr)->getCompactedAddress());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getOffsetAddresses()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getOffsetAddresses')]
+    public function testOffset(string $start, int $offset, string $expected): void
+    {
+        $result = IP::fromProtocol($start)->offset($offset);
+        $this->assertInstanceOf(IP::class, $result);
+        $this->assertSame($expected, $result->getCompactedAddress());
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testNextAndPreviousAreOffsetByOne(): void
+    {
+        $ip = IP::fromProtocol('2001:db8::a60:8a2e:370:7334');
+        $this->assertSame($ip->offset(1)->getBinary(), $ip->next()->getBinary());
+        $this->assertSame($ip->offset(-1)->getBinary(), $ip->previous()->getBinary());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getOffsetOverflowValues()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getOffsetOverflowValues')]
+    public function testOffsetThrowsExceptionOnOverflow(string $start, int $offset): void
+    {
+        $ip = IP::fromProtocol($start);
+        $this->expectException(OverflowException::class);
+        $ip->offset($offset);
     }
 
     /**

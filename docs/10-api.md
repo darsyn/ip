@@ -11,6 +11,9 @@
 | `isVersion6()`                        | `bool`               | ✓    | ✓    | ✓     |
 | `getNetworkIp(int $cidr)`             | Static `IpInterface` | ✓    | ✓    | ✓     |
 | `getBroadcastIp(int $cidr)`           | Static `IpInterface` | ✓    | ✓    | ✓     |
+| `next()`                              | Static `IpInterface` | ✓    | ✓    | ✓     |
+| `previous()`                          | Static `IpInterface` | ✓    | ✓    | ✓     |
+| `offset(int $offset)`                 | Static `IpInterface` | ✓    | ✓    | ✓     |
 | `inRange(IpInterface $ip, int $cidr)` | `bool`               | ✓    | ✓    | ✓     |
 | `getCommonCidr(IpInterface $ip)`      | `int`                | ✓    | ✓    | ✓     |
 | `isMapped()`                          | `bool`               | ✓    | ✓    | ✓     |
