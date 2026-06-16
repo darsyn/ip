@@ -8,6 +8,7 @@ use Darsyn\IP\Exception;
 use Darsyn\IP\IpInterface;
 use Darsyn\IP\Strategy\EmbeddingStrategyInterface;
 use Darsyn\IP\Strategy\Mapped as MappedEmbeddingStrategy;
+use Darsyn\IP\Util\Binary;
 use Darsyn\IP\Util\MbString;
 
 /**
@@ -71,6 +72,78 @@ class Multi extends IPv6 implements MultiVersionInterface
             throw new Exception\InvalidIpAddressException($ip, $e);
         }
         return new static($binary, $strategy);
+    }
+
+    public static function fromProtocol(string $ip, ?EmbeddingStrategyInterface $strategy = null)
+    {
+        $strategy = $strategy ?: self::getDefaultEmbeddingStrategy();
+        try {
+            $binary = self::getProtocolFormatter()->pton($ip);
+        } catch (Exception\IpException $e) {
+            throw new Exception\InvalidIpAddressException($ip, $e);
+        }
+        // (see rant in IPv4::fromProtocol).
+        if ($binary === $ip) {
+            throw new Exception\InvalidIpAddressException($ip);
+        }
+        if (4 === MbString::getLength($binary)) {
+            $binary = $strategy->pack($binary);
+        }
+        return new static($binary, $strategy);
+    }
+
+    public static function tryFromProtocol(string $ip, ?EmbeddingStrategyInterface $strategy = null)
+    {
+        try {
+            return static::fromProtocol($ip, $strategy);
+        } catch (Exception\InvalidIpAddressException $e) {
+            return null;
+        }
+    }
+
+    public static function fromBinary(string $binary, ?EmbeddingStrategyInterface $strategy = null)
+    {
+        $strategy = $strategy ?: self::getDefaultEmbeddingStrategy();
+        $length = MbString::getLength($binary);
+        if (4 === $length) {
+            $binary = $strategy->pack($binary);
+        } elseif (16 !== $length) {
+            throw new Exception\InvalidBinaryException($binary);
+        }
+        return new static($binary, $strategy);
+    }
+
+    public static function tryFromBinary(string $binary, ?EmbeddingStrategyInterface $strategy = null)
+    {
+        try {
+            return static::fromBinary($binary, $strategy);
+        } catch (Exception\InvalidIpAddressException $e) {
+            return null;
+        }
+    }
+
+    public static function fromHex(string $hex, ?EmbeddingStrategyInterface $strategy = null)
+    {
+        try {
+            $binary = Binary::fromHex($hex);
+        } catch (\InvalidArgumentException $e) {
+            throw new Exception\InvalidIpAddressException($hex, $e);
+        }
+        return static::fromBinary($binary, $strategy);
+    }
+
+    public static function tryFromHex(string $hex, ?EmbeddingStrategyInterface $strategy = null)
+    {
+        try {
+            return static::fromHex($hex, $strategy);
+        } catch (Exception\InvalidIpAddressException $e) {
+            return null;
+        }
+    }
+
+    public static function isValid(string $ip, ?EmbeddingStrategyInterface $strategy = null): bool
+    {
+        return null !== static::tryFromProtocol($ip, $strategy);
     }
 
     protected function __construct(string $ip, ?EmbeddingStrategyInterface $strategy = null)

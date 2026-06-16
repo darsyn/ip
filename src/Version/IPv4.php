@@ -48,6 +48,76 @@ class IPv4 extends AbstractIP implements Version4Interface
         return new static($binary);
     }
 
+    public static function fromProtocol(string $ip)
+    {
+        try {
+            $binary = self::getProtocolFormatter()->pton($ip);
+        } catch (Exception\IpException $e) {
+            throw new Exception\InvalidIpAddressException($ip, $e);
+        }
+        // pton() returns a raw 4/16-byte string verbatim as a permissive
+        // fallback (the behaviour the old factory relies on); strict protocol
+        // parsing must reject anything not actually parsed from protocol notation.
+        // TODO: This _really_ needs to change before the next major version bump.
+        if ($binary === $ip) {
+            throw new Exception\InvalidIpAddressException($ip);
+        }
+        if (4 !== MbString::getLength($binary)) {
+            throw new Exception\WrongVersionException(4, 6, $ip);
+        }
+        return new static($binary);
+    }
+
+    public static function tryFromProtocol(string $ip)
+    {
+        try {
+            return static::fromProtocol($ip);
+        } catch (Exception\InvalidIpAddressException $e) {
+            return null;
+        }
+    }
+
+    public static function fromBinary(string $binary)
+    {
+        if (4 !== MbString::getLength($binary)) {
+            throw new Exception\InvalidBinaryException($binary);
+        }
+        return new static($binary);
+    }
+
+    public static function tryFromBinary(string $binary)
+    {
+        try {
+            return static::fromBinary($binary);
+        } catch (Exception\InvalidIpAddressException $e) {
+            return null;
+        }
+    }
+
+    public static function fromHex(string $hex)
+    {
+        try {
+            $binary = Binary::fromHex($hex);
+        } catch (\InvalidArgumentException $e) {
+            throw new Exception\InvalidIpAddressException($hex, $e);
+        }
+        return static::fromBinary($binary);
+    }
+
+    public static function tryFromHex(string $hex)
+    {
+        try {
+            return static::fromHex($hex);
+        } catch (Exception\InvalidIpAddressException $e) {
+            return null;
+        }
+    }
+
+    public static function isValid(string $ip): bool
+    {
+        return null !== static::tryFromProtocol($ip);
+    }
+
     public function getDotAddress(/* ?ProtocolFormatterInterface $formatter = null */): string
     {
         try {
