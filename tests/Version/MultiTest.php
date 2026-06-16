@@ -16,6 +16,7 @@ use Darsyn\IP\Contracts\OutputInterface;
 use Darsyn\IP\Contracts\VersionIdentityInterface;
 use Darsyn\IP\Exception\InvalidBinaryException;
 use Darsyn\IP\Exception\InvalidIpAddressException;
+use Darsyn\IP\Exception\OverflowException;
 use Darsyn\IP\Exception\WrongVersionException;
 use Darsyn\IP\Formatter\ConsistentFormatter;
 use Darsyn\IP\IpInterface;
@@ -257,6 +258,55 @@ class MultiTest extends TestCase
     {
         $ip = IP::fromProtocol($initial);
         $this->assertSame($expected, $ip->getBroadcastIp($cidr)->getProtocolAppropriateAddress());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getOffsetAddresses()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getOffsetAddresses')]
+    public function testOffset(string $start, int $offset, string $expected): void
+    {
+        $result = IP::fromProtocol($start)->offset($offset);
+        $this->assertInstanceOf(IP::class, $result);
+        $this->assertSame($expected, $result->getProtocolAppropriateAddress());
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testNextAndPreviousAreOffsetByOne(): void
+    {
+        $ip = IP::fromProtocol('12.34.56.78');
+        $this->assertSame($ip->offset(1)->getBinary(), $ip->next()->getBinary());
+        $this->assertSame($ip->offset(-1)->getBinary(), $ip->previous()->getBinary());
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testEmbeddedOffsetPreservesNonEmbeddedBits(): void
+    {
+        // A non-canonical 6to4 address: embedded IPv4 192.0.2.1 with a non-zero
+        // interface ID. Stepping must re-pack non-canonically (bits 48-127 kept).
+        $ip = IP::fromBinary(Binary::fromHex('2002c00002010000dead00000000beef'), new Strategy\Derived());
+        $stepped = $ip->offset(1);
+        $this->assertSame('2002c00002020000dead00000000beef', Binary::toHex($stepped->getBinary()));
+        // A naive step of the raw 16-byte sequence would instead alter the
+        // interface ID and leave the embedded IPv4 address untouched.
+        $this->assertNotSame(Binary::increment($ip->getBinary()), $stepped->getBinary());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getOffsetOverflowValues()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getOffsetOverflowValues')]
+    public function testOffsetThrowsExceptionOnOverflow(string $start, int $offset): void
+    {
+        $ip = IP::fromProtocol($start);
+        $this->expectException(OverflowException::class);
+        $ip->offset($offset);
     }
 
     /**

@@ -121,6 +121,37 @@ class IPv4 implements IpDataProviderInterface
         ];
     }
 
+    /** @return list<array{string, int, string}> */
+    public static function getOffsetAddresses()
+    {
+        return [
+            ['12.34.56.78',     1,    '12.34.56.79'],
+            ['12.34.56.78',     -1,   '12.34.56.77'],
+            ['12.34.56.78',     0,    '12.34.56.78'],
+            ['12.34.56.78',     256,  '12.34.57.78'],
+            ['12.34.56.255',    1,    '12.34.57.0'],
+            ['12.34.57.0',      -1,   '12.34.56.255'],
+            ['0.255.255.255',   1,    '1.0.0.0'],
+            ['1.0.0.0',         -1,   '0.255.255.255'],
+            ['255.255.255.254', 1,    '255.255.255.255'],
+            ['0.0.0.1',         -1,   '0.0.0.0'],
+        ];
+    }
+
+    /** @return list<array{string, int}> */
+    public static function getOffsetOverflowValues()
+    {
+        return [
+            ['255.255.255.255', 1],
+            ['255.255.255.255', 2],
+            ['255.255.255.0',   256],
+            ['0.0.0.0',         -1],
+            ['0.0.0.0',         -2],
+            ['255.255.255.255', \PHP_INT_MAX],
+            ['0.0.0.0',         \PHP_INT_MIN],
+        ];
+    }
+
     /** @return list<array{string, string, int}> */
     public static function getValidInRangeIpAddresses()
     {

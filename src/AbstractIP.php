@@ -114,6 +114,21 @@ abstract class AbstractIP implements IpInterface
         ));
     }
 
+    public function next()
+    {
+        return $this->offset(1);
+    }
+
+    public function previous()
+    {
+        return $this->offset(-1);
+    }
+
+    public function offset(int $offset)
+    {
+        return new static(Binary::addIntegerOffset($this->getBinary(), $offset));
+    }
+
     public function inRange(IpInterface $ip, int $cidr): bool
     {
         if (!$this->isSameByteLength($ip)) {

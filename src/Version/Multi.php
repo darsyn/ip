@@ -65,6 +65,16 @@ class Multi extends IPv6 implements MultiVersionInterface
         return $strategy->pack($binary);
     }
 
+    /** Graceful degradation for a user-defined embedding strategy that doesn't implement the CanonicalEmbeddingInterface. */
+    private static function packIntoNonCanonical(EmbeddingStrategyInterface $strategy, string $ipv6, string $ipv4): string
+    {
+        if ($strategy instanceof CanonicalEmbeddingInterface) {
+            return $strategy->packIntoNonCanonical($ipv6, $ipv4);
+        }
+        /** @phpstan-ignore method.deprecated */
+        return $strategy->pack($ipv4);
+    }
+
     /** @deprecated Use fromProtocol() or fromBinary() instead. */
     public static function factory(string $ip, ?EmbeddingStrategyInterface $strategy = null): self
     {
@@ -232,6 +242,18 @@ class Multi extends IPv6 implements MultiVersionInterface
         } catch (Exception\IpException $e) {
         }
         return new static(parent::getBroadcastIp($cidr)->getBinary(), clone $this->embeddingStrategy);
+    }
+
+    public function offset(int $offset): self
+    {
+        if ($this->isEmbedded()) {
+            $v4 = (new IPv4($this->getShortBinary()))->offset($offset)->getBinary();
+            return new static(
+                self::packIntoNonCanonical($this->embeddingStrategy, $this->getBinary(), $v4),
+                clone $this->embeddingStrategy
+            );
+        }
+        return new static(parent::offset($offset)->getBinary(), clone $this->embeddingStrategy);
     }
 
     public function inRange(IpInterface $ip, int $cidr): bool

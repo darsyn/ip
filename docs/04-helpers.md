@@ -173,6 +173,27 @@ $clientIp = IP::factory('d6be:583:71a4:aa67:b07a::c7');
 $hostIp->getCommonCidr($clientIp); // int(60)
 ```
 
+### Address Arithmetic
+
+Arithmetic is performed within the address space of the instance. For an
+IPv4-embedded `Multi` address the embedded IPv4 address is stepped and re-packed
+according to its embedding strategy (preserving any bits the strategy does not
+own), so stepping never silently escapes the embedded range. Crossing either
+edge of the address space (for example, `next()` on `255.255.255.255`) throws an
+`OverflowException`.
+
+```php
+<?php
+use Darsyn\IP\Version\IPv4 as IP;
+
+$ip = IP::fromProtocol('12.34.56.78');
+// Step forwards or backwards within the address space.
+$ip->next()->getDotAddress();      // string("12.34.56.79")
+$ip->previous()->getDotAddress();  // string("12.34.56.77")
+$ip->offset(256)->getDotAddress(); // string("12.34.57.78")
+$ip->offset(-79)->getDotAddress(); // string("12.34.55.255")
+```
+
 ## `IPv6` vs `Multi`?
 
 The `Multi` class tries to deal with both IPv4 and IPv6 interchangeably which

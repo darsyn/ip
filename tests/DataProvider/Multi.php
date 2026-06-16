@@ -182,6 +182,40 @@ class Multi
         );
     }
 
+    /** @return list<array{string, int, string}> */
+    public static function getOffsetAddresses()
+    {
+        return [
+            // Embedded (IPv4) addresses step within the IPv4 address space.
+            ['12.34.56.78',     1,   '12.34.56.79'],
+            ['12.34.56.78',     -1,  '12.34.56.77'],
+            ['12.34.56.78',     0,   '12.34.56.78'],
+            ['12.34.56.255',    1,   '12.34.57.0'],
+            ['255.255.255.254', 1,   '255.255.255.255'],
+            // Non-embedded (IPv6) addresses step within the IPv6 address space.
+            ['2001:db8::1',     1,   '2001:db8::2'],
+            ['2001:db8::2',     -1,  '2001:db8::1'],
+            ['2001:db8::ff',    1,   '2001:db8::100'],
+            ['2001:db8::1',     256, '2001:db8::101'],
+        ];
+    }
+
+    /** @return list<array{string, int}> */
+    public static function getOffsetOverflowValues()
+    {
+        return [
+            // Embedded addresses overflow at the edge of the IPv4 space rather
+            // than escaping into the surrounding IPv6 space.
+            ['255.255.255.255', 1],
+            ['255.255.255.255', \PHP_INT_MAX],
+            ['0.0.0.0', -1],
+            // Non-embedded addresses overflow at the edge of the IPv6 space.
+            ['ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', 1],
+            ['::', -1],
+            ['::', \PHP_INT_MIN],
+        ];
+    }
+
     /** @return list<array{string, string, int}> */
     public static function getValidInRangeIpAddresses()
     {
