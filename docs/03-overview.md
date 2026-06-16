@@ -73,9 +73,11 @@ Each class has methods for determining the version:
 
 ## Instantiation
 
-All classes are instantiated using the `factory()` static method. This method
-validates the input and converts it into binary. In the case of the `Multi`
-class it also packs any version 4 addresses into a version 6 address.
+Many instances are constructed for all [helper](./04-helpers.md) and
+[type](./07-types.md) methods. Validating the input every time a new instance
+is constructed slows things down considerably, so to speed up internal
+processes the constructor does not perform any input validation. Because of
+this the constructor method has been kept private.
 
 ```php
 <?php
@@ -84,38 +86,16 @@ use Darsyn\IP\Version\Multi as IP;
 try {
     $ip = new IP('127.0.0.1');
 } catch (\Error) {
-    echo 'Cannot create IP using "new"; please use IP::factory() instead.';
+    echo 'Cannot create IP using "new"; please use IP::fromProtocol() instead.';
 }
 ```
 
-> Many instances are constructed for all [helper](./04-helpers.md) and
-> [type](./07-types.md) methods. Validating the input every time a new instance
-> is constructed slows things down considerably, so to speed up internal
-> processes the constructor does not perform any input validation. Because of
-> this the constructor method has been kept private.
+> **Deprecated:** `factory()` is deprecated because it accepts raw binary
+> sequences as well as protocol notation. Prefer the strict named constructors:
+> `fromProtocol()` for protocol notation, or `fromBinary()` for a raw binary
+> sequence.
 
-## Parsing Strictly
-
-`factory()` is deliberately permissive: it accepts _either_ protocol notation
-_or_ a raw binary sequence (4 bytes for `IPv4`, 16 bytes for `IPv6`/`Multi`).
-
-> Any 4-character string is silently accepted as an address: `IPv4::factory('abcd')`
-> returns the IP `97.98.99.100`.
-
-This is not an issue for version 4 addresses (valid IPv4 protcol strings range 7
-to 15 characters), but can cause problems when a 16-byte binary sequence happens
-to be parsed as a valid IPv6 address.
-
-> The version 6 protocol address `2001:db8::70:734` could also be interpreted as
-> `TODO` when intended as a binary sequence.
-
-When the input is user-supplied (a query string, a header, a form field), a
-string that was never meant to be an IP address slips through validation. This
-matters most for SSRF defences, where untrusted text must never be coerced into
-an address.
-
-For these cases the version classes implement `Darsyn\IP\Contracts\FactoryInterface`,
-which separates the two concerns into strict, single-purpose entry points:
+`Darsyn\IP\Contracts\FactoryInterface` provides strict, single-purpose entry points:
 
 - `fromProtocol()` parses protocol notation **only**; a raw binary sequence is
   rejected with an `InvalidIpAddressException`.
@@ -128,7 +108,7 @@ which separates the two concerns into strict, single-purpose entry points:
 use Darsyn\IP\Version\IPv4;
 use Darsyn\IP\Exception;
 
-IPv4::factory('abcd');      // Accepted: the raw bytes become "97.98.99.100".
+IPv4::factory('abcd'); // Accepted: the raw bytes become "97.98.99.100".
 
 try {
     IPv4::fromProtocol('abcd');

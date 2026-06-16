@@ -4,6 +4,8 @@
 
 - Add strict parsing methods to the new `Contracts\FactoryInterface` interface:
   try/from protocol, binary, hex.
+- Deprecate `factory()` in favour of the strict named constructors
+  `fromProtocol()`/`fromBinary()`.
 - Introduce `@experimental` capability interfaces under `Darsyn\IP\Contracts\`.
   Their shape may change before `7.0`, but remains backwards compatible for `6.x`
 - Allow overriding the global formatter per call by passing a

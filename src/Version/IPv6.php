@@ -30,6 +30,7 @@ use Darsyn\IP\Util\MbString;
  */
 class IPv6 extends AbstractIP implements Version6Interface
 {
+    /** @deprecated Use fromProtocol() or fromBinary() instead. */
     public static function factory(string $ip)
     {
         try {
@@ -117,10 +118,14 @@ class IPv6 extends AbstractIP implements Version6Interface
      * @throws \Darsyn\IP\Exception\InvalidIpAddressException
      * @throws \Darsyn\IP\Exception\WrongVersionException
      * @return static
+     * TODO: Deprecate method after I've decided on the whole
+     *       canonical/non-canonical packing situation. Will replace with
+     *       IPv6::fromEmbed(Version4Interface, ?EmbeddingStrategyInterface).
      */
     public static function fromEmbedded(string $ip, ?EmbeddingStrategyInterface $strategy = null)
     {
-        return new static(Multi::factory($ip, $strategy)->getBinary());
+        $multi = Multi::tryFromProtocol($ip, $strategy) ?? Multi::fromBinary($ip, $strategy);
+        return new static($multi->getBinary());
     }
 
     public function getExpandedAddress(): string

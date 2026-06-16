@@ -77,8 +77,8 @@ class Nat64 implements EmbeddingStrategyInterface
     }
 
     /**
-     * Named constructor for a Network-Specific Prefix from an operator's own
-     * unicast space, eg `Nat64::networkSpecific(IPv6::factory('2001:db8:122:344::'), 64)`.
+     * Named constructor for a Network-Specific Prefix from an operator's own unicast
+     * space, eg `Nat64::networkSpecific(IPv6::fromProtocol('2001:db8:122:344::'), 64)`.
      *
      * @throws \InvalidArgumentException
      */

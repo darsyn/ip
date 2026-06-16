@@ -16,6 +16,7 @@ interface IpInterface extends ArithmeticInterface, ClassificationInterface, Comp
      * @throws \Darsyn\IP\Exception\InvalidIpAddressException
      * @throws \Darsyn\IP\Exception\WrongVersionException
      * @return static
+     * @deprecated Use fromProtocol() for protocol notation, or fromBinary() for a raw binary sequence.
      */
     public static function factory(string $ip);
 
