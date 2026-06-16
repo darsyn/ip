@@ -28,6 +28,7 @@ use Darsyn\IP\Util\MbString;
  */
 class IPv4 extends AbstractIP implements Version4Interface
 {
+    /** @deprecated Use fromProtocol() or fromBinary() instead. */
     public static function factory(string $ip)
     {
         try {

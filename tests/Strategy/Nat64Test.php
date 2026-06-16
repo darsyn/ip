@@ -98,7 +98,7 @@ class Nat64Test extends TestCase
     #[PHPUnit\DataProviderExternal(Nat64DataProvider::class, 'getNetworkSpecificSequences')]
     public function testSequencesEmbedExtractAndPackWithNetworkSpecificPrefixes(string $prefixAddress, int $length, string $ipv6, string $ipv4): void
     {
-        $strategy = Nat64::networkSpecific(IPv6::factory($prefixAddress), $length);
+        $strategy = Nat64::networkSpecific(IPv6::fromProtocol($prefixAddress), $length);
         $this->assertTrue($strategy->isEmbedded($ipv6));
         $this->assertSame($ipv4, $strategy->extract($ipv6));
         $this->assertSame($ipv6, $strategy->pack($ipv4));
@@ -112,7 +112,7 @@ class Nat64Test extends TestCase
     #[PHPUnit\DataProviderExternal(Nat64DataProvider::class, 'getNonMatchingNetworkSpecificSequences')]
     public function testIsEmbeddedReturnsFalseForSequencesNotMatchingNetworkSpecificPrefix(string $prefixAddress, int $length, string $ipv6): void
     {
-        $this->assertFalse(Nat64::networkSpecific(IPv6::factory($prefixAddress), $length)->isEmbedded($ipv6));
+        $this->assertFalse(Nat64::networkSpecific(IPv6::fromProtocol($prefixAddress), $length)->isEmbedded($ipv6));
     }
 
     /**
@@ -123,7 +123,7 @@ class Nat64Test extends TestCase
     #[PHPUnit\DataProviderExternal(Nat64DataProvider::class, 'getNonCanonicalNetworkSpecificSequences')]
     public function testNonCanonicalSequencesRoundTripToCanonicalFormWithNetworkSpecificPrefixes(string $prefixAddress, int $length, string $nonCanonical, string $ipv4, string $canonical): void
     {
-        $strategy = Nat64::networkSpecific(IPv6::factory($prefixAddress), $length);
+        $strategy = Nat64::networkSpecific(IPv6::fromProtocol($prefixAddress), $length);
         $this->assertTrue($strategy->isEmbedded($nonCanonical));
         $this->assertSame($ipv4, $strategy->extract($nonCanonical));
         $this->assertSame($canonical, $strategy->pack($strategy->extract($nonCanonical)));
@@ -137,10 +137,10 @@ class Nat64Test extends TestCase
     #[PHPUnit\DataProviderExternal(Nat64DataProvider::class, 'getValidNetworkSpecificArguments')]
     public function testNetworkSpecificStrategyCorrectlyConstructed(string $prefixAddress, int $length, string $expectedPrefixHex): void
     {
-        $strategy = Nat64::networkSpecific(IPv6::factory($prefixAddress), $length);
+        $strategy = Nat64::networkSpecific(IPv6::fromProtocol($prefixAddress), $length);
         $this->assertSame(\pack('H*', $expectedPrefixHex), $strategy->getPrefix());
         $this->assertSame($length, $strategy->getPrefixLength());
-        $this->assertSame($prefixAddress, IPv6::factory($strategy->getPrefix())->getCompactedAddress());
+        $this->assertSame($prefixAddress, IPv6::fromBinary($strategy->getPrefix())->getCompactedAddress());
     }
 
     /**
@@ -152,7 +152,7 @@ class Nat64Test extends TestCase
     public function testExceptionIsThrownForInvalidNetworkSpecificArguments(string $prefixAddress, int $length): void
     {
         $this->expectException(\InvalidArgumentException::class);
-        Nat64::networkSpecific(IPv6::factory($prefixAddress), $length);
+        Nat64::networkSpecific(IPv6::fromProtocol($prefixAddress), $length);
     }
 
     /**
@@ -163,7 +163,7 @@ class Nat64Test extends TestCase
     #[PHPUnit\DataProviderExternal(Nat64DataProvider::class, 'getZeroedNetworkSpecificArguments')]
     public function testBitsSetAfterPrefixLengthAreZeroedForNetworkSpecificPrefixes(string $prefixAddress, int $length, string $expectedPrefixHex): void
     {
-        $strategy = Nat64::networkSpecific(IPv6::factory($prefixAddress), $length);
+        $strategy = Nat64::networkSpecific(IPv6::fromProtocol($prefixAddress), $length);
         $this->assertSame(\pack('H*', $expectedPrefixHex), $strategy->getPrefix());
         $this->assertSame($length, $strategy->getPrefixLength());
     }
@@ -175,9 +175,9 @@ class Nat64Test extends TestCase
         $wellKnown = Nat64::wellKnown();
         $this->assertSame(\pack('H*', Nat64::WELL_KNOWN_PREFIX), $wellKnown->getPrefix());
         $this->assertSame(96, $wellKnown->getPrefixLength());
-        $this->assertSame('64:ff9b::', IPv6::factory($wellKnown->getPrefix())->getCompactedAddress());
+        $this->assertSame('64:ff9b::', IPv6::fromBinary($wellKnown->getPrefix())->getCompactedAddress());
         $this->assertSame(
-            Nat64::networkSpecific(IPv6::factory('64:ff9b::'), 96)->pack(\pack('H*', 'c0000221')),
+            Nat64::networkSpecific(IPv6::fromProtocol('64:ff9b::'), 96)->pack(\pack('H*', 'c0000221')),
             $wellKnown->pack(\pack('H*', 'c0000221'))
         );
     }
@@ -189,7 +189,7 @@ class Nat64Test extends TestCase
         $localUse = Nat64::localUse();
         $this->assertSame(\pack('H*', Nat64::LOCAL_USE_PREFIX), $localUse->getPrefix());
         $this->assertSame(48, $localUse->getPrefixLength());
-        $this->assertSame('64:ff9b:1::', IPv6::factory($localUse->getPrefix())->getCompactedAddress());
+        $this->assertSame('64:ff9b:1::', IPv6::fromBinary($localUse->getPrefix())->getCompactedAddress());
     }
 
     /**

@@ -54,6 +54,7 @@ class Multi extends IPv6 implements MultiVersionInterface
         return self::$defaultEmbeddingStrategy ?: new MappedEmbeddingStrategy();
     }
 
+    /** @deprecated Use fromProtocol() or fromBinary() instead. */
     public static function factory(string $ip, ?EmbeddingStrategyInterface $strategy = null): self
     {
         // We need a strategy to pack version 4 addresses.

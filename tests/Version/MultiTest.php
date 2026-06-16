@@ -52,7 +52,7 @@ class MultiTest extends TestCase
     #[PHPUnit\Test]
     public function testImplementsCapabilityInterfaces(): void
     {
-        $ip = IP::factory('127.0.0.1');
+        $ip = IP::fromProtocol('127.0.0.1');
         $this->assertInstanceOf(VersionIdentityInterface::class, $ip);
         $this->assertInstanceOf(ComparisonInterface::class, $ip);
         $this->assertInstanceOf(ArithmeticInterface::class, $ip);
@@ -67,13 +67,13 @@ class MultiTest extends TestCase
 
     /**
      * @test
-     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidIpAddresses()
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidProtocolIpAddresses()
      */
     #[PHPUnit\Test]
-    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidIpAddresses')]
+    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidProtocolIpAddresses')]
     public function testInstantiationWithValidAddresses(string $value, string $hex, string $expanded, string $compacted, ?string $dot): void
     {
-        $ip = IP::factory($value);
+        $ip = IP::fromProtocol($value);
         $this->assertInstanceOf(IpInterface::class, $ip);
         $this->assertInstanceOf(Version4Interface::class, $ip);
         $this->assertInstanceOf(Version6Interface::class, $ip);
@@ -82,6 +82,7 @@ class MultiTest extends TestCase
 
     /**
      * @test
+     * @deprecated Retains coverage of the deprecated factory() with an explicit embedding strategy.
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getEmbeddingStrategyIpAddresses()
      * @param class-string<Strategy\EmbeddingStrategyInterface> $strategyClass
      */
@@ -103,12 +104,13 @@ class MultiTest extends TestCase
     public function testDefaufltEmbeddingStrategy(string $strategyClass, string $expandedAddress, string $v4address): void
     {
         IP::setDefaultEmbeddingStrategy(new $strategyClass());
-        $ip = IP::factory($v4address);
+        $ip = IP::fromProtocol($v4address);
         $this->assertSame($expandedAddress, $ip->getExpandedAddress());
     }
 
     /**
      * @test
+     * @deprecated Retains coverage of the deprecated factory() raw-binary path.
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidBinarySequences()
      */
     #[PHPUnit\Test]
@@ -121,6 +123,7 @@ class MultiTest extends TestCase
 
     /**
      * @test
+     * @deprecated Retains coverage of the deprecated factory() protocol path.
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidProtocolIpAddresses()
      */
     #[PHPUnit\Test]
@@ -134,6 +137,7 @@ class MultiTest extends TestCase
 
     /**
      * @test
+     * @deprecated Retains coverage of the deprecated factory() validation path.
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getInvalidIpAddresses()
      */
     #[PHPUnit\Test]
@@ -152,25 +156,25 @@ class MultiTest extends TestCase
 
     /**
      * @test
-     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidIpAddresses()
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidProtocolIpAddresses()
      */
     #[PHPUnit\Test]
-    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidIpAddresses')]
+    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidProtocolIpAddresses')]
     public function testGetBinaryAlwaysReturnsA16ByteString(string $value, string $hex, string $expanded, string $compacted, ?string $dot): void
     {
-        $ip = IP::factory($value);
+        $ip = IP::fromProtocol($value);
         $this->assertSame(16, \strlen(\bin2hex($ip->getBinary())) / 2);
     }
 
     /**
      * @test
-     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidIpAddresses()
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidProtocolIpAddresses()
      */
     #[PHPUnit\Test]
-    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidIpAddresses')]
+    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidProtocolIpAddresses')]
     public function testGetCompactedAddressReturnsCorrectString(string $value, string $hex, string $expanded, string $compacted, ?string $dot): void
     {
-        $ip = IP::factory($value);
+        $ip = IP::fromProtocol($value);
         $this->assertSame($compacted, $ip->getCompactedAddress());
     }
 
@@ -182,33 +186,33 @@ class MultiTest extends TestCase
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidProtocolIpAddresses')]
     public function testGetExpandedAddressReturnsCorrectString(string $value, string $hex, string $expanded, string $compacted, ?string $dot): void
     {
-        $ip = IP::factory($value);
+        $ip = IP::fromProtocol($value);
         $this->assertSame($expanded, $ip->getExpandedAddress());
     }
 
     /**
      * @test
-     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidIpVersion4Addresses()
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidProtocolIpVersion4Addresses()
      */
     #[PHPUnit\Test]
-    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidIpVersion4Addresses')]
+    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidProtocolIpVersion4Addresses')]
     public function testDotAddressReturnsCorrectString(string $value, string $hex, string $expanded, string $compacted, ?string $dot): void
     {
-        $ip = IP::factory($value);
+        $ip = IP::fromProtocol($value);
         $this->assertSame($dot, $ip->getDotAddress());
     }
 
     /**
      * @test
-     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidIpVersion6Addresses()
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidProtocolIpVersion6Addresses()
      */
     #[PHPUnit\Test]
-    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidIpVersion6Addresses')]
+    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidProtocolIpVersion6Addresses')]
     public function testDotAddressThrowsExceptionForNonVersion4Addresses(string $value, string $hex, string $expanded, string $compacted, ?string $dot): void
     {
         $this->expectException(\Darsyn\IP\Exception\WrongVersionException::class);
         try {
-            $ip = IP::factory($value);
+            $ip = IP::fromProtocol($value);
             $ip->getDotAddress();
         } catch (WrongVersionException $e) {
             $this->assertTrue(isset($ip));
@@ -221,13 +225,13 @@ class MultiTest extends TestCase
 
     /**
      * @test
-     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getIpAddressVersions()
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getProtocolIpAddressVersions()
      */
     #[PHPUnit\Test]
-    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getIpAddressVersions')]
+    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getProtocolIpAddressVersions')]
     public function testVersion(string $value, int $version): void
     {
-        $ip = IP::factory($value);
+        $ip = IP::fromProtocol($value);
         $this->assertSame($version, $ip->getVersion());
     }
 
@@ -239,7 +243,7 @@ class MultiTest extends TestCase
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getNetworkIpAddresses')]
     public function testNetworkIp(string $initial, string $expected, int $cidr): void
     {
-        $ip = IP::factory($initial);
+        $ip = IP::fromProtocol($initial);
         $this->assertSame($expected, $ip->getNetworkIp($cidr)->getProtocolAppropriateAddress());
     }
 
@@ -251,7 +255,7 @@ class MultiTest extends TestCase
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getBroadcastIpAddresses')]
     public function testBroadcastIp(string $initial, string $expected, int $cidr): void
     {
-        $ip = IP::factory($initial);
+        $ip = IP::fromProtocol($initial);
         $this->assertSame($expected, $ip->getBroadcastIp($cidr)->getProtocolAppropriateAddress());
     }
 
@@ -263,8 +267,8 @@ class MultiTest extends TestCase
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidInRangeIpAddresses')]
     public function testInRange(string $first, string $second, int $cidr): void
     {
-        $first = IP::factory($first);
-        $second = IP::factory($second);
+        $first = IP::fromProtocol($first);
+        $second = IP::fromProtocol($second);
         $this->assertTrue($first->inRange($second, $cidr));
     }
 
@@ -272,8 +276,8 @@ class MultiTest extends TestCase
     #[PHPUnit\Test]
     public function testDifferentVersionsAreInRange(): void
     {
-        $first = IP::factory('127.0.0.1', new Strategy\Mapped());
-        $second = IPv6::factory('::1234:5678:abcd:90ef');
+        $first = IP::fromProtocol('127.0.0.1', new Strategy\Mapped());
+        $second = IPv6::fromProtocol('::1234:5678:abcd:90ef');
         $this->assertTrue($first->inRange($second, 0));
     }
 
@@ -281,8 +285,8 @@ class MultiTest extends TestCase
     #[PHPUnit\Test]
     public function testDifferentByteLengthsAreNotInRange(): void
     {
-        $first = IP::factory('127.0.0.1');
-        $second = IPv4::factory('127.0.0.1');
+        $first = IP::fromProtocol('127.0.0.1');
+        $second = IPv4::fromProtocol('127.0.0.1');
         $this->expectException(WrongVersionException::class);
         $first->inRange($second, 0);
     }
@@ -295,8 +299,8 @@ class MultiTest extends TestCase
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getCommonCidrValues')]
     public function testCommonCidr(string $first, string $second, int $expectedCidr): void
     {
-        $first = IP::factory($first);
-        $second = IP::factory($second);
+        $first = IP::fromProtocol($first);
+        $second = IP::fromProtocol($second);
         $this->assertSame($expectedCidr, $first->getCommonCidr($second));
     }
 
@@ -304,8 +308,8 @@ class MultiTest extends TestCase
     #[PHPUnit\Test]
     public function testCommonCidrThrowsException(): void
     {
-        $first = IP::factory('12.34.56.78');
-        $second = IPv4::factory('12.34.56.78');
+        $first = IP::fromProtocol('12.34.56.78');
+        $second = IPv4::fromProtocol('12.34.56.78');
         $this->expectException(WrongVersionException::class);
         $first->getCommonCidr($second);
     }
@@ -318,7 +322,7 @@ class MultiTest extends TestCase
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getLinkLocalIpAddresses')]
     public function testIsLinkLocal(string $value, bool $isLinkLocal): void
     {
-        $ip = IP::factory($value);
+        $ip = IP::fromProtocol($value);
         $this->assertSame($isLinkLocal, $ip->isLinkLocal());
     }
 
@@ -330,7 +334,7 @@ class MultiTest extends TestCase
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getMappedLoopbackIpAddresses')]
     public function testIsLoopbackMapped(string $value, bool $isLoopback): void
     {
-        $ip = IP::factory($value, new Strategy\Mapped());
+        $ip = IP::fromProtocol($value, new Strategy\Mapped());
         $this->assertSame($isLoopback, $ip->isLoopback());
     }
 
@@ -342,7 +346,7 @@ class MultiTest extends TestCase
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getCompatibleLoopbackIpAddresses')]
     public function testIsLoopbackCompatible(string $value, bool $isLoopback): void
     {
-        $ip = IP::factory($value, new Strategy\Compatible());
+        $ip = IP::fromProtocol($value, new Strategy\Compatible());
         if ('0000:0000:0000:0000:0000:0000:0000:0001' === $ip->getExpandedAddress()) {
             // Special case that I can't figure out a solution for.
             // The address 0.0.0.1 (when using the compatible embedding strategy)
@@ -361,7 +365,7 @@ class MultiTest extends TestCase
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getDerivedLoopbackIpAddresses')]
     public function testIsLoopbackDerived(string $value, bool $isLoopback): void
     {
-        $ip = IP::factory($value, new Strategy\Derived());
+        $ip = IP::fromProtocol($value, new Strategy\Derived());
         $this->assertSame($isLoopback, $ip->isLoopback());
     }
 
@@ -373,7 +377,7 @@ class MultiTest extends TestCase
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getTeredoLoopbackIpAddresses')]
     public function testIsLoopbackTeredo(string $value, bool $isLoopback): void
     {
-        $ip = IP::factory($value, new Strategy\Teredo());
+        $ip = IP::fromProtocol($value, new Strategy\Teredo());
         $this->assertSame($isLoopback, $ip->isLoopback());
     }
 
@@ -385,7 +389,7 @@ class MultiTest extends TestCase
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getMulticastIpAddresses')]
     public function testIsMulticast(string $value, bool $isMulticast): void
     {
-        $ip = IP::factory($value);
+        $ip = IP::fromProtocol($value);
         $this->assertSame($isMulticast, $ip->isMulticast());
 
     }
@@ -398,7 +402,7 @@ class MultiTest extends TestCase
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getPrivateUseIpAddresses')]
     public function testIsPrivateUse(string $value, bool $isPrivateUse): void
     {
-        $ip = IP::factory($value);
+        $ip = IP::fromProtocol($value);
         $this->assertSame($isPrivateUse, $ip->isPrivateUse());
     }
 
@@ -410,7 +414,7 @@ class MultiTest extends TestCase
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getUnspecifiedIpAddresses')]
     public function testIsUnspecified(string $value, bool $isUnspecified): void
     {
-        $ip = IP::factory($value);
+        $ip = IP::fromProtocol($value);
         $this->assertSame($isUnspecified, $ip->isUnspecified());
     }
 
@@ -422,7 +426,7 @@ class MultiTest extends TestCase
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getBenchmarkingIpAddresses')]
     public function testIsBenchmarking(string $value, bool $isBenchmarking): void
     {
-        $ip = IP::factory($value);
+        $ip = IP::fromProtocol($value);
         $this->assertSame($isBenchmarking, $ip->isBenchmarking());
     }
 
@@ -434,7 +438,7 @@ class MultiTest extends TestCase
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getDocumentationIpAddresses')]
     public function testIsDocumentation(string $value, bool $isDocumentation): void
     {
-        $ip = IP::factory($value);
+        $ip = IP::fromProtocol($value);
         $this->assertSame($isDocumentation, $ip->isDocumentation());
     }
 
@@ -446,7 +450,7 @@ class MultiTest extends TestCase
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getGloballyReachableIpAddresses')]
     public function testIsGloballyReachable(string $value, bool $isGloballyReachable): void
     {
-        $ip = IP::factory($value, new Strategy\Mapped());
+        $ip = IP::fromProtocol($value, new Strategy\Mapped());
         $this->assertSame($isGloballyReachable, $ip->isGloballyReachable());
     }
 
@@ -458,7 +462,7 @@ class MultiTest extends TestCase
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getUniqueLocalIpAddresses')]
     public function testIsUniqueLocal(string $value, bool $isUniqueLocal, bool $willThrowException): void
     {
-        $ip = IP::factory($value, new Strategy\Mapped());
+        $ip = IP::fromProtocol($value, new Strategy\Mapped());
         $willThrowException && $this->expectException(WrongVersionException::class);
         $this->assertSame($isUniqueLocal, $ip->isUniqueLocal());
     }
@@ -471,7 +475,7 @@ class MultiTest extends TestCase
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getUnicastIpAddresses')]
     public function testIsUnicast(string $value, bool $isUnicast, bool $willThrowException): void
     {
-        $ip = IP::factory($value, new Strategy\Mapped());
+        $ip = IP::fromProtocol($value, new Strategy\Mapped());
         $willThrowException && $this->expectException(WrongVersionException::class);
         $this->assertSame($isUnicast, $ip->isUnicast());
     }
@@ -484,7 +488,7 @@ class MultiTest extends TestCase
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getUnicastGlobalIpAddresses')]
     public function testIsUnicastGlobal(string $value, bool $isUnicastGlobal, bool $willThrowException): void
     {
-        $ip = IP::factory($value, new Strategy\Mapped());
+        $ip = IP::fromProtocol($value, new Strategy\Mapped());
         $willThrowException && $this->expectException(WrongVersionException::class);
         $this->assertSame($isUnicastGlobal, $ip->isUnicastGlobal());
     }
@@ -497,7 +501,7 @@ class MultiTest extends TestCase
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getIsBroadcastIpAddresses')]
     public function testIsBroadcast(string $value, bool $isBroadcast, bool $willThrowException): void
     {
-        $ip = IP::factory($value);
+        $ip = IP::fromProtocol($value);
         $willThrowException && $this->expectException(WrongVersionException::class);
         $this->assertSame($isBroadcast, $ip->isBroadcast());
     }
@@ -510,7 +514,7 @@ class MultiTest extends TestCase
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getSharedIpAddresses')]
     public function testIsShared(string $value, bool $isShared, bool $willThrowException): void
     {
-        $ip = IP::factory($value);
+        $ip = IP::fromProtocol($value);
         $willThrowException && $this->expectException(WrongVersionException::class);
         $this->assertSame($isShared, $ip->isShared());
     }
@@ -523,20 +527,20 @@ class MultiTest extends TestCase
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getFutureReservedIpAddresses')]
     public function testIsFutureReserved(string $value, bool $isFutureReserved, bool $willThrowException): void
     {
-        $ip = IP::factory($value);
+        $ip = IP::fromProtocol($value);
         $willThrowException && $this->expectException(WrongVersionException::class);
         $this->assertSame($isFutureReserved, $ip->isFutureReserved());
     }
 
     /**
      * @test
-     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidIpAddresses()
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidProtocolIpAddresses()
      */
     #[PHPUnit\Test]
-    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidIpAddresses')]
+    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidProtocolIpAddresses')]
     public function testStringCasting(string $value, string $hex, string $expanded, string $compacted, ?string $dot): void
     {
-        $ip = IP::factory($value);
+        $ip = IP::fromProtocol($value);
         null !== $dot
             ? $this->assertSame($dot, (string) $ip)
             : $this->assertSame($compacted, (string) $ip);
@@ -546,7 +550,7 @@ class MultiTest extends TestCase
     #[PHPUnit\Test]
     public function testPerCallFormatterOverridesGlobalForProtocolAppropriateAddress(): void
     {
-        $ip = IP::factory('12.34.56.78');
+        $ip = IP::fromProtocol('12.34.56.78');
         $this->assertSame(StubFormatter::SENTINEL, $ip->getProtocolAppropriateAddress(new StubFormatter()));
     }
 
@@ -554,7 +558,7 @@ class MultiTest extends TestCase
     #[PHPUnit\Test]
     public function testPerCallFormatterDoesNotMutateGlobalForProtocolAppropriateAddress(): void
     {
-        $ip = IP::factory('12.34.56.78');
+        $ip = IP::fromProtocol('12.34.56.78');
         $this->assertSame(StubFormatter::SENTINEL, $ip->getProtocolAppropriateAddress(new StubFormatter()));
         $this->assertSame('12.34.56.78', $ip->getProtocolAppropriateAddress());
     }
@@ -563,7 +567,7 @@ class MultiTest extends TestCase
     #[PHPUnit\Test]
     public function testExplicitNullPerCallFormatterFallsBackToGlobalForProtocolAppropriateAddress(): void
     {
-        $ip = IP::factory('12.34.56.78');
+        $ip = IP::fromProtocol('12.34.56.78');
         $this->assertSame('12.34.56.78', $ip->getProtocolAppropriateAddress(null));
     }
 
@@ -571,7 +575,7 @@ class MultiTest extends TestCase
     #[PHPUnit\Test]
     public function testInvalidPerCallFormatterTriggersDeprecationForProtocolAppropriateAddress(): void
     {
-        $ip = IP::factory('12.34.56.78');
+        $ip = IP::fromProtocol('12.34.56.78');
         $result = null;
         $message = $this->captureDeprecation(static function () use ($ip, &$result): void {
             $result = $ip->getProtocolAppropriateAddress(new \stdClass());
@@ -584,7 +588,7 @@ class MultiTest extends TestCase
     #[PHPUnit\Test]
     public function testPerCallFormatterOverridesGlobalForDotAddress(): void
     {
-        $ip = IP::factory('12.34.56.78');
+        $ip = IP::fromProtocol('12.34.56.78');
         $this->assertSame(StubFormatter::SENTINEL, $ip->getDotAddress(new StubFormatter()));
     }
 
@@ -592,7 +596,7 @@ class MultiTest extends TestCase
     #[PHPUnit\Test]
     public function testPerCallFormatterDoesNotMutateGlobalForDotAddress(): void
     {
-        $ip = IP::factory('12.34.56.78');
+        $ip = IP::fromProtocol('12.34.56.78');
         $this->assertSame(StubFormatter::SENTINEL, $ip->getDotAddress(new StubFormatter()));
         $this->assertSame('12.34.56.78', $ip->getDotAddress());
     }
@@ -601,7 +605,7 @@ class MultiTest extends TestCase
     #[PHPUnit\Test]
     public function testExplicitNullPerCallFormatterFallsBackToGlobalForDotAddress(): void
     {
-        $ip = IP::factory('12.34.56.78');
+        $ip = IP::fromProtocol('12.34.56.78');
         $this->assertSame('12.34.56.78', $ip->getDotAddress(null));
     }
 
@@ -609,7 +613,7 @@ class MultiTest extends TestCase
     #[PHPUnit\Test]
     public function testInvalidPerCallFormatterTriggersDeprecationForDotAddress(): void
     {
-        $ip = IP::factory('12.34.56.78');
+        $ip = IP::fromProtocol('12.34.56.78');
         $result = null;
         $message = $this->captureDeprecation(static function () use ($ip, &$result): void {
             $result = $ip->getDotAddress(new \stdClass());
@@ -625,7 +629,7 @@ class MultiTest extends TestCase
         // The formatter argument is validated before the version check, so the
         // deprecation fires even though the IPv6 address ultimately rejects
         // dotted notation with a WrongVersionException.
-        $ip = IP::factory('2001:db8::1');
+        $ip = IP::fromProtocol('2001:db8::1');
         $thrown = null;
         $message = $this->captureDeprecation(static function () use ($ip, &$thrown): void {
             try {
@@ -675,7 +679,10 @@ class MultiTest extends TestCase
         IP::fromProtocol($value);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @deprecated Deliberately contrasts the deprecated factory() against fromProtocol().
+     */
     #[PHPUnit\Test]
     public function testFromProtocolRejectsWhatFactoryAcceptsAsBinary(): void
     {
@@ -695,6 +702,11 @@ class MultiTest extends TestCase
         $ip = IP::fromBinary($value);
         $this->assertInstanceOf(MultiVersionInterface::class, $ip);
         $this->assertSame($value, $ip->getBinary());
+        $this->assertSame($expanded, $ip->getExpandedAddress());
+        $this->assertSame($compacted, $ip->getCompactedAddress());
+        if (null !== $dot) {
+            $this->assertSame($dot, $ip->getDotAddress());
+        }
     }
 
     /** @test */

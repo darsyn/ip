@@ -110,6 +110,35 @@ class Multi
         );
     }
 
+    /** @return list<array{string, string, string, string, string}> */
+    public static function getValidProtocolIpVersion4Addresses()
+    {
+        return \array_values(\array_filter(self::getValidProtocolIpAddresses(), static function (array $row) {
+            return \is_string($row[4]);
+        }));
+    }
+
+    /** @return list<array{string, string, string, string, null}> */
+    public static function getValidProtocolIpVersion6Addresses()
+    {
+        return \array_values(\array_filter(self::getValidProtocolIpAddresses(), static function (array $row) {
+            return !\is_string($row[4]);
+        }));
+    }
+
+    /** @return list<array{string, 4|6}> */
+    public static function getProtocolIpAddressVersions()
+    {
+        return \array_merge(
+            \array_map(static function ($row) {
+                return [$row[0], 4];
+            }, self::getValidProtocolIpVersion4Addresses()),
+            \array_map(static function ($row) {
+                return [$row[0], 6];
+            }, self::getValidProtocolIpVersion6Addresses())
+        );
+    }
+
     /** @return list<array{int, string}> */
     public static function getValidCidrValues()
     {
@@ -290,7 +319,7 @@ class Multi
         return \array_merge(
             \array_map(static function ($testData) {
                 return [$testData[0], false, true];
-            }, self::getValidIpVersion4Addresses()),
+            }, self::getValidProtocolIpVersion4Addresses()),
             \array_map(static function ($testData) {
                 $testData[] = false;
                 return $testData;
@@ -304,7 +333,7 @@ class Multi
         return \array_merge(
             \array_map(static function ($testData) {
                 return [$testData[0], false, true];
-            }, self::getValidIpVersion4Addresses()),
+            }, self::getValidProtocolIpVersion4Addresses()),
             \array_map(static function ($testData) {
                 $testData[] = false;
                 return $testData;
@@ -318,7 +347,7 @@ class Multi
         return \array_merge(
             \array_map(static function ($testData) {
                 return [$testData[0], false, true];
-            }, self::getValidIpVersion4Addresses()),
+            }, self::getValidProtocolIpVersion4Addresses()),
             \array_map(static function ($testData) {
                 $testData[] = false;
                 return $testData;
@@ -336,7 +365,7 @@ class Multi
             }, IPv4::getIsBroadcastIpAddresses()),
             \array_map(static function ($testData) {
                 return [$testData[0], false, true];
-            }, self::getValidIpVersion6Addresses())
+            }, self::getValidProtocolIpVersion6Addresses())
         );
     }
 
@@ -350,7 +379,7 @@ class Multi
             }, IPv4::getSharedIpAddresses()),
             \array_map(static function ($testData) {
                 return [$testData[0], false, true];
-            }, self::getValidIpVersion6Addresses())
+            }, self::getValidProtocolIpVersion6Addresses())
         );
     }
 
@@ -364,7 +393,7 @@ class Multi
             }, IPv4::getFutureReservedIpAddresses()),
             \array_map(static function ($testData) {
                 return [$testData[0], false, true];
-            }, self::getValidIpVersion6Addresses())
+            }, self::getValidProtocolIpVersion6Addresses())
         );
     }
 
