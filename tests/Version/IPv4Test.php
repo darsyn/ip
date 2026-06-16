@@ -8,9 +8,11 @@ use Darsyn\IP\Contracts\ArithmeticInterface;
 use Darsyn\IP\Contracts\Classification4Interface;
 use Darsyn\IP\Contracts\ClassificationInterface;
 use Darsyn\IP\Contracts\ComparisonInterface;
+use Darsyn\IP\Contracts\FactoryInterface;
 use Darsyn\IP\Contracts\Output4Interface;
 use Darsyn\IP\Contracts\OutputInterface;
 use Darsyn\IP\Contracts\VersionIdentityInterface;
+use Darsyn\IP\Exception\InvalidBinaryException;
 use Darsyn\IP\Exception\InvalidCidrException;
 use Darsyn\IP\Exception\InvalidIpAddressException;
 use Darsyn\IP\Exception\WrongVersionException;
@@ -46,6 +48,7 @@ class IPv4Test extends TestCase
         $this->assertInstanceOf(Output4Interface::class, $ip);
         $this->assertInstanceOf(ClassificationInterface::class, $ip);
         $this->assertInstanceOf(Classification4Interface::class, $ip);
+        $this->assertInstanceOf(FactoryInterface::class, $ip);
     }
 
     /**
@@ -546,5 +549,210 @@ class IPv4Test extends TestCase
         });
         $this->assertNotNull($message);
         $this->assertStringContainsString('integer', (string) $message);
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidProtocolIpAddresses()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidProtocolIpAddresses')]
+    public function testFromProtocolAcceptsProtocolNotation(string $value, string $expectedHex, string $expectedDot): void
+    {
+        $ip = IP::fromProtocol($value);
+        $this->assertInstanceOf(Version4Interface::class, $ip);
+        $actualHex = \unpack('H*hex', $ip->getBinary());
+        $this->assertSame($expectedHex, \is_array($actualHex) ? $actualHex['hex'] : null);
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidBinarySequences()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidBinarySequences')]
+    public function testFromProtocolRejectsRawBinarySequences(string $value, string $expectedHex, string $expectedDot): void
+    {
+        $this->expectException(InvalidIpAddressException::class);
+        IP::fromProtocol($value);
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getInvalidIpAddresses()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getInvalidIpAddresses')]
+    public function testFromProtocolThrowsOnInvalidAddresses(string $value): void
+    {
+        $this->expectException(InvalidIpAddressException::class);
+        IP::fromProtocol($value);
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testFromProtocolRejectsWhatFactoryAcceptsAsBinary(): void
+    {
+        // factory() permissively turns a raw 4-byte string into an address ...
+        $this->assertInstanceOf(Version4Interface::class, IP::factory('abcd'));
+        // ... but strict protocol parsing must not (the SSRF footgun this closes).
+        $this->expectException(InvalidIpAddressException::class);
+        IP::fromProtocol('abcd');
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidBinarySequences()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidBinarySequences')]
+    public function testFromBinaryAcceptsRawBinarySequences(string $value, string $expectedHex, string $expectedDot): void
+    {
+        $ip = IP::fromBinary($value);
+        $this->assertInstanceOf(Version4Interface::class, $ip);
+        $this->assertSame($value, $ip->getBinary());
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testFromBinaryThrowsOnWrongLength(): void
+    {
+        $this->expectException(InvalidBinaryException::class);
+        try {
+            IP::fromBinary('abc');
+        } catch (InvalidBinaryException $e) {
+            $this->assertSame('abc', $e->getSuppliedIp());
+            throw $e;
+        }
+        $this->fail();
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testInvalidBinaryExceptionIsCatchableAsInvalidIpAddress(): void
+    {
+        try {
+            IP::fromBinary('abc');
+        } catch (InvalidIpAddressException $e) {
+            $this->assertInstanceOf(InvalidBinaryException::class, $e);
+            return;
+        }
+        $this->fail();
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidBinarySequences()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidBinarySequences')]
+    public function testFromHexRoundTripsWithBinary(string $value, string $expectedHex, string $expectedDot): void
+    {
+        $ip = IP::fromHex($expectedHex);
+        $this->assertSame($value, $ip->getBinary());
+        $this->assertSame($expectedHex, Binary::toHex($ip->getBinary()));
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testFromHexIsCaseInsensitive(): void
+    {
+        $this->assertSame(IP::fromHex('7f000001')->getBinary(), IP::fromHex('7F000001')->getBinary());
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testFromHexThrowsOnNonHexadecimal(): void
+    {
+        $this->expectException(InvalidIpAddressException::class);
+        IP::fromHex('zzzzzzzz');
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testFromHexThrowsOnWrongWidth(): void
+    {
+        $this->expectException(InvalidBinaryException::class);
+        IP::fromHex('7f0000');
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidProtocolIpAddresses()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidProtocolIpAddresses')]
+    public function testTryFromProtocolReturnsInstanceForValid(string $value, string $expectedHex, string $expectedDot): void
+    {
+        $this->assertInstanceOf(Version4Interface::class, IP::tryFromProtocol($value));
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidBinarySequences()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidBinarySequences')]
+    public function testTryFromProtocolReturnsNullForRawBinary(string $value, string $expectedHex, string $expectedDot): void
+    {
+        $this->assertNull(IP::tryFromProtocol($value));
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidBinarySequences()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidBinarySequences')]
+    public function testTryFromBinaryReturnsInstanceForValid(string $value, string $expectedHex, string $expectedDot): void
+    {
+        $this->assertInstanceOf(Version4Interface::class, IP::tryFromBinary($value));
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testTryFromBinaryReturnsNullForWrongLength(): void
+    {
+        $this->assertNull(IP::tryFromBinary('abc'));
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testTryFromHexReturnsNullForInvalid(): void
+    {
+        $this->assertNull(IP::tryFromHex('zzzz'));
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidProtocolIpAddresses()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidProtocolIpAddresses')]
+    public function testIsValidReturnsTrueForProtocolNotation(string $value, string $expectedHex, string $expectedDot): void
+    {
+        $this->assertTrue(IP::isValid($value));
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidBinarySequences()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidBinarySequences')]
+    public function testIsValidReturnsFalseForRawBinary(string $value, string $expectedHex, string $expectedDot): void
+    {
+        $this->assertFalse(IP::isValid($value));
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getInvalidIpAddresses()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getInvalidIpAddresses')]
+    public function testIsValidReturnsFalseForInvalid(string $value): void
+    {
+        $this->assertFalse(IP::isValid($value));
     }
 }

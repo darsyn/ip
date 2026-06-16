@@ -46,6 +46,73 @@ class IPv6 extends AbstractIP implements Version6Interface
         return new static($binary);
     }
 
+    public static function fromProtocol(string $ip)
+    {
+        try {
+            $binary = self::getProtocolFormatter()->pton($ip);
+        } catch (Exception\IpException $e) {
+            throw new Exception\InvalidIpAddressException($ip, $e);
+        }
+        // (see rant in IPv4::fromProtocol).
+        if ($binary === $ip) {
+            throw new Exception\InvalidIpAddressException($ip);
+        }
+        if (16 !== MbString::getLength($binary)) {
+            throw new Exception\WrongVersionException(6, 4, $ip);
+        }
+        return new static($binary);
+    }
+
+    public static function tryFromProtocol(string $ip)
+    {
+        try {
+            return static::fromProtocol($ip);
+        } catch (Exception\InvalidIpAddressException $e) {
+            return null;
+        }
+    }
+
+    public static function fromBinary(string $binary)
+    {
+        if (16 !== MbString::getLength($binary)) {
+            throw new Exception\InvalidBinaryException($binary);
+        }
+        return new static($binary);
+    }
+
+    public static function tryFromBinary(string $binary)
+    {
+        try {
+            return static::fromBinary($binary);
+        } catch (Exception\InvalidIpAddressException $e) {
+            return null;
+        }
+    }
+
+    public static function fromHex(string $hex)
+    {
+        try {
+            $binary = Binary::fromHex($hex);
+        } catch (\InvalidArgumentException $e) {
+            throw new Exception\InvalidIpAddressException($hex, $e);
+        }
+        return static::fromBinary($binary);
+    }
+
+    public static function tryFromHex(string $hex)
+    {
+        try {
+            return static::fromHex($hex);
+        } catch (Exception\InvalidIpAddressException $e) {
+            return null;
+        }
+    }
+
+    public static function isValid(string $ip): bool
+    {
+        return null !== static::tryFromProtocol($ip);
+    }
+
     /**
      * @throws \Darsyn\IP\Exception\InvalidIpAddressException
      * @throws \Darsyn\IP\Exception\WrongVersionException

@@ -8,9 +8,11 @@ use Darsyn\IP\Contracts\ArithmeticInterface;
 use Darsyn\IP\Contracts\Classification6Interface;
 use Darsyn\IP\Contracts\ClassificationInterface;
 use Darsyn\IP\Contracts\ComparisonInterface;
+use Darsyn\IP\Contracts\FactoryInterface;
 use Darsyn\IP\Contracts\Output6Interface;
 use Darsyn\IP\Contracts\OutputInterface;
 use Darsyn\IP\Contracts\VersionIdentityInterface;
+use Darsyn\IP\Exception\InvalidBinaryException;
 use Darsyn\IP\Exception\InvalidCidrException;
 use Darsyn\IP\Exception\InvalidIpAddressException;
 use Darsyn\IP\Exception\WrongVersionException;
@@ -50,6 +52,7 @@ class IPv6Test extends TestCase
         $this->assertInstanceOf(Output6Interface::class, $ip);
         $this->assertInstanceOf(ClassificationInterface::class, $ip);
         $this->assertInstanceOf(Classification6Interface::class, $ip);
+        $this->assertInstanceOf(FactoryInterface::class, $ip);
     }
 
     /**
@@ -578,5 +581,203 @@ class IPv6Test extends TestCase
         });
         $this->assertNotNull($message);
         $this->assertSame('2001:db8::a60:8a2e:370:7334', $result);
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidProtocolIpAddresses()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidProtocolIpAddresses')]
+    public function testFromProtocolAcceptsProtocolNotation(string $value, string $hex, string $expanded, string $compacted): void
+    {
+        $ip = IP::fromProtocol($value);
+        $this->assertInstanceOf(Version6Interface::class, $ip);
+        $this->assertSame($hex, Binary::toHex($ip->getBinary()));
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidBinarySequences()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidBinarySequences')]
+    public function testFromProtocolRejectsRawBinarySequences(string $value, string $hex, string $expanded, string $compacted): void
+    {
+        $this->expectException(InvalidIpAddressException::class);
+        IP::fromProtocol($value);
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getInvalidIpAddresses()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getInvalidIpAddresses')]
+    public function testFromProtocolThrowsOnInvalidAddresses(string $value): void
+    {
+        $this->expectException(InvalidIpAddressException::class);
+        IP::fromProtocol($value);
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testFromProtocolRejectsWhatFactoryAcceptsAsBinary(): void
+    {
+        $this->assertInstanceOf(Version6Interface::class, IP::factory('1234567890123456'));
+        $this->expectException(InvalidIpAddressException::class);
+        IP::fromProtocol('1234567890123456');
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidBinarySequences()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidBinarySequences')]
+    public function testFromBinaryAcceptsRawBinarySequences(string $value, string $hex, string $expanded, string $compacted): void
+    {
+        $ip = IP::fromBinary($value);
+        $this->assertInstanceOf(Version6Interface::class, $ip);
+        $this->assertSame($value, $ip->getBinary());
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testFromBinaryThrowsOnWrongLength(): void
+    {
+        $this->expectException(InvalidBinaryException::class);
+        try {
+            IP::fromBinary('abc');
+        } catch (InvalidBinaryException $e) {
+            $this->assertSame('abc', $e->getSuppliedIp());
+            throw $e;
+        }
+        $this->fail();
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testFromBinaryThrowsOnFourByteSequence(): void
+    {
+        $this->expectException(InvalidBinaryException::class);
+        IP::fromBinary('abcd');
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidBinarySequences()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidBinarySequences')]
+    public function testFromHexRoundTripsWithBinary(string $value, string $hex, string $expanded, string $compacted): void
+    {
+        $ip = IP::fromHex($hex);
+        $this->assertSame($value, $ip->getBinary());
+        $this->assertSame($hex, Binary::toHex($ip->getBinary()));
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testFromHexIsCaseInsensitive(): void
+    {
+        $lower = '00000000000000000000000000000001';
+        $this->assertSame(IP::fromHex($lower)->getBinary(), IP::fromHex(\strtoupper($lower))->getBinary());
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testFromHexThrowsOnNonHexadecimal(): void
+    {
+        $this->expectException(InvalidIpAddressException::class);
+        IP::fromHex('zz000000000000000000000000000000');
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testFromHexThrowsOnWrongWidth(): void
+    {
+        $this->expectException(InvalidBinaryException::class);
+        IP::fromHex('0000000000000001');
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidProtocolIpAddresses()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidProtocolIpAddresses')]
+    public function testTryFromProtocolReturnsInstanceForValid(string $value, string $hex, string $expanded, string $compacted): void
+    {
+        $this->assertInstanceOf(Version6Interface::class, IP::tryFromProtocol($value));
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidBinarySequences()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidBinarySequences')]
+    public function testTryFromProtocolReturnsNullForRawBinary(string $value, string $hex, string $expanded, string $compacted): void
+    {
+        $this->assertNull(IP::tryFromProtocol($value));
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidBinarySequences()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidBinarySequences')]
+    public function testTryFromBinaryReturnsInstanceForValid(string $value, string $hex, string $expanded, string $compacted): void
+    {
+        $this->assertInstanceOf(Version6Interface::class, IP::tryFromBinary($value));
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testTryFromBinaryReturnsNullForWrongLength(): void
+    {
+        $this->assertNull(IP::tryFromBinary('abc'));
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testTryFromHexReturnsNullForInvalid(): void
+    {
+        $this->assertNull(IP::tryFromHex('zzzz'));
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidProtocolIpAddresses()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidProtocolIpAddresses')]
+    public function testIsValidReturnsTrueForProtocolNotation(string $value, string $hex, string $expanded, string $compacted): void
+    {
+        $this->assertTrue(IP::isValid($value));
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidBinarySequences()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidBinarySequences')]
+    public function testIsValidReturnsFalseForRawBinary(string $value, string $hex, string $expanded, string $compacted): void
+    {
+        $this->assertFalse(IP::isValid($value));
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getInvalidIpAddresses()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getInvalidIpAddresses')]
+    public function testIsValidReturnsFalseForInvalid(string $value): void
+    {
+        $this->assertFalse(IP::isValid($value));
     }
 }

@@ -9,10 +9,12 @@ use Darsyn\IP\Contracts\Classification4Interface;
 use Darsyn\IP\Contracts\Classification6Interface;
 use Darsyn\IP\Contracts\ClassificationInterface;
 use Darsyn\IP\Contracts\ComparisonInterface;
+use Darsyn\IP\Contracts\FactoryInterface;
 use Darsyn\IP\Contracts\Output4Interface;
 use Darsyn\IP\Contracts\Output6Interface;
 use Darsyn\IP\Contracts\OutputInterface;
 use Darsyn\IP\Contracts\VersionIdentityInterface;
+use Darsyn\IP\Exception\InvalidBinaryException;
 use Darsyn\IP\Exception\InvalidIpAddressException;
 use Darsyn\IP\Exception\WrongVersionException;
 use Darsyn\IP\Formatter\ConsistentFormatter;
@@ -21,6 +23,7 @@ use Darsyn\IP\Strategy;
 use Darsyn\IP\Tests\DataProvider\Multi as MultiDataProvider;
 use Darsyn\IP\Tests\Stub\StubFormatter;
 use Darsyn\IP\Tests\TestCase;
+use Darsyn\IP\Util\Binary;
 use Darsyn\IP\Version\IPv4;
 use Darsyn\IP\Version\IPv6;
 use Darsyn\IP\Version\Multi as IP;
@@ -59,6 +62,7 @@ class MultiTest extends TestCase
         $this->assertInstanceOf(ClassificationInterface::class, $ip);
         $this->assertInstanceOf(Classification4Interface::class, $ip);
         $this->assertInstanceOf(Classification6Interface::class, $ip);
+        $this->assertInstanceOf(FactoryInterface::class, $ip);
     }
 
     /**
@@ -632,5 +636,196 @@ class MultiTest extends TestCase
         });
         $this->assertNotNull($message);
         $this->assertInstanceOf(WrongVersionException::class, $thrown);
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidProtocolIpAddresses()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidProtocolIpAddresses')]
+    public function testFromProtocolAcceptsProtocolNotation(string $value, string $hex, string $expanded, string $compacted, ?string $dot): void
+    {
+        $ip = IP::fromProtocol($value);
+        $this->assertInstanceOf(MultiVersionInterface::class, $ip);
+        $this->assertSame($hex, Binary::toHex($ip->getBinary()));
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidBinarySequences()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidBinarySequences')]
+    public function testFromProtocolRejectsRawBinarySequences(string $value, string $hex, string $expanded, string $compacted, ?string $dot): void
+    {
+        $this->expectException(InvalidIpAddressException::class);
+        IP::fromProtocol($value);
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getInvalidIpAddresses()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getInvalidIpAddresses')]
+    public function testFromProtocolThrowsOnInvalidAddresses(string $value): void
+    {
+        $this->expectException(InvalidIpAddressException::class);
+        IP::fromProtocol($value);
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testFromProtocolRejectsWhatFactoryAcceptsAsBinary(): void
+    {
+        $this->assertInstanceOf(MultiVersionInterface::class, IP::factory('1234567890123456'));
+        $this->expectException(InvalidIpAddressException::class);
+        IP::fromProtocol('1234567890123456');
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidBinarySequences()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidBinarySequences')]
+    public function testFromBinaryAcceptsRawBinarySequences(string $value, string $hex, string $expanded, string $compacted, ?string $dot): void
+    {
+        $ip = IP::fromBinary($value);
+        $this->assertInstanceOf(MultiVersionInterface::class, $ip);
+        $this->assertSame($value, $ip->getBinary());
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testFromBinaryPacksFourByteSequenceWithDefaultStrategy(): void
+    {
+        $ip = IP::fromBinary(Binary::fromHex('0c22384e'));
+        $this->assertInstanceOf(MultiVersionInterface::class, $ip);
+        $this->assertTrue($ip->isVersion4());
+        $this->assertSame('12.34.56.78', $ip->getDotAddress());
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testFromBinaryThrowsOnWrongLength(): void
+    {
+        $this->expectException(InvalidBinaryException::class);
+        try {
+            IP::fromBinary('abcde');
+        } catch (InvalidBinaryException $e) {
+            $this->assertSame('abcde', $e->getSuppliedIp());
+            throw $e;
+        }
+        $this->fail();
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getEmbeddingStrategyIpAddresses()
+     * @param class-string<Strategy\EmbeddingStrategyInterface> $strategyClass
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getEmbeddingStrategyIpAddresses')]
+    public function testFromProtocolUsesExplicitStrategy(string $strategyClass, string $expandedAddress, string $v4address): void
+    {
+        $ip = IP::fromProtocol($v4address, new $strategyClass());
+        $this->assertSame($expandedAddress, $ip->getExpandedAddress());
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testFromBinaryUsesExplicitStrategy(): void
+    {
+        $ip = IP::fromBinary(Binary::fromHex('0c22384e'), new Strategy\Derived());
+        $this->assertSame('2002:0c22:384e:0000:0000:0000:0000:0000', $ip->getExpandedAddress());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidBinarySequences()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidBinarySequences')]
+    public function testFromHexRoundTripsWithBinary(string $value, string $hex, string $expanded, string $compacted, ?string $dot): void
+    {
+        $ip = IP::fromHex($hex);
+        $this->assertSame($value, $ip->getBinary());
+        $this->assertSame($hex, Binary::toHex($ip->getBinary()));
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testFromHexThrowsOnWrongWidth(): void
+    {
+        $this->expectException(InvalidBinaryException::class);
+        IP::fromHex('0c22384e0c22');
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testFromHexThrowsOnNonHexadecimal(): void
+    {
+        $this->expectException(InvalidIpAddressException::class);
+        IP::fromHex('zz000000000000000000000000000000');
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidProtocolIpAddresses()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidProtocolIpAddresses')]
+    public function testTryFromProtocolReturnsInstanceForValid(string $value, string $hex, string $expanded, string $compacted, ?string $dot): void
+    {
+        $this->assertInstanceOf(MultiVersionInterface::class, IP::tryFromProtocol($value));
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidBinarySequences()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidBinarySequences')]
+    public function testTryFromProtocolReturnsNullForRawBinary(string $value, string $hex, string $expanded, string $compacted, ?string $dot): void
+    {
+        $this->assertNull(IP::tryFromProtocol($value));
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testTryFromBinaryReturnsNullForWrongLength(): void
+    {
+        $this->assertNull(IP::tryFromBinary('abcde'));
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testTryFromHexReturnsNullForInvalid(): void
+    {
+        $this->assertNull(IP::tryFromHex('zzzz'));
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidProtocolIpAddresses()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidProtocolIpAddresses')]
+    public function testIsValidReturnsTrueForProtocolNotation(string $value, string $hex, string $expanded, string $compacted, ?string $dot): void
+    {
+        $this->assertTrue(IP::isValid($value));
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getInvalidIpAddresses()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getInvalidIpAddresses')]
+    public function testIsValidReturnsFalseForInvalid(string $value): void
+    {
+        $this->assertFalse(IP::isValid($value));
     }
 }

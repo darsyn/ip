@@ -1,5 +1,8 @@
 # Overview
 
+> The `::factory()` static method is now deprecated. See the strict-parsing
+> named constructors below.
+
 IP addresses get automatically validated on creation through the static factory
 method; if the IP address supplied is invalid an `InvalidIpAddressException`
 will be thrown.
@@ -55,7 +58,7 @@ try {
 Each class has methods for determining the version:
 
 - `$ip->getVersion()` returns the IP address version (either `int(4)` or
-  `int(6)`). 
+  `int(6)`).
 - `$ip->isVersion($version)` returns a boolean value on whether the `$ip` object
   is the version specified in `$version` (which must be either `int(4)` or
   `int(6)`).
@@ -90,6 +93,81 @@ try {
 > is constructed slows things down considerably, so to speed up internal
 > processes the constructor does not perform any input validation. Because of
 > this the constructor method has been kept private.
+
+## Parsing Strictly
+
+`factory()` is deliberately permissive: it accepts _either_ protocol notation
+_or_ a raw binary sequence (4 bytes for `IPv4`, 16 bytes for `IPv6`/`Multi`).
+
+> Any 4-character string is silently accepted as an address: `IPv4::factory('abcd')`
+> returns the IP `97.98.99.100`.
+
+This is not an issue for version 4 addresses (valid IPv4 protcol strings range 7
+to 15 characters), but can cause problems when a 16-byte binary sequence happens
+to be parsed as a valid IPv6 address.
+
+> The version 6 protocol address `2001:db8::70:734` could also be interpreted as
+> `TODO` when intended as a binary sequence.
+
+When the input is user-supplied (a query string, a header, a form field), a
+string that was never meant to be an IP address slips through validation. This
+matters most for SSRF defences, where untrusted text must never be coerced into
+an address.
+
+For these cases the version classes implement `Darsyn\IP\Contracts\FactoryInterface`,
+which separates the two concerns into strict, single-purpose entry points:
+
+- `fromProtocol()` parses protocol notation **only**; a raw binary sequence is
+  rejected with an `InvalidIpAddressException`.
+- `fromBinary()` accepts a raw binary sequence **only**, of exactly the right
+  length, throwing an `InvalidBinaryException` otherwise.
+- `fromHex()` accepts a hexadecimal string (no `0x` prefix, case-insensitive).
+
+```php
+<?php
+use Darsyn\IP\Version\IPv4;
+use Darsyn\IP\Exception;
+
+IPv4::factory('abcd');      // Accepted: the raw bytes become "97.98.99.100".
+
+try {
+    IPv4::fromProtocol('abcd');
+} catch (Exception\InvalidIpAddressException $e) {
+    echo 'Not valid IP notation, and never treated as raw bytes.';
+}
+
+IPv4::fromBinary("\x7f\x00\x00\x01"); // string("127.0.0.1")
+IPv4::fromHex('7f000001');            // string("127.0.0.1")
+```
+
+Each strict constructor has a non-throwing companion `tryFrom*` that returns
+`null` on failure, mirroring the behaviour of PHP enums.
+
+```php
+<?php
+use Darsyn\IP\Version\IPv4;
+
+if (null === $ip = IPv4::tryFromProtocol($_GET['ip'])) {
+    echo 'Please supply a valid IPv4 address.';
+}
+```
+
+Additionally, `FactoryInterface::isValid()` is available for a simple boolean
+check on protocol notation:
+
+```php
+<?php
+use Darsyn\IP\Version\IPv4;
+
+IPv4::isValid('127.0.0.1'); // bool(true)
+IPv4::isValid('abcd');      // bool(false)
+```
+
+When using the `Multi` class, each of these methods accepts the same optional
+embedding strategy as `factory()` does as its final argument.
+
+> **Note:** `InvalidBinaryException` extends `InvalidIpAddressException`, so
+> existing `catch` blocks keep working unchanged.
 
 ## Return Formats
 
@@ -173,7 +251,7 @@ $ip->getProtocolAppropriateAddress(); // string("127.0.0.1")
 
 `getBinary()` returns the 16 byte (4 bytes if using `IPv4`) binary string of the
 IP address. This will most likely contain non-printable characters, so is not
-appropriate for displaying. 
+appropriate for displaying.
 
 ```php
 <?php
