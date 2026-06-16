@@ -87,8 +87,11 @@ class Multi extends IPv6 implements MultiVersionInterface
         if ($binary === $ip) {
             throw new Exception\InvalidIpAddressException($ip);
         }
-        if (4 === MbString::getLength($binary)) {
+        $length = MbString::getLength($binary);
+        if (4 === $length) {
             $binary = $strategy->pack($binary);
+        } elseif (16 !== $length) {
+            throw new Exception\InvalidBinaryException($binary);
         }
         return new static($binary, $strategy);
     }
