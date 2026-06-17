@@ -51,6 +51,17 @@ class IPv4 implements IpDataProviderInterface
         return \array_merge(self::getValidBinarySequences(), self::getValidProtocolIpAddresses());
     }
 
+    /** @return list<array{string, list<int<0, 255>>}> */
+    public static function getOctetAddresses()
+    {
+        return [
+            ['119.14.113.44', [119, 14, 113, 44]],
+            ['192.168.1.254', [192, 168, 1, 254]],
+            ['0.0.0.0', [0, 0, 0, 0]],
+            ['255.255.255.255', [255, 255, 255, 255]],
+        ];
+    }
+
     /** @return list<array{string}> */
     public static function getInvalidIpAddresses()
     {

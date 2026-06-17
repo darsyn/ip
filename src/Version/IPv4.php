@@ -249,8 +249,13 @@ class IPv4 extends AbstractIP implements Version4Interface
             && $this->inRange(new self(Binary::fromHex('f0000000')), 4);
     }
 
-    public function __toString(): string
+    public function toString(): string
     {
         return $this->getDotAddress();
+    }
+
+    public function __toString(): string
+    {
+        return $this->toString();
     }
 }

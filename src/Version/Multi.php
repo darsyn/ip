@@ -209,6 +209,21 @@ class Multi extends IPv6 implements MultiVersionInterface
         throw new Exception\WrongVersionException(4, 6, (string) $this);
     }
 
+    public function getOctets(): array
+    {
+        return $this->isEmbedded()
+            ? (new IPv4($this->getShortBinary()))->getOctets()
+            : parent::getOctets();
+    }
+
+    public function getSegments(): array
+    {
+        if ($this->isEmbedded()) {
+            throw new Exception\WrongVersionException(6, 4, (string) $this);
+        }
+        return parent::getSegments();
+    }
+
     public function getVersion(): int
     {
         return $this->isEmbedded() ? 4 : 6;
@@ -424,8 +439,13 @@ class Multi extends IPv6 implements MultiVersionInterface
         return $this->isVersion4() && $ip->isVersion4() && $this->embeddingStrategy->isEmbedded($ip->getBinary());
     }
 
-    public function __toString(): string
+    public function toString(): string
     {
         return $this->getProtocolAppropriateAddress();
+    }
+
+    public function __toString(): string
+    {
+        return $this->toString();
     }
 }
