@@ -77,8 +77,7 @@ abstract class AbstractIP implements IpInterface
     public function getOctets(): array
     {
         $octets = [];
-        // str_split does not get overloaded by the multibyte extension. No need to use MbString here.
-        foreach (\str_split($this->getBinary()) as $byte) {
+        foreach (MbString::split($this->getBinary()) as $byte) {
             $octets[] = \ord($byte);
         }
         return $octets;

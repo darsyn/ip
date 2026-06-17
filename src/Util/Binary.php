@@ -37,7 +37,7 @@ class Binary
         }
         return '' === $asciiBinarySequence ? '' : static::fromHex(\implode('', \array_map(static function ($byteRepresentation) {
             return MbString::padString(\dechex((int) \bindec($byteRepresentation)), 2, '0', \STR_PAD_LEFT);
-        }, \function_exists('mb_str_split') ? \mb_str_split($asciiBinarySequence, 8, '8bit') : \str_split($asciiBinarySequence, 8))));
+        }, MbString::split($asciiBinarySequence, 8))));
     }
 
     /** @throws \InvalidArgumentException */
@@ -46,7 +46,7 @@ class Binary
         $hex = static::toHex($binary);
         return \implode('', \array_map(static function ($character) {
             return MbString::padString(\decbin((int) \hexdec($character)), 8, '0', \STR_PAD_LEFT);
-        }, \function_exists('mb_str_split') ? \mb_str_split($hex, 2, '8bit') : \str_split($hex, 2)));
+        }, MbString::split($hex, 2)));
     }
 
     /**

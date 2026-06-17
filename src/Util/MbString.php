@@ -28,6 +28,24 @@ class MbString
     }
 
     /**
+     * Split a string into fixed-length byte chunks (the mbstring-overload-safe
+     * equivalent of `str_split()`).
+     *
+     * @param int<1, max> $length
+     * @return list<string>
+     */
+    public static function split(string $str, int $length = 1): array
+    {
+        if ('' === $str) {
+            // str_split of an empty string returns `['']` on PHP 7.1-7.3, and `[]` on PHP 7.4
+            return [];
+        }
+        return \function_exists('\\mb_str_split')
+            ? \mb_str_split($str, $length, '8bit')
+            : \str_split($str, $length);
+    }
+
+    /**
      * PHP doesn't have a function for multibyte string padding. This should suffice in case
      * PHP's internal string functions have been overloaded by the mbstring extension.
      */

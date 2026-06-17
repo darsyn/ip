@@ -149,8 +149,7 @@ class IPv6 extends AbstractIP implements Version6Interface
     public function getSegments(): array
     {
         $segments = [];
-        // str_split does not get overloaded by the multibyte extension. No need to use MbString here.
-        foreach (\str_split($this->getBinary(), 2) as $word) {
+        foreach (MbString::split($this->getBinary(), 2) as $word) {
             $segments[] = (\ord($word[0]) << 8) + \ord($word[1]);
         }
         return $segments;
