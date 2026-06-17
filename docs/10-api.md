@@ -6,6 +6,7 @@
 | `getBinary()`                         | `string`             | ✓    | ✓    | ✓     |
 | `getOctets()`                         | `list<int>`          | ✓    | ✓    | ✓     |
 | `toString()`                          | `string`             | ✓    | ✓    | ✓     |
+| `jsonSerialize()`                     | `string`             | ✓    | ✓    | ✓     |
 | `equals(IpInterface $ip)`             | `bool`               | ✓    | ✓    | ✓     |
 | `getVersion()`                        | `int`                | ✓    | ✓    | ✓     |
 | `isVersion(int $version)`             | `bool`               | ✓    | ✓    | ✓     |

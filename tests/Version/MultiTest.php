@@ -612,6 +612,20 @@ class MultiTest extends TestCase
 
     /**
      * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidProtocolIpAddresses()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidProtocolIpAddresses')]
+    public function testJsonSerializesToProtocolAppropriateNotation(string $value, string $hex, string $expanded, string $compacted, ?string $dot): void
+    {
+        $ip = IP::fromProtocol($value);
+        $this->assertInstanceOf(\JsonSerializable::class, $ip);
+        $this->assertSame($ip->toString(), $ip->jsonSerialize());
+        $this->assertSame(\json_encode($ip->toString()), \json_encode($ip));
+    }
+
+    /**
+     * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getOctetAddresses()
      * @param list<int<0, 255>> $expectedOctets
      */

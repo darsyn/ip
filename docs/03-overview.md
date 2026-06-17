@@ -296,3 +296,17 @@ use Darsyn\IP\Version\Multi as IP;
 $ip = IP::factory('::ffff:7f00:1');
 $printableString = (string) $ip; // string("127.0.0.1")
 ```
+
+## JSON Serialisation
+
+All IP classes implement `\JsonSerializable` (via `Contracts\OutputInterface`),
+so they can be passed directly to `json_encode()`. The serialised value is the
+canonical `toString()` notation, which can be re-parsed via `fromProtocol()`.
+
+```php
+<?php
+use Darsyn\IP\Version\Multi as IP;
+
+$ip = IP::fromProtocol('::ffff:7f00:1');
+echo \json_encode(['client_ip' => $ip]); // string('{"client_ip":"127.0.0.1"}')
+```

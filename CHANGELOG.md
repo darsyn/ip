@@ -2,6 +2,7 @@
 
 ## `6.x`
 
+- Extend `Contracts\OutputInterface` from `\JsonSerializable`.
 - Expand `Contracts\OutputInterface`: `getOctets()`, `getSegments()`, and
   canonical `toString()` (deferable method for Stringable equivalent).
 - Add address arithmetic methods `next()`, `previous()` and `offset(int $offset)`

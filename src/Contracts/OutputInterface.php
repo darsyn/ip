@@ -7,7 +7,7 @@ namespace Darsyn\IP\Contracts;
 /**
  * @experimental
  */
-interface OutputInterface
+interface OutputInterface extends \JsonSerializable
 {
     /** Get Binary Representation */
     public function getBinary(): string;

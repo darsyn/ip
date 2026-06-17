@@ -83,6 +83,11 @@ abstract class AbstractIP implements IpInterface
         return $octets;
     }
 
+    public function jsonSerialize(): string
+    {
+        return $this->toString();
+    }
+
     public function equals(IpInterface $ip): bool
     {
         return $this->getBinary() === $ip->getBinary();
