@@ -620,6 +620,20 @@ class IPv6Test extends TestCase
 
     /**
      * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidProtocolIpAddresses()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidProtocolIpAddresses')]
+    public function testJsonSerializesToCanonicalNotation(string $value, string $hex, string $expanded, string $compacted): void
+    {
+        $ip = IP::fromProtocol($value);
+        $this->assertInstanceOf(\JsonSerializable::class, $ip);
+        $this->assertSame($ip->toString(), $ip->jsonSerialize());
+        $this->assertSame(\json_encode($ip->toString()), \json_encode($ip));
+    }
+
+    /**
+     * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getOctetAddresses()
      * @param list<int<0, 255>> $expectedOctets
      */
