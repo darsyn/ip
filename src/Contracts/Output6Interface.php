@@ -28,4 +28,12 @@ interface Output6Interface extends OutputInterface
      * @throws \Darsyn\IP\Exception\IpException
      */
     public function getExpandedAddress(): string;
+
+    /**
+     * Get the IP address as an array of the eight 16-bit segments (hextets).
+     *
+     * @throws \Darsyn\IP\Exception\WrongVersionException for multi-embedded IPv4 addresses
+     * @return list<int<0, 65535>>
+     */
+    public function getSegments(): array;
 }

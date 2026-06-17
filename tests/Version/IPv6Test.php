@@ -604,6 +604,46 @@ class IPv6Test extends TestCase
         $this->assertSame($compacted, (string) $ip);
     }
 
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidProtocolIpAddresses()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidProtocolIpAddresses')]
+    public function testToStringReturnsCanonicalNotation(string $value, string $hex, string $expanded, string $compacted): void
+    {
+        $ip = IP::fromProtocol($value);
+        $this->assertSame($compacted, $ip->toString());
+        $this->assertSame((string) $ip, $ip->toString());
+        $this->assertSame($ip->getBinary(), IP::fromProtocol($ip->toString())->getBinary());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getOctetAddresses()
+     * @param list<int<0, 255>> $expectedOctets
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getOctetAddresses')]
+    public function testGetOctets(string $value, array $expectedOctets): void
+    {
+        $ip = IP::fromProtocol($value);
+        $this->assertSame($expectedOctets, $ip->getOctets());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getSegmentAddresses()
+     * @param list<int<0, 65535>> $expectedSegments
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getSegmentAddresses')]
+    public function testGetSegments(string $value, array $expectedSegments): void
+    {
+        $ip = IP::fromProtocol($value);
+        $this->assertSame($expectedSegments, $ip->getSegments());
+    }
+
     /** @test */
     #[PHPUnit\Test]
     public function testPerCallFormatterOverridesGlobal(): void

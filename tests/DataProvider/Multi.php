@@ -66,6 +66,28 @@ class Multi
         return \array_merge(self::getValidBinarySequences(), self::getValidProtocolIpAddresses());
     }
 
+    /** @return list<array{string, list<int<0, 255>>}> */
+    public static function getOctetAddresses()
+    {
+        return [
+            // Embedded (Mapped) addresses report the four octets of the embedded IPv4 address.
+            ['119.14.113.44', [119, 14, 113, 44]],
+            ['12.34.56.78', [12, 34, 56, 78]],
+            // Non-embedded addresses report all sixteen octets.
+            ['2001:db8::a60:8a2e:370:7334', [32, 1, 13, 184, 0, 0, 0, 0, 10, 96, 138, 46, 3, 112, 115, 52]],
+            ['::1', [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]],
+        ];
+    }
+
+    /** @return list<array{string, list<int<0, 65535>>}> */
+    public static function getSegmentAddresses()
+    {
+        return [
+            ['2001:db8::a60:8a2e:370:7334', [8193, 3512, 0, 0, 2656, 35374, 880, 29492]],
+            ['::1', [0, 0, 0, 0, 0, 0, 0, 1]],
+        ];
+    }
+
     /** @return list<array{string, string, string, string, string}> */
     public static function getValidIpVersion4Addresses()
     {

@@ -540,6 +540,33 @@ class IPv4Test extends TestCase
         $this->assertSame($expectedDot, (string) $ip);
     }
 
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidProtocolIpAddresses()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getValidProtocolIpAddresses')]
+    public function testToStringReturnsCanonicalNotation(string $value, string $expectedHex, string $expectedDot): void
+    {
+        $ip = IP::fromProtocol($value);
+        $this->assertSame($expectedDot, $ip->toString());
+        $this->assertSame((string) $ip, $ip->toString());
+        $this->assertSame($ip->getBinary(), IP::fromProtocol($ip->toString())->getBinary());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getOctetAddresses()
+     * @param list<int<0, 255>> $expectedOctets
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getOctetAddresses')]
+    public function testGetOctets(string $value, array $expectedOctets): void
+    {
+        $ip = IP::fromProtocol($value);
+        $this->assertSame($expectedOctets, $ip->getOctets());
+    }
+
     /** @test */
     #[PHPUnit\Test]
     public function testPerCallFormatterOverridesGlobal(): void

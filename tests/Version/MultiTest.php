@@ -596,6 +596,72 @@ class MultiTest extends TestCase
             : $this->assertSame($compacted, (string) $ip);
     }
 
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidProtocolIpAddresses()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidProtocolIpAddresses')]
+    public function testToStringReturnsProtocolAppropriateNotation(string $value, string $hex, string $expanded, string $compacted, ?string $dot): void
+    {
+        $ip = IP::fromProtocol($value);
+        $this->assertSame($dot ?? $compacted, $ip->toString());
+        $this->assertSame((string) $ip, $ip->toString());
+        $this->assertSame($ip->getBinary(), IP::fromProtocol($ip->toString())->getBinary());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getOctetAddresses()
+     * @param list<int<0, 255>> $expectedOctets
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getOctetAddresses')]
+    public function testGetOctets(string $value, array $expectedOctets): void
+    {
+        $ip = IP::fromProtocol($value);
+        $this->assertSame($expectedOctets, $ip->getOctets());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getSegmentAddresses()
+     * @param list<int<0, 65535>> $expectedSegments
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getSegmentAddresses')]
+    public function testGetSegmentsForNonEmbeddedAddress(string $value, array $expectedSegments): void
+    {
+        $ip = IP::fromProtocol($value);
+        $this->assertSame($expectedSegments, $ip->getSegments());
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testGetSegmentsThrowsExceptionForEmbeddedAddress(): void
+    {
+        $ip = IP::fromProtocol('119.14.113.44');
+        $this->expectException(WrongVersionException::class);
+        $ip->getSegments();
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testGetOctetsForEmbeddedAddressWithNonDefaultStrategy(): void
+    {
+        $ip = IP::fromProtocol('12.34.56.78', new Strategy\Derived());
+        $this->assertSame([12, 34, 56, 78], $ip->getOctets());
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testGetSegmentsThrowsExceptionForEmbeddedAddressWithNonDefaultStrategy(): void
+    {
+        $ip = IP::fromProtocol('12.34.56.78', new Strategy\Derived());
+        $this->expectException(WrongVersionException::class);
+        $ip->getSegments();
+    }
+
     /** @test */
     #[PHPUnit\Test]
     public function testPerCallFormatterOverridesGlobalForProtocolAppropriateAddress(): void

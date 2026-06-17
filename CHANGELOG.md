@@ -2,6 +2,8 @@
 
 ## `6.x`
 
+- Expand `Contracts\OutputInterface`: `getOctets()`, `getSegments()`, and
+  canonical `toString()` (deferable method for Stringable equivalent).
 - Add address arithmetic methods `next()`, `previous()` and `offset(int $offset)`
   to `Contracts\ArithmeticInterface`. Over/underflowing the address space throws
   `Exception\OverflowException`.

@@ -245,12 +245,43 @@ $ip = IP::factory('80.111.111.112');
 $ip->getBinary(); // string("Poop")
 ```
 
+### Octets
+
+`getOctets()` returns the individual bytes of the binary string as an array of
+integers between `0` and `255` (four entries for an IPv4 address, sixteen for
+IPv6). Calling it on an instance of `Multi` that contains a version 4 address
+returns the four octets of the embedded IPv4 address.
+
+```php
+<?php
+use Darsyn\IP\Version\IPv4 as IP;
+
+$ip = IP::fromProtocol('127.0.0.1');
+$ip->getOctets(); // array(127, 0, 0, 1)
+```
+
+### Segments
+
+`getSegments()` returns the eight 16-bit segments (hextets) of an IPv6 address
+as an array of integers between `0` and `65535`. It is only available for the
+`IPv6` and `Multi` classes; calling it on an instance of `Multi` that contains a
+version 4 address will result in a `WrongVersionException` being thrown.
+
+```php
+<?php
+use Darsyn\IP\Version\IPv6 as IP;
+
+$ip = IP::fromProtocol('2001:db8::1');
+$ip->getSegments(); // array(8193, 3512, 0, 0, 0, 0, 0, 1)
+```
+
 ## String Casting
 
-Previous versions of this documentation specified that string casting for IP
-objects was enabled to get the binary string, but that was unfortunately untrue.
-Now, string casting is enabled for all version classes and the `__toString()`
-method is promised in `Darsyn\IP\IpInterface`:
+The canonical method for casting to a string is `toString()`.
+`\Stringable` is a PHP 8 feature and not available on all supported PHP versions,
+so `__toString()` is implemented independently (deferring to `toString()`). The
+returned string is in protocol-appropriate notation and can be re-parsed via
+`fromProtocol()`.
 
 - String casting the `IPv4` class is the equivalent of `$ip->getDotAddress()`.
 - String casting the `IPv6` class is the equivalent of

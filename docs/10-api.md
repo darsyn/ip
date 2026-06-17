@@ -4,6 +4,8 @@
 |---------------------------------------|----------------------|------|------|-------|
 | `factory(string $ip, [$strategy])`    | Static `IpInterface` | ✓    | ✓    | ✓     |
 | `getBinary()`                         | `string`             | ✓    | ✓    | ✓     |
+| `getOctets()`                         | `list<int>`          | ✓    | ✓    | ✓     |
+| `toString()`                          | `string`             | ✓    | ✓    | ✓     |
 | `equals(IpInterface $ip)`             | `bool`               | ✓    | ✓    | ✓     |
 | `getVersion()`                        | `int`                | ✓    | ✓    | ✓     |
 | `isVersion(int $version)`             | `bool`               | ✓    | ✓    | ✓     |
@@ -35,6 +37,7 @@
 | `getCompactedAddress()`               | `string`             |      | ✓    | ✓     |
 | `getExpandedAddress()`                | `string`             |      | ✓    | ✓     |
 | `getCompactedAddress()`               | `string`             |      | ✓    | ✓     |
+| `getSegments()`                       | `list<int>`          |      | ✓    | ✓     |
 | `getMulticastScope()`                 | `?int`               |      | ✓    | ✓     |
 | `isUniqueLocal()`                     | `bool`               |      | ✓    | ✓     |
 | `isUnicast()`                         | `bool`               |      | ✓    | ✓     |

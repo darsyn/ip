@@ -50,6 +50,26 @@ class IPv6 implements IpDataProviderInterface
         return \array_merge(self::getValidBinarySequences(), self::getValidProtocolIpAddresses());
     }
 
+    /** @return list<array{string, list<int<0, 255>>}> */
+    public static function getOctetAddresses()
+    {
+        return [
+            ['2001:db8::a60:8a2e:370:7334', [32, 1, 13, 184, 0, 0, 0, 0, 10, 96, 138, 46, 3, 112, 115, 52]],
+            ['::', [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]],
+            ['ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', [255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255]],
+        ];
+    }
+
+    /** @return list<array{string, list<int<0, 65535>>}> */
+    public static function getSegmentAddresses()
+    {
+        return [
+            ['2001:db8::a60:8a2e:370:7334', [8193, 3512, 0, 0, 2656, 35374, 880, 29492]],
+            ['::', [0, 0, 0, 0, 0, 0, 0, 0]],
+            ['ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', [65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535]],
+        ];
+    }
+
     /** @return list<array{string}> */
     public static function getInvalidIpAddresses()
     {

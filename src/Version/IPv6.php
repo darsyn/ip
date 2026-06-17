@@ -146,6 +146,16 @@ class IPv6 extends AbstractIP implements Version6Interface
         }
     }
 
+    public function getSegments(): array
+    {
+        $segments = [];
+        // str_split does not get overloaded by the multibyte extension. No need to use MbString here.
+        foreach (\str_split($this->getBinary(), 2) as $word) {
+            $segments[] = (\ord($word[0]) << 8) + \ord($word[1]);
+        }
+        return $segments;
+    }
+
     public function getVersion(): int
     {
         return 6;
@@ -294,8 +304,13 @@ class IPv6 extends AbstractIP implements Version6Interface
             && !$this->inRange(new self(Binary::fromHex('20010030000000000000000000000000')), 28);
     }
 
-    public function __toString(): string
+    public function toString(): string
     {
         return $this->getCompactedAddress();
+    }
+
+    public function __toString(): string
+    {
+        return $this->toString();
     }
 }
