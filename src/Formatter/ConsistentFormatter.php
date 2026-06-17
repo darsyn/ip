@@ -25,7 +25,7 @@ class ConsistentFormatter extends NativeFormatter
     private function ntopVersion6(string $binary): string
     {
         $hex = Binary::toHex($binary);
-        $parts = \str_split($hex, 4);
+        $parts = MbString::split($hex, 4);
         $zeroes = \array_map(static function ($part) {
             return '0000' === $part;
         }, $parts);
