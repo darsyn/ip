@@ -11,13 +11,6 @@ parameters:
             # This project purposefully uses variable constructors and "new static()".
             identifier: new.static
         -
-            # Binary sequences should NOT be type-narrowed to decimal-int-string.
-            # This is a bug in PHPStan, and several issues on GitHub already
-            # report inconsistencies in the new behaviour.
-            message: '#decimal-int-string#'
-            identifier: 'identical.alwaysFalse'
-            path: 'src/Util/Binary.php'
-        -
             # I have spent far too long trying to get PHPStan to play nicely with multiple versions of PHPUnit. Tried
             # ignoring errors, tried min/max PHP versions in Neon config. Just ignore the whole damn file and be done
             # with it.

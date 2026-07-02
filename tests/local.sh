@@ -111,7 +111,7 @@ run_suite() {
     echo "--- [${PHP_VERSION}] Installing dependencies ---"
     local DEV_DEPS=()
     if is_static_analysis_version "${PHP_VERSION}"; then
-        DEV_DEPS=('phpstan/phpstan:^2.2' 'phpstan/phpstan-deprecation-rules' 'php-cs-fixer/shim:^3.95')
+        DEV_DEPS=('phpstan/phpstan:^2.2.3' 'phpstan/phpstan-deprecation-rules' 'php-cs-fixer/shim:^3.95')
     fi
     docker_install "${PHP_VERSION}" "${DEV_DEPS[@]}" \
         || { echo "[${PHP_VERSION}] DEPENDENCY INSTALL FAILED"; FAILED=1; }
