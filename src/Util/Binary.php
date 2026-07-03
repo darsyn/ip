@@ -108,4 +108,83 @@ class Binary
         }
         return $binary;
     }
+
+    /**
+     * Convert a big-endian binary string into its base-10 representation.
+     * Uses GMP when available; the pure-PHP fallback operates digit-by-digit
+     * because 128-bit values exceed PHP_INT_MAX.
+     */
+    public static function toDecimalString(string $binary): string
+    {
+        if ('' === $binary) {
+            return '0';
+        }
+        if (\extension_loaded('gmp')) {
+            return \gmp_strval(\gmp_import($binary));
+        }
+        return self::toDecimalStringWithoutGmp($binary);
+    }
+
+    /**
+     * Convert a base-10 string into a fixed-length, big-endian binary string.
+     *
+     * @throws \InvalidArgumentException
+     * @throws \Darsyn\IP\Exception\OverflowException
+     */
+    public static function fromDecimalString(string $decimal, int $lengthInBytes): string
+    {
+        if (!\ctype_digit($decimal)) {
+            throw new \InvalidArgumentException('Valid decimal integer string not provided.');
+        }
+        $binary = \extension_loaded('gmp')
+            ? \gmp_export(\gmp_init($decimal, 10))
+            : self::fromDecimalStringWithoutGmp($decimal);
+        if (MbString::getLength($binary) > $lengthInBytes) {
+            throw new OverflowException();
+        }
+        return MbString::padString($binary, $lengthInBytes, "\x00", \STR_PAD_LEFT);
+    }
+
+    private static function toDecimalStringWithoutGmp(string $binary): string
+    {
+        $decimal = '0';
+        foreach (MbString::split($binary) as $byte) {
+            // Multiply the running total by 256 and add the next byte, one
+            // decimal digit at a time (schoolbook long multiplication).
+            $carry = \ord($byte);
+            $result = '';
+            foreach (\array_reverse(MbString::split($decimal)) as $digit) {
+                $accumulator = (int) $digit * 256 + $carry;
+                $result = ($accumulator % 10) . $result;
+                $carry = \intdiv($accumulator, 10);
+            }
+            while ($carry > 0) {
+                $result = ($carry % 10) . $result;
+                $carry = \intdiv($carry, 10);
+            }
+            $decimal = $result;
+        }
+        return $decimal;
+    }
+
+    private static function fromDecimalStringWithoutGmp(string $decimal): string
+    {
+        // Repeated long division by 256; each remainder is the next
+        // least-significant byte. Produces minimal (unpadded) bytes to match
+        // gmp_export(), so overflow detection is path-independent.
+        $decimal = \ltrim($decimal, '0');
+        $binary = '';
+        while ('' !== $decimal) {
+            $remainder = 0;
+            $quotient = '';
+            foreach (MbString::split($decimal) as $digit) {
+                $accumulator = $remainder * 10 + (int) $digit;
+                $quotient .= \intdiv($accumulator, 256);
+                $remainder = $accumulator % 256;
+            }
+            $binary = \chr($remainder & 0xff) . $binary;
+            $decimal = \ltrim($quotient, '0');
+        }
+        return $binary;
+    }
 }

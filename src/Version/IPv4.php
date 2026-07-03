@@ -127,6 +127,16 @@ class IPv4 extends AbstractIP implements Version4Interface
         );
     }
 
+    public static function fromIntegerString(string $integer)
+    {
+        try {
+            $binary = Binary::fromDecimalString($integer, 4);
+        } catch (\InvalidArgumentException|Exception\OverflowException $e) {
+            throw new Exception\InvalidIpAddressException($integer, $e);
+        }
+        return static::fromBinary($binary);
+    }
+
     public static function isValid(string $ip): bool
     {
         return null !== static::tryFromProtocol($ip);

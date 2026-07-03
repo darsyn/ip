@@ -76,6 +76,43 @@ $binaryString = 'Hello!';
 Binary::toHumanReadable($asciiBinary); // string("010010000110010101101100011011000110111100100001")
 ```
 
+### From Decimal String
+
+> ```
+> @throws \InvalidArgumentException
+> @throws \Darsyn\IP\Exception\OverflowException
+>
+> \Darsyn\IP\Util\Binary::fromDecimalString(string $decimal, int $lengthInBytes): string
+> ```
+
+Converts a base-10 integer string, at any precision, into a big-endian binary
+string of exactly `$lengthInBytes` bytes (padded with null bytes on the left).
+An `OverflowException` is thrown when the value does not fit within the
+requested length. GMP is used when the extension is loaded; a pure-PHP fallback
+is used otherwise.
+
+```php
+<?php
+use Darsyn\IP\Util\Binary;
+
+$decimalString = '5216694956355301425';
+Binary::fromDecimalString($decimalString, 8); // string("Hello!01")
+```
+
+### To Decimal String
+
+> ```
+> \Darsyn\IP\Util\Binary::toDecimalString(string $binary): string
+> ```
+
+```php
+<?php
+use Darsyn\IP\Util\Binary;
+
+$binaryString = 'Hello!01';
+Binary::toDecimalString($binaryString); // string("5216694956355301425")
+```
+
 ## Multibyte String Utility
 
 On some PHP installations, the [Multibyte String](https://www.php.net/manual/en/book.mbstring.php)

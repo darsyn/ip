@@ -59,6 +59,18 @@ interface FactoryInterface
      */
     public static function tryFromHex(string $hex);
 
+    /**
+     * Create a New IP From an Integer Represented as a Decimal String
+     *
+     * Accepts the whole-address value in base-10, at any precision (unlike
+     * fromInteger(), version 6 addresses do not overflow). The value must fit
+     * within the address space of the class it is called on.
+     *
+     * @throws \Darsyn\IP\Exception\InvalidIpAddressException
+     * @return static
+     */
+    public static function fromIntegerString(string $integer);
+
     /** Whether the supplied string is valid IP protocol notation. */
     public static function isValid(string $ip): bool;
 }

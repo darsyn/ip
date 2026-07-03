@@ -173,6 +173,16 @@ class Multi extends IPv6 implements MultiVersionInterface
         return static::fromBinary(IPv4::fromInteger($integer)->getBinary(), $strategy);
     }
 
+    public static function fromIntegerString(string $integer, ?EmbeddingStrategyInterface $strategy = null)
+    {
+        try {
+            $binary = Binary::fromDecimalString($integer, 16);
+        } catch (\InvalidArgumentException|Exception\OverflowException $e) {
+            throw new Exception\InvalidIpAddressException($integer, $e);
+        }
+        return static::fromBinary($binary, $strategy);
+    }
+
     public static function isValid(string $ip, ?EmbeddingStrategyInterface $strategy = null): bool
     {
         return null !== static::tryFromProtocol($ip, $strategy);

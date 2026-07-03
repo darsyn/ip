@@ -894,4 +894,81 @@ class IPv4Test extends TestCase
         }
         $this->fail();
     }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getIntegerStringData()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getIntegerStringData')]
+    public function testToIntegerString(string $value, string $decimal): void
+    {
+        $this->assertSame($decimal, IP::fromProtocol($value)->toIntegerString());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getIntegerStringData()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getIntegerStringData')]
+    public function testFromIntegerString(string $value, string $decimal): void
+    {
+        $this->assertSame(IP::fromProtocol($value)->getBinary(), IP::fromIntegerString($decimal)->getBinary());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getIntegerStringData()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getIntegerStringData')]
+    public function testIntegerStringRoundTrips(string $value, string $decimal): void
+    {
+        $ip = IP::fromProtocol($value);
+        $this->assertSame($decimal, IP::fromIntegerString($ip->toIntegerString())->toIntegerString());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getInvalidIntegerStrings()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getInvalidIntegerStrings')]
+    public function testFromIntegerStringThrowsOnInvalidInput(string $value): void
+    {
+        $this->expectException(InvalidIpAddressException::class);
+        $this->legacyExpectExceptionMessage('The IP address supplied is not valid.');
+        try {
+            IP::fromIntegerString($value);
+        } catch (InvalidIpAddressException $e) {
+            $this->assertSame($value, $e->getSuppliedIp());
+            throw $e;
+        }
+        $this->fail();
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getHexStringData()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getHexStringData')]
+    public function testToHexString(string $value, string $hex): void
+    {
+        $this->assertSame($hex, IP::fromProtocol($value)->toHexString());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getHexStringData()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getHexStringData')]
+    public function testToHexStringRoundTripsWithFromHex(string $value, string $hex): void
+    {
+        $ip = IP::fromProtocol($value);
+        $this->assertSame(8, \strlen($ip->toHexString()));
+        $this->assertSame($ip->getBinary(), IP::fromHex($ip->toHexString())->getBinary());
+    }
 }

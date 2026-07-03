@@ -2,7 +2,14 @@
     "name": "darsyn/ip",
     "description": "An immutable IP Address value object that provides several different notations, including helper functions.",
     "license": "MIT",
-    "keywords": ["library", "value-object", "immutable", "ip", "ipv4", "ipv6"],
+    "keywords": [
+        "library",
+        "value-object",
+        "immutable",
+        "ip",
+        "ipv4",
+        "ipv6"
+    ],
     "type": "library",
     "homepage": "https://github.com/darsyn/ip",
     "authors": [
@@ -35,6 +42,7 @@
         "sort-packages": true
     },
     "suggest": {
-        "darsyn/ip-doctrine": "to use IP as a Doctrine column type"
+        "darsyn/ip-doctrine": "to use IP as a Doctrine column type",
+        "ext-gmp": "to speed up conversion between binary sequences and decimal strings"
     }
 }

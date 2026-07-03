@@ -3,7 +3,12 @@
 ## `6.x`
 
 - Convert IP addresses to and from integers: `fromInteger()`/`toInteger()` via
-  the new `Contracts\Factory4Interface` (IPv4 and Multi only)
+  the new `Contracts\Factory4Interface` (IPv4 and Multi only), plus
+  arbitrary-precision `fromIntegerString()`/`toIntegerString()` and fixed-width
+  `toHexString()` on all classes.
+- Add arbitrary-precision base-256 <-> base-10 conversion to `Util\Binary`:
+  `toDecimalString()` and `fromDecimalString()` (GMP fast path when the
+  extension is loaded, backed by pure-PHP fallback).
 - Extend `Contracts\OutputInterface` from `\JsonSerializable`.
 - Expand `Contracts\OutputInterface`: `getOctets()`, `getSegments()`, and
   canonical `toString()` (deferable method for Stringable equivalent).
