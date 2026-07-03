@@ -9,6 +9,7 @@ use Darsyn\IP\Contracts\Classification4Interface;
 use Darsyn\IP\Contracts\Classification6Interface;
 use Darsyn\IP\Contracts\ClassificationInterface;
 use Darsyn\IP\Contracts\ComparisonInterface;
+use Darsyn\IP\Contracts\Factory4Interface;
 use Darsyn\IP\Contracts\FactoryInterface;
 use Darsyn\IP\Contracts\Output4Interface;
 use Darsyn\IP\Contracts\Output6Interface;
@@ -21,6 +22,7 @@ use Darsyn\IP\Exception\WrongVersionException;
 use Darsyn\IP\Formatter\ConsistentFormatter;
 use Darsyn\IP\IpInterface;
 use Darsyn\IP\Strategy;
+use Darsyn\IP\Tests\DataProvider\IPv4 as IPv4DataProvider;
 use Darsyn\IP\Tests\DataProvider\Multi as MultiDataProvider;
 use Darsyn\IP\Tests\Stub\StubFormatter;
 use Darsyn\IP\Tests\TestCase;
@@ -64,6 +66,7 @@ class MultiTest extends TestCase
         $this->assertInstanceOf(Classification4Interface::class, $ip);
         $this->assertInstanceOf(Classification6Interface::class, $ip);
         $this->assertInstanceOf(FactoryInterface::class, $ip);
+        $this->assertInstanceOf(Factory4Interface::class, $ip);
     }
 
     /**
@@ -969,5 +972,59 @@ class MultiTest extends TestCase
     public function testIsValidReturnsFalseForInvalid(string $value): void
     {
         $this->assertFalse(IP::isValid($value));
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testToIntegerForEmbeddedAddress(): void
+    {
+        $ip = IP::fromProtocol('12.34.56.78');
+        $this->assertSame(203569230, $ip->toInteger());
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testToIntegerWithNonDefaultStrategy(): void
+    {
+        $ip = IP::fromProtocol('12.34.56.78', new Strategy\Derived());
+        $this->assertSame(203569230, $ip->toInteger());
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testToIntegerThrowsForNonEmbeddedAddress(): void
+    {
+        $ip = IP::fromProtocol('2001:db8::1');
+        $this->expectException(WrongVersionException::class);
+        $ip->toInteger();
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testFromIntegerUsesDefaultMappedStrategy(): void
+    {
+        $ip = IP::fromInteger(203569230);
+        $this->assertSame('00000000000000000000ffff0c22384e', Binary::toHex($ip->getBinary()));
+        $this->assertSame('12.34.56.78', $ip->getProtocolAppropriateAddress());
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testFromIntegerUsesExplicitStrategy(): void
+    {
+        $ip = IP::fromInteger(203569230, new Strategy\Derived());
+        $this->assertSame('2002:0c22:384e:0000:0000:0000:0000:0000', $ip->getExpandedAddress());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getInvalidIntegers()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getInvalidIntegers')]
+    public function testFromIntegerThrowsOnOutOfRange(int $integer): void
+    {
+        $this->expectException(InvalidIpAddressException::class);
+        IP::fromInteger($integer);
     }
 }

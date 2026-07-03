@@ -8,6 +8,7 @@ use Darsyn\IP\Contracts\ArithmeticInterface;
 use Darsyn\IP\Contracts\Classification4Interface;
 use Darsyn\IP\Contracts\ClassificationInterface;
 use Darsyn\IP\Contracts\ComparisonInterface;
+use Darsyn\IP\Contracts\Factory4Interface;
 use Darsyn\IP\Contracts\FactoryInterface;
 use Darsyn\IP\Contracts\Output4Interface;
 use Darsyn\IP\Contracts\OutputInterface;
@@ -50,6 +51,7 @@ class IPv4Test extends TestCase
         $this->assertInstanceOf(ClassificationInterface::class, $ip);
         $this->assertInstanceOf(Classification4Interface::class, $ip);
         $this->assertInstanceOf(FactoryInterface::class, $ip);
+        $this->assertInstanceOf(Factory4Interface::class, $ip);
     }
 
     /**
@@ -838,5 +840,58 @@ class IPv4Test extends TestCase
     public function testIsValidReturnsFalseForInvalid(string $value): void
     {
         $this->assertFalse(IP::isValid($value));
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getIntegerAddresses()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getIntegerAddresses')]
+    public function testToInteger(string $value, int $integer): void
+    {
+        $this->assertSame($integer, IP::fromProtocol($value)->toInteger());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getIntegerAddresses()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getIntegerAddresses')]
+    public function testFromInteger(string $value, int $integer): void
+    {
+        $this->assertSame(IP::fromProtocol($value)->getBinary(), IP::fromInteger($integer)->getBinary());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getIntegerAddresses()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getIntegerAddresses')]
+    public function testIntegerRoundTrips(string $value, int $integer): void
+    {
+        $ip = IP::fromProtocol($value);
+        $this->assertSame($integer, IP::fromInteger($ip->toInteger())->toInteger());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getInvalidIntegers()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getInvalidIntegers')]
+    public function testFromIntegerThrowsOnOutOfRange(int $integer): void
+    {
+        $this->expectException(InvalidIpAddressException::class);
+        $this->legacyExpectExceptionMessage('The IP address supplied is not valid.');
+        try {
+            IP::fromInteger($integer);
+        } catch (InvalidIpAddressException $e) {
+            $this->assertSame($integer, $e->getSuppliedIp());
+            throw $e;
+        }
+        $this->fail();
     }
 }

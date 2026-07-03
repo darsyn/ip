@@ -35,6 +35,7 @@
 | `isShared()`                          | `bool`               | ✓    |      | ✓     |
 | `isFutureReserved()`                  | `bool`               | ✓    |      | ✓     |
 | `getDotAddress()`                     | `string`             | ✓    |      | ✓     |
+| `toInteger()`                         | `int`                | ✓    |      | ✓     |
 | `getCompactedAddress()`               | `string`             |      | ✓    | ✓     |
 | `getExpandedAddress()`                | `string`             |      | ✓    | ✓     |
 | `getCompactedAddress()`               | `string`             |      | ✓    | ✓     |

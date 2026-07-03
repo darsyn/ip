@@ -8,6 +8,7 @@ use Darsyn\IP\Contracts\ArithmeticInterface;
 use Darsyn\IP\Contracts\Classification6Interface;
 use Darsyn\IP\Contracts\ClassificationInterface;
 use Darsyn\IP\Contracts\ComparisonInterface;
+use Darsyn\IP\Contracts\Factory4Interface;
 use Darsyn\IP\Contracts\FactoryInterface;
 use Darsyn\IP\Contracts\Output6Interface;
 use Darsyn\IP\Contracts\OutputInterface;
@@ -54,6 +55,8 @@ class IPv6Test extends TestCase
         $this->assertInstanceOf(ClassificationInterface::class, $ip);
         $this->assertInstanceOf(Classification6Interface::class, $ip);
         $this->assertInstanceOf(FactoryInterface::class, $ip);
+        // fromInteger() is version 4 only; IPv6 deliberately does not gain it.
+        $this->assertNotInstanceOf(Factory4Interface::class, $ip);
     }
 
     /**

@@ -2,6 +2,8 @@
 
 ## `6.x`
 
+- Convert IP addresses to and from integers: `fromInteger()`/`toInteger()` via
+  the new `Contracts\Factory4Interface` (IPv4 and Multi only)
 - Extend `Contracts\OutputInterface` from `\JsonSerializable`.
 - Expand `Contracts\OutputInterface`: `getOctets()`, `getSegments()`, and
   canonical `toString()` (deferable method for Stringable equivalent).
