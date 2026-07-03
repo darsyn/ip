@@ -127,6 +127,15 @@ class IPv4 extends AbstractIP implements Version4Interface
         );
     }
 
+    public static function tryFromInteger(int $integer)
+    {
+        try {
+            return static::fromInteger($integer);
+        } catch (Exception\InvalidIpAddressException $e) {
+            return null;
+        }
+    }
+
     public static function fromIntegerString(string $integer)
     {
         try {
@@ -135,6 +144,15 @@ class IPv4 extends AbstractIP implements Version4Interface
             throw new Exception\InvalidIpAddressException($integer, $e);
         }
         return static::fromBinary($binary);
+    }
+
+    public static function tryFromIntegerString(string $integer)
+    {
+        try {
+            return static::fromIntegerString($integer);
+        } catch (Exception\InvalidIpAddressException $e) {
+            return null;
+        }
     }
 
     public static function isValid(string $ip): bool

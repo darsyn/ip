@@ -71,6 +71,14 @@ interface FactoryInterface
      */
     public static function fromIntegerString(string $integer);
 
+    /**
+     * Create a New IP From an Integer Represented as a Decimal String, or
+     * Null on Failure
+     *
+     * @return static|null
+     */
+    public static function tryFromIntegerString(string $integer);
+
     /** Whether the supplied string is valid IP protocol notation. */
     public static function isValid(string $ip): bool;
 }

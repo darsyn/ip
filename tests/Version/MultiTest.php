@@ -1036,6 +1036,24 @@ class MultiTest extends TestCase
 
     /** @test */
     #[PHPUnit\Test]
+    public function testTryFromIntegerReturnsInstanceForValid(): void
+    {
+        $this->assertInstanceOf(MultiVersionInterface::class, IP::tryFromInteger(203569230));
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getInvalidIntegers()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getInvalidIntegers')]
+    public function testTryFromIntegerReturnsNullForOutOfRange(int $integer): void
+    {
+        $this->assertNull(IP::tryFromInteger($integer));
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
     public function testToHexStringReturnsFullWidthWhenEmbedded(): void
     {
         $ip = IP::fromProtocol('12.34.56.78');
@@ -1081,6 +1099,28 @@ class MultiTest extends TestCase
     {
         $this->expectException(InvalidIpAddressException::class);
         IP::fromIntegerString($value);
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidBinarySequences()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidBinarySequences')]
+    public function testTryFromIntegerStringReturnsInstanceForValid(string $value, string $hex, string $expanded, string $compacted, ?string $dot): void
+    {
+        $this->assertInstanceOf(MultiVersionInterface::class, IP::tryFromIntegerString(Binary::toDecimalString($value)));
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getInvalidIntegerStrings()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getInvalidIntegerStrings')]
+    public function testTryFromIntegerStringReturnsNullForInvalid(string $value): void
+    {
+        $this->assertNull(IP::tryFromIntegerString($value));
     }
 
     /**
