@@ -15,6 +15,15 @@ interface MultiVersionInterface extends Version4Interface, Version6Interface
     public static function setDefaultEmbeddingStrategy(EmbeddingStrategyInterface $strategy): void;
 
     /**
+     * Whether an IPv4 address is embedded within this address, according to
+     * the embedding strategy in effect for this instance.
+     *
+     * @not-deprecated IpInterface deprecated in favour of
+     *                 Contracts\StrategyDetectionInterface
+     */
+    public function isEmbedded(): bool;
+
+    /**
      * Get Protocol-appropriate Address
      *
      * Converts an IP address into the smallest protocol notation it can;

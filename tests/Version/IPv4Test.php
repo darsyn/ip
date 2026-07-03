@@ -12,6 +12,7 @@ use Darsyn\IP\Contracts\Factory4Interface;
 use Darsyn\IP\Contracts\FactoryInterface;
 use Darsyn\IP\Contracts\Output4Interface;
 use Darsyn\IP\Contracts\OutputInterface;
+use Darsyn\IP\Contracts\StrategyDetectionInterface;
 use Darsyn\IP\Contracts\VersionIdentityInterface;
 use Darsyn\IP\Exception\InvalidBinaryException;
 use Darsyn\IP\Exception\InvalidCidrException;
@@ -52,6 +53,8 @@ class IPv4Test extends TestCase
         $this->assertInstanceOf(Classification4Interface::class, $ip);
         $this->assertInstanceOf(FactoryInterface::class, $ip);
         $this->assertInstanceOf(Factory4Interface::class, $ip);
+        // Strategy detection is a version 6 concept; IPv4 does not gain it.
+        $this->assertNotInstanceOf(StrategyDetectionInterface::class, $ip);
     }
 
     /**
@@ -387,6 +390,7 @@ class IPv4Test extends TestCase
 
     /**
      * @test
+     * @deprecated Retains coverage of the deprecated IpInterface::isEmbedded() on non-Multi classes.
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidProtocolIpAddresses()
      */
     #[PHPUnit\Test]

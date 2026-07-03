@@ -79,6 +79,69 @@ $ip = IP::factory('::7f00:1');
 $ip->isCompatible(); // bool(true)
 ```
 
+### NAT64
+
+Whether the IP is a NAT64 address within the Well-Known Prefix `64:ff9b::/96`,
+according to [RFC 6052 section 2.1](https://tools.ietf.org/html/rfc6052 "IPv6
+Addressing of IPv4/IPv6 Translators"), or within the Local-use Prefix
+`64:ff9b:1::/48`, according to [RFC 8215 section 4](https://tools.ietf.org/html/rfc8215
+"Local-Use IPv4/IPv6 Translation Prefix").
+
+```php
+<?php
+use Darsyn\IP\Version\IPv6 as IP;
+
+IP::fromProtocol('64:ff9b::7f00:1')->isNat64WellKnown(); // bool(true)
+IP::fromProtocol('64:ff9b:1:7f00:0:1::')->isNat64LocalUse(); // bool(true)
+```
+
+### Teredo
+
+Whether the IP is a Teredo tunnelling address within `2001::/32`, according to
+[RFC 4380 section 4](https://tools.ietf.org/html/rfc4380 "Teredo: Tunneling
+IPv6 over UDP through NATs").
+
+```php
+<?php
+use Darsyn\IP\Version\IPv6 as IP;
+
+$ip = IP::fromProtocol('2001::8500:0:0:80ff:fffe');
+$ip->isTeredo(); // bool(true)
+```
+
+### According to Any Strategy
+
+`isEmbeddedAccordingToStrategy()` is the generic form of the named detection
+predicates: any [embedding strategy](./05-strategies.md), including a
+user-defined one, can be tested against the address without constructing a new
+IP object around it.
+
+```php
+<?php
+use Darsyn\IP\Strategy\Derived;
+use Darsyn\IP\Version\IPv6 as IP;
+
+$ip = IP::fromProtocol('2002:7f00:1::');
+$ip->isEmbeddedAccordingToStrategy(new Derived()); // bool(true)
+```
+
+### Embedded IP
+
+`getEmbeddedIp()` extracts the IPv4 address embedded in this address as an
+`IPv4` instance, and the inverse of `IPv6::fromEmbedded()`. A
+`WrongVersionException` is thrown when no IPv4 address is embedded according to
+the strategy in effect. A null strategy falls back to the instance's own
+embedding strategy on `Multi`, or to the global default set via
+`Multi::setDefaultEmbeddingStrategy()`
+
+```php
+<?php
+use Darsyn\IP\Version\Multi as IP;
+
+$ip = IP::fromProtocol('::ffff:7f00:1');
+$ip->getEmbeddedIp()->getDotAddress(); // string("127.0.0.1")
+```
+
 ## Detecting Address Types
 
 ### Link Local

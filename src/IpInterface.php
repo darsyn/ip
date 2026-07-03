@@ -23,6 +23,8 @@ interface IpInterface extends ArithmeticInterface, ClassificationInterface, Comp
     /**
      * Whether the IP is an IPv4-mapped IPv6 address, according to
      * RFC 4291 § 2.5.5.2 (eg, "::ffff:7f00:1").
+     *
+     * @deprecated in favour of Contracts\StrategyDetectionInterface.
      */
     public function isMapped(): bool;
 
@@ -30,18 +32,24 @@ interface IpInterface extends ArithmeticInterface, ClassificationInterface, Comp
      * Whether the IP is a 6to4-derived address, according to RFC 3056 § 2. Any
      * address within the 6to4 block `2002::/16` (eg, "2002:7f00:1::"), all of
      * which embed an IPv4 address in bits 16-47.
+     *
+     * @deprecated in favour of Contracts\StrategyDetectionInterface.
      */
     public function isDerived(): bool;
 
     /**
      * Whether the IP is an IPv4-compatible IPv6 address, according to
      * RFC 4291 § 2.5.5.1 (eg, `::7f00:1`); deprecated by that same RFC.
+     *
+     * @deprecated in favour of Contracts\StrategyDetectionInterface.
      */
     public function isCompatible(): bool;
 
     /**
      * Whether the IP is an IPv4-embedded IPv6 address (according to the
      * embedding strategy used).
+     *
+     * @deprecated in favour of Contracts\StrategyDetectionInterface.
      */
     public function isEmbedded(): bool;
 
