@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace Darsyn\IP\Contracts;
 
+use Darsyn\IP\Formatter\ProtocolFormatterInterface;
+
 /**
  * @experimental
  */
 interface Output4Interface extends OutputInterface
 {
     /**
-     * Get Dot Address
+     * Convert to Dot Address Notation
      *
      * Convert an IP into an IPv4 dot-notation address string
      * This method will NOT work with IPv6 addresses.
@@ -18,10 +20,10 @@ interface Output4Interface extends OutputInterface
      * @throws \Darsyn\IP\Exception\IpException
      * @throws \Darsyn\IP\Exception\WrongVersionException
      */
-    public function getDotAddress(): string;
+    public function toDotAddress(?ProtocolFormatterInterface $formatter = null): string;
 
     /**
-     * Get Integer
+     * Convert to Integer
      *
      * Convert an IP into its unsigned 32-bit integer value, between 0 and
      * 4294967295. This method will NOT work with IPv6 addresses.

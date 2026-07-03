@@ -4,30 +4,32 @@ declare(strict_types=1);
 
 namespace Darsyn\IP\Contracts;
 
+use Darsyn\IP\Formatter\ProtocolFormatterInterface;
+
 /**
  * @experimental
  */
 interface Output6Interface extends OutputInterface
 {
     /**
-     * Get Compacted Address
+     * Convert to Compacted Address Notation
      *
      * Converts an IP (regardless of version) into a compacted IPv6 address
      * (including double-colons if appropriate).
      *
      * @throws \Darsyn\IP\Exception\IpException
      */
-    public function getCompactedAddress(): string;
+    public function toCompactedAddress(?ProtocolFormatterInterface $formatter = null): string;
 
     /**
-     * Get Expanded Address
+     * Convert to Expanded Address Notation
      *
      * Converts an IP (regardless of version) address into a full IPv6 address
      * (no double colons).
      *
      * @throws \Darsyn\IP\Exception\IpException
      */
-    public function getExpandedAddress(): string;
+    public function toExpandedAddress(): string;
 
     /**
      * Get the IP address as an array of the eight 16-bit segments (hextets).

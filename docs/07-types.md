@@ -139,7 +139,7 @@ embedding strategy on `Multi`, or to the global default set via
 use Darsyn\IP\Version\Multi as IP;
 
 $ip = IP::fromProtocol('::ffff:7f00:1');
-$ip->getEmbeddedIp()->getDotAddress(); // string("127.0.0.1")
+$ip->getEmbeddedIp()->toDotAddress(); // string("127.0.0.1")
 ```
 
 ## Detecting Address Types

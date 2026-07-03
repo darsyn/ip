@@ -6,6 +6,7 @@ namespace Darsyn\IP\Version;
 
 use Darsyn\IP\AbstractIP;
 use Darsyn\IP\Exception;
+use Darsyn\IP\Formatter\ProtocolFormatterInterface;
 use Darsyn\IP\Strategy;
 use Darsyn\IP\Strategy\EmbeddingStrategyInterface;
 use Darsyn\IP\Util\Binary;
@@ -193,7 +194,7 @@ class IPv6 extends AbstractIP implements Version6Interface
         return Multi::fromBinary($this->getBinary(), $strategy)->getEmbeddedIp();
     }
 
-    public function getExpandedAddress(): string
+    public function toExpandedAddress(): string
     {
         // Convert the 16-byte binary sequence into a hexadecimal-string
         // representation, insert a colon between every block of 4 characters,
@@ -202,13 +203,25 @@ class IPv6 extends AbstractIP implements Version6Interface
         return MbString::subString(\is_string($expanded) ? $expanded : '', 0, -1);
     }
 
-    public function getCompactedAddress(/* ?ProtocolFormatterInterface $formatter = null */): string
+    /** @deprecated Use toExpandedAddress() instead. */
+    public function getExpandedAddress(): string
+    {
+        return $this->toExpandedAddress();
+    }
+
+    public function toCompactedAddress(?ProtocolFormatterInterface $formatter = null): string
     {
         try {
-            return self::resolveProtocolFormatter(\func_get_args())->ntop($this->getBinary());
+            return ($formatter ?? self::getProtocolFormatter())->ntop($this->getBinary());
         } catch (Exception\Formatter\FormatException $e) {
             throw new Exception\IpException('An unknown error occurred internally.', 0, $e);
         }
+    }
+
+    /** @deprecated Use toCompactedAddress() instead. */
+    public function getCompactedAddress(/* ?ProtocolFormatterInterface $formatter = null */): string
+    {
+        return $this->toCompactedAddress(self::resolveProtocolFormatter(\func_get_args()));
     }
 
     public function getSegments(): array
@@ -370,7 +383,7 @@ class IPv6 extends AbstractIP implements Version6Interface
 
     public function toString(): string
     {
-        return $this->getCompactedAddress();
+        return $this->toCompactedAddress();
     }
 
     public function __toString(): string

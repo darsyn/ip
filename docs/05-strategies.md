@@ -158,10 +158,10 @@ use Darsyn\IP\Version\Multi as IP;
 $strategy = new Composite(new Mapped, Nat64::wellKnown());
 
 // Addresses embedded under either scheme are recognised as version 4.
-IP::factory('::ffff:7f00:1', $strategy)->getDotAddress();   // string("127.0.0.1")
-IP::factory('64:ff9b::7f00:1', $strategy)->getDotAddress(); // string("127.0.0.1")
+IP::factory('::ffff:7f00:1', $strategy)->toDotAddress();   // string("127.0.0.1")
+IP::factory('64:ff9b::7f00:1', $strategy)->toDotAddress(); // string("127.0.0.1")
 
 // But only the first strategy (here, Mapped) is ever used to pack a version 4
 // address into version 6.
-IP::factory('127.0.0.1', $strategy)->getCompactedAddress(); // string("::ffff:7f00:1")
+IP::factory('127.0.0.1', $strategy)->toCompactedAddress(); // string("::ffff:7f00:1")
 ```

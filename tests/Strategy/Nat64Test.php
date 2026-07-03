@@ -142,7 +142,7 @@ class Nat64Test extends TestCase
         $strategy = Nat64::networkSpecific(IPv6::fromProtocol($prefixAddress), $length);
         $this->assertSame(\pack('H*', $expectedPrefixHex), $strategy->getPrefix());
         $this->assertSame($length, $strategy->getPrefixLength());
-        $this->assertSame($prefixAddress, IPv6::fromBinary($strategy->getPrefix())->getCompactedAddress());
+        $this->assertSame($prefixAddress, IPv6::fromBinary($strategy->getPrefix())->toCompactedAddress());
     }
 
     /**
@@ -177,7 +177,7 @@ class Nat64Test extends TestCase
         $wellKnown = Nat64::wellKnown();
         $this->assertSame(\pack('H*', Nat64::WELL_KNOWN_PREFIX), $wellKnown->getPrefix());
         $this->assertSame(96, $wellKnown->getPrefixLength());
-        $this->assertSame('64:ff9b::', IPv6::fromBinary($wellKnown->getPrefix())->getCompactedAddress());
+        $this->assertSame('64:ff9b::', IPv6::fromBinary($wellKnown->getPrefix())->toCompactedAddress());
         $this->assertSame(
             Nat64::networkSpecific(IPv6::fromProtocol('64:ff9b::'), 96)->packIntoCanonical(\pack('H*', 'c0000221')),
             $wellKnown->packIntoCanonical(\pack('H*', 'c0000221'))
@@ -191,7 +191,7 @@ class Nat64Test extends TestCase
         $localUse = Nat64::localUse();
         $this->assertSame(\pack('H*', Nat64::LOCAL_USE_PREFIX), $localUse->getPrefix());
         $this->assertSame(48, $localUse->getPrefixLength());
-        $this->assertSame('64:ff9b:1::', IPv6::fromBinary($localUse->getPrefix())->getCompactedAddress());
+        $this->assertSame('64:ff9b:1::', IPv6::fromBinary($localUse->getPrefix())->toCompactedAddress());
     }
 
     /**

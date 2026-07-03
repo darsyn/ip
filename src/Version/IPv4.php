@@ -6,6 +6,7 @@ namespace Darsyn\IP\Version;
 
 use Darsyn\IP\AbstractIP;
 use Darsyn\IP\Exception;
+use Darsyn\IP\Formatter\ProtocolFormatterInterface;
 use Darsyn\IP\Util\Binary;
 use Darsyn\IP\Util\MbString;
 
@@ -160,13 +161,19 @@ class IPv4 extends AbstractIP implements Version4Interface
         return null !== static::tryFromProtocol($ip);
     }
 
-    public function getDotAddress(/* ?ProtocolFormatterInterface $formatter = null */): string
+    public function toDotAddress(?ProtocolFormatterInterface $formatter = null): string
     {
         try {
-            return self::resolveProtocolFormatter(\func_get_args())->ntop($this->getBinary());
+            return ($formatter ?? self::getProtocolFormatter())->ntop($this->getBinary());
         } catch (Exception\Formatter\FormatException $e) {
             throw new Exception\IpException('An unknown error occurred internally.', 0, $e);
         }
+    }
+
+    /** @deprecated Use toDotAddress() instead. */
+    public function getDotAddress(/* ?ProtocolFormatterInterface $formatter = null */): string
+    {
+        return $this->toDotAddress(self::resolveProtocolFormatter(\func_get_args()));
     }
 
     /** @return int<0, 4294967295> */
@@ -302,7 +309,7 @@ class IPv4 extends AbstractIP implements Version4Interface
 
     public function toString(): string
     {
-        return $this->getDotAddress();
+        return $this->toDotAddress();
     }
 
     public function __toString(): string
