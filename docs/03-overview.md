@@ -105,6 +105,8 @@ try {
 - `fromInteger()` accepts an IPv4 address as its integer value, between `0` and
   `4294967295`. It is only available on the `IPv4` and `Multi` classes (version
   6 addresses do not fit within PHP's native integer type).
+- `fromIntegerString()` accepts the whole-address value as a base-10 string at
+  any precision: four bytes' worth for `IPv4`, sixteen for `IPv6` and `Multi`.
 
 ```php
 <?php
@@ -122,6 +124,7 @@ try {
 IPv4::fromBinary("\x7f\x00\x00\x01");     // string("127.0.0.1")
 IPv4::fromHex('7f000001');                // string("127.0.0.1")
 IPv4::fromInteger(2130706433);            // string("127.0.0.1")
+IPv4::fromIntegerString('2130706433');    // string("127.0.0.1")
 ```
 
 Each strict constructor has a non-throwing companion `tryFrom*` that returns
@@ -293,6 +296,37 @@ use Darsyn\IP\Version\IPv4 as IP;
 
 $ip = IP::fromProtocol('127.0.0.1');
 $ip->toInteger(); // int(2130706433)
+```
+
+### Integer String
+
+`toIntegerString()` returns the whole-address value in base-10 as a string, at
+any precision. It always reflects the full binary width of the address — four
+bytes for `IPv4`, sixteen for `IPv6` and `Multi`, *including* instances of
+`Multi` that contain an embedded version 4 address (use `toInteger()` for the
+embedded value). The value can be re-parsed via `fromIntegerString()`.
+
+```php
+<?php
+use Darsyn\IP\Version\IPv6 as IP;
+
+$ip = IP::fromProtocol('::ffff:7f00:1');
+$ip->toIntegerString(); // string("281472812449793")
+```
+
+### Hexadecimal
+
+`toHexString()` returns the address as a fixed-width, lowercase hexadecimal
+string: eight characters for `IPv4`, thirty-two for `IPv6` and `Multi`
+(regardless of embedded state). The fixed width makes it suitable for sortable,
+indexable database columns, and it can be re-parsed via `fromHex()`.
+
+```php
+<?php
+use Darsyn\IP\Version\IPv4 as IP;
+
+$ip = IP::fromProtocol('127.0.0.1');
+$ip->toHexString(); // string("7f000001")
 ```
 
 ## String Casting

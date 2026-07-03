@@ -23,6 +23,7 @@ use Darsyn\IP\Formatter\ConsistentFormatter;
 use Darsyn\IP\IpInterface;
 use Darsyn\IP\Strategy;
 use Darsyn\IP\Tests\DataProvider\IPv4 as IPv4DataProvider;
+use Darsyn\IP\Tests\DataProvider\IPv6 as IPv6DataProvider;
 use Darsyn\IP\Tests\DataProvider\Multi as MultiDataProvider;
 use Darsyn\IP\Tests\Stub\StubFormatter;
 use Darsyn\IP\Tests\TestCase;
@@ -1026,5 +1027,54 @@ class MultiTest extends TestCase
     {
         $this->expectException(InvalidIpAddressException::class);
         IP::fromInteger($integer);
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testToHexStringReturnsFullWidthWhenEmbedded(): void
+    {
+        $ip = IP::fromProtocol('12.34.56.78');
+        $this->assertSame(32, \strlen($ip->toHexString()));
+        $this->assertSame('00000000000000000000ffff0c22384e', $ip->toHexString());
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testToIntegerStringReturnsFullWidthWhenEmbedded(): void
+    {
+        $ip = IP::fromProtocol('12.34.56.78');
+        $this->assertSame('281470885312590', $ip->toIntegerString());
+        $this->assertNotSame((string) $ip->toInteger(), $ip->toIntegerString());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidBinarySequences()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidBinarySequences')]
+    public function testFromIntegerStringBuildsFullSixteenBytes(string $value, string $hex, string $expanded, string $compacted, ?string $dot): void
+    {
+        $this->assertSame($value, IP::fromIntegerString(Binary::toDecimalString($value))->getBinary());
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testFromIntegerStringThreadsStrategy(): void
+    {
+        $ip = IP::fromIntegerString('281470885312590', new Strategy\Mapped());
+        $this->assertSame('12.34.56.78', $ip->getDotAddress());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getInvalidIntegerStrings()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getInvalidIntegerStrings')]
+    public function testFromIntegerStringThrowsOnInvalidInput(string $value): void
+    {
+        $this->expectException(InvalidIpAddressException::class);
+        IP::fromIntegerString($value);
     }
 }

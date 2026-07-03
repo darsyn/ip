@@ -30,4 +30,21 @@ interface OutputInterface extends \JsonSerializable
 
     /** Implement string casting for IP objects. */
     public function __toString(): string;
+
+    /**
+     * Get the IP address as an integer represented as a decimal string.
+     *
+     * Always reflects the full binary width of the address (four bytes for
+     * IPv4, sixteen for IPv6 and Multi — including Multi instances containing
+     * an embedded IPv4 address), re-parseable via fromIntegerString().
+     */
+    public function toIntegerString(): string;
+
+    /**
+     * Get the IP address as a fixed-width, lowercase hexadecimal string.
+     *
+     * Eight characters for IPv4, thirty-two for IPv6 and Multi (regardless of
+     * embedded state), re-parseable via fromHex().
+     */
+    public function toHexString(): string;
 }

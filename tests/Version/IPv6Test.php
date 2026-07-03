@@ -902,4 +902,90 @@ class IPv6Test extends TestCase
     {
         $this->assertFalse(IP::isValid($value));
     }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidBinarySequences()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidBinarySequences')]
+    public function testToIntegerString(string $value, string $hex, string $expanded, string $compacted): void
+    {
+        $this->assertSame(Binary::toDecimalString($value), IP::fromBinary($value)->toIntegerString());
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testToIntegerStringOfKnownValue(): void
+    {
+        $this->assertSame('18446744073709551616', IP::fromHex('00000000000000010000000000000000')->toIntegerString());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidBinarySequences()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidBinarySequences')]
+    public function testFromIntegerStringRoundTrips(string $value, string $hex, string $expanded, string $compacted): void
+    {
+        $this->assertSame($value, IP::fromIntegerString(Binary::toDecimalString($value))->getBinary());
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testFromIntegerStringZero(): void
+    {
+        $this->assertSame(\str_repeat("\x00", 16), IP::fromIntegerString('0')->getBinary());
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testFromIntegerStringMax(): void
+    {
+        $this->assertSame(\str_repeat("\xff", 16), IP::fromIntegerString('340282366920938463463374607431768211455')->getBinary());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getInvalidIntegerStrings()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getInvalidIntegerStrings')]
+    public function testFromIntegerStringThrowsOnInvalidInput(string $value): void
+    {
+        $this->expectException(InvalidIpAddressException::class);
+        $this->legacyExpectExceptionMessage('The IP address supplied is not valid.');
+        try {
+            IP::fromIntegerString($value);
+        } catch (InvalidIpAddressException $e) {
+            $this->assertSame($value, $e->getSuppliedIp());
+            throw $e;
+        }
+        $this->fail();
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidBinarySequences()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidBinarySequences')]
+    public function testToHexString(string $value, string $hex, string $expanded, string $compacted): void
+    {
+        $ip = IP::fromBinary($value);
+        $this->assertSame($hex, $ip->toHexString());
+        $this->assertSame(32, \strlen($ip->toHexString()));
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidBinarySequences()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidBinarySequences')]
+    public function testToHexStringRoundTripsWithFromHex(string $value, string $hex, string $expanded, string $compacted): void
+    {
+        $this->assertSame($value, IP::fromHex(IP::fromBinary($value)->toHexString())->getBinary());
+    }
 }

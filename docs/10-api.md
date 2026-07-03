@@ -7,6 +7,8 @@
 | `getOctets()`                         | `list<int>`          | ✓    | ✓    | ✓     |
 | `toString()`                          | `string`             | ✓    | ✓    | ✓     |
 | `jsonSerialize()`                     | `string`             | ✓    | ✓    | ✓     |
+| `toIntegerString()`                   | `string`             | ✓    | ✓    | ✓     |
+| `toHexString()`                       | `string`             | ✓    | ✓    | ✓     |
 | `equals(IpInterface $ip)`             | `bool`               | ✓    | ✓    | ✓     |
 | `getVersion()`                        | `int`                | ✓    | ✓    | ✓     |
 | `isVersion(int $version)`             | `bool`               | ✓    | ✓    | ✓     |

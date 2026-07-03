@@ -83,6 +83,16 @@ abstract class AbstractIP implements IpInterface
         return $octets;
     }
 
+    public function toIntegerString(): string
+    {
+        return Binary::toDecimalString($this->getBinary());
+    }
+
+    public function toHexString(): string
+    {
+        return Binary::toHex($this->getBinary());
+    }
+
     public function jsonSerialize(): string
     {
         return $this->toString();

@@ -418,4 +418,17 @@ class IPv6 implements IpDataProviderInterface
         }
         return $data;
     }
+
+    /** @return list<array{string}> */
+    public static function getInvalidIntegerStrings()
+    {
+        return [
+            [''],
+            ['abc'],
+            ['-1'],
+            ['12.3'],
+            // One more than the largest value that fits within sixteen bytes.
+            ['340282366920938463463374607431768211456'],
+        ];
+    }
 }

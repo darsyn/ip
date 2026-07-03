@@ -189,6 +189,46 @@ class IPv4 implements IpDataProviderInterface
         ];
     }
 
+    /** @return list<array{string, string}> */
+    public static function getIntegerStringData()
+    {
+        return [
+            // [address, decimal string]
+            ['0.0.0.0', '0'],
+            ['0.0.0.1', '1'],
+            ['12.34.56.78', '203569230'],
+            ['127.0.0.1', '2130706433'],
+            ['192.168.1.1', '3232235777'],
+            ['255.255.255.255', '4294967295'],
+        ];
+    }
+
+    /** @return list<array{string}> */
+    public static function getInvalidIntegerStrings()
+    {
+        return [
+            [''],
+            ['abc'],
+            ['-1'],
+            ['12.3'],
+            // One more than the largest value that fits within four bytes.
+            ['4294967296'],
+            ['4294967295x'],
+        ];
+    }
+
+    /** @return list<array{string, string}> */
+    public static function getHexStringData()
+    {
+        return [
+            // [address, fixed-width hexadecimal]
+            ['0.0.0.0', '00000000'],
+            ['12.34.56.78', '0c22384e'],
+            ['127.0.0.1', '7f000001'],
+            ['255.255.255.255', 'ffffffff'],
+        ];
+    }
+
     /** @return list<array{string, string, int}> */
     public static function getValidInRangeIpAddresses()
     {

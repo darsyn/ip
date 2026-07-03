@@ -142,4 +142,69 @@ class Binary
             ['0000000000000000', -1],
         ];
     }
+
+    /** @return list<array{string, string}> */
+    public static function getDecimalStringData()
+    {
+        return [
+            // [hex, decimal]
+            ['00', '0'],
+            ['ff', '255'],
+            ['00000000', '0'],
+            ['00000001', '1'],
+            ['0000ffff', '65535'],
+            ['00010000', '65536'],
+            ['0c22384e', '203569230'],
+            ['7f000001', '2130706433'],
+            ['ffffffff', '4294967295'],
+            ['7fffffffffffffff', '9223372036854775807'],
+            ['8000000000000000', '9223372036854775808'],
+            ['ffffffffffffffff', '18446744073709551615'],
+            ['00000000000000000000000000000000', '0'],
+            ['00000000000000000000000000000001', '1'],
+            ['000000000000000000000000075bcd15', '123456789'],
+            ['000000000000000000000000ffffffff', '4294967295'],
+            ['00000000000000000000ffff0c22384e', '281470885312590'],
+            ['00000000000000010000000000000000', '18446744073709551616'],
+            ['ffffffffffffffffffffffffffffffff', '340282366920938463463374607431768211455'],
+        ];
+    }
+
+    /** @return list<array{string}> */
+    public static function getInvalidDecimalStrings()
+    {
+        return [
+            [''],
+            ['abc'],
+            ['-1'],
+            ['+1'],
+            ['12.3'],
+            ['1 2'],
+            ['0x10'],
+            ['1234a'],
+        ];
+    }
+
+    /** @return list<array{string, int}> */
+    public static function getOverflowDecimalStrings()
+    {
+        return [
+            // [decimal, length in bytes]
+            ['256', 1],
+            ['4294967296', 4],
+            ['18446744073709551616', 8],
+            ['340282366920938463463374607431768211456', 16],
+        ];
+    }
+
+    /** @return list<array{string, string, int}> */
+    public static function getEquivalentDecimalStrings()
+    {
+        return [
+            // [zero-padded, canonical, length in bytes]
+            ['007', '7', 4],
+            ['0000000004294967295', '4294967295', 4],
+            ['00000000000000000000000000000001', '1', 16],
+        ];
+    }
 }
