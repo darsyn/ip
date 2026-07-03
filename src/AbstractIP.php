@@ -191,16 +191,19 @@ abstract class AbstractIP implements IpInterface
         return $commonCidr;
     }
 
+    /** @not-deprecated IpInterface deprecated in favour of Contracts\StrategyDetectionInterface. */
     public function isMapped(): bool
     {
         return (new Strategy\Mapped())->isEmbedded($this->getBinary());
     }
 
+    /** @not-deprecated IpInterface deprecated in favour of Contracts\StrategyDetectionInterface. */
     public function isDerived(): bool
     {
         return (new Strategy\Derived())->isEmbedded($this->getBinary());
     }
 
+    /** @not-deprecated IpInterface deprecated in favour of Contracts\StrategyDetectionInterface. */
     public function isCompatible(): bool
     {
         return (new Strategy\Compatible())->isEmbedded($this->getBinary());

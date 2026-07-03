@@ -8,6 +8,7 @@ use Darsyn\IP\AbstractIP;
 use Darsyn\IP\Exception;
 use Darsyn\IP\Strategy\EmbeddingStrategyInterface;
 use Darsyn\IP\Strategy\Nat64;
+use Darsyn\IP\Strategy\Teredo;
 use Darsyn\IP\Util\Binary;
 use Darsyn\IP\Util\MbString;
 
@@ -138,6 +139,34 @@ class IPv6 extends AbstractIP implements Version6Interface
         return new static($multi->getBinary());
     }
 
+    public function isEmbeddedAccordingToStrategy(EmbeddingStrategyInterface $strategy): bool
+    {
+        return $strategy->isEmbedded($this->getBinary());
+    }
+
+    public function isNat64WellKnown(): bool
+    {
+        return $this->isEmbeddedAccordingToStrategy(Nat64::wellKnown());
+    }
+
+    public function isNat64LocalUse(): bool
+    {
+        return $this->isEmbeddedAccordingToStrategy(Nat64::localUse());
+    }
+
+    public function isTeredo(): bool
+    {
+        return $this->isEmbeddedAccordingToStrategy(new Teredo());
+    }
+
+    public function getEmbeddedIp(?EmbeddingStrategyInterface $strategy = null): IPv4
+    {
+        // A null strategy falls back to Multi's global default; route through
+        // Multi (whose constructor resolves it) rather than widening the
+        // private default-strategy accessor.
+        return Multi::fromBinary($this->getBinary(), $strategy)->getEmbeddedIp();
+    }
+
     public function getExpandedAddress(): string
     {
         // Convert the 16-byte binary sequence into a hexadecimal-string
@@ -249,8 +278,8 @@ class IPv6 extends AbstractIP implements Version6Interface
         // § 3.1 forbids embedding non-global addresses within the Well-Known
         // Prefix, but a received address is not guaranteed to obey that, so
         // classify by the embedded address rather than trusting the prefix.
-        if (($wellKnown = Nat64::wellKnown())->isEmbedded($this->getBinary())) {
-            return (new IPv4($wellKnown->extract($this->getBinary())))->isGloballyReachable();
+        if ($this->isNat64WellKnown()) {
+            return $this->getEmbeddedIp(Nat64::wellKnown())->isGloballyReachable();
         }
         return $this->isUnicast()
             && !$this->isLoopback()
@@ -270,7 +299,7 @@ class IPv6 extends AbstractIP implements Version6Interface
             // 8215) as not globally reachable. Detection is by prefix membership
             // alone, covering every Network-Specific Prefix operators subdivide
             // the /48 into.
-            && !Nat64::localUse()->isEmbedded($this->getBinary())
+            && !$this->isNat64LocalUse()
             && !$this->isDocumentation()
             && !$this->isBenchmarking()
             && !$this->isIetfProtocolAssignment()

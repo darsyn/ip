@@ -14,6 +14,7 @@ use Darsyn\IP\Contracts\FactoryInterface;
 use Darsyn\IP\Contracts\Output4Interface;
 use Darsyn\IP\Contracts\Output6Interface;
 use Darsyn\IP\Contracts\OutputInterface;
+use Darsyn\IP\Contracts\StrategyDetectionInterface;
 use Darsyn\IP\Contracts\VersionIdentityInterface;
 use Darsyn\IP\Exception\InvalidBinaryException;
 use Darsyn\IP\Exception\InvalidIpAddressException;
@@ -25,6 +26,8 @@ use Darsyn\IP\Strategy;
 use Darsyn\IP\Tests\DataProvider\IPv4 as IPv4DataProvider;
 use Darsyn\IP\Tests\DataProvider\IPv6 as IPv6DataProvider;
 use Darsyn\IP\Tests\DataProvider\Multi as MultiDataProvider;
+use Darsyn\IP\Tests\DataProvider\Strategy\Nat64 as Nat64DataProvider;
+use Darsyn\IP\Tests\DataProvider\Strategy\Teredo as TeredoDataProvider;
 use Darsyn\IP\Tests\Stub\StubFormatter;
 use Darsyn\IP\Tests\TestCase;
 use Darsyn\IP\Util\Binary;
@@ -68,6 +71,8 @@ class MultiTest extends TestCase
         $this->assertInstanceOf(Classification6Interface::class, $ip);
         $this->assertInstanceOf(FactoryInterface::class, $ip);
         $this->assertInstanceOf(Factory4Interface::class, $ip);
+        $this->assertInstanceOf(StrategyDetectionInterface::class, $ip);
+        $this->assertInstanceOf(MultiVersionInterface::class, $ip);
     }
 
     /**
@@ -1076,5 +1081,89 @@ class MultiTest extends TestCase
     {
         $this->expectException(InvalidIpAddressException::class);
         IP::fromIntegerString($value);
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidProtocolIpVersion4Addresses()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidProtocolIpVersion4Addresses')]
+    public function testIsEmbeddedForVersion4Addresses(string $value, string $hex, string $expanded, string $compacted, ?string $dot): void
+    {
+        $this->assertTrue(IP::fromProtocol($value)->isEmbedded());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidProtocolIpVersion6Addresses()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidProtocolIpVersion6Addresses')]
+    public function testIsEmbeddedForVersion6Addresses(string $value, string $hex, string $expanded, string $compacted, ?string $dot): void
+    {
+        $this->assertFalse(IP::fromProtocol($value)->isEmbedded());
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testGetEmbeddedIpUsesInstanceStrategy(): void
+    {
+        $ip = IP::fromProtocol('12.34.56.78', new Strategy\Derived());
+        $embedded = $ip->getEmbeddedIp();
+        $this->assertInstanceOf(IPv4::class, $embedded);
+        $this->assertSame('12.34.56.78', $embedded->getDotAddress());
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testGetEmbeddedIpWithExplicitStrategyOverridesInstanceStrategy(): void
+    {
+        $ip = IP::fromProtocol('12.34.56.78', new Strategy\Derived());
+        $this->expectException(WrongVersionException::class);
+        $ip->getEmbeddedIp(new Strategy\Mapped());
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testGetEmbeddedIpThrowsForNonEmbeddedAddress(): void
+    {
+        $ip = IP::fromProtocol('2001:db8::1');
+        $this->expectException(WrongVersionException::class);
+        $ip->getEmbeddedIp();
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Teredo::getValidSequences()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(TeredoDataProvider::class, 'getValidSequences')]
+    public function testGetEmbeddedIpExtractsTeredoClientAddress(string $value, string $embedded): void
+    {
+        $ip = IP::fromBinary($value, new Strategy\Teredo());
+        $this->assertSame($embedded, $ip->getEmbeddedIp()->getBinary());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Nat64::getValidSequences()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(Nat64DataProvider::class, 'getValidSequences')]
+    public function testGetEmbeddedIpExtractsNat64WellKnownAddress(string $value, string $embedded): void
+    {
+        $ip = IP::fromBinary($value, Strategy\Nat64::wellKnown());
+        $this->assertSame($embedded, $ip->getEmbeddedIp()->getBinary());
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testGetEmbeddedIpOnIPv6RespectsGlobalDefaultStrategy(): void
+    {
+        $ip = IPv6::fromProtocol('2002:c22:384e::');
+        IP::setDefaultEmbeddingStrategy(new Strategy\Derived());
+        $this->assertSame('12.34.56.78', $ip->getEmbeddedIp()->getDotAddress());
+        IP::setDefaultEmbeddingStrategy(new Strategy\Mapped());
     }
 }

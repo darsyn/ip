@@ -2,6 +2,8 @@
 
 ## `6.x`
 
+- Detect embedding strategies via the new `Contracts\StrategyDetectionInterface`
+  deprecating the old `IpInterface::isEmbedded()` and associated methods.
 - Convert IP addresses to and from integers: `fromInteger()`/`toInteger()` via
   the new `Contracts\Factory4Interface` (IPv4 and Multi only), plus
   arbitrary-precision `fromIntegerString()`/`toIntegerString()` and fixed-width

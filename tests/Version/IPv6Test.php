@@ -12,6 +12,7 @@ use Darsyn\IP\Contracts\Factory4Interface;
 use Darsyn\IP\Contracts\FactoryInterface;
 use Darsyn\IP\Contracts\Output6Interface;
 use Darsyn\IP\Contracts\OutputInterface;
+use Darsyn\IP\Contracts\StrategyDetectionInterface;
 use Darsyn\IP\Contracts\VersionIdentityInterface;
 use Darsyn\IP\Exception\InvalidBinaryException;
 use Darsyn\IP\Exception\InvalidCidrException;
@@ -21,9 +22,12 @@ use Darsyn\IP\Exception\WrongVersionException;
 use Darsyn\IP\Formatter\ConsistentFormatter;
 use Darsyn\IP\Formatter\NativeFormatter;
 use Darsyn\IP\IpInterface;
+use Darsyn\IP\Strategy\Derived;
 use Darsyn\IP\Strategy\Mapped;
 use Darsyn\IP\Tests\DataProvider\IPv4 as IPv4DataProvider;
 use Darsyn\IP\Tests\DataProvider\IPv6 as IPv6DataProvider;
+use Darsyn\IP\Tests\DataProvider\Strategy\Nat64 as Nat64DataProvider;
+use Darsyn\IP\Tests\DataProvider\Strategy\Teredo as TeredoDataProvider;
 use Darsyn\IP\Tests\Stub\StubFormatter;
 use Darsyn\IP\Tests\TestCase;
 use Darsyn\IP\Util\Binary;
@@ -55,6 +59,7 @@ class IPv6Test extends TestCase
         $this->assertInstanceOf(ClassificationInterface::class, $ip);
         $this->assertInstanceOf(Classification6Interface::class, $ip);
         $this->assertInstanceOf(FactoryInterface::class, $ip);
+        $this->assertInstanceOf(StrategyDetectionInterface::class, $ip);
         // fromInteger() is version 4 only; IPv6 deliberately does not gain it.
         $this->assertNotInstanceOf(Factory4Interface::class, $ip);
     }
@@ -452,6 +457,7 @@ class IPv6Test extends TestCase
 
     /**
      * @test
+     * @deprecated Retains coverage of the deprecated IpInterface::isEmbedded() on non-Multi classes.
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidProtocolIpAddresses()
      */
     #[PHPUnit\Test]
@@ -987,5 +993,108 @@ class IPv6Test extends TestCase
     public function testToHexStringRoundTripsWithFromHex(string $value, string $hex, string $expanded, string $compacted): void
     {
         $this->assertSame($value, IP::fromHex(IP::fromBinary($value)->toHexString())->getBinary());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getMappedIpAddresses()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getMappedIpAddresses')]
+    public function testIsEmbeddedAccordingToStrategy(string $value, bool $isMapped): void
+    {
+        $ip = IP::fromProtocol($value);
+        $this->assertSame($isMapped, $ip->isEmbeddedAccordingToStrategy(new Mapped()));
+        $this->assertSame($ip->isMapped(), $ip->isEmbeddedAccordingToStrategy(new Mapped()));
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Nat64::getValidIpAddresses()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(Nat64DataProvider::class, 'getValidIpAddresses')]
+    public function testIsNat64WellKnown(string $value, bool $embedded): void
+    {
+        $this->assertSame($embedded, IP::fromBinary($value)->isNat64WellKnown());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Nat64::getLocalUseSequences()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(Nat64DataProvider::class, 'getLocalUseSequences')]
+    public function testIsNat64LocalUse(string $value, string $embedded): void
+    {
+        $this->assertTrue(IP::fromBinary($value)->isNat64LocalUse());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Nat64::getNonMatchingLocalUseSequences()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(Nat64DataProvider::class, 'getNonMatchingLocalUseSequences')]
+    public function testIsNat64LocalUseReturnsFalseOutsidePrefix(string $value): void
+    {
+        $this->assertFalse(IP::fromBinary($value)->isNat64LocalUse());
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\Strategy\Teredo::getValidIpAddresses()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(TeredoDataProvider::class, 'getValidIpAddresses')]
+    public function testIsTeredo(string $value, bool $embedded): void
+    {
+        $this->assertSame($embedded, IP::fromBinary($value)->isTeredo());
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testGetEmbeddedIpWithDefaultStrategy(): void
+    {
+        $embedded = IP::fromProtocol('::ffff:12.34.56.78')->getEmbeddedIp();
+        $this->assertInstanceOf(IPv4::class, $embedded);
+        $this->assertSame('12.34.56.78', $embedded->getDotAddress());
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testGetEmbeddedIpThrowsWhenNotEmbedded(): void
+    {
+        $ip = IP::fromProtocol('2001:db8::1');
+        $this->expectException(WrongVersionException::class);
+        $ip->getEmbeddedIp();
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testGetEmbeddedIpWithExplicitStrategy(): void
+    {
+        $ip = IP::fromProtocol('2002:c22:384e::');
+        $this->assertSame('12.34.56.78', $ip->getEmbeddedIp(new Derived())->getDotAddress());
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testGetEmbeddedIpThrowsWhenNotEmbeddedAccordingToDefaultStrategy(): void
+    {
+        // A 6to4-derived form embeds nothing according to the Mapped default.
+        $ip = IP::fromProtocol('2002:c22:384e::');
+        $this->expectException(WrongVersionException::class);
+        $ip->getEmbeddedIp();
+    }
+
+    /** @test */
+    #[PHPUnit\Test]
+    public function testGetEmbeddedIpRoundTripsWithFromEmbedded(): void
+    {
+        $this->assertSame(
+            IPv4::fromProtocol('12.34.56.78')->getBinary(),
+            IP::fromEmbedded('12.34.56.78', new Mapped())->getEmbeddedIp(new Mapped())->getBinary()
+        );
     }
 }

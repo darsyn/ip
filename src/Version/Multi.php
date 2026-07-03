@@ -329,12 +329,23 @@ class Multi extends IPv6 implements MultiVersionInterface
         return parent::getCommonCidr($ip);
     }
 
+    /** @not-deprecated IpInterface deprecated in favour of Contracts\StrategyDetectionInterface. */
     public function isEmbedded(): bool
     {
         if (null === $this->embedded) {
             $this->embedded = $this->embeddingStrategy->isEmbedded($this->getBinary());
         }
         return $this->embedded;
+    }
+
+    public function getEmbeddedIp(?EmbeddingStrategyInterface $strategy = null): IPv4
+    {
+        // An explicit strategy overrides the one attached to this instance.
+        $strategy = $strategy ?: $this->embeddingStrategy;
+        if (!$strategy->isEmbedded($this->getBinary())) {
+            throw new Exception\WrongVersionException(4, 6, (string) $this);
+        }
+        return IPv4::fromBinary($strategy->extract($this->getBinary()));
     }
 
     public function isLinkLocal(): bool
