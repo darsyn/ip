@@ -20,4 +20,11 @@ interface Factory4Interface extends FactoryInterface
      * @return static
      */
     public static function fromInteger(int $integer);
+
+    /**
+     * Create a New IP From an Integer, or Null on Failure
+     *
+     * @return static|null
+     */
+    public static function tryFromInteger(int $integer);
 }

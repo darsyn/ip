@@ -977,6 +977,28 @@ class IPv6Test extends TestCase
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidBinarySequences')]
+    public function testTryFromIntegerStringReturnsInstanceForValid(string $value, string $hex, string $expanded, string $compacted): void
+    {
+        $this->assertInstanceOf(Version6Interface::class, IP::tryFromIntegerString(Binary::toDecimalString($value)));
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getInvalidIntegerStrings()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getInvalidIntegerStrings')]
+    public function testTryFromIntegerStringReturnsNullForInvalid(string $value): void
+    {
+        $this->assertNull(IP::tryFromIntegerString($value));
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv6::getValidBinarySequences()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidBinarySequences')]
     public function testToHexString(string $value, string $hex, string $expanded, string $compacted): void
     {
         $ip = IP::fromBinary($value);

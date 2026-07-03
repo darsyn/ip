@@ -904,6 +904,28 @@ class IPv4Test extends TestCase
 
     /**
      * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getIntegerAddresses()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getIntegerAddresses')]
+    public function testTryFromIntegerReturnsInstanceForValid(string $value, int $integer): void
+    {
+        $this->assertInstanceOf(Version4Interface::class, IP::tryFromInteger($integer));
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getInvalidIntegers()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getInvalidIntegers')]
+    public function testTryFromIntegerReturnsNullForOutOfRange(int $integer): void
+    {
+        $this->assertNull(IP::tryFromInteger($integer));
+    }
+
+    /**
+     * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getIntegerStringData()
      */
     #[PHPUnit\Test]
@@ -953,6 +975,28 @@ class IPv4Test extends TestCase
             throw $e;
         }
         $this->fail();
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getIntegerStringData()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getIntegerStringData')]
+    public function testTryFromIntegerStringReturnsInstanceForValid(string $value, string $decimal): void
+    {
+        $this->assertInstanceOf(Version4Interface::class, IP::tryFromIntegerString($decimal));
+    }
+
+    /**
+     * @test
+     * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getInvalidIntegerStrings()
+     */
+    #[PHPUnit\Test]
+    #[PHPUnit\DataProviderExternal(IPv4DataProvider::class, 'getInvalidIntegerStrings')]
+    public function testTryFromIntegerStringReturnsNullForInvalid(string $value): void
+    {
+        $this->assertNull(IP::tryFromIntegerString($value));
     }
 
     /**

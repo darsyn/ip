@@ -119,6 +119,15 @@ class IPv6 extends AbstractIP implements Version6Interface
         return static::fromBinary($binary);
     }
 
+    public static function tryFromIntegerString(string $integer)
+    {
+        try {
+            return static::fromIntegerString($integer);
+        } catch (Exception\InvalidIpAddressException $e) {
+            return null;
+        }
+    }
+
     public static function isValid(string $ip): bool
     {
         return null !== static::tryFromProtocol($ip);
