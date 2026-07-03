@@ -6,9 +6,8 @@ namespace Darsyn\IP\Version;
 
 use Darsyn\IP\AbstractIP;
 use Darsyn\IP\Exception;
+use Darsyn\IP\Strategy;
 use Darsyn\IP\Strategy\EmbeddingStrategyInterface;
-use Darsyn\IP\Strategy\Nat64;
-use Darsyn\IP\Strategy\Teredo;
 use Darsyn\IP\Util\Binary;
 use Darsyn\IP\Util\MbString;
 
@@ -144,19 +143,37 @@ class IPv6 extends AbstractIP implements Version6Interface
         return $strategy->isEmbedded($this->getBinary());
     }
 
+    /** @not-deprecated IpInterface deprecated in favour of Contracts\StrategyDetectionInterface. */
+    public function isMapped(): bool
+    {
+        return $this->isEmbeddedAccordingToStrategy(new Strategy\Mapped());
+    }
+
+    /** @not-deprecated IpInterface deprecated in favour of Contracts\StrategyDetectionInterface. */
+    public function isDerived(): bool
+    {
+        return $this->isEmbeddedAccordingToStrategy(new Strategy\Derived());
+    }
+
+    /** @not-deprecated IpInterface deprecated in favour of Contracts\StrategyDetectionInterface. */
+    public function isCompatible(): bool
+    {
+        return $this->isEmbeddedAccordingToStrategy(new Strategy\Compatible());
+    }
+
     public function isNat64WellKnown(): bool
     {
-        return $this->isEmbeddedAccordingToStrategy(Nat64::wellKnown());
+        return $this->isEmbeddedAccordingToStrategy(Strategy\Nat64::wellKnown());
     }
 
     public function isNat64LocalUse(): bool
     {
-        return $this->isEmbeddedAccordingToStrategy(Nat64::localUse());
+        return $this->isEmbeddedAccordingToStrategy(Strategy\Nat64::localUse());
     }
 
     public function isTeredo(): bool
     {
-        return $this->isEmbeddedAccordingToStrategy(new Teredo());
+        return $this->isEmbeddedAccordingToStrategy(new Strategy\Teredo());
     }
 
     public function getEmbeddedIp(?EmbeddingStrategyInterface $strategy = null): IPv4
@@ -279,7 +296,7 @@ class IPv6 extends AbstractIP implements Version6Interface
         // Prefix, but a received address is not guaranteed to obey that, so
         // classify by the embedded address rather than trusting the prefix.
         if ($this->isNat64WellKnown()) {
-            return $this->getEmbeddedIp(Nat64::wellKnown())->isGloballyReachable();
+            return $this->getEmbeddedIp(Strategy\Nat64::wellKnown())->isGloballyReachable();
         }
         return $this->isUnicast()
             && !$this->isLoopback()

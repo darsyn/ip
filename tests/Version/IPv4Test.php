@@ -354,6 +354,7 @@ class IPv4Test extends TestCase
 
     /**
      * @test
+     * @deprecated
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidProtocolIpAddresses()
      */
     #[PHPUnit\Test]
@@ -366,6 +367,7 @@ class IPv4Test extends TestCase
 
     /**
      * @test
+     * @deprecated
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidProtocolIpAddresses()
      */
     #[PHPUnit\Test]
@@ -378,6 +380,7 @@ class IPv4Test extends TestCase
 
     /**
      * @test
+     * @deprecated
      * @dataProvider \Darsyn\IP\Tests\DataProvider\IPv4::getValidProtocolIpAddresses()
      */
     #[PHPUnit\Test]
