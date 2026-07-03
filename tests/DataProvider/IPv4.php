@@ -163,6 +163,32 @@ class IPv4 implements IpDataProviderInterface
         ];
     }
 
+    /** @return list<array{string, int}> */
+    public static function getIntegerAddresses()
+    {
+        return [
+            // [address, integer]
+            ['0.0.0.0', 0],
+            ['0.0.0.1', 1],
+            ['0.0.1.0', 256],
+            ['12.34.56.78', 203569230],
+            ['127.0.0.1', 2130706433],
+            ['192.168.1.1', 3232235777],
+            ['255.255.255.255', 4294967295],
+        ];
+    }
+
+    /** @return list<array{int}> */
+    public static function getInvalidIntegers()
+    {
+        return [
+            [-1],
+            [4294967296],
+            [\PHP_INT_MAX],
+            [\PHP_INT_MIN],
+        ];
+    }
+
     /** @return list<array{string, string, int}> */
     public static function getValidInRangeIpAddresses()
     {

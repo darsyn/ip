@@ -166,6 +166,13 @@ class Multi extends IPv6 implements MultiVersionInterface
         }
     }
 
+    public static function fromInteger(int $integer, ?EmbeddingStrategyInterface $strategy = null)
+    {
+        // Reuse IPv4's range validation; the resulting 4-byte sequence is
+        // packed into 16 bytes by fromBinary() via the embedding strategy.
+        return static::fromBinary(IPv4::fromInteger($integer)->getBinary(), $strategy);
+    }
+
     public static function isValid(string $ip, ?EmbeddingStrategyInterface $strategy = null): bool
     {
         return null !== static::tryFromProtocol($ip, $strategy);
@@ -205,6 +212,15 @@ class Multi extends IPv6 implements MultiVersionInterface
             } catch (Exception\Formatter\FormatException $e) {
                 throw new Exception\IpException('An unknown error occurred internally.', 0, $e);
             }
+        }
+        throw new Exception\WrongVersionException(4, 6, (string) $this);
+    }
+
+    /** @throws \Darsyn\IP\Exception\WrongVersionException */
+    public function toInteger(): int
+    {
+        if ($this->isEmbedded()) {
+            return (new IPv4($this->getShortBinary()))->toInteger();
         }
         throw new Exception\WrongVersionException(4, 6, (string) $this);
     }

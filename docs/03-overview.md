@@ -102,6 +102,9 @@ try {
 - `fromBinary()` accepts a raw binary sequence **only**, of exactly the right
   length, throwing an `InvalidBinaryException` otherwise.
 - `fromHex()` accepts a hexadecimal string (no `0x` prefix, case-insensitive).
+- `fromInteger()` accepts an IPv4 address as its integer value, between `0` and
+  `4294967295`. It is only available on the `IPv4` and `Multi` classes (version
+  6 addresses do not fit within PHP's native integer type).
 
 ```php
 <?php
@@ -116,8 +119,9 @@ try {
     echo 'Not valid IP notation, and never treated as raw bytes.';
 }
 
-IPv4::fromBinary("\x7f\x00\x00\x01"); // string("127.0.0.1")
-IPv4::fromHex('7f000001');            // string("127.0.0.1")
+IPv4::fromBinary("\x7f\x00\x00\x01");     // string("127.0.0.1")
+IPv4::fromHex('7f000001');                // string("127.0.0.1")
+IPv4::fromInteger(2130706433);            // string("127.0.0.1")
 ```
 
 Each strict constructor has a non-throwing companion `tryFrom*` that returns
@@ -273,6 +277,22 @@ use Darsyn\IP\Version\IPv6 as IP;
 
 $ip = IP::fromProtocol('2001:db8::1');
 $ip->getSegments(); // array(8193, 3512, 0, 0, 0, 0, 0, 1)
+```
+
+### Integer
+
+`toInteger()` returns the unsigned 32-bit integer value of an IPv4 address,
+between `0` and `4294967295`. It is only available for the `IPv4` and `Multi`
+classes; calling it on an instance of `Multi` that contains a version 6 address
+will result in a `WrongVersionException` being thrown. The value can be
+re-parsed via `fromInteger()`.
+
+```php
+<?php
+use Darsyn\IP\Version\IPv4 as IP;
+
+$ip = IP::fromProtocol('127.0.0.1');
+$ip->toInteger(); // int(2130706433)
 ```
 
 ## String Casting

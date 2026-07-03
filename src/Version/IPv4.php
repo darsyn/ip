@@ -114,6 +114,19 @@ class IPv4 extends AbstractIP implements Version4Interface
         }
     }
 
+    public static function fromInteger(int $integer)
+    {
+        if ($integer < 0 || $integer > 0xffffffff) {
+            throw new Exception\InvalidIpAddressException($integer);
+        }
+        return static::fromBinary(
+            \chr($integer >> 24 & 0xff)
+            . \chr($integer >> 16 & 0xff)
+            . \chr($integer >> 8 & 0xff)
+            . \chr($integer & 0xff)
+        );
+    }
+
     public static function isValid(string $ip): bool
     {
         return null !== static::tryFromProtocol($ip);
@@ -126,6 +139,16 @@ class IPv4 extends AbstractIP implements Version4Interface
         } catch (Exception\Formatter\FormatException $e) {
             throw new Exception\IpException('An unknown error occurred internally.', 0, $e);
         }
+    }
+
+    /** @return int<0, 4294967295> */
+    public function toInteger(): int
+    {
+        $binary = $this->getBinary();
+        return (\ord($binary[0]) << 24)
+            + (\ord($binary[1]) << 16)
+            + (\ord($binary[2]) << 8)
+            + \ord($binary[3]);
     }
 
     public function getVersion(): int
