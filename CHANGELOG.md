@@ -2,6 +2,9 @@
 
 ## `6.x`
 
+- Rename the whole-value output methods to `to*` (conversions), keeping `get*`
+  for component and property accessors. Keep the `get*` spellings as deprecated
+  aliases; `getBinary()` is exempt as the accessor of the canonical state.
 - Detect embedding strategies via the new `Contracts\StrategyDetectionInterface`
   deprecating the old `IpInterface::isEmbedded()` and associated methods.
 - Convert IP addresses to and from integers: `fromInteger()`/`toInteger()` via
@@ -25,10 +28,12 @@
   `fromProtocol()`/`fromBinary()`.
 - Introduce `@experimental` capability interfaces under `Darsyn\IP\Contracts\`.
   Their shape may change before `7.0`, but remains backwards compatible for `6.x`
-- Allow overriding the global formatter per call by passing a
-  `Formatter\ProtocolFormatterInterface` as the first argument to
-  `IPv4::getDotAddress()`, `IPv6::getCompactedAddress()`,
-  `Multi::getDotAddress()` and `Multi::getProtocolAppropriateAddress()`.
+- Allow overriding the global formatter per call via an optional
+  `Formatter\ProtocolFormatterInterface` parameter on `toDotAddress()`,
+  `toCompactedAddress()` and `toProtocolAppropriateAddress()` (deprecated
+  `get*` aliases accept the same argument, but any other value triggers a
+  deprecation notice and falls back to the global formatter instead of
+  throwing a `TypeError`).
 - Move CIDR mask generation from the protected `AbstractIP::generateBinaryMask()`
   to the public static `Util\Binary::mask()`.
 - Performance: compute network masks (`getNetworkIp()` / `getBroadcastIp()`)

@@ -115,7 +115,7 @@ use Darsyn\IP\Version\Multi as IP;
 $ip = IP::factory('12.34.56.78');
 // Get the network address of an IP address given a subnet mask.
 $networkIp = $ip->getNetworkIp(19);
-$networkIp->getProtocolAppropriateAddress(); // string("12.34.32.0")
+$networkIp->toProtocolAppropriateAddress(); // string("12.34.32.0")
 ```
 
 ### Broadcast IP
@@ -133,7 +133,7 @@ use Darsyn\IP\Version\Multi as IP;
 $ip = IP::factory('12.34.56.78');
 // Get the broadcast address of an IP address given a subnet mask.
 $broadcastIp = $ip->getBroadcastIp(19);
-$broadcastIp->getProtocolAppropriateAddress(); // string("12.34.63.255")
+$broadcastIp->toProtocolAppropriateAddress(); // string("12.34.63.255")
 ```
 
 ### Is IP in Range?
@@ -188,10 +188,10 @@ use Darsyn\IP\Version\IPv4 as IP;
 
 $ip = IP::fromProtocol('12.34.56.78');
 // Step forwards or backwards within the address space.
-$ip->next()->getDotAddress();      // string("12.34.56.79")
-$ip->previous()->getDotAddress();  // string("12.34.56.77")
-$ip->offset(256)->getDotAddress(); // string("12.34.57.78")
-$ip->offset(-79)->getDotAddress(); // string("12.34.55.255")
+$ip->next()->toDotAddress();      // string("12.34.56.79")
+$ip->previous()->toDotAddress();  // string("12.34.56.77")
+$ip->offset(256)->toDotAddress(); // string("12.34.57.78")
+$ip->offset(-79)->toDotAddress(); // string("12.34.55.255")
 ```
 
 ## `IPv6` vs `Multi`?
@@ -234,13 +234,13 @@ use Darsyn\IP\Version\Ipv6;
 // Strategy is optional; defaults to Mapped unless
 // Multi::setDefaultEmbeddingStrategy() called previously.
 $ip = IPv6::fromEmbedded('127.0.0.1', new Mapped);
-$ip->getCompactedAddress(); // string("::ffff:7f00:1")
+$ip->toCompactedAddress(); // string("::ffff:7f00:1")
 
 try {
-    $ip->getDotAddress();
+    $ip->toDotAddress();
 } catch (\Error $e) {
     // IPv6 addresses are not considered IPv4 addresses and
-    // therefore do not have the method getDotAddress().
+    // therefore do not have the method toDotAddress().
 }
 ```
 

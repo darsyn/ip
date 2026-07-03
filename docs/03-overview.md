@@ -172,8 +172,8 @@ Human-readable format comes in 3 flavours:
 
 ### Dot Address
 
-`getDotAddress()` is only available for `IPv4` and `Multi` classes. Calling
-`getDotAddress()` on an instance of `Multi` that contains a version 6 address
+`toDotAddress()` is only available for `IPv4` and `Multi` classes. Calling
+`toDotAddress()` on an instance of `Multi` that contains a version 6 address
 will result in a `WrongVersionException` being thrown.
 
 ```php
@@ -184,7 +184,7 @@ use Darsyn\IP\Exception;
 $ip = IP::factory('127.0.0.1');
 
 try {
-    echo $ip->getDotAddress(); // string("127.0.0.1")
+    echo $ip->toDotAddress(); // string("127.0.0.1")
 } catch (Exception\WrongVersionException $e) {
     echo 'Cannot convert a version 6 address to dot-notation!';
 }
@@ -192,8 +192,8 @@ try {
 
 ### Compacted Address
 
-`getCompactedAddress()` is only available for `IPv6` and `Multi` classes.
-Calling `getCompactedAddress()` on an instance of `Multi` that contains a
+`toCompactedAddress()` is only available for `IPv6` and `Multi` classes.
+Calling `toCompactedAddress()` on an instance of `Multi` that contains a
 version 4 address will result in the IP address being converted to a version 6
 address according to the embedding strategy.
 
@@ -202,13 +202,13 @@ address according to the embedding strategy.
 use Darsyn\IP\Version\Multi as IP;
 
 $ip = IP::factory('127.0.0.1');
-echo $ip->getCompactedAddress(); // string("::ffff:7f00:1")
+echo $ip->toCompactedAddress(); // string("::ffff:7f00:1")
 ```
 
 ### Expanded Address
 
-`getExpandedAddress()` is only available for `IPv6` and `Multi` classes. Calling
-`getExpandedAddress()` on an instance of `Multi` that contains a version 4
+`toExpandedAddress()` is only available for `IPv6` and `Multi` classes. Calling
+`toExpandedAddress()` on an instance of `Multi` that contains a version 4
 address will result in the IP address being converted to a version 6 address
 according to the embedding strategy.
 
@@ -217,12 +217,12 @@ according to the embedding strategy.
 use Darsyn\IP\Version\Multi as IP;
 
 $ip = IP::factory('127.0.0.1');
-$ip->getExpandedAddress(); // string("0000:0000:0000:0000:0000:ffff:7f00:0001")
+$ip->toExpandedAddress(); // string("0000:0000:0000:0000:0000:ffff:7f00:0001")
 ```
 
 ### Protocol Appropriate Address
 
-`getProtocolAppropriateAddress()` is only available for the `Multi` class. If
+`toProtocolAppropriateAddress()` is only available for the `Multi` class. If
 the instance of `Multi` contains a version 4 address, it will be returned in
 dot notation, otherwise it returns a compacted version 6 address.
 
@@ -231,7 +231,7 @@ dot notation, otherwise it returns a compacted version 6 address.
 use Darsyn\IP\Version\Multi as IP;
 
 $ip = IP::factory('::ffff:7f00:1');
-$ip->getProtocolAppropriateAddress(); // string("127.0.0.1")
+$ip->toProtocolAppropriateAddress(); // string("127.0.0.1")
 ```
 
 ### Binary
@@ -337,11 +337,11 @@ so `__toString()` is implemented independently (deferring to `toString()`). The
 returned string is in protocol-appropriate notation and can be re-parsed via
 `fromProtocol()`.
 
-- String casting the `IPv4` class is the equivalent of `$ip->getDotAddress()`.
+- String casting the `IPv4` class is the equivalent of `$ip->toDotAddress()`.
 - String casting the `IPv6` class is the equivalent of
-  `$ip->getCompactedAddress()`.
+  `$ip->toCompactedAddress()`.
 - String casting the `Multi` class is the equivalent of
-  `$ip->getProtocolAppropriateAddress()`.
+  `$ip->toProtocolAppropriateAddress()`.
 
 ```php
 <?php

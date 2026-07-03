@@ -143,14 +143,14 @@ class IPv6Test extends TestCase
         // IPv4 address can be embedded into IPv6 objects using the fromEmbedded() static instantiator.
         $embedded = IP::fromEmbedded('12.34.56.78', new Mapped());
         // But IPv6 objects should ignore the fact that it's embedded and only work with the full IPv6 address.
-        $this->assertSame('0000:1fff:ffff:ffff:ffff:ffff:ffff:ffff', $embedded->getBroadcastIp(19)->getExpandedAddress());
+        $this->assertSame('0000:1fff:ffff:ffff:ffff:ffff:ffff:ffff', $embedded->getBroadcastIp(19)->toExpandedAddress());
 
         // Multi objects understand both IPv4 and IPv6 addresses.
         $multi = Multi::fromProtocol('12.34.56.78', new Mapped());
         // So therefore, if a Multi object detects that it holds an embedded IPv4 address it will attempt to work with
         // the IPv4 address before falling back on the full IPv6 address.
-        $this->assertSame('0000:0000:0000:0000:0000:ffff:0c22:3fff', $multi->getBroadcastIp(19)->getExpandedAddress());
-        $this->assertSame('12.34.63.255', $multi->getBroadcastIp(19)->getDotAddress());
+        $this->assertSame('0000:0000:0000:0000:0000:ffff:0c22:3fff', $multi->getBroadcastIp(19)->toExpandedAddress());
+        $this->assertSame('12.34.63.255', $multi->getBroadcastIp(19)->toDotAddress());
     }
 
     /**
@@ -191,10 +191,10 @@ class IPv6Test extends TestCase
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidProtocolIpAddresses')]
-    public function testGetCompactedAddressReturnsCorrectString(string $value, string $hex, string $expanded, string $compacted): void
+    public function testCompactedAddressReturnsCorrectString(string $value, string $hex, string $expanded, string $compacted): void
     {
         $ip = IP::fromProtocol($value);
-        $this->assertSame($compacted, $ip->getCompactedAddress());
+        $this->assertSame($compacted, $ip->toCompactedAddress());
     }
 
     /**
@@ -203,10 +203,34 @@ class IPv6Test extends TestCase
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(IPv6DataProvider::class, 'getValidProtocolIpAddresses')]
-    public function testGetExpandedAddressReturnsCorrectString(string $value, string $hex, string $expanded, string $compacted): void
+    public function testExpandedAddressReturnsCorrectString(string $value, string $hex, string $expanded, string $compacted): void
     {
         $ip = IP::fromProtocol($value);
-        $this->assertSame($expanded, $ip->getExpandedAddress());
+        $this->assertSame($expanded, $ip->toExpandedAddress());
+    }
+
+    /**
+     * @test
+     * @deprecated
+     */
+    #[PHPUnit\Test]
+    public function testGetCompactedAddressRemainsADeprecatedAliasForwardingTheFormatter(): void
+    {
+        $ip = IP::fromProtocol('2001:db8::1');
+        $this->assertSame($ip->toCompactedAddress(), $ip->getCompactedAddress());
+        $formatter = new StubFormatter();
+        $this->assertSame($ip->toCompactedAddress($formatter), $ip->getCompactedAddress($formatter));
+    }
+
+    /**
+     * @test
+     * @deprecated
+     */
+    #[PHPUnit\Test]
+    public function testGetExpandedAddressRemainsADeprecatedAlias(): void
+    {
+        $ip = IP::fromProtocol('2001:db8::1');
+        $this->assertSame($ip->toExpandedAddress(), $ip->getExpandedAddress());
     }
 
     /**
@@ -310,7 +334,7 @@ class IPv6Test extends TestCase
     public function testNetworkIp(string $expected, int $cidr): void
     {
         $ip = IP::fromProtocol('2001:db8::a60:8a2e:370:7334');
-        $this->assertSame($expected, $ip->getNetworkIp($cidr)->getCompactedAddress());
+        $this->assertSame($expected, $ip->getNetworkIp($cidr)->toCompactedAddress());
     }
 
     /**
@@ -322,7 +346,7 @@ class IPv6Test extends TestCase
     public function testBroadcastIp(string $expected, int $cidr): void
     {
         $ip = IP::fromProtocol('2001:db8::a60:8a2e:370:7334');
-        $this->assertSame($expected, $ip->getBroadcastIp($cidr)->getCompactedAddress());
+        $this->assertSame($expected, $ip->getBroadcastIp($cidr)->toCompactedAddress());
     }
 
     /**
@@ -335,7 +359,7 @@ class IPv6Test extends TestCase
     {
         $result = IP::fromProtocol($start)->offset($offset);
         $this->assertInstanceOf(IP::class, $result);
-        $this->assertSame($expected, $result->getCompactedAddress());
+        $this->assertSame($expected, $result->toCompactedAddress());
     }
 
     /** @test */
@@ -672,7 +696,7 @@ class IPv6Test extends TestCase
     public function testPerCallFormatterOverridesGlobal(): void
     {
         $ip = IP::fromProtocol('2001:db8::a60:8a2e:370:7334');
-        $this->assertSame(StubFormatter::SENTINEL, $ip->getCompactedAddress(new StubFormatter()));
+        $this->assertSame(StubFormatter::SENTINEL, $ip->toCompactedAddress(new StubFormatter()));
     }
 
     /** @test */
@@ -680,9 +704,9 @@ class IPv6Test extends TestCase
     public function testPerCallNativeFormatterProducesNativeOutput(): void
     {
         $ip = IP::fromProtocol('::ffff:c22:384e');
-        $this->assertSame('::ffff:c22:384e', $ip->getCompactedAddress());
-        $this->assertSame('::ffff:12.34.56.78', $ip->getCompactedAddress(new NativeFormatter()));
-        $this->assertSame('::ffff:c22:384e', $ip->getCompactedAddress());
+        $this->assertSame('::ffff:c22:384e', $ip->toCompactedAddress());
+        $this->assertSame('::ffff:12.34.56.78', $ip->toCompactedAddress(new NativeFormatter()));
+        $this->assertSame('::ffff:c22:384e', $ip->toCompactedAddress());
     }
 
     /** @test */
@@ -690,10 +714,13 @@ class IPv6Test extends TestCase
     public function testExplicitNullPerCallFormatterFallsBackToGlobal(): void
     {
         $ip = IP::fromProtocol('::ffff:c22:384e');
-        $this->assertSame('::ffff:c22:384e', $ip->getCompactedAddress(null));
+        $this->assertSame('::ffff:c22:384e', $ip->toCompactedAddress(null));
     }
 
-    /** @test */
+    /**
+     * @test
+     * @deprecated
+     */
     #[PHPUnit\Test]
     public function testInvalidPerCallFormatterTriggersDeprecationAndFallsBack(): void
     {
@@ -766,8 +793,8 @@ class IPv6Test extends TestCase
         $ip = IP::fromBinary($value);
         $this->assertInstanceOf(Version6Interface::class, $ip);
         $this->assertSame($value, $ip->getBinary());
-        $this->assertSame($expanded, $ip->getExpandedAddress());
-        $this->assertSame($compacted, $ip->getCompactedAddress());
+        $this->assertSame($expanded, $ip->toExpandedAddress());
+        $this->assertSame($compacted, $ip->toCompactedAddress());
     }
 
     /** @test */
@@ -1080,7 +1107,7 @@ class IPv6Test extends TestCase
     {
         $embedded = IP::fromProtocol('::ffff:12.34.56.78')->getEmbeddedIp();
         $this->assertInstanceOf(IPv4::class, $embedded);
-        $this->assertSame('12.34.56.78', $embedded->getDotAddress());
+        $this->assertSame('12.34.56.78', $embedded->toDotAddress());
     }
 
     /** @test */
@@ -1097,7 +1124,7 @@ class IPv6Test extends TestCase
     public function testGetEmbeddedIpWithExplicitStrategy(): void
     {
         $ip = IP::fromProtocol('2002:c22:384e::');
-        $this->assertSame('12.34.56.78', $ip->getEmbeddedIp(new Derived())->getDotAddress());
+        $this->assertSame('12.34.56.78', $ip->getEmbeddedIp(new Derived())->toDotAddress());
     }
 
     /** @test */

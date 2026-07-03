@@ -20,17 +20,17 @@ use Darsyn\IP\Version\Multi as IP;
 
 IP::setProtocolFormatter(new NativeFormatter);
 $ip = IP::factory('::ffff:c22:384e');
-$ip->getCompactedAddress(); // string("::ffff:12.34.56.78")
+$ip->toCompactedAddress(); // string("::ffff:12.34.56.78")
 ```
 
 ## Per-call formatter
 `setProtocolFormatter()` changes the formatter globally for every IP object, the
 formatting methods therefore accept an optional formatter as their
 first argument, overriding the global formatter for that call alone:
-- `Darsyn\IP\Version\IPv4::getDotAddress()`
-- `Darsyn\IP\Version\IPv6::getCompactedAddress()`
-- `Darsyn\IP\Version\Multi::getDotAddress()`
-- `Darsyn\IP\Version\Multi::getProtocolAppropriateAddress()`
+- `Darsyn\IP\Version\IPv4::toDotAddress()`
+- `Darsyn\IP\Version\IPv6::toCompactedAddress()`
+- `Darsyn\IP\Version\Multi::toDotAddress()`
+- `Darsyn\IP\Version\Multi::toProtocolAppropriateAddress()`
 
 ```php
 <?php
@@ -41,10 +41,12 @@ use Darsyn\IP\Version\IPv6 as IP;
 IP::setProtocolFormatter(new ConsistentFormatter());
 $ip = IP::factory('::ffff:c22:384e');
 
-$ip->getCompactedAddress();                      // string("::ffff:c22:384e")
-$ip->getCompactedAddress(new NativeFormatter);   // string("::ffff:12.34.56.78")
-$ip->getCompactedAddress();                      // string("::ffff:c22:384e")
+$ip->toCompactedAddress();                      // string("::ffff:c22:384e")
+$ip->toCompactedAddress(new NativeFormatter);   // string("::ffff:12.34.56.78")
+$ip->toCompactedAddress();                      // string("::ffff:c22:384e")
 ```
 
-Passing any value that does not implement
-`Darsyn\IP\Formatter\ProtocolFormatterInterface` will trigger a deprecation notice and fall back to the global formatter.
+These methods declare the parameter as a nullable
+`Darsyn\IP\Formatter\ProtocolFormatterInterface`, so passing any other value
+throws a `TypeError`. Their deprecated `get*` counterparts accept the same
+argument but trigger a deprecation notice and fall back to the global formatter.

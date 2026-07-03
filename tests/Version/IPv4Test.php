@@ -138,7 +138,20 @@ class IPv4Test extends TestCase
     public function testDotAddressReturnsCorrectString(string $value, string $expectedHex, string $expectedDot): void
     {
         $ip = IP::fromProtocol($value);
-        $this->assertSame($expectedDot, $ip->getDotAddress());
+        $this->assertSame($expectedDot, $ip->toDotAddress());
+    }
+
+    /**
+     * @test
+     * @deprecated
+     */
+    #[PHPUnit\Test]
+    public function testGetDotAddressRemainsADeprecatedAliasForwardingTheFormatter(): void
+    {
+        $ip = IP::fromProtocol('127.0.0.1');
+        $this->assertSame($ip->toDotAddress(), $ip->getDotAddress());
+        $formatter = new StubFormatter();
+        $this->assertSame($ip->toDotAddress($formatter), $ip->getDotAddress($formatter));
     }
 
     /**
@@ -242,7 +255,7 @@ class IPv4Test extends TestCase
     public function testNetworkIp(string $expected, int $cidr): void
     {
         $ip = IP::fromProtocol('12.34.56.78');
-        $this->assertSame($expected, $ip->getNetworkIp($cidr)->getDotAddress());
+        $this->assertSame($expected, $ip->getNetworkIp($cidr)->toDotAddress());
     }
 
     /**
@@ -254,7 +267,7 @@ class IPv4Test extends TestCase
     public function testBroadcastIp(string $expected, int $cidr): void
     {
         $ip = IP::fromProtocol('12.34.56.78');
-        $this->assertSame($expected, $ip->getBroadcastIp($cidr)->getDotAddress());
+        $this->assertSame($expected, $ip->getBroadcastIp($cidr)->toDotAddress());
     }
 
     /**
@@ -267,7 +280,7 @@ class IPv4Test extends TestCase
     {
         $result = IP::fromProtocol($start)->offset($offset);
         $this->assertInstanceOf(IP::class, $result);
-        $this->assertSame($expected, $result->getDotAddress());
+        $this->assertSame($expected, $result->toDotAddress());
     }
 
     /** @test */
@@ -595,7 +608,7 @@ class IPv4Test extends TestCase
     public function testPerCallFormatterOverridesGlobal(): void
     {
         $ip = IP::fromProtocol('12.34.56.78');
-        $this->assertSame(StubFormatter::SENTINEL, $ip->getDotAddress(new StubFormatter()));
+        $this->assertSame(StubFormatter::SENTINEL, $ip->toDotAddress(new StubFormatter()));
     }
 
     /** @test */
@@ -603,8 +616,8 @@ class IPv4Test extends TestCase
     public function testPerCallFormatterDoesNotMutateGlobal(): void
     {
         $ip = IP::fromProtocol('12.34.56.78');
-        $this->assertSame(StubFormatter::SENTINEL, $ip->getDotAddress(new StubFormatter()));
-        $this->assertSame('12.34.56.78', $ip->getDotAddress());
+        $this->assertSame(StubFormatter::SENTINEL, $ip->toDotAddress(new StubFormatter()));
+        $this->assertSame('12.34.56.78', $ip->toDotAddress());
     }
 
     /** @test */
@@ -612,10 +625,13 @@ class IPv4Test extends TestCase
     public function testExplicitNullPerCallFormatterFallsBackToGlobal(): void
     {
         $ip = IP::fromProtocol('12.34.56.78');
-        $this->assertSame('12.34.56.78', $ip->getDotAddress(null));
+        $this->assertSame('12.34.56.78', $ip->toDotAddress(null));
     }
 
-    /** @test */
+    /**
+     * @test
+     * @deprecated
+     */
     #[PHPUnit\Test]
     public function testInvalidPerCallFormatterTriggersDeprecationAndFallsBack(): void
     {
@@ -628,7 +644,10 @@ class IPv4Test extends TestCase
         $this->assertSame('12.34.56.78', $result);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @deprecated
+     */
     #[PHPUnit\Test]
     public function testInvalidScalarPerCallFormatterMentionsTypeInDeprecation(): void
     {
@@ -703,7 +722,7 @@ class IPv4Test extends TestCase
         $ip = IP::fromBinary($value);
         $this->assertInstanceOf(Version4Interface::class, $ip);
         $this->assertSame($value, $ip->getBinary());
-        $this->assertSame($expectedDot, $ip->getDotAddress());
+        $this->assertSame($expectedDot, $ip->toDotAddress());
     }
 
     /** @test */

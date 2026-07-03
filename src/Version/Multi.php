@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Darsyn\IP\Version;
 
 use Darsyn\IP\Exception;
+use Darsyn\IP\Formatter\ProtocolFormatterInterface;
 use Darsyn\IP\IpInterface;
 use Darsyn\IP\Strategy\CanonicalEmbeddingInterface;
 use Darsyn\IP\Strategy\EmbeddingStrategyInterface;
@@ -214,26 +215,28 @@ class Multi extends IPv6 implements MultiVersionInterface
         parent::__construct($ip);
     }
 
-    public function getProtocolAppropriateAddress(/* ?ProtocolFormatterInterface $formatter = null */): string
+    public function toProtocolAppropriateAddress(?ProtocolFormatterInterface $formatter = null): string
     {
         // If binary string contains an embedded IPv4 address, then extract it.
-        $ip = $this->isEmbedded()
-            ? $this->getShortBinary()
-            : $this->getBinary();
+        $ip = $this->isEmbedded() ? $this->getShortBinary() : $this->getBinary();
         // Render the IP address in the correct notation according to its
         // protocol (based on how long the binary string is).
-        return self::resolveProtocolFormatter(\func_get_args())->ntop($ip);
+        return ($formatter ?? self::getProtocolFormatter())->ntop($ip);
+    }
+
+    /** @deprecated Use toProtocolAppropriateAddress() instead. */
+    public function getProtocolAppropriateAddress(/* ?ProtocolFormatterInterface $formatter = null */): string
+    {
+        return $this->toProtocolAppropriateAddress(self::resolveProtocolFormatter(\func_get_args()));
     }
 
     /**
      * @throws \Darsyn\IP\Exception\WrongVersionException
      * @throws \Darsyn\IP\Exception\IpException
      */
-    public function getDotAddress(/* ?ProtocolFormatterInterface $formatter = null */): string
+    public function toDotAddress(?ProtocolFormatterInterface $formatter = null): string
     {
-        // Resolve the per-call formatter argument before the version check so a
-        // deprecated (non-formatter) argument is flagged regardless of embedded state.
-        $formatter = self::resolveProtocolFormatter(\func_get_args());
+        $formatter = $formatter ?? self::getProtocolFormatter();
         if ($this->isEmbedded()) {
             try {
                 return $formatter->ntop($this->getShortBinary());
@@ -242,6 +245,14 @@ class Multi extends IPv6 implements MultiVersionInterface
             }
         }
         throw new Exception\WrongVersionException(4, 6, (string) $this);
+    }
+
+    /** @deprecated Use toDotAddress() instead. */
+    public function getDotAddress(/* ?ProtocolFormatterInterface $formatter = null */): string
+    {
+        // Resolve the per-call formatter argument before the version check so a
+        // deprecated (non-formatter) argument is flagged regardless of embedded state.
+        return $this->toDotAddress(self::resolveProtocolFormatter(\func_get_args()));
     }
 
     /** @throws \Darsyn\IP\Exception\WrongVersionException */
@@ -496,7 +507,7 @@ class Multi extends IPv6 implements MultiVersionInterface
 
     public function toString(): string
     {
-        return $this->getProtocolAppropriateAddress();
+        return $this->toProtocolAppropriateAddress();
     }
 
     public function __toString(): string

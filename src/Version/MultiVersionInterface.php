@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Darsyn\IP\Version;
 
+use Darsyn\IP\Formatter\ProtocolFormatterInterface;
 use Darsyn\IP\Strategy\EmbeddingStrategyInterface;
 
 interface MultiVersionInterface extends Version4Interface, Version6Interface
@@ -23,13 +24,16 @@ interface MultiVersionInterface extends Version4Interface, Version6Interface
      */
     public function isEmbedded(): bool;
 
+    /** @deprecated Use toProtocolAppropriateAddress() instead. */
+    public function getProtocolAppropriateAddress(): string;
+
     /**
-     * Get Protocol-appropriate Address
+     * Convert to Protocol-appropriate Address Notation
      *
      * Converts an IP address into the smallest protocol notation it can;
      * dot-notation for IPv4, and compacted (double colons) notation for IPv6.
      * Only IPv4 addresses according to the embedding strategy used will be
      * returned in dot-notation.
      */
-    public function getProtocolAppropriateAddress(): string;
+    public function toProtocolAppropriateAddress(?ProtocolFormatterInterface $formatter = null): string;
 }

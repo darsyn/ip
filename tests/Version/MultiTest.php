@@ -101,7 +101,7 @@ class MultiTest extends TestCase
     public function testEmbeddingStrategy(string $strategyClass, string $expandedAddress, string $v4address): void
     {
         $ip = IP::factory($v4address, new $strategyClass());
-        $this->assertSame($expandedAddress, $ip->getExpandedAddress());
+        $this->assertSame($expandedAddress, $ip->toExpandedAddress());
     }
 
     /**
@@ -115,7 +115,7 @@ class MultiTest extends TestCase
     {
         IP::setDefaultEmbeddingStrategy(new $strategyClass());
         $ip = IP::fromProtocol($v4address);
-        $this->assertSame($expandedAddress, $ip->getExpandedAddress());
+        $this->assertSame($expandedAddress, $ip->toExpandedAddress());
     }
 
     /**
@@ -182,10 +182,10 @@ class MultiTest extends TestCase
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidProtocolIpAddresses')]
-    public function testGetCompactedAddressReturnsCorrectString(string $value, string $hex, string $expanded, string $compacted, ?string $dot): void
+    public function testCompactedAddressReturnsCorrectString(string $value, string $hex, string $expanded, string $compacted, ?string $dot): void
     {
         $ip = IP::fromProtocol($value);
-        $this->assertSame($compacted, $ip->getCompactedAddress());
+        $this->assertSame($compacted, $ip->toCompactedAddress());
     }
 
     /**
@@ -194,10 +194,10 @@ class MultiTest extends TestCase
      */
     #[PHPUnit\Test]
     #[PHPUnit\DataProviderExternal(MultiDataProvider::class, 'getValidProtocolIpAddresses')]
-    public function testGetExpandedAddressReturnsCorrectString(string $value, string $hex, string $expanded, string $compacted, ?string $dot): void
+    public function testExpandedAddressReturnsCorrectString(string $value, string $hex, string $expanded, string $compacted, ?string $dot): void
     {
         $ip = IP::fromProtocol($value);
-        $this->assertSame($expanded, $ip->getExpandedAddress());
+        $this->assertSame($expanded, $ip->toExpandedAddress());
     }
 
     /**
@@ -209,7 +209,7 @@ class MultiTest extends TestCase
     public function testDotAddressReturnsCorrectString(string $value, string $hex, string $expanded, string $compacted, ?string $dot): void
     {
         $ip = IP::fromProtocol($value);
-        $this->assertSame($dot, $ip->getDotAddress());
+        $this->assertSame($dot, $ip->toDotAddress());
     }
 
     /**
@@ -223,7 +223,7 @@ class MultiTest extends TestCase
         $this->expectException(\Darsyn\IP\Exception\WrongVersionException::class);
         try {
             $ip = IP::fromProtocol($value);
-            $ip->getDotAddress();
+            $ip->toDotAddress();
         } catch (WrongVersionException $e) {
             $this->assertTrue(isset($ip));
             $this->assertSame((string) $ip, $e->getSuppliedIp());
@@ -231,6 +231,32 @@ class MultiTest extends TestCase
             $this->assertSame(6, $e->getActualVersion());
             throw $e;
         }
+    }
+
+    /**
+     * @test
+     * @deprecated
+     */
+    #[PHPUnit\Test]
+    public function testGetDotAddressRemainsADeprecatedAliasForwardingTheFormatter(): void
+    {
+        $ip = IP::fromProtocol('12.34.56.78');
+        $this->assertSame($ip->toDotAddress(), $ip->getDotAddress());
+        $formatter = new StubFormatter();
+        $this->assertSame($ip->toDotAddress($formatter), $ip->getDotAddress($formatter));
+    }
+
+    /**
+     * @test
+     * @deprecated
+     */
+    #[PHPUnit\Test]
+    public function testGetProtocolAppropriateAddressRemainsADeprecatedAliasForwardingTheFormatter(): void
+    {
+        $ip = IP::fromProtocol('2001:db8::1');
+        $this->assertSame($ip->toProtocolAppropriateAddress(), $ip->getProtocolAppropriateAddress());
+        $formatter = new StubFormatter();
+        $this->assertSame($ip->toProtocolAppropriateAddress($formatter), $ip->getProtocolAppropriateAddress($formatter));
     }
 
     /**
@@ -254,7 +280,7 @@ class MultiTest extends TestCase
     public function testNetworkIp(string $initial, string $expected, int $cidr): void
     {
         $ip = IP::fromProtocol($initial);
-        $this->assertSame($expected, $ip->getNetworkIp($cidr)->getProtocolAppropriateAddress());
+        $this->assertSame($expected, $ip->getNetworkIp($cidr)->toProtocolAppropriateAddress());
     }
 
     /**
@@ -266,7 +292,7 @@ class MultiTest extends TestCase
     public function testBroadcastIp(string $initial, string $expected, int $cidr): void
     {
         $ip = IP::fromProtocol($initial);
-        $this->assertSame($expected, $ip->getBroadcastIp($cidr)->getProtocolAppropriateAddress());
+        $this->assertSame($expected, $ip->getBroadcastIp($cidr)->toProtocolAppropriateAddress());
     }
 
     /**
@@ -279,7 +305,7 @@ class MultiTest extends TestCase
     {
         $result = IP::fromProtocol($start)->offset($offset);
         $this->assertInstanceOf(IP::class, $result);
-        $this->assertSame($expected, $result->getProtocolAppropriateAddress());
+        $this->assertSame($expected, $result->toProtocolAppropriateAddress());
     }
 
     /** @test */
@@ -406,7 +432,7 @@ class MultiTest extends TestCase
     public function testIsLoopbackCompatible(string $value, bool $isLoopback): void
     {
         $ip = IP::fromProtocol($value, new Strategy\Compatible());
-        if ('0000:0000:0000:0000:0000:0000:0000:0001' === $ip->getExpandedAddress()) {
+        if ('0000:0000:0000:0000:0000:0000:0000:0001' === $ip->toExpandedAddress()) {
             // Special case that I can't figure out a solution for.
             // The address 0.0.0.1 (when using the compatible embedding strategy)
             // is a loopback address if viewing as IPv6 (::1), but also not a
@@ -690,7 +716,7 @@ class MultiTest extends TestCase
     public function testPerCallFormatterOverridesGlobalForProtocolAppropriateAddress(): void
     {
         $ip = IP::fromProtocol('12.34.56.78');
-        $this->assertSame(StubFormatter::SENTINEL, $ip->getProtocolAppropriateAddress(new StubFormatter()));
+        $this->assertSame(StubFormatter::SENTINEL, $ip->toProtocolAppropriateAddress(new StubFormatter()));
     }
 
     /** @test */
@@ -698,8 +724,8 @@ class MultiTest extends TestCase
     public function testPerCallFormatterDoesNotMutateGlobalForProtocolAppropriateAddress(): void
     {
         $ip = IP::fromProtocol('12.34.56.78');
-        $this->assertSame(StubFormatter::SENTINEL, $ip->getProtocolAppropriateAddress(new StubFormatter()));
-        $this->assertSame('12.34.56.78', $ip->getProtocolAppropriateAddress());
+        $this->assertSame(StubFormatter::SENTINEL, $ip->toProtocolAppropriateAddress(new StubFormatter()));
+        $this->assertSame('12.34.56.78', $ip->toProtocolAppropriateAddress());
     }
 
     /** @test */
@@ -707,10 +733,13 @@ class MultiTest extends TestCase
     public function testExplicitNullPerCallFormatterFallsBackToGlobalForProtocolAppropriateAddress(): void
     {
         $ip = IP::fromProtocol('12.34.56.78');
-        $this->assertSame('12.34.56.78', $ip->getProtocolAppropriateAddress(null));
+        $this->assertSame('12.34.56.78', $ip->toProtocolAppropriateAddress(null));
     }
 
-    /** @test */
+    /**
+     * @test
+     * @deprecated
+     */
     #[PHPUnit\Test]
     public function testInvalidPerCallFormatterTriggersDeprecationForProtocolAppropriateAddress(): void
     {
@@ -728,7 +757,7 @@ class MultiTest extends TestCase
     public function testPerCallFormatterOverridesGlobalForDotAddress(): void
     {
         $ip = IP::fromProtocol('12.34.56.78');
-        $this->assertSame(StubFormatter::SENTINEL, $ip->getDotAddress(new StubFormatter()));
+        $this->assertSame(StubFormatter::SENTINEL, $ip->toDotAddress(new StubFormatter()));
     }
 
     /** @test */
@@ -736,8 +765,8 @@ class MultiTest extends TestCase
     public function testPerCallFormatterDoesNotMutateGlobalForDotAddress(): void
     {
         $ip = IP::fromProtocol('12.34.56.78');
-        $this->assertSame(StubFormatter::SENTINEL, $ip->getDotAddress(new StubFormatter()));
-        $this->assertSame('12.34.56.78', $ip->getDotAddress());
+        $this->assertSame(StubFormatter::SENTINEL, $ip->toDotAddress(new StubFormatter()));
+        $this->assertSame('12.34.56.78', $ip->toDotAddress());
     }
 
     /** @test */
@@ -745,10 +774,13 @@ class MultiTest extends TestCase
     public function testExplicitNullPerCallFormatterFallsBackToGlobalForDotAddress(): void
     {
         $ip = IP::fromProtocol('12.34.56.78');
-        $this->assertSame('12.34.56.78', $ip->getDotAddress(null));
+        $this->assertSame('12.34.56.78', $ip->toDotAddress(null));
     }
 
-    /** @test */
+    /**
+     * @test
+     * @deprecated
+     */
     #[PHPUnit\Test]
     public function testInvalidPerCallFormatterTriggersDeprecationForDotAddress(): void
     {
@@ -761,7 +793,10 @@ class MultiTest extends TestCase
         $this->assertSame('12.34.56.78', $result);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @deprecated
+     */
     #[PHPUnit\Test]
     public function testInvalidPerCallFormatterTriggersDeprecationForDotAddressOnNonEmbedded(): void
     {
@@ -841,10 +876,10 @@ class MultiTest extends TestCase
         $ip = IP::fromBinary($value);
         $this->assertInstanceOf(MultiVersionInterface::class, $ip);
         $this->assertSame($value, $ip->getBinary());
-        $this->assertSame($expanded, $ip->getExpandedAddress());
-        $this->assertSame($compacted, $ip->getCompactedAddress());
+        $this->assertSame($expanded, $ip->toExpandedAddress());
+        $this->assertSame($compacted, $ip->toCompactedAddress());
         if (null !== $dot) {
-            $this->assertSame($dot, $ip->getDotAddress());
+            $this->assertSame($dot, $ip->toDotAddress());
         }
     }
 
@@ -855,7 +890,7 @@ class MultiTest extends TestCase
         $ip = IP::fromBinary(Binary::fromHex('0c22384e'));
         $this->assertInstanceOf(MultiVersionInterface::class, $ip);
         $this->assertTrue($ip->isVersion4());
-        $this->assertSame('12.34.56.78', $ip->getDotAddress());
+        $this->assertSame('12.34.56.78', $ip->toDotAddress());
     }
 
     /** @test */
@@ -882,7 +917,7 @@ class MultiTest extends TestCase
     public function testFromProtocolUsesExplicitStrategy(string $strategyClass, string $expandedAddress, string $v4address): void
     {
         $ip = IP::fromProtocol($v4address, new $strategyClass());
-        $this->assertSame($expandedAddress, $ip->getExpandedAddress());
+        $this->assertSame($expandedAddress, $ip->toExpandedAddress());
     }
 
     /** @test */
@@ -890,7 +925,7 @@ class MultiTest extends TestCase
     public function testFromBinaryUsesExplicitStrategy(): void
     {
         $ip = IP::fromBinary(Binary::fromHex('0c22384e'), new Strategy\Derived());
-        $this->assertSame('2002:0c22:384e:0000:0000:0000:0000:0000', $ip->getExpandedAddress());
+        $this->assertSame('2002:0c22:384e:0000:0000:0000:0000:0000', $ip->toExpandedAddress());
     }
 
     /**
@@ -1011,7 +1046,7 @@ class MultiTest extends TestCase
     {
         $ip = IP::fromInteger(203569230);
         $this->assertSame('00000000000000000000ffff0c22384e', Binary::toHex($ip->getBinary()));
-        $this->assertSame('12.34.56.78', $ip->getProtocolAppropriateAddress());
+        $this->assertSame('12.34.56.78', $ip->toProtocolAppropriateAddress());
     }
 
     /** @test */
@@ -1019,7 +1054,7 @@ class MultiTest extends TestCase
     public function testFromIntegerUsesExplicitStrategy(): void
     {
         $ip = IP::fromInteger(203569230, new Strategy\Derived());
-        $this->assertSame('2002:0c22:384e:0000:0000:0000:0000:0000', $ip->getExpandedAddress());
+        $this->assertSame('2002:0c22:384e:0000:0000:0000:0000:0000', $ip->toExpandedAddress());
     }
 
     /**
@@ -1086,7 +1121,7 @@ class MultiTest extends TestCase
     public function testFromIntegerStringThreadsStrategy(): void
     {
         $ip = IP::fromIntegerString('281470885312590', new Strategy\Mapped());
-        $this->assertSame('12.34.56.78', $ip->getDotAddress());
+        $this->assertSame('12.34.56.78', $ip->toDotAddress());
     }
 
     /**
@@ -1152,7 +1187,7 @@ class MultiTest extends TestCase
         $ip = IP::fromProtocol('12.34.56.78', new Strategy\Derived());
         $embedded = $ip->getEmbeddedIp();
         $this->assertInstanceOf(IPv4::class, $embedded);
-        $this->assertSame('12.34.56.78', $embedded->getDotAddress());
+        $this->assertSame('12.34.56.78', $embedded->toDotAddress());
     }
 
     /** @test */
@@ -1203,7 +1238,7 @@ class MultiTest extends TestCase
     {
         $ip = IPv6::fromProtocol('2002:c22:384e::');
         IP::setDefaultEmbeddingStrategy(new Strategy\Derived());
-        $this->assertSame('12.34.56.78', $ip->getEmbeddedIp()->getDotAddress());
+        $this->assertSame('12.34.56.78', $ip->getEmbeddedIp()->toDotAddress());
         IP::setDefaultEmbeddingStrategy(new Strategy\Mapped());
     }
 }

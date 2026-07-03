@@ -10,4 +10,11 @@ use Darsyn\IP\Contracts\Output6Interface;
 use Darsyn\IP\Contracts\StrategyDetectionInterface;
 use Darsyn\IP\IpInterface;
 
-interface Version6Interface extends IpInterface, Classification6Interface, Output6Interface, FactoryInterface, StrategyDetectionInterface {}
+interface Version6Interface extends IpInterface, Classification6Interface, Output6Interface, FactoryInterface, StrategyDetectionInterface
+{
+    /** @deprecated Use toExpandedAddress() instead. */
+    public function getExpandedAddress(): string;
+
+    /** @deprecated Use toCompactedAddress() instead. */
+    public function getCompactedAddress(/* ?ProtocolFormatterInterface $formatter = null */): string;
+}
