@@ -33,6 +33,7 @@
 - Add `fromInteger()` and `tryFromInteger()` on the new `Contracts\Factory4Interface` (IPv4 and Multi).
 - Arbitrary-precision `fromIntegerString()` and `tryFromIntegerString()` on all classes.
 - Fix: `Multi::fromProtocol()` now rejects a binary string of the wrong length instead of passing it through.
+- Fix: `Multi::fromEmbedded()` now keeps the strategy it is given instead of falling back to the default.
 
 ### Output
 

@@ -228,6 +228,7 @@ an IPv6 address.
 
 ```php
 <?php
+use Darsyn\IP\Strategy\Derived;
 use Darsyn\IP\Strategy\Mapped;
 use Darsyn\IP\Version\IPv6;
 use Darsyn\IP\Version\Multi;
