@@ -9,6 +9,22 @@
 >
 > Most deprecations in this release are docblock `@deprecated` only, so use a static analyzer.
 
+### Upgrading from 6.0 (BC-breaks)
+
+- Hand-written implementors of `IpInterface` that don't extend `AbstractIP` require new methods provided in the
+  `Darsyn\IP\Contracts\` interfaces.
+- Protected method `generateBinaryMask()` was removed from `AbstractIP`.
+- A concrete return type was added to `AbstractIP::jsonSerialize()`. Subclasses that override this method with a
+  different return type will now break.
+- Subclasses of native packing strategies (`Mapped`, `Compatible`, `Derived`) that had custom implementations of
+  `pack()` will now be silently bypassed. Implement `packIntoCanonical()` and `packIntoNonCanonical()`.
+- String casts and JSON now go through the `to*` methods. A subclass override of `getDotAddress()` or its siblings gets
+  silently bypassed and stops affecting output.
+- `IPv6::fromEmbedded()` now lets a custom strategy's `PackingException` escape instead of wrapping it.
+- 6to4 widening on the `Derived` strategy: embedded IPv4 addresses are now detected across the whole `2002::/16` block,
+  so non-canonical 6to4 addresses are version-4 values. Canonical packing drops bits 48 to 127.
+- Strings generated `<6.1` for single-zero-group addresses will no longer match new output (RFC 5952 fix).
+
 ### Parsing
 
 - Add strict named constructors on the new `Contracts\FactoryInterface` (`fromProtocol()`, `fromBinary()` and
@@ -53,9 +69,6 @@
 - Bugfix: classify a NAT64 Well-Known Prefix address by the IPv4 address it embeds, not by its prefix. An embedded
   non-reachable address is no longer reported as globally reachable (closes an SSRF deny-list bypass issue).
 - Bugfix: classify the whole `fc00::/7` block as private use.
-- Bugfix: detect an embedded IPv4 address across the whole 6to4 block `2002::/16` (RFC 3056 § 2), not only addresses
-  with a zeroed 80-bit tail.
-- Bugfix: never compress a single 16-bit zero group when formatting an IPv6 address (RFC 5952 § 4.2.2).
 
 ### Deprecated
 
@@ -72,12 +85,12 @@
 - Add byte-string arithmetic to `Util\Binary` (`increment()`, `decrement()` and `addIntegerOffset()`).
 - Add base-256 to base-10 conversion to `Util\Binary` (`toDecimalString()` and `fromDecimalString()`).
   Use GMP when the extension is loaded.
-- Add `Util\Binary::mask()` and remove the protected `AbstractIP::generateBinaryMask()`.
+- Add `Util\Binary::mask()`.
 - Add `Util\MbString::split()` (byte-safe `str_split()`).
 - Bugfix: `MbString::subString()` no longer swallows a valid `"0"`.
 - Widen the `$previous` argument on all exception classes from `?\Exception` to `?\Throwable`.
 
-#### Project
+### Project
 
 - Add PHP `8.5` to the supported versions and the CI matrix.
 - Add a PHP-CS-Fixer ruleset.
