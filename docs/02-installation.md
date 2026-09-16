@@ -2,8 +2,9 @@
 
 ## System Requirements
 
-- All functionality can be implemented without using new language features, so
-  this library will support PHP versions `5.6` onwards.
+- This library requires PHP `7.1` or above and the `ctype` extension. The
+  minimum supported PHP version is only raised when a newer version of PHP
+  needs syntax that older versions cannot parse, never for modernisation.
 - This library cannot be used on 32-bits systems due to a dependency on the
   in-built PHP functions `inet_pton` and `inet_ntop`.
 
