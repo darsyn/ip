@@ -6,7 +6,9 @@
 > functionality.
 
 This library can be used to support IP address as column types with Doctrine
-DBAL versions `^2.3 || ^3.0`.
+DBAL. Version `5.*` of `darsyn/ip-doctrine` supports DBAL `^2.3 || ^3.0` (PHP
+`5.6` and greater), and version `6.*` supports DBAL `^4` (PHP `8.1` and
+greater).
 
 Three Doctrine types are provided to match the three version classes:
 
