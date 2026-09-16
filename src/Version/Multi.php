@@ -207,6 +207,16 @@ class Multi extends IPv6 implements MultiVersionInterface
         return null !== static::tryFromProtocol($ip, $strategy);
     }
 
+    /**
+     * @throws \Darsyn\IP\Exception\InvalidIpAddressException
+     * @throws \Darsyn\IP\Exception\WrongVersionException
+     * @return static
+     */
+    public static function fromEmbedded(string $ip, ?EmbeddingStrategyInterface $strategy = null)
+    {
+        return static::tryFromProtocol($ip, $strategy) ?? static::fromBinary($ip, $strategy);
+    }
+
     protected function __construct(string $ip, ?EmbeddingStrategyInterface $strategy = null)
     {
         // Fallback to default in case this instance was created from static in

@@ -928,6 +928,15 @@ class MultiTest extends TestCase
         $this->assertSame('2002:0c22:384e:0000:0000:0000:0000:0000', $ip->toExpandedAddress());
     }
 
+    /** @test */
+    #[PHPUnit\Test]
+    public function testFromEmbeddedUsesExplicitStrategy(): void
+    {
+        $ip = IP::fromEmbedded('127.0.0.1', new Strategy\Derived());
+        $this->assertSame('2002:7f00:1::', $ip->toCompactedAddress());
+        $this->assertSame('127.0.0.1', $ip->toDotAddress());
+    }
+
     /**
      * @test
      * @dataProvider \Darsyn\IP\Tests\DataProvider\Multi::getValidBinarySequences()
