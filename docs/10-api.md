@@ -22,9 +22,9 @@
 | ↳                            | `toString()`                                         | `string`                       | ✓    | ✓    | ✓     |
 | ↳                            | `__toString()`                                       | `string`                       | ✓    | ✓    | ✓     |
 | ↳ (`JsonSerializable`)       | `jsonSerialize()`                                    | `string`                       | ✓    | ✓    | ✓     |
-| `Output4Interface`           | `toDotAddress([$strategy])`                          | `string`                       | ✓    |      | ✓     |
+| `Output4Interface`           | `toDotAddress([$formatter])`                         | `string`                       | ✓    |      | ✓     |
 | ↳                            | `toInteger()`                                        | `int`                          | ✓    |      | ✓     |
-| `Output6Interface`           | `toCompactedAddress([$strategy])`                    | `string`                       |      | ✓    | ✓     |
+| `Output6Interface`           | `toCompactedAddress([$formatter])`                   | `string`                       |      | ✓    | ✓     |
 | ↳                            | `toExpandedAddress()`                                | `string`                       |      | ✓    | ✓     |
 | ↳                            | `getSegments()`                                      | `list<int>`                    |      | ✓    | ✓     |
 | `VersionIdentityInterface`   | `getVersion()`                                       | `int`                          | ✓    | ✓    | ✓     |
@@ -63,5 +63,5 @@
 | ↳                            | `previous()`                                         | Static `IpInterface`           | ✓    | ✓    | ✓     |
 | ↳                            | `offset(int $offset)`                                | Static `IpInterface`           | ✓    | ✓    | ✓     |
 | `MultiVersionInterface`      | `setDefaultEmbeddingStrategy($strategy)`             | `void`                         |      |      | ✓     |
-| ↳                            | `toProtocolAppropriateAddress([$strategy])`          | `string`                       |      |      | ✓     |
+| ↳                            | `toProtocolAppropriateAddress([$formatter])`         | `string`                       |      |      | ✓     |
 | ↳                            | `isEmbedded()`                                       | `bool`                         |      |      | ✓     |
