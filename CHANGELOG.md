@@ -1,6 +1,6 @@
 # Darsyn IP
 
-## `6.x`
+## `6.1.0`
 
 - Rename the whole-value output methods to `to*` (conversions), keeping `get*`
   for component and property accessors. Keep the `get*` spellings as deprecated
