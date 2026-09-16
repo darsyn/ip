@@ -7,7 +7,7 @@
 > The public API is now split into capability interfaces under `Darsyn\IP\Contracts\`. These interfaces are
 > `@experimental` (their shape may change before `7.0`, but stay backwards compatible for `6.x`).
 >
-> Every deprecation in this release is a docblock `@deprecated` only, so use a static analyzer.
+> Most deprecations in this release are docblock `@deprecated` only, so use a static analyzer.
 
 ### Parsing
 
