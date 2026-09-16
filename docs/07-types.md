@@ -14,7 +14,7 @@ the embedding strategy used when creating the IP object.
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
-$ip = IP::factory('::ffff:7f00:1');
+$ip = IP::fromProtocol('::ffff:7f00:1');
 $ip->isEmbedded(); // bool(true)
 ```
 
@@ -28,7 +28,7 @@ statement:
 use Darsyn\IP\Strategy\Derived;
 use Darsyn\IP\Version\Multi as IP;
 
-$ip = IP::factory('127.0.0.1', new Derived);
+$ip = IP::fromProtocol('127.0.0.1', new Derived);
 $rfc4291 = $ip->isMapped() || $ip->isCompatible(); // bool(false)
 ```
 
@@ -43,7 +43,7 @@ this method.
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
-$ip = IP::factory('::ffff:7f00:1');
+$ip = IP::fromProtocol('::ffff:7f00:1');
 $ip->isMapped(); // bool(true)
 ```
 
@@ -58,7 +58,7 @@ method.
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
-$ip = IP::factory('2002:7f00:1::');
+$ip = IP::fromProtocol('2002:7f00:1::');
 $ip->isDerived(); // bool(true)
 ```
 
@@ -75,7 +75,7 @@ for this method.
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
-$ip = IP::factory('::7f00:1');
+$ip = IP::fromProtocol('::7f00:1');
 $ip->isCompatible(); // bool(true)
 ```
 
@@ -156,7 +156,7 @@ Link-Local Addresses") (IPv4) or [RFC 4291 section
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
-$ip = IP::factory('127.0.0.1');
+$ip = IP::fromProtocol('127.0.0.1');
 $ip->isLinkLocal(); // bool(false)
 ```
 
@@ -172,7 +172,7 @@ Architecture") (IPv6).
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
-$ip = IP::factory('127.0.0.1');
+$ip = IP::fromProtocol('127.0.0.1');
 $ip->isLoopback(); // bool(true)
 ```
 
@@ -188,7 +188,7 @@ Address Assignments") (IPv4) or [RFC 4291 section
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
-$ip = IP::factory('127.0.0.1');
+$ip = IP::fromProtocol('127.0.0.1');
 $ip->isMulticast(); // bool(false)
 ```
 
@@ -203,7 +203,7 @@ Private Internets") (IPv4) or [RFC 4193](https://tools.ietf.org/html/rfc4193
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
-$ip = IP::factory('127.0.0.1');
+$ip = IP::fromProtocol('127.0.0.1');
 $ip->isPrivateUse(); // bool(false)
 ```
 
@@ -218,7 +218,7 @@ Version 6 Addressing Architecture") (IPv6).
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
-$ip = IP::factory('127.0.0.1');
+$ip = IP::fromProtocol('127.0.0.1');
 $ip->isUnspecified(); // bool(false)
 ```
 
@@ -236,7 +236,7 @@ Network Interconnect Devices") corrected in [errata
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
-$ip = IP::factory('127.0.0.1');
+$ip = IP::fromProtocol('127.0.0.1');
 $ip->isBenchmarking(); // bool(false)
 ```
 
@@ -251,7 +251,7 @@ Address Prefix Reserved for Documentation") (IPv6).
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
-$ip = IP::factory('127.0.0.1');
+$ip = IP::fromProtocol('127.0.0.1');
 $ip->isDocumentation(); // bool(false)
 ```
 
@@ -267,7 +267,7 @@ following:
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
-$ip = IP::factory('127.0.0.1');
+$ip = IP::fromProtocol('127.0.0.1');
 $ip->isGloballyReachable(); // bool(false)
 ```
 
@@ -285,8 +285,8 @@ Whether the IP is a broadcast address, according to
 <?php
 use Darsyn\IP\Version\IPv4;
 
-IPv4::factory('127.0.0.1')->isBroadcast(); // bool(false)
-IPv4::factory('255.255.255.255')->isBroadcast(); // bool(true)
+IPv4::fromProtocol('127.0.0.1')->isBroadcast(); // bool(false)
+IPv4::fromProtocol('255.255.255.255')->isBroadcast(); // bool(true)
 ```
 
 ### Reserved for Future Use
@@ -298,8 +298,8 @@ Whether the IP is reserved for future use, according to [RFC
 <?php
 use Darsyn\IP\Version\IPv4;
 
-IPv4::factory('127.0.0.1')->isFutureReserved(); // bool(false)
-IPv4::factory('255.34.85.169')->isFutureReserved(); // bool(true)
+IPv4::fromProtocol('127.0.0.1')->isFutureReserved(); // bool(false)
+IPv4::fromProtocol('255.34.85.169')->isFutureReserved(); // bool(true)
 ```
 
 ### Shared
@@ -312,8 +312,8 @@ Address Space").
 <?php
 use Darsyn\IP\Version\IPv4;
 
-IPv4::factory('100.128.179.30')->isShared(); // bool(false)
-IPv4::factory('100.127.43.2')->isShared(); // bool(true)
+IPv4::fromProtocol('100.128.179.30')->isShared(); // bool(false)
+IPv4::fromProtocol('100.127.43.2')->isShared(); // bool(true)
 ```
 
 ## IPv6 Specific
@@ -335,7 +335,7 @@ The following constants are available on `Darsyn\IP\Version\Version6Interface`:
 <?php
 use Darsyn\IP\Version\IPv6;
 
-$isOrganizationLocal = IPv6::factory('ff08:1:6e6f:cbb::980e:3816')->getMulticastScope() === IPv6::MULTICAST_ORGANIZATION_LOCAL; // bool(true)
+$isOrganizationLocal = IPv6::fromProtocol('ff08:1:6e6f:cbb::980e:3816')->getMulticastScope() === IPv6::MULTICAST_ORGANIZATION_LOCAL; // bool(true)
 ```
 
 ### Unique Local
@@ -347,8 +347,8 @@ Whether the IP is a unique local address, according to [RFC
 <?php
 use Darsyn\IP\Version\IPv6;
 
-IPv6::factory('b638:cc70:716:c4d4:f69c:4ee3:6c65:a0b2')->isUniqueLocal(); // bool(false)
-IPv6::factory('fdff:ffff::')->isUniqueLocal(); // bool(true)
+IPv6::fromProtocol('b638:cc70:716:c4d4:f69c:4ee3:6c65:a0b2')->isUniqueLocal(); // bool(false)
+IPv6::fromProtocol('fdff:ffff::')->isUniqueLocal(); // bool(true)
 ```
 
 ### Unicast
@@ -362,8 +362,8 @@ vice-versa).
 <?php
 use Darsyn\IP\Version\IPv6;
 
-IPv6::factory('ff08::')->isUnicast(); // bool(false)
-IPv6::factory('::ffff:1:0')->isUnicast(); // bool(true)
+IPv6::fromProtocol('ff08::')->isUnicast(); // bool(false)
+IPv6::fromProtocol('::ffff:1:0')->isUnicast(); // bool(true)
 ```
 
 ### Unicast Global
@@ -376,6 +376,6 @@ Architecture").
 <?php
 use Darsyn\IP\Version\IPv6;
 
-IPv6::factory('2001:db8:85a3::8a2e:370:7334')->isUnicastGlobal(); // bool(false)
-IPv6::factory('140c:12f1:6e6f:c0bb:980e:3816:3e52:1193')->isUnicastGlobal(); // bool(true)
+IPv6::fromProtocol('2001:db8:85a3::8a2e:370:7334')->isUnicastGlobal(); // bool(false)
+IPv6::fromProtocol('140c:12f1:6e6f:c0bb:980e:3816:3e52:1193')->isUnicastGlobal(); // bool(true)
 ```

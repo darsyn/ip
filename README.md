@@ -33,9 +33,9 @@ using core, bleeding edge, and deprecation rules.
 - There are three main classes: [`IPv4`](src/Version/IPv4.php),
   [`IPv6`](src/Version/IPv6.php), and [`Multi`](src/Version/Multi.php) (for both
   version 4 and 6 addresses).
-- Objects are created using a static factory method
-  [`IpInterface::factory()`](src/IpInterface.php) instead of the constructor to
-  speed up internal processes.
+- Objects are created using static named constructors such as
+  [`FactoryInterface::fromProtocol()`](src/Contracts/FactoryInterface.php)
+  instead of the constructor to speed up internal processes.
 - When using `Multi`, the default strategy for representing version 4 addresses
   internally is [IPv4-mapped](docs/05-strategies.md).
 
@@ -46,12 +46,12 @@ use Darsyn\IP\Exception;
 use Darsyn\IP\Version\IPv4;
 
 try {
-    $ip = IPv4::factory('192.168.0.1');
+    $ip = IPv4::fromProtocol('192.168.0.1');
 } catch (Exception\InvalidIpAddressException $e) {
     exit('The IP address supplied is invalid!');
 }
 
-$companyNetwork = IPv4::factory('216.58.198.174');
+$companyNetwork = IPv4::fromProtocol('216.58.198.174');
 if (!$ip->inRange($companyNetwork, 25)) {
     throw new \Exception('Request not from a known company IP address.');
 }

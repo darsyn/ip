@@ -3,9 +3,9 @@
 > The `::factory()` static method is now deprecated. See the strict-parsing
 > named constructors below.
 
-IP addresses get automatically validated on creation through the static factory
-method; if the IP address supplied is invalid an `InvalidIpAddressException`
-will be thrown.
+IP addresses get automatically validated on creation through the static named
+constructors; if the IP address supplied is invalid an
+`InvalidIpAddressException` will be thrown.
 
 ```php
 <?php
@@ -13,7 +13,7 @@ use Darsyn\IP\Version\IPv4;
 use Darsyn\IP\Exception;
 
 try {
-    $ip = IPv4::factory('127.0.0.1');
+    $ip = IPv4::fromProtocol('127.0.0.1');
 } catch (Exception\InvalidIpAddressException $e) {
     echo 'The IP address supplied is invalid!';
 }
@@ -43,7 +43,7 @@ use Darsyn\IP\Version\IPv4;
 use Darsyn\IP\Exception;
 
 try {
-    $ip = IPv4::factory('::1');
+    $ip = IPv4::fromProtocol('::1');
 } catch (Exception\WrongVersionException $e) {
     echo 'Only version 4 IP addresses are allowed!';
 } catch (Exception\InvalidIpAddressException $e) {
@@ -150,8 +150,8 @@ IPv4::isValid('127.0.0.1'); // bool(true)
 IPv4::isValid('abcd');      // bool(false)
 ```
 
-When using the `Multi` class, each of these methods accepts the same optional
-embedding strategy as `factory()` does as its final argument.
+When using the `Multi` class, each of these methods accepts an optional
+embedding strategy as its final argument.
 
 > **Note:** `InvalidBinaryException` extends `InvalidIpAddressException`, so
 > existing `catch` blocks keep working unchanged.
@@ -181,7 +181,7 @@ will result in a `WrongVersionException` being thrown.
 use Darsyn\IP\Version\Multi as IP;
 use Darsyn\IP\Exception;
 
-$ip = IP::factory('127.0.0.1');
+$ip = IP::fromProtocol('127.0.0.1');
 
 try {
     echo $ip->toDotAddress(); // string("127.0.0.1")
@@ -201,7 +201,7 @@ address according to the embedding strategy.
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
-$ip = IP::factory('127.0.0.1');
+$ip = IP::fromProtocol('127.0.0.1');
 echo $ip->toCompactedAddress(); // string("::ffff:7f00:1")
 ```
 
@@ -216,7 +216,7 @@ according to the embedding strategy.
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
-$ip = IP::factory('127.0.0.1');
+$ip = IP::fromProtocol('127.0.0.1');
 $ip->toExpandedAddress(); // string("0000:0000:0000:0000:0000:ffff:7f00:0001")
 ```
 
@@ -230,7 +230,7 @@ dot notation, otherwise it returns a compacted version 6 address.
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
-$ip = IP::factory('::ffff:7f00:1');
+$ip = IP::fromProtocol('::ffff:7f00:1');
 $ip->toProtocolAppropriateAddress(); // string("127.0.0.1")
 ```
 
@@ -248,7 +248,7 @@ use Darsyn\IP\Version\IPv4 as IP;
 // binary, the same as the binary for the ASCII string "Poop". Today you learnt
 // something new.
 
-$ip = IP::factory('80.111.111.112');
+$ip = IP::fromProtocol('80.111.111.112');
 $ip->getBinary(); // string("Poop")
 ```
 
@@ -347,7 +347,7 @@ returned string is in protocol-appropriate notation and can be re-parsed via
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
-$ip = IP::factory('::ffff:7f00:1');
+$ip = IP::fromProtocol('::ffff:7f00:1');
 $printableString = (string) $ip; // string("127.0.0.1")
 ```
 
