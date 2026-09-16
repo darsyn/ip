@@ -45,3 +45,49 @@ class AnalyticsEntity
     public IP $ipAddress;
 }
 ```
+
+## Querying
+
+Doctrine converts a value through the `ip` type only when it knows the column
+type. Repository methods such as `findBy()`, `findOneBy()` and the magic
+`findByIpAddress()` read the type from the entity mapping, so they accept an IP
+object directly.
+
+```php
+<?php
+use Darsyn\IP\Version\Multi as IP;
+
+$ip = IP::fromProtocol('192.168.0.1');
+$entities = $repository->findBy(['ipAddress' => $ip]);
+```
+
+The QueryBuilder and DQL do not know which column a parameter is compared
+against. A parameter passed to `setParameter()` without a type is bound as a
+plain string:
+
+- An IP object is cast to its protocol notation (`"192.168.0.1"`) and compared
+  against the raw bytes stored in the column. No row matches and no error is
+  raised.
+- A raw binary string from `getBinary()` is bound as text. This matches on MySQL
+  but not on SQLite, where text and binary values never compare equal.
+
+Always pass the type name as the third argument to `setParameter()`:
+
+```php
+<?php
+use Darsyn\IP\Version\Multi as IP;
+
+$ip = IP::fromProtocol('192.168.0.1');
+$entities = $repository->createQueryBuilder('a')
+    ->andWhere('a.ipAddress = :address')
+    ->setParameter('address', $ip, 'ip')
+    ->getQuery()
+    ->getResult();
+```
+
+`'ip'` is the name the type was registered under (either `Type::addType()` or
+the Symfony configuration shown above). The type accepts an IP object or a
+protocol string, converts it to the stored binary form, and binds it as binary
+on every database platform. If you must bind raw bytes yourself, pass
+`Doctrine\DBAL\ParameterType::BINARY` (DBAL v2.8+, otherwise `\PDO::PARAM_LOB`)
+as the third argument instead.
