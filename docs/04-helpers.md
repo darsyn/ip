@@ -3,7 +3,7 @@
 Helper methods are for working with IP address and CIDR subnet masks.
 
 Since IP objects are meant to be immutable, whenever an IP is returned it is
-returned as a *new* instance of `Darsyn\IP\IpInterface` rather than modifying
+returned as a _new_ instance of `Darsyn\IP\IpInterface` rather than modifying
 the existing object - they are also returned as a static instance meaning an
 `IPv4` object would return a new `IPv4` object, an `IPv6` returns `IPv6`, etc.
 
@@ -33,13 +33,13 @@ Instances of `Multi` will:
 use Darsyn\IP\Version\Multi as IP;
 
 // IP is version 4 address and CIDR is <= 32. Uses IPv4::getNetworkIp().
-IP::factory('127.0.0.1')->getNetworkIp(26);
+IP::fromProtocol('127.0.0.1')->getNetworkIp(26);
 
 // IP is version 4 address but CIDR is more than 32. Uses IPv6::getNetworkIp().
-IP::factory('127.0.0.1')->getNetworkIp(107);
+IP::fromProtocol('127.0.0.1')->getNetworkIp(107);
 
 // IP is version 6 address. Uses IPv6::getNetworkIp(), even though CIDR is below 32.
-IP::factory('2001:db8::a60:8a2e:0:7334')->getNetworkIp(31);
+IP::fromProtocol('2001:db8::a60:8a2e:0:7334')->getNetworkIp(31);
 ```
 
 A `Darsyn\IP\Exception\InvalidCidrException` is thrown whenever a CIDR value
@@ -75,44 +75,43 @@ instance.
 <?php
 
 // IPv6 operation: helper method called from IPv6.
-IPv6::factory('ffff:7f00:1')->inRange(Multi::factory('127.0.0.1'), 23);
+IPv6::fromProtocol('ffff:7f00:1')->inRange(Multi::fromProtocol('127.0.0.1'), 23);
 
 // IPv4 operation: called from Multi, both IPs are IPv4-embedded, CIDR below 32.
-Multi::factory('127.0.0.1')->inRange(Multi::factory('127.0.0.1'), 23);
+Multi::fromProtocol('127.0.0.1')->inRange(Multi::fromProtocol('127.0.0.1'), 23);
 
 // IPv6 operation: both IPv4-embedded, but CIDR above 32.
-Multi::factory('127.0.0.1')->inRange(Multi::factory('127.0.0.1'), 35);
+Multi::fromProtocol('127.0.0.1')->inRange(Multi::fromProtocol('127.0.0.1'), 35);
 
 // IPv6 operation: supplied IP is not IPv4-embedded.
-Multi::factory('127.0.0.1')->inRange(Multi::factory('d6be:583:b07a::c7'), 23);
+Multi::fromProtocol('127.0.0.1')->inRange(Multi::fromProtocol('d6be:583:b07a::c7'), 23);
 
 // IPv6 operation: embedding strategies do not match.
-Multi::factory('127.0.0.1', new Mapped)
-    ->inRange(Multi::factory('127.0.0.1', new Derived), 23);
+Multi::fromProtocol('127.0.0.1', new Mapped)
+    ->inRange(Multi::fromProtocol('127.0.0.1', new Derived), 23);
 
 // WrongVersionException: Multi and IPv4 are different byte lengths.
-Multi::factory('127.0.0.1')->inRange(IPv4::factory('127.0.0.1'), 23);
+Multi::fromProtocol('127.0.0.1')->inRange(IPv4::fromProtocol('127.0.0.1'), 23);
 
 // InvalidCidrException: CIDR above 128.
-Multi::factory('127.0.0.1')->inRange(Multi::factory('127.0.0.1'), 129);
+Multi::fromProtocol('127.0.0.1')->inRange(Multi::fromProtocol('127.0.0.1'), 129);
 ```
 
 ## Method Reference
 
 ### Network IP
 
-> ```
+> ```text
 > @throws \Darsyn\IP\Exception\InvalidCidrException
 >
 > getNetworkIp(int $cidr): IpInterface
 > ```
 
-
 ```php
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
-$ip = IP::factory('12.34.56.78');
+$ip = IP::fromProtocol('12.34.56.78');
 // Get the network address of an IP address given a subnet mask.
 $networkIp = $ip->getNetworkIp(19);
 $networkIp->toProtocolAppropriateAddress(); // string("12.34.32.0")
@@ -120,7 +119,7 @@ $networkIp->toProtocolAppropriateAddress(); // string("12.34.32.0")
 
 ### Broadcast IP
 
-> ```
+> ```text
 > @throws \Darsyn\IP\Exception\InvalidCidrException
 >
 > getBroadcastIp(int $cidr): bool
@@ -130,7 +129,7 @@ $networkIp->toProtocolAppropriateAddress(); // string("12.34.32.0")
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
-$ip = IP::factory('12.34.56.78');
+$ip = IP::fromProtocol('12.34.56.78');
 // Get the broadcast address of an IP address given a subnet mask.
 $broadcastIp = $ip->getBroadcastIp(19);
 $broadcastIp->toProtocolAppropriateAddress(); // string("12.34.63.255")
@@ -138,7 +137,7 @@ $broadcastIp->toProtocolAppropriateAddress(); // string("12.34.63.255")
 
 ### Is IP in Range?
 
-> ```
+> ```text
 > @throws \Darsyn\IP\Exception\WrongVersionException
 > @throws \Darsyn\IP\Exception\InvalidCidrException
 >
@@ -149,8 +148,8 @@ $broadcastIp->toProtocolAppropriateAddress(); // string("12.34.63.255")
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
-$hostIp = IP::factory(':ffff:c22:384e');
-$clientIp = IP::factory('12.48.183.1');
+$hostIp = IP::fromProtocol(':ffff:c22:384e');
+$clientIp = IP::fromProtocol('12.48.183.1');
 
 $clientIp->inRange($hostIp, 11); // bool(true)
 $clientIp->inRange($hostIp, 24); // bool(false)
@@ -158,7 +157,7 @@ $clientIp->inRange($hostIp, 24); // bool(false)
 
 ### Greatest Common CIDR
 
-> ```
+> ```text
 > @throws \Darsyn\IP\Exception\WrongVersionException
 >
 > getCommonCidr(IpInterface $ip): int
@@ -168,8 +167,8 @@ $clientIp->inRange($hostIp, 24); // bool(false)
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
-$hostIp = IP::factory('d6be:583:71a4:aa6d:c77d:77dd:cec:f897');
-$clientIp = IP::factory('d6be:583:71a4:aa67:b07a::c7');
+$hostIp = IP::fromProtocol('d6be:583:71a4:aa6d:c77d:77dd:cec:f897');
+$clientIp = IP::fromProtocol('d6be:583:71a4:aa67:b07a::c7');
 $hostIp->getCommonCidr($clientIp); // int(60)
 ```
 
@@ -210,9 +209,10 @@ strategy and always deals with CIDR values from 0 to 128.
 > unless you absolutely know that you need to deal with both interchangeably.
 > Using `Multi` can cause unexpected behaviour.
 >
-> For example, `Multi::factory('0.0.0.1', new Strategy\Compatible)` results in
-> an object which is both a loopback address `::1` if viewing as IPv6, but also
-> not a loopback address `127.x.x.x` if viewing as an IPv4-embedded address.
+> For example, `Multi::fromProtocol('0.0.0.1', new Strategy\Compatible)` results
+> in an object which is both a loopback address `::1` if viewing as IPv6, but
+> also not a loopback address `127.x.x.x` if viewing as an IPv4-embedded
+> address.
 >
 > Use `Multi` with caution.
 
@@ -229,20 +229,21 @@ an IPv6 address.
 ```php
 <?php
 use Darsyn\IP\Strategy\Mapped;
-use Darsyn\IP\Version\Ipv6;
+use Darsyn\IP\Version\IPv6;
+use Darsyn\IP\Version\Multi;
 
 // Strategy is optional; defaults to Mapped unless
 // Multi::setDefaultEmbeddingStrategy() called previously.
 $ip = IPv6::fromEmbedded('127.0.0.1', new Mapped);
 $ip->toCompactedAddress(); // string("::ffff:7f00:1")
-
 try {
     $ip->toDotAddress();
 } catch (\Error $e) {
     // IPv6 addresses are not considered IPv4 addresses and
     // therefore do not have the method toDotAddress().
 }
-```
 
-> Please note that calling `Multi::fromEmbedded()` returns an instance of
-> `Multi` and effectively is the same as calling the factory method.
+$ip = Multi::fromEmbedded('127.0.0.1', new Derived);
+$ip->toCompactedAddress(); // string("2002:7f00:1::")
+$ip->toDotAddress(); // string("127.0.0.1")
+```

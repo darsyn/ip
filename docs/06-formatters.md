@@ -19,7 +19,7 @@ use Darsyn\IP\Formatter\NativeFormatter;
 use Darsyn\IP\Version\Multi as IP;
 
 IP::setProtocolFormatter(new NativeFormatter);
-$ip = IP::factory('::ffff:c22:384e');
+$ip = IP::fromProtocol('::ffff:c22:384e');
 $ip->toCompactedAddress(); // string("::ffff:12.34.56.78")
 ```
 
@@ -39,7 +39,7 @@ use Darsyn\IP\Formatter\NativeFormatter;
 use Darsyn\IP\Version\IPv6 as IP;
 
 IP::setProtocolFormatter(new ConsistentFormatter());
-$ip = IP::factory('::ffff:c22:384e');
+$ip = IP::fromProtocol('::ffff:c22:384e');
 
 $ip->toCompactedAddress();                      // string("::ffff:c22:384e")
 $ip->toCompactedAddress(new NativeFormatter);   // string("::ffff:12.34.56.78")
