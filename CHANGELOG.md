@@ -93,6 +93,7 @@
 
 ### Project
 
+- Correct the helper guide's broadcast return type and range example.
 - Add PHP `8.5` to the supported versions and the CI matrix.
 - Add a PHP-CS-Fixer ruleset.
 - Add test script that uses Docker to mirror the CI workflows.
