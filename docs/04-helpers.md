@@ -122,7 +122,7 @@ $networkIp->toProtocolAppropriateAddress(); // string("12.34.32.0")
 > ```text
 > @throws \Darsyn\IP\Exception\InvalidCidrException
 >
-> getBroadcastIp(int $cidr): bool
+> getBroadcastIp(int $cidr): IpInterface
 > ```
 
 ```php
@@ -148,11 +148,11 @@ $broadcastIp->toProtocolAppropriateAddress(); // string("12.34.63.255")
 <?php
 use Darsyn\IP\Version\Multi as IP;
 
-$hostIp = IP::fromProtocol(':ffff:c22:384e');
-$clientIp = IP::fromProtocol('12.48.183.1');
+$hostIp = IP::fromProtocol('192.0.2.1');
+$clientIp = IP::fromProtocol('192.0.2.129');
 
-$clientIp->inRange($hostIp, 11); // bool(true)
-$clientIp->inRange($hostIp, 24); // bool(false)
+$clientIp->inRange($hostIp, 24); // bool(true)
+$clientIp->inRange($hostIp, 32); // bool(false)
 ```
 
 ### Greatest Common CIDR
