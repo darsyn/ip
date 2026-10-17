@@ -116,7 +116,7 @@ class IPv6Test extends TestCase
         $this->expectException(\Darsyn\IP\Exception\InvalidIpAddressException::class);
         $this->legacyExpectExceptionMessage('The IP address supplied is not valid.');
         try {
-            $ip = IP::factory($value);
+            IP::factory($value);
         } catch (InvalidIpAddressException $e) {
             $this->assertSame($value, $e->getSuppliedIp());
             throw $e;
@@ -135,7 +135,7 @@ class IPv6Test extends TestCase
     public function testInstantiationFromEmbeddedIpAddress(): void
     {
         try {
-            $ip = IP::fromProtocol('12.34.56.78');
+            IP::fromProtocol('12.34.56.78');
             $this->fail('IPv6 fromProtocol() should not accept IPv4 addresses.');
         } catch (InvalidIpAddressException $e) {
         }

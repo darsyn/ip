@@ -80,9 +80,9 @@ class MbStringTest extends TestCase
     #[PHPUnit\Test]
     public function testPadStringAscii(): void
     {
-        $this->assertSame('-0--Hello', $result = MbString::padString('Hello', 9, '-0-', STR_PAD_LEFT));
-        $this->assertSame('Hello-0--', $result = MbString::padString('Hello', 9, '-0-', STR_PAD_RIGHT));
-        $this->assertSame('-0Hello-0', $result = MbString::padString('Hello', 9, '-0-', STR_PAD_BOTH));
+        $this->assertSame('-0--Hello', MbString::padString('Hello', 9, '-0-', STR_PAD_LEFT));
+        $this->assertSame('Hello-0--', MbString::padString('Hello', 9, '-0-', STR_PAD_RIGHT));
+        $this->assertSame('-0Hello-0', MbString::padString('Hello', 9, '-0-', STR_PAD_BOTH));
     }
 
     /** @test */

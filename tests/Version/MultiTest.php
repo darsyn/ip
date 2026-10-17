@@ -157,7 +157,7 @@ class MultiTest extends TestCase
         $this->expectException(InvalidIpAddressException::class);
         $this->legacyExpectExceptionMessage('The IP address supplied is not valid.');
         try {
-            $ip = IP::factory($value);
+            IP::factory($value);
         } catch (InvalidIpAddressException $e) {
             $this->assertSame($value, $e->getSuppliedIp());
             throw $e;
