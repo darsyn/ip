@@ -9,7 +9,7 @@ newer language syntax makes the older version impossible to support.
 
 | Version | Status | PHP | Source |
 |---|---|---|---|
-| `6.x` | ✅ Actively developed | `7.1` and above (confirmed up to `8.5`) | [`6.x`](https://github.com/darsyn/ip/tree/6.x) |
+| `6.x` | ✅ Actively developed | `7.1` and above (confirmed up to `8.6`) | [`6.x`](https://github.com/darsyn/ip/tree/6.x) |
 | `5.x` | ✅ Security & bug fixes only | `5.6` to `8.3` | [`5.x`](https://github.com/darsyn/ip/tree/5.x) |
 | `4.x` | ❌ End of life — no security or bug fixes | `5.6` to `8.1` | |
 
