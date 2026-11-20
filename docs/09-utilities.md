@@ -30,7 +30,7 @@ Binary::fromHex($hexString); // string("Hello!")
 > ```
 > @throws \InvalidArgumentException
 >
-> \Darsyn\IP\Util\Binary::toHex(string $hex): string
+> \Darsyn\IP\Util\Binary::toHex(string $binary): string
 > ```
 
 ```php
@@ -73,7 +73,7 @@ Binary::fromHumanReadable($asciiBinary); // string("Hello!")
 use Darsyn\IP\Util\Binary;
 
 $binaryString = 'Hello!';
-Binary::toHumanReadable($asciiBinary); // string("010010000110010101101100011011000110111100100001")
+Binary::toHumanReadable($binaryString); // string("010010000110010101101100011011000110111100100001")
 ```
 
 ### From Decimal String
@@ -128,6 +128,6 @@ if required.
 
 | Static Helper Method    | Replaces the PHP function... |
 |-------------------------|------------------------------|
-| `MbString::getLength()` | `str_len()`                  |
+| `MbString::getLength()` | `strlen()`                   |
 | `MbString::subString()` | `substr()`                   |
 | `MbString::padString()` | `str_pad()`                  |

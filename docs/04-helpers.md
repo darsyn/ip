@@ -45,7 +45,6 @@ IP::fromProtocol('2001:db8::a60:8a2e:0:7334')->getNetworkIp(31);
 A `Darsyn\IP\Exception\InvalidCidrException` is thrown whenever a CIDR value
 that is out of range is supplied. Out of range values are any value that is:
 
-- Not an integer,
 - Below zero,
 - Above 32 (for `IPv4`), or
 - Above 128 (for `IPv6` and `Multi`).
@@ -73,9 +72,13 @@ instance.
 
 ```php
 <?php
+use Darsyn\IP\Strategy;
+use Darsyn\IP\Version\IPv4;
+use Darsyn\IP\Version\IPv6;
+use Darsyn\IP\Version\Multi;
 
 // IPv6 operation: helper method called from IPv6.
-IPv6::fromProtocol('ffff:7f00:1')->inRange(Multi::fromProtocol('127.0.0.1'), 23);
+IPv6::fromProtocol('::ffff:7f00:1')->inRange(Multi::fromProtocol('127.0.0.1'), 23);
 
 // IPv4 operation: called from Multi, both IPs are IPv4-embedded, CIDR below 32.
 Multi::fromProtocol('127.0.0.1')->inRange(Multi::fromProtocol('127.0.0.1'), 23);
@@ -87,8 +90,8 @@ Multi::fromProtocol('127.0.0.1')->inRange(Multi::fromProtocol('127.0.0.1'), 35);
 Multi::fromProtocol('127.0.0.1')->inRange(Multi::fromProtocol('d6be:583:b07a::c7'), 23);
 
 // IPv6 operation: embedding strategies do not match.
-Multi::fromProtocol('127.0.0.1', new Mapped)
-    ->inRange(Multi::fromProtocol('127.0.0.1', new Derived), 23);
+Multi::fromProtocol('127.0.0.1', new Strategy\Mapped)
+    ->inRange(Multi::fromProtocol('127.0.0.1', new Strategy\Derived), 23);
 
 // WrongVersionException: Multi and IPv4 are different byte lengths.
 Multi::fromProtocol('127.0.0.1')->inRange(IPv4::fromProtocol('127.0.0.1'), 23);

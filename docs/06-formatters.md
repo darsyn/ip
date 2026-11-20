@@ -29,6 +29,7 @@ formatting methods therefore accept an optional formatter as their
 first argument, overriding the global formatter for that call alone:
 - `Darsyn\IP\Version\IPv4::toDotAddress()`
 - `Darsyn\IP\Version\IPv6::toCompactedAddress()`
+- `Darsyn\IP\Version\Multi::toCompactedAddress()`
 - `Darsyn\IP\Version\Multi::toDotAddress()`
 - `Darsyn\IP\Version\Multi::toProtocolAppropriateAddress()`
 
@@ -49,4 +50,5 @@ $ip->toCompactedAddress();                      // string("::ffff:c22:384e")
 These methods declare the parameter as a nullable
 `Darsyn\IP\Formatter\ProtocolFormatterInterface`, so passing any other value
 throws a `TypeError`. Their deprecated `get*` counterparts accept the same
-argument but trigger a deprecation notice and fall back to the global formatter.
+argument. If the argument is not a formatter, the `get*` methods trigger an
+`E_USER_DEPRECATED` notice and use the global formatter instead.
