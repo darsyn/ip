@@ -10,12 +10,17 @@ on:
       - '5.x'
       - '6.x'
 
+concurrency:
+  group: '${{ github.workflow }}-${{ github.ref }}'
+  cancel-in-progress: true
+
 permissions:
   contents: 'read'
 
 jobs:
 
   phpstan:
+    name: 'PHPStan'
     runs-on: 'ubuntu-24.04'
     strategy:
       matrix:
@@ -24,10 +29,12 @@ jobs:
           - '8.6'
     steps:
       - uses: 'actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803' # v6.1.0
+        with:
+          persist-credentials: false
       - uses: 'shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962' # 2.40.0
         with:
           php-version: '${{ matrix.php }}'
-      - uses: 'ramsey/composer-install@26d8a556604053a9612623447203a691f406fbe6' # v4
+      - uses: 'ramsey/composer-install@65e4f84970763564f46a70b8a54b90d033b3bdda' # 4.0.0
         with:
           dependency-versions: 'highest'
       # Require PHPStan via command-line instead of adding to Composer's
@@ -37,6 +44,7 @@ jobs:
       - run: './vendor/bin/phpstan analyze --no-progress --error-format="github"'
 
   code-style:
+    name: 'Code Style'
     runs-on: 'ubuntu-24.04'
     strategy:
       matrix:
@@ -45,10 +53,12 @@ jobs:
             - '8.6'
     steps:
       - uses: 'actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803' # v6.1.0
+        with:
+          persist-credentials: false
       - uses: 'shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962' # 2.40.0
         with:
           php-version: '${{ matrix.php }}'
-      - uses: 'ramsey/composer-install@26d8a556604053a9612623447203a691f406fbe6' # v4
+      - uses: 'ramsey/composer-install@65e4f84970763564f46a70b8a54b90d033b3bdda' # 4.0.0
         with:
           dependency-versions: 'highest'
       # Require PHP-CS-Fixer via command-line instead of adding to Composer's
