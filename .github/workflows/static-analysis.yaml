@@ -18,7 +18,7 @@ jobs:
       matrix:
         php:
           - '7.4'
-          - '8.5'
+          - '8.6'
     steps:
       - uses: 'actions/checkout@v6'
       - uses: 'shivammathur/setup-php@v2'
@@ -39,7 +39,7 @@ jobs:
       matrix:
         php:
             - '7.4'
-            - '8.5'
+            - '8.6'
     steps:
       - uses: 'actions/checkout@v6'
       - uses: 'shivammathur/setup-php@v2'
