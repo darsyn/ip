@@ -11,16 +11,22 @@
 
 ### Upgrading from 6.0 (BC-breaks)
 
-- Hand-written implementors of `IpInterface` that don't extend `AbstractIP` require new methods provided in the
-  `Darsyn\IP\Contracts\` interfaces.
+- Classes that implement `IpInterface` without extending `IPv4`, `IPv6` or `Multi` require new methods provided in the
+  `Darsyn\IP\Contracts\` interfaces. This includes direct subclasses of `AbstractIP`.
 - Protected method `generateBinaryMask()` was removed from `AbstractIP`.
-- A concrete return type was added to `AbstractIP::jsonSerialize()`. Subclasses that override this method with a
-  different return type will now break.
+- `AbstractIP::isMapped()`, `isDerived()` and `isCompatible()` now always return `false`. `IPv6` and `Multi` override
+  them, so only direct subclasses of `AbstractIP` are affected.
+- `AbstractIP` now implements `\JsonSerializable` with a new `jsonSerialize(): string` method. A subclass that already
+  declares `jsonSerialize()` without a return type, or with a different one, causes a fatal error.
+- `json_encode()` on an address now returns its string form (for example `"127.0.0.1"`). In 6.0 it returned `{}`.
+- New public methods on `AbstractIP`, `IPv4`, `IPv6` and `Multi` (for example `toString()`, `next()`, `offset()` and
+  `getOctets()`) can conflict with subclass methods of the same name.
 - Subclasses of native packing strategies (`Mapped`, `Compatible`, `Derived`) that had custom implementations of
   `pack()` will now be silently bypassed. Implement `packIntoCanonical()` and `packIntoNonCanonical()`.
 - String casts and JSON now go through the `to*` methods. A subclass override of `getDotAddress()` or its siblings gets
   silently bypassed and stops affecting output.
-- `IPv6::fromEmbedded()` now lets a custom strategy's `PackingException` escape instead of wrapping it.
+- `IPv6::fromEmbedded()` and `Multi::fromEmbedded()` now let a custom strategy's `PackingException` escape instead of
+  wrapping it.
 - 6to4 widening on the `Derived` strategy: embedded IPv4 addresses are now detected across the whole `2002::/16` block,
   so non-canonical 6to4 addresses are version-4 values. Canonical packing drops bits 48 to 127.
 - Strings generated `<6.1` for single-zero-group addresses will no longer match new output (RFC 5952 fix).
@@ -32,7 +38,10 @@
 - `isValid()` reports whether a string parses.
 - Add `fromInteger()` and `tryFromInteger()` on the new `Contracts\Factory4Interface` (IPv4 and Multi).
 - Arbitrary-precision `fromIntegerString()` and `tryFromIntegerString()` on all classes.
-- Fix: `Multi::fromProtocol()` now rejects a binary string of the wrong length instead of passing it through.
+- Add `Exception\InvalidBinaryException` (extends `InvalidIpAddressException`). `fromBinary()` and `fromHex()` throw it
+  for a value of the wrong length.
+- On `Multi`, all `from*` and `tryFrom*` methods and `isValid()` accept an optional embedding strategy as their last
+  argument.
 - Fix: `Multi::fromEmbedded()` now keeps the strategy it is given instead of falling back to the default.
 
 ### Output
@@ -41,14 +50,19 @@
 - `Contracts\OutputInterface` extends `\JsonSerializable` so an address encodes as canonical string.
 - Add `getOctets()` on all classes and `getSegments()` on IPv6 and Multi.
 - Add `toInteger()` (IPv4 and Multi), `toIntegerString()` and fixed-width `toHexString()` on all classes.
+- On an IPv4-embedded `Multi` address, `getOctets()` returns four octets and `getSegments()` throws a
+  `WrongVersionException`. On a `Multi` address that is not IPv4-embedded, `toInteger()` throws a
+  `WrongVersionException`.
 - Rename the whole-value output methods with prefix `to*`. `get*` stays for component and property accessors, and
   `getBinary()` (accessor of the internal state).
 - Accept an optional `Formatter\ProtocolFormatterInterface` argument on `toDotAddress()`, `toCompactedAddress()` and
-  `toProtocolAppropriateAddress()` to override the global formatter.
+  `toProtocolAppropriateAddress()` to override the global formatter. Their deprecated `get*` spellings accept the same
+  argument.
 
 ### Arithmetic
 
-- Add `next()`, `previous()` and `offset(int $offset)` to `Contracts\ArithmeticInterface`.
+- Add `next()`, `previous()` and `offset(int $offset)` to `Contracts\ArithmeticInterface`. Crossing either edge of the
+  address space throws the new `Exception\OverflowException` (extends `IpException`).
 - Performance: `getNetworkIp()`, `getBroadcastIp()` and `getCommonCidr()` now work on raw bytes.
 
 ### Embedding strategies
@@ -80,6 +94,9 @@
 - `IpInterface::isEmbedded()`, `isMapped()`, `isDerived()` and `isCompatible()` (use
   `Contracts\StrategyDetectionInterface`).
 - `EmbeddingStrategyInterface::pack()`. Implement `Strategy\CanonicalEmbeddingInterface` and use `packIntoCanonical()`.
+- Passing a value that is not a `Formatter\ProtocolFormatterInterface` to `getDotAddress()`, `getCompactedAddress()` or
+  `getProtocolAppropriateAddress()`. This triggers an `E_USER_DEPRECATED` notice at runtime, and the method uses the
+  global formatter instead.
 
 ### Utilities
 
