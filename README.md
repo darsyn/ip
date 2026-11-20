@@ -22,7 +22,7 @@ versions.
 > above (currently confirmed up to `8.6`), and will receive continued support
 > for future versions of PHP (also accepting proposed new features).
 
-Static analysis is performed with PHPStan at `max` level on PHP `7.4` and `8.5`,
+Static analysis is performed with PHPStan at `max` level on PHP `7.4` and `8.6`,
 using core, bleeding edge, and deprecation rules.
 
 > The Doctrine features for this library have been split off into their own
