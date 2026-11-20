@@ -23,6 +23,7 @@ return (new PhpCsFixer\Config())
     ->setFinder($finder)
     ->setUsingCache(true)
     ->setRiskyAllowed(true)
+    ->setUnsupportedPhpVersionAllowed(true)
     ->setRules([
 
         '@PER-CS' => true,

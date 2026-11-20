@@ -17,9 +17,9 @@ set -uo pipefail
 # Grab the full normalized path to the parent/project directory.
 export PROJECT_DIR="$(dirname "$(dirname "$(readlink -f -- "$0")")")"
 # Every PHP version exercised by the lint + unit-test matrix in `runtime-testing.yaml`.
-ALL_VERSIONS=("7.1" "7.2" "7.3" "7.4" "8.0" "8.1" "8.2" "8.3" "8.4" "8.5" "8.6-rc")
+ALL_VERSIONS=("7.1" "7.2" "7.3" "7.4" "8.0" "8.1" "8.2" "8.3" "8.4" "8.5" "8.6")
 # The subset that runs analysis in the workflow `static-analysis.yaml`.
-STATIC_ANALYSIS_VERSIONS=("7.4" "8.5")
+STATIC_ANALYSIS_VERSIONS=("7.4" "8.6")
 
 FAILURES=()
 
