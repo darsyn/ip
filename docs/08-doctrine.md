@@ -16,6 +16,25 @@ Three Doctrine types are provided to match the three version classes:
 - `Darsyn\IP\Doctrine\IPV6Type` supports the `IPv6` class.
 - `Darsyn\IP\Doctrine\MultiType` supports the `Multi` class.
 
+With DBAL `4.6` or later, register the type in a `TypeRegistry` on the
+connection configuration:
+
+```php
+<?php
+use Darsyn\IP\Doctrine\MultiType;
+use Doctrine\DBAL\Configuration;
+use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Types\TypeRegistry;
+
+$configuration = new Configuration();
+$configuration->setTypeProvider(new TypeRegistry(['ip' => new MultiType()]));
+$connection = DriverManager::getConnection($params, $configuration);
+```
+
+With older DBAL versions, register the type globally. DBAL `4.6` deprecates
+this method, and a connection with its own `TypeRegistry` does not see types
+registered this way:
+
 ```php
 <?php
 use Darsyn\IP\Doctrine\MultiType;
@@ -24,7 +43,8 @@ use Doctrine\DBAL\Types\Type;
 Type::addType('ip', MultiType::class);
 ```
 
-If you are using [Symfony](http://symfony.com), then add the following to your main configuration:
+If you are using [Symfony](http://symfony.com), then add the following to your
+main configuration:
 
 ```yaml
 doctrine:
@@ -87,9 +107,9 @@ $entities = $repository->createQueryBuilder('a')
     ->getResult();
 ```
 
-`'ip'` is the name the type was registered under (either `Type::addType()` or
-the Symfony configuration shown above). The type accepts an IP object or a
-protocol string, converts it to the stored binary form, and binds it as binary
-on every database platform. If you must bind raw bytes yourself, pass
-`Doctrine\DBAL\ParameterType::BINARY` (DBAL v2.8+, otherwise `\PDO::PARAM_LOB`)
-as the third argument instead.
+`'ip'` is the name the type was registered under (in the `TypeRegistry`, with
+`Type::addType()`, or in the Symfony configuration shown above). The type
+accepts an IP object or a protocol string, converts it to the stored binary
+form, and binds it as binary on every database platform. If you must bind raw
+bytes yourself, pass `Doctrine\DBAL\ParameterType::BINARY` (DBAL v2.8+,
+otherwise `\PDO::PARAM_LOB`) as the third argument instead.
