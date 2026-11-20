@@ -10,6 +10,9 @@ on:
       - '5.x'
       - '6.x'
 
+permissions:
+  contents: 'read'
+
 jobs:
 
   syntax-linting:
@@ -29,8 +32,8 @@ jobs:
           - '8.5'
           - '8.6'
     steps:
-      - uses: 'actions/checkout@v6'
-      - uses: 'shivammathur/setup-php@v2'
+      - uses: 'actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803' # v6.1.0
+      - uses: 'shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962' # 2.40.0
         with:
           php-version: '${{ matrix.php }}'
       - run: 'find src/ -type f -name "*.php" -print0 | xargs -0 -n1 -P4 php -d"error_reporting=E_ALL&~E_DEPRECATED" -l -n | (! grep -v "No syntax errors detected" )'
@@ -52,11 +55,11 @@ jobs:
           - '8.5'
           - '8.6'
     steps:
-      - uses: 'actions/checkout@v6'
-      - uses: 'shivammathur/setup-php@v2'
+      - uses: 'actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803' # v6.1.0
+      - uses: 'shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962' # 2.40.0
         with:
           php-version: '${{ matrix.php }}'
-      - uses: 'ramsey/composer-install@v4'
+      - uses: 'ramsey/composer-install@26d8a556604053a9612623447203a691f406fbe6' # v4
         with:
           dependency-versions: 'highest'
       - run: './vendor/bin/phpunit --bootstrap="tests/bootstrap.php" --test-suffix="Test.php" tests'

@@ -10,6 +10,9 @@ on:
       - '5.x'
       - '6.x'
 
+permissions:
+  contents: 'read'
+
 jobs:
 
   phpstan:
@@ -20,11 +23,11 @@ jobs:
           - '7.4'
           - '8.6'
     steps:
-      - uses: 'actions/checkout@v6'
-      - uses: 'shivammathur/setup-php@v2'
+      - uses: 'actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803' # v6.1.0
+      - uses: 'shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962' # 2.40.0
         with:
           php-version: '${{ matrix.php }}'
-      - uses: 'ramsey/composer-install@v4'
+      - uses: 'ramsey/composer-install@26d8a556604053a9612623447203a691f406fbe6' # v4
         with:
           dependency-versions: 'highest'
       # Require PHPStan via command-line instead of adding to Composer's
@@ -41,11 +44,11 @@ jobs:
             - '7.4'
             - '8.6'
     steps:
-      - uses: 'actions/checkout@v6'
-      - uses: 'shivammathur/setup-php@v2'
+      - uses: 'actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803' # v6.1.0
+      - uses: 'shivammathur/setup-php@eb7c497e18156a6bbabfef1d3a82760b9eda3962' # 2.40.0
         with:
           php-version: '${{ matrix.php }}'
-      - uses: 'ramsey/composer-install@v4'
+      - uses: 'ramsey/composer-install@26d8a556604053a9612623447203a691f406fbe6' # v4
         with:
           dependency-versions: 'highest'
       # Require PHP-CS-Fixer via command-line instead of adding to Composer's
