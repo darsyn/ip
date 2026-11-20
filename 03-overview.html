@@ -19,8 +19,11 @@
         <link rel="next" href="04-helpers.html">
       
       
+        
+      
+      
       <link rel="icon" href="assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.26">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.2">
     
     
       
@@ -28,7 +31,7 @@
       
     
     
-      <link rel="stylesheet" href="assets/stylesheets/main.6543a935.min.css">
+      <link rel="stylesheet" href="assets/stylesheets/main.57a0d79d.min.css">
       
       
 
@@ -47,11 +50,10 @@
       
     
     
-    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL(".",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
-    
     
     
   </head>
@@ -85,12 +87,12 @@
     <a href="index.html" title="Darsyn IP" class="md-header__button md-logo" aria-label="Darsyn IP" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
       
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
     </label>
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
@@ -110,30 +112,32 @@
     </div>
     
     
-      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
     
     
     
-      <label class="md-header__button md-icon" for="__search">
-        
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
-      </label>
-      <div class="md-search" data-md-component="search" role="dialog">
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
   <label class="md-search__overlay" for="__search"></label>
   <div class="md-search__inner" role="search">
     <form class="md-search__form" name="search">
       <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
       <label class="md-search__icon md-icon" for="__search">
         
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
         
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
       </label>
       <nav class="md-search__options" aria-label="Search">
         
         <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
           
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
       </nav>
       
@@ -150,13 +154,14 @@
     </div>
   </div>
 </div>
+      
     
     
       <div class="md-header__source">
         <a href="https://github.com/darsyn/ip" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
   </div>
   <div class="md-source__repository">
     GitHub
@@ -192,7 +197,7 @@
     <a href="index.html" title="Darsyn IP" class="md-nav__button md-logo" aria-label="Darsyn IP" data-md-component="logo">
       
   
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
 
     </a>
     Darsyn IP
@@ -202,7 +207,7 @@
       <a href="https://github.com/darsyn/ip" title="Go to repository" class="md-source" data-md-component="source">
   <div class="md-source__icon md-icon">
     
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
   </div>
   <div class="md-source__repository">
     GitHub
@@ -222,9 +227,16 @@
       <a href="index.html" class="md-nav__link">
         
   
+  
   <span class="md-ellipsis">
+    
+  
     Introduction
+  
+
+    
   </span>
+  
   
 
       </a>
@@ -242,9 +254,16 @@
       <a href="02-installation.html" class="md-nav__link">
         
   
+  
   <span class="md-ellipsis">
+    
+  
     Installation
+  
+
+    
   </span>
+  
   
 
       </a>
@@ -271,9 +290,16 @@
         <label class="md-nav__link md-nav__link--active" for="__toc">
           
   
+  
   <span class="md-ellipsis">
+    
+  
     Overview
+  
+
+    
   </span>
+  
   
 
           <span class="md-nav__icon md-icon"></span>
@@ -282,9 +308,16 @@
       <a href="03-overview.html" class="md-nav__link md-nav__link--active">
         
   
+  
   <span class="md-ellipsis">
+    
+  
     Overview
+  
+
+    
   </span>
+  
   
 
       </a>
@@ -307,7 +340,9 @@
         <li class="md-nav__item">
   <a href="#versions" class="md-nav__link">
     <span class="md-ellipsis">
-      Versions
+      
+        Versions
+      
     </span>
   </a>
   
@@ -316,7 +351,9 @@
         <li class="md-nav__item">
   <a href="#instantiation" class="md-nav__link">
     <span class="md-ellipsis">
-      Instantiation
+      
+        Instantiation
+      
     </span>
   </a>
   
@@ -325,7 +362,9 @@
         <li class="md-nav__item">
   <a href="#return-formats" class="md-nav__link">
     <span class="md-ellipsis">
-      Return Formats
+      
+        Return Formats
+      
     </span>
   </a>
   
@@ -335,7 +374,9 @@
           <li class="md-nav__item">
   <a href="#dot-address" class="md-nav__link">
     <span class="md-ellipsis">
-      Dot Address
+      
+        Dot Address
+      
     </span>
   </a>
   
@@ -344,7 +385,9 @@
           <li class="md-nav__item">
   <a href="#compacted-address" class="md-nav__link">
     <span class="md-ellipsis">
-      Compacted Address
+      
+        Compacted Address
+      
     </span>
   </a>
   
@@ -353,7 +396,9 @@
           <li class="md-nav__item">
   <a href="#expanded-address" class="md-nav__link">
     <span class="md-ellipsis">
-      Expanded Address
+      
+        Expanded Address
+      
     </span>
   </a>
   
@@ -362,7 +407,9 @@
           <li class="md-nav__item">
   <a href="#protocol-appropriate-address" class="md-nav__link">
     <span class="md-ellipsis">
-      Protocol Appropriate Address
+      
+        Protocol Appropriate Address
+      
     </span>
   </a>
   
@@ -371,7 +418,64 @@
           <li class="md-nav__item">
   <a href="#binary" class="md-nav__link">
     <span class="md-ellipsis">
-      Binary
+      
+        Binary
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#octets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Octets
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#segments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Segments
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#integer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Integer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#integer-string" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Integer String
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hexadecimal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hexadecimal
+      
     </span>
   </a>
   
@@ -385,7 +489,20 @@
         <li class="md-nav__item">
   <a href="#string-casting" class="md-nav__link">
     <span class="md-ellipsis">
-      String Casting
+      
+        String Casting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#json-serialisation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        JSON Serialisation
+      
     </span>
   </a>
   
@@ -409,9 +526,16 @@
       <a href="04-helpers.html" class="md-nav__link">
         
   
+  
   <span class="md-ellipsis">
+    
+  
     Helper Methods
+  
+
+    
   </span>
+  
   
 
       </a>
@@ -429,9 +553,16 @@
       <a href="05-strategies.html" class="md-nav__link">
         
   
+  
   <span class="md-ellipsis">
+    
+  
     Embedding Strategies
+  
+
+    
   </span>
+  
   
 
       </a>
@@ -449,9 +580,16 @@
       <a href="06-formatters.html" class="md-nav__link">
         
   
+  
   <span class="md-ellipsis">
+    
+  
     Formatters
+  
+
+    
   </span>
+  
   
 
       </a>
@@ -469,9 +607,16 @@
       <a href="07-types.html" class="md-nav__link">
         
   
+  
   <span class="md-ellipsis">
+    
+  
     Type Methods
+  
+
+    
   </span>
+  
   
 
       </a>
@@ -489,9 +634,16 @@
       <a href="08-doctrine.html" class="md-nav__link">
         
   
+  
   <span class="md-ellipsis">
+    
+  
     Doctrine Support
+  
+
+    
   </span>
+  
   
 
       </a>
@@ -509,9 +661,16 @@
       <a href="09-utilities.html" class="md-nav__link">
         
   
+  
   <span class="md-ellipsis">
+    
+  
     Utilities
+  
+
+    
   </span>
+  
   
 
       </a>
@@ -529,9 +688,16 @@
       <a href="10-api.html" class="md-nav__link">
         
   
+  
   <span class="md-ellipsis">
+    
+  
     API Reference
+  
+
+    
   </span>
+  
   
 
       </a>
@@ -568,7 +734,9 @@
         <li class="md-nav__item">
   <a href="#versions" class="md-nav__link">
     <span class="md-ellipsis">
-      Versions
+      
+        Versions
+      
     </span>
   </a>
   
@@ -577,7 +745,9 @@
         <li class="md-nav__item">
   <a href="#instantiation" class="md-nav__link">
     <span class="md-ellipsis">
-      Instantiation
+      
+        Instantiation
+      
     </span>
   </a>
   
@@ -586,7 +756,9 @@
         <li class="md-nav__item">
   <a href="#return-formats" class="md-nav__link">
     <span class="md-ellipsis">
-      Return Formats
+      
+        Return Formats
+      
     </span>
   </a>
   
@@ -596,7 +768,9 @@
           <li class="md-nav__item">
   <a href="#dot-address" class="md-nav__link">
     <span class="md-ellipsis">
-      Dot Address
+      
+        Dot Address
+      
     </span>
   </a>
   
@@ -605,7 +779,9 @@
           <li class="md-nav__item">
   <a href="#compacted-address" class="md-nav__link">
     <span class="md-ellipsis">
-      Compacted Address
+      
+        Compacted Address
+      
     </span>
   </a>
   
@@ -614,7 +790,9 @@
           <li class="md-nav__item">
   <a href="#expanded-address" class="md-nav__link">
     <span class="md-ellipsis">
-      Expanded Address
+      
+        Expanded Address
+      
     </span>
   </a>
   
@@ -623,7 +801,9 @@
           <li class="md-nav__item">
   <a href="#protocol-appropriate-address" class="md-nav__link">
     <span class="md-ellipsis">
-      Protocol Appropriate Address
+      
+        Protocol Appropriate Address
+      
     </span>
   </a>
   
@@ -632,7 +812,64 @@
           <li class="md-nav__item">
   <a href="#binary" class="md-nav__link">
     <span class="md-ellipsis">
-      Binary
+      
+        Binary
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#octets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Octets
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#segments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Segments
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#integer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Integer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#integer-string" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Integer String
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hexadecimal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hexadecimal
+      
     </span>
   </a>
   
@@ -646,7 +883,20 @@
         <li class="md-nav__item">
   <a href="#string-casting" class="md-nav__link">
     <span class="md-ellipsis">
-      String Casting
+      
+        String Casting
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#json-serialisation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        JSON Serialisation
+      
     </span>
   </a>
   
@@ -662,26 +912,31 @@
           
           
             <div class="md-content" data-md-component="content">
+              
               <article class="md-content__inner md-typeset">
                 
                   
+
 
   
   
 
 
 <h1 id="overview">Overview</h1>
-<p>IP addresses get automatically validated on creation through the static factory
-method; if the IP address supplied is invalid an <code>InvalidIpAddressException</code>
-will be thrown.</p>
+<blockquote>
+<p>The <code>::factory()</code> static method is now deprecated. See Instantiation below.</p>
+</blockquote>
+<p>IP addresses get automatically validated on creation through the static named
+constructors; if the IP address supplied is invalid an
+<code>InvalidIpAddressException</code> will be thrown.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="cp">&lt;?php</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="k">use</span> <span class="nx">Darsyn\IP\Version\IPv4</span><span class="p">;</span>
 <a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">use</span> <span class="nx">Darsyn\IP\Exception</span><span class="p">;</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
 <a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="k">try</span> <span class="p">{</span>
-<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="nv">$ip</span> <span class="o">=</span> <span class="nx">IPv4</span><span class="o">::</span><span class="na">factory</span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">);</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="nv">$ip</span> <span class="o">=</span> <span class="nx">IPv4</span><span class="o">::</span><span class="na">fromProtocol</span><span class="p">(</span><span class="s1">'127.0.0.1'</span><span class="p">);</span>
 <a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">Exception\InvalidIpAddressException</span> <span class="nv">$e</span><span class="p">)</span> <span class="p">{</span>
-<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="k">echo</span> <span class="s1">&#39;The IP address supplied is invalid!&#39;</span><span class="p">;</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="k">echo</span> <span class="s1">'The IP address supplied is invalid!'</span><span class="p">;</span>
 <a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="p">}</span>
 </code></pre></div>
 <h2 id="versions">Versions</h2>
@@ -704,11 +959,11 @@ will be thrown.</p>
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">use</span> <span class="nx">Darsyn\IP\Exception</span><span class="p">;</span>
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
 <a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="k">try</span> <span class="p">{</span>
-<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="nv">$ip</span> <span class="o">=</span> <span class="nx">IPv4</span><span class="o">::</span><span class="na">factory</span><span class="p">(</span><span class="s1">&#39;::1&#39;</span><span class="p">);</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="nv">$ip</span> <span class="o">=</span> <span class="nx">IPv4</span><span class="o">::</span><span class="na">fromProtocol</span><span class="p">(</span><span class="s1">'::1'</span><span class="p">);</span>
 <a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">Exception\WrongVersionException</span> <span class="nv">$e</span><span class="p">)</span> <span class="p">{</span>
-<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="k">echo</span> <span class="s1">&#39;Only version 4 IP addresses are allowed!&#39;</span><span class="p">;</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="k">echo</span> <span class="s1">'Only version 4 IP addresses are allowed!'</span><span class="p">;</span>
 <a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">Exception\InvalidIpAddressException</span> <span class="nv">$e</span><span class="p">)</span> <span class="p">{</span>
-<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="k">echo</span> <span class="s1">&#39;The IP address supplied is invalid!&#39;</span><span class="p">;</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="k">echo</span> <span class="s1">'The IP address supplied is invalid!'</span><span class="p">;</span>
 <a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="p">}</span>
 </code></pre></div>
 <blockquote>
@@ -719,7 +974,7 @@ necessary.</p>
 <p>Each class has methods for determining the version:</p>
 <ul>
 <li><code>$ip-&gt;getVersion()</code> returns the IP address version (either <code>int(4)</code> or
-  <code>int(6)</code>). </li>
+  <code>int(6)</code>).</li>
 <li><code>$ip-&gt;isVersion($version)</code> returns a boolean value on whether the <code>$ip</code> object
   is the version specified in <code>$version</code> (which must be either <code>int(4)</code> or
   <code>int(6)</code>).</li>
@@ -734,24 +989,78 @@ what <a href="05-strategies.html">embedding strategy</a> is used rather than wha
 notation was passed to the constructor.</p>
 </blockquote>
 <h2 id="instantiation">Instantiation</h2>
-<p>All classes are instantiated using the <code>factory()</code> static method. This method
-validates the input and converts it into binary. In the case of the <code>Multi</code>
-class it also packs any version 4 addresses into a version 6 address.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="cp">&lt;?php</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">use</span> <span class="nx">Darsyn\IP\Version\Multi</span> <span class="k">as</span> <span class="nx">IP</span><span class="p">;</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="k">try</span> <span class="p">{</span>
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="nv">$ip</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">IP</span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">);</span>
-<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">\Error</span><span class="p">)</span> <span class="p">{</span>
-<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="k">echo</span> <span class="s1">&#39;Cannot create IP using &quot;new&quot;; please use IP::factory() instead.&#39;</span><span class="p">;</span>
-<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="p">}</span>
-</code></pre></div>
-<blockquote>
 <p>Many instances are constructed for all <a href="04-helpers.html">helper</a> and
 <a href="07-types.html">type</a> methods. Validating the input every time a new instance
 is constructed slows things down considerably, so to speed up internal
 processes the constructor does not perform any input validation. Because of
-this the constructor method has been kept private.</p>
+this the constructor method is not public.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">use</span> <span class="nx">Darsyn\IP\Version\Multi</span> <span class="k">as</span> <span class="nx">IP</span><span class="p">;</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="k">try</span> <span class="p">{</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="nv">$ip</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">IP</span><span class="p">(</span><span class="s1">'127.0.0.1'</span><span class="p">);</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">\Error</span><span class="p">)</span> <span class="p">{</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="k">echo</span> <span class="s1">'Cannot create IP using "new"; please use IP::fromProtocol() instead.'</span><span class="p">;</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="p">}</span>
+</code></pre></div>
+<blockquote>
+<p><strong>Deprecated:</strong> <code>factory()</code> is deprecated because it accepts raw binary
+sequences as well as protocol notation. Prefer the strict named constructors:
+<code>fromProtocol()</code> for protocol notation, or <code>fromBinary()</code> for a raw binary
+sequence.</p>
+</blockquote>
+<p><code>Darsyn\IP\Contracts\FactoryInterface</code> provides strict, single-purpose entry points:</p>
+<ul>
+<li><code>fromProtocol()</code> parses protocol notation <strong>only</strong>; a raw binary sequence is
+  rejected with an <code>InvalidIpAddressException</code>.</li>
+<li><code>fromBinary()</code> accepts a raw binary sequence <strong>only</strong>, of exactly the right
+  length, throwing an <code>InvalidBinaryException</code> otherwise.</li>
+<li><code>fromHex()</code> accepts a hexadecimal string (no <code>0x</code> prefix, case-insensitive).</li>
+<li><code>fromInteger()</code> accepts an IPv4 address as its integer value, between <code>0</code> and
+  <code>4294967295</code>. It is only available on the <code>IPv4</code> and <code>Multi</code> classes (version
+  6 addresses do not fit within PHP's native integer type).</li>
+<li><code>fromIntegerString()</code> accepts the whole-address value as a base-10 string at
+  any precision: four bytes' worth for <code>IPv4</code>, sixteen for <code>IPv6</code> and <code>Multi</code>.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">use</span> <span class="nx">Darsyn\IP\Version\IPv4</span><span class="p">;</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">use</span> <span class="nx">Darsyn\IP\Exception</span><span class="p">;</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="nx">IPv4</span><span class="o">::</span><span class="na">factory</span><span class="p">(</span><span class="s1">'abcd'</span><span class="p">);</span> <span class="c1">// Deprecated. Accepted: the raw bytes become "97.98.99.100".</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
+<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="k">try</span> <span class="p">{</span>
+<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    <span class="nx">IPv4</span><span class="o">::</span><span class="na">fromProtocol</span><span class="p">(</span><span class="s1">'abcd'</span><span class="p">);</span>
+<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">Exception\InvalidIpAddressException</span> <span class="nv">$e</span><span class="p">)</span> <span class="p">{</span>
+<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    <span class="k">echo</span> <span class="s1">'Not valid IP notation, and never treated as raw bytes.'</span><span class="p">;</span>
+<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="p">}</span>
+<a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>
+<a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a><span class="nx">IPv4</span><span class="o">::</span><span class="na">fromBinary</span><span class="p">(</span><span class="s2">"</span><span class="se">\x7f\x00\x00\x01</span><span class="s2">"</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">toDotAddress</span><span class="p">();</span>  <span class="c1">// string("127.0.0.1")</span>
+<a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a><span class="nx">IPv4</span><span class="o">::</span><span class="na">fromHex</span><span class="p">(</span><span class="s1">'7f000001'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">toDotAddress</span><span class="p">();</span>             <span class="c1">// string("127.0.0.1")</span>
+<a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="nx">IPv4</span><span class="o">::</span><span class="na">fromInteger</span><span class="p">(</span><span class="mi">2130706433</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">toDotAddress</span><span class="p">();</span>         <span class="c1">// string("127.0.0.1")</span>
+<a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a><span class="nx">IPv4</span><span class="o">::</span><span class="na">fromIntegerString</span><span class="p">(</span><span class="s1">'2130706433'</span><span class="p">)</span><span class="o">-&gt;</span><span class="na">toDotAddress</span><span class="p">();</span> <span class="c1">// string("127.0.0.1")</span>
+</code></pre></div>
+<p>Each strict constructor has a non-throwing companion <code>tryFrom*</code> that returns
+<code>null</code> on failure, mirroring the behaviour of PHP enums.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">use</span> <span class="nx">Darsyn\IP\Version\IPv4</span><span class="p">;</span>
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="k">if</span> <span class="p">(</span><span class="k">null</span> <span class="o">===</span> <span class="nv">$ip</span> <span class="o">=</span> <span class="nx">IPv4</span><span class="o">::</span><span class="na">tryFromProtocol</span><span class="p">(</span><span class="nv">$_GET</span><span class="p">[</span><span class="s1">'ip'</span><span class="p">]))</span> <span class="p">{</span>
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="k">echo</span> <span class="s1">'Please supply a valid IPv4 address.'</span><span class="p">;</span>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="p">}</span>
+</code></pre></div>
+<p>Additionally, <code>FactoryInterface::isValid()</code> is available for a simple boolean
+check on protocol notation:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="k">use</span> <span class="nx">Darsyn\IP\Version\IPv4</span><span class="p">;</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="nx">IPv4</span><span class="o">::</span><span class="na">isValid</span><span class="p">(</span><span class="s1">'127.0.0.1'</span><span class="p">);</span> <span class="c1">// bool(true)</span>
+<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="nx">IPv4</span><span class="o">::</span><span class="na">isValid</span><span class="p">(</span><span class="s1">'abcd'</span><span class="p">);</span>      <span class="c1">// bool(false)</span>
+</code></pre></div>
+<p>When using the <code>Multi</code> class, each of these methods accepts an optional
+embedding strategy as its final argument.</p>
+<blockquote>
+<p><strong>Note:</strong> <code>InvalidBinaryException</code> extends <code>InvalidIpAddressException</code>, so
+existing <code>catch</code> blocks keep working unchanged.</p>
 </blockquote>
 <h2 id="return-formats">Return Formats</h2>
 <p>Once an IP object has been initialised, the IP address value can be returned in
@@ -765,84 +1074,152 @@ long when using <code>IPv6</code> and <code>Multi</code>.</p>
 <li>Expanded is for IPv6 addresses, eg <code>2001:0db8:0000:0000:0a60:8a2e:0370:7334</code>.</li>
 </ul>
 <h3 id="dot-address">Dot Address</h3>
-<p><code>getDotAddress()</code> is only available for <code>IPv4</code> and <code>Multi</code> classes. Calling
-<code>getDotAddress()</code> on an instance of <code>Multi</code> that contains a version 6 address
+<p><code>toDotAddress()</code> is only available for <code>IPv4</code> and <code>Multi</code> classes. Calling
+<code>toDotAddress()</code> on an instance of <code>Multi</code> that contains a version 6 address
 will result in a <code>WrongVersionException</code> being thrown.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="cp">&lt;?php</span>
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="k">use</span> <span class="nx">Darsyn\IP\Version\Multi</span> <span class="k">as</span> <span class="nx">IP</span><span class="p">;</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">use</span> <span class="nx">Darsyn\IP\Exception</span><span class="p">;</span>
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="nv">$ip</span> <span class="o">=</span> <span class="nx">IP</span><span class="o">::</span><span class="na">factory</span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">);</span>
-<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
-<a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="k">try</span> <span class="p">{</span>
-<a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    <span class="k">echo</span> <span class="nv">$ip</span><span class="o">-&gt;</span><span class="na">getDotAddress</span><span class="p">();</span> <span class="c1">// string(&quot;127.0.0.1&quot;)</span>
-<a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">Exception\WrongVersionException</span> <span class="nv">$e</span><span class="p">)</span> <span class="p">{</span>
-<a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    <span class="k">echo</span> <span class="s1">&#39;Cannot convert a version 6 address to dot-notation!&#39;</span><span class="p">;</span>
-<a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="p">}</span>
-</code></pre></div>
-<h3 id="compacted-address">Compacted Address</h3>
-<p><code>getCompactedAddress()</code> is only available for <code>IPv6</code> and <code>Multi</code> classes.
-Calling <code>getCompactedAddress()</code> on an instance of <code>Multi</code> that contains a
-version 4 address will result in the IP address being converted to a version 6
-address according to the embedding strategy.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="cp">&lt;?php</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="k">use</span> <span class="nx">Darsyn\IP\Version\Multi</span> <span class="k">as</span> <span class="nx">IP</span><span class="p">;</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
-<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="nv">$ip</span> <span class="o">=</span> <span class="nx">IP</span><span class="o">::</span><span class="na">factory</span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">);</span>
-<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="k">echo</span> <span class="nv">$ip</span><span class="o">-&gt;</span><span class="na">getCompactedAddress</span><span class="p">();</span> <span class="c1">// string(&quot;::ffff:7f00:1&quot;)</span>
-</code></pre></div>
-<h3 id="expanded-address">Expanded Address</h3>
-<p><code>getExpandedAddress()</code> is only available for <code>IPv6</code> and <code>Multi</code> classes. Calling
-<code>getExpandedAddress()</code> on an instance of <code>Multi</code> that contains a version 4
-address will result in the IP address being converted to a version 6 address
-according to the embedding strategy.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="cp">&lt;?php</span>
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="k">use</span> <span class="nx">Darsyn\IP\Version\Multi</span> <span class="k">as</span> <span class="nx">IP</span><span class="p">;</span>
-<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
-<a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="nv">$ip</span> <span class="o">=</span> <span class="nx">IP</span><span class="o">::</span><span class="na">factory</span><span class="p">(</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">);</span>
-<a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="nv">$ip</span><span class="o">-&gt;</span><span class="na">getExpandedAddress</span><span class="p">();</span> <span class="c1">// string(&quot;0000:0000:0000:0000:0000:ffff:7f00:0001&quot;)</span>
-</code></pre></div>
-<h3 id="protocol-appropriate-address">Protocol Appropriate Address</h3>
-<p><code>getProtocolAppropriateAddress()</code> is only available for the <code>Multi</code> class. If
-the instance of <code>Multi</code> contains a version 4 address, it will be returned in
-dot notation, otherwise it returns a compacted version 6 address.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="cp">&lt;?php</span>
 <a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="k">use</span> <span class="nx">Darsyn\IP\Version\Multi</span> <span class="k">as</span> <span class="nx">IP</span><span class="p">;</span>
-<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
-<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="nv">$ip</span> <span class="o">=</span> <span class="nx">IP</span><span class="o">::</span><span class="na">factory</span><span class="p">(</span><span class="s1">&#39;::ffff:7f00:1&#39;</span><span class="p">);</span>
-<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="nv">$ip</span><span class="o">-&gt;</span><span class="na">getProtocolAppropriateAddress</span><span class="p">();</span> <span class="c1">// string(&quot;127.0.0.1&quot;)</span>
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="k">use</span> <span class="nx">Darsyn\IP\Exception</span><span class="p">;</span>
+<a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>
+<a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="nv">$ip</span> <span class="o">=</span> <span class="nx">IP</span><span class="o">::</span><span class="na">fromProtocol</span><span class="p">(</span><span class="s1">'127.0.0.1'</span><span class="p">);</span>
+<a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
+<a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="k">try</span> <span class="p">{</span>
+<a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>    <span class="k">echo</span> <span class="nv">$ip</span><span class="o">-&gt;</span><span class="na">toDotAddress</span><span class="p">();</span> <span class="c1">// string("127.0.0.1")</span>
+<a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">Exception\WrongVersionException</span> <span class="nv">$e</span><span class="p">)</span> <span class="p">{</span>
+<a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>    <span class="k">echo</span> <span class="s1">'Cannot convert a version 6 address to dot-notation!'</span><span class="p">;</span>
+<a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="p">}</span>
+</code></pre></div>
+<h3 id="compacted-address">Compacted Address</h3>
+<p><code>toCompactedAddress()</code> is only available for <code>IPv6</code> and <code>Multi</code> classes.
+Calling <code>toCompactedAddress()</code> on an instance of <code>Multi</code> that contains a
+version 4 address will result in the IP address being converted to a version 6
+address according to the embedding strategy.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="k">use</span> <span class="nx">Darsyn\IP\Version\Multi</span> <span class="k">as</span> <span class="nx">IP</span><span class="p">;</span>
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="nv">$ip</span> <span class="o">=</span> <span class="nx">IP</span><span class="o">::</span><span class="na">fromProtocol</span><span class="p">(</span><span class="s1">'127.0.0.1'</span><span class="p">);</span>
+<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="k">echo</span> <span class="nv">$ip</span><span class="o">-&gt;</span><span class="na">toCompactedAddress</span><span class="p">();</span> <span class="c1">// string("::ffff:7f00:1")</span>
+</code></pre></div>
+<h3 id="expanded-address">Expanded Address</h3>
+<p><code>toExpandedAddress()</code> is only available for <code>IPv6</code> and <code>Multi</code> classes. Calling
+<code>toExpandedAddress()</code> on an instance of <code>Multi</code> that contains a version 4
+address will result in the IP address being converted to a version 6 address
+according to the embedding strategy.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="k">use</span> <span class="nx">Darsyn\IP\Version\Multi</span> <span class="k">as</span> <span class="nx">IP</span><span class="p">;</span>
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="nv">$ip</span> <span class="o">=</span> <span class="nx">IP</span><span class="o">::</span><span class="na">fromProtocol</span><span class="p">(</span><span class="s1">'127.0.0.1'</span><span class="p">);</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="nv">$ip</span><span class="o">-&gt;</span><span class="na">toExpandedAddress</span><span class="p">();</span> <span class="c1">// string("0000:0000:0000:0000:0000:ffff:7f00:0001")</span>
+</code></pre></div>
+<h3 id="protocol-appropriate-address">Protocol Appropriate Address</h3>
+<p><code>toProtocolAppropriateAddress()</code> is only available for the <code>Multi</code> class. If
+the instance of <code>Multi</code> contains a version 4 address, it will be returned in
+dot notation, otherwise it returns a compacted version 6 address.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="k">use</span> <span class="nx">Darsyn\IP\Version\Multi</span> <span class="k">as</span> <span class="nx">IP</span><span class="p">;</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
+<a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="nv">$ip</span> <span class="o">=</span> <span class="nx">IP</span><span class="o">::</span><span class="na">fromProtocol</span><span class="p">(</span><span class="s1">'::ffff:7f00:1'</span><span class="p">);</span>
+<a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="nv">$ip</span><span class="o">-&gt;</span><span class="na">toProtocolAppropriateAddress</span><span class="p">();</span> <span class="c1">// string("127.0.0.1")</span>
 </code></pre></div>
 <h3 id="binary">Binary</h3>
 <p><code>getBinary()</code> returns the 16 byte (4 bytes if using <code>IPv4</code>) binary string of the
 IP address. This will most likely contain non-printable characters, so is not
-appropriate for displaying. </p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="cp">&lt;?php</span>
-<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="k">use</span> <span class="nx">Darsyn\IP\Version\IPv4</span> <span class="k">as</span> <span class="nx">IP</span><span class="p">;</span>
-<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
-<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1">// The IPv4 address &quot;80.111.111.112&quot; just so happens to be, when converted to</span>
-<a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="c1">// binary, the same as the binary for the ASCII string &quot;Poop&quot;. Today you learnt</span>
-<a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="c1">// something new.</span>
-<a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>
-<a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="nv">$ip</span> <span class="o">=</span> <span class="nx">IP</span><span class="o">::</span><span class="na">factory</span><span class="p">(</span><span class="s1">&#39;80.111.111.112&#39;</span><span class="p">);</span>
-<a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="nv">$ip</span><span class="o">-&gt;</span><span class="na">getBinary</span><span class="p">();</span> <span class="c1">// string(&quot;Poop&quot;)</span>
+appropriate for displaying.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="k">use</span> <span class="nx">Darsyn\IP\Version\IPv4</span> <span class="k">as</span> <span class="nx">IP</span><span class="p">;</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
+<a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="c1">// The IPv4 address "80.111.111.112" just so happens to be, when converted to</span>
+<a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="c1">// binary, the same as the binary for the ASCII string "Poop". Today you learnt</span>
+<a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="c1">// something new.</span>
+<a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>
+<a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="nv">$ip</span> <span class="o">=</span> <span class="nx">IP</span><span class="o">::</span><span class="na">fromProtocol</span><span class="p">(</span><span class="s1">'80.111.111.112'</span><span class="p">);</span>
+<a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="nv">$ip</span><span class="o">-&gt;</span><span class="na">getBinary</span><span class="p">();</span> <span class="c1">// string("Poop")</span>
+</code></pre></div>
+<h3 id="octets">Octets</h3>
+<p><code>getOctets()</code> returns the individual bytes of the binary string as an array of
+integers between <code>0</code> and <code>255</code> (four entries for an IPv4 address, sixteen for
+IPv6). Calling it on an instance of <code>Multi</code> that contains a version 4 address
+returns the four octets of the embedded IPv4 address.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="k">use</span> <span class="nx">Darsyn\IP\Version\IPv4</span> <span class="k">as</span> <span class="nx">IP</span><span class="p">;</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
+<a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="nv">$ip</span> <span class="o">=</span> <span class="nx">IP</span><span class="o">::</span><span class="na">fromProtocol</span><span class="p">(</span><span class="s1">'127.0.0.1'</span><span class="p">);</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="nv">$ip</span><span class="o">-&gt;</span><span class="na">getOctets</span><span class="p">();</span> <span class="c1">// array(127, 0, 0, 1)</span>
+</code></pre></div>
+<h3 id="segments">Segments</h3>
+<p><code>getSegments()</code> returns the eight 16-bit segments (hextets) of an IPv6 address
+as an array of integers between <code>0</code> and <code>65535</code>. It is only available for the
+<code>IPv6</code> and <code>Multi</code> classes; calling it on an instance of <code>Multi</code> that contains a
+version 4 address will result in a <code>WrongVersionException</code> being thrown.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="k">use</span> <span class="nx">Darsyn\IP\Version\IPv6</span> <span class="k">as</span> <span class="nx">IP</span><span class="p">;</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="nv">$ip</span> <span class="o">=</span> <span class="nx">IP</span><span class="o">::</span><span class="na">fromProtocol</span><span class="p">(</span><span class="s1">'2001:db8::1'</span><span class="p">);</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="nv">$ip</span><span class="o">-&gt;</span><span class="na">getSegments</span><span class="p">();</span> <span class="c1">// array(8193, 3512, 0, 0, 0, 0, 0, 1)</span>
+</code></pre></div>
+<h3 id="integer">Integer</h3>
+<p><code>toInteger()</code> returns the unsigned 32-bit integer value of an IPv4 address,
+between <code>0</code> and <code>4294967295</code>. It is only available for the <code>IPv4</code> and <code>Multi</code>
+classes; calling it on an instance of <code>Multi</code> that contains a version 6 address
+will result in a <code>WrongVersionException</code> being thrown. The value can be
+re-parsed via <code>fromInteger()</code>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="k">use</span> <span class="nx">Darsyn\IP\Version\IPv4</span> <span class="k">as</span> <span class="nx">IP</span><span class="p">;</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>
+<a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="nv">$ip</span> <span class="o">=</span> <span class="nx">IP</span><span class="o">::</span><span class="na">fromProtocol</span><span class="p">(</span><span class="s1">'127.0.0.1'</span><span class="p">);</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="nv">$ip</span><span class="o">-&gt;</span><span class="na">toInteger</span><span class="p">();</span> <span class="c1">// int(2130706433)</span>
+</code></pre></div>
+<h3 id="integer-string">Integer String</h3>
+<p><code>toIntegerString()</code> returns the whole-address value in base-10 as a string, at
+any precision. It always reflects the full binary width of the address — four
+bytes for <code>IPv4</code>, sixteen for <code>IPv6</code> and <code>Multi</code>, <em>including</em> instances of
+<code>Multi</code> that contain an embedded version 4 address (use <code>toInteger()</code> for the
+embedded value). The value can be re-parsed via <code>fromIntegerString()</code>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="k">use</span> <span class="nx">Darsyn\IP\Version\IPv6</span> <span class="k">as</span> <span class="nx">IP</span><span class="p">;</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="nv">$ip</span> <span class="o">=</span> <span class="nx">IP</span><span class="o">::</span><span class="na">fromProtocol</span><span class="p">(</span><span class="s1">'::ffff:7f00:1'</span><span class="p">);</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="nv">$ip</span><span class="o">-&gt;</span><span class="na">toIntegerString</span><span class="p">();</span> <span class="c1">// string("281472812449793")</span>
+</code></pre></div>
+<h3 id="hexadecimal">Hexadecimal</h3>
+<p><code>toHexString()</code> returns the address as a fixed-width, lowercase hexadecimal
+string: eight characters for <code>IPv4</code>, thirty-two for <code>IPv6</code> and <code>Multi</code>
+(regardless of embedded state). The fixed width makes it suitable for sortable,
+indexable database columns, and it can be re-parsed via <code>fromHex()</code>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="k">use</span> <span class="nx">Darsyn\IP\Version\IPv4</span> <span class="k">as</span> <span class="nx">IP</span><span class="p">;</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="nv">$ip</span> <span class="o">=</span> <span class="nx">IP</span><span class="o">::</span><span class="na">fromProtocol</span><span class="p">(</span><span class="s1">'127.0.0.1'</span><span class="p">);</span>
+<a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="nv">$ip</span><span class="o">-&gt;</span><span class="na">toHexString</span><span class="p">();</span> <span class="c1">// string("7f000001")</span>
 </code></pre></div>
 <h2 id="string-casting">String Casting</h2>
-<p>Previous versions of this documentation specified that string casting for IP
-objects was enabled to get the binary string, but that was unfortunately untrue.
-Now, string casting is enabled for all version classes and the <code>__toString()</code>
-method is promised in <code>Darsyn\IP\IpInterface</code>:</p>
+<p>The canonical method for casting to a string is <code>toString()</code>.
+<code>\Stringable</code> is a PHP 8 feature and not available on all supported PHP versions,
+so <code>__toString()</code> is implemented independently (deferring to <code>toString()</code>). The
+returned string is in protocol-appropriate notation and can be re-parsed via
+<code>fromProtocol()</code>.</p>
 <ul>
-<li>String casting the <code>IPv4</code> class is the equivalent of <code>$ip-&gt;getDotAddress()</code>.</li>
+<li>String casting the <code>IPv4</code> class is the equivalent of <code>$ip-&gt;toDotAddress()</code>.</li>
 <li>String casting the <code>IPv6</code> class is the equivalent of
-  <code>$ip-&gt;getCompactedAddress()</code>.</li>
+  <code>$ip-&gt;toCompactedAddress()</code>.</li>
 <li>String casting the <code>Multi</code> class is the equivalent of
-  <code>$ip-&gt;getProtocolAppropriateAddress()</code>.</li>
+  <code>$ip-&gt;toProtocolAppropriateAddress()</code>.</li>
 </ul>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="cp">&lt;?php</span>
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="k">use</span> <span class="nx">Darsyn\IP\Version\Multi</span> <span class="k">as</span> <span class="nx">IP</span><span class="p">;</span>
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="nv">$ip</span> <span class="o">=</span> <span class="nx">IP</span><span class="o">::</span><span class="na">factory</span><span class="p">(</span><span class="s1">&#39;::ffff:7f00:1&#39;</span><span class="p">);</span>
-<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="nv">$printableString</span> <span class="o">=</span> <span class="p">(</span><span class="nx">string</span><span class="p">)</span> <span class="nv">$ip</span><span class="p">;</span> <span class="c1">// string(&quot;127.0.0.1&quot;)</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="k">use</span> <span class="nx">Darsyn\IP\Version\Multi</span> <span class="k">as</span> <span class="nx">IP</span><span class="p">;</span>
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="nv">$ip</span> <span class="o">=</span> <span class="nx">IP</span><span class="o">::</span><span class="na">fromProtocol</span><span class="p">(</span><span class="s1">'::ffff:7f00:1'</span><span class="p">);</span>
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="nv">$printableString</span> <span class="o">=</span> <span class="p">(</span><span class="nx">string</span><span class="p">)</span> <span class="nv">$ip</span><span class="p">;</span> <span class="c1">// string("127.0.0.1")</span>
+</code></pre></div>
+<h2 id="json-serialisation">JSON Serialisation</h2>
+<p>All IP classes implement <code>\JsonSerializable</code> (via <code>Contracts\OutputInterface</code>),
+so they can be passed directly to <code>json_encode()</code>. The serialised value is the
+canonical <code>toString()</code> notation, which can be re-parsed via <code>fromProtocol()</code>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="cp">&lt;?php</span>
+<a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="k">use</span> <span class="nx">Darsyn\IP\Version\Multi</span> <span class="k">as</span> <span class="nx">IP</span><span class="p">;</span>
+<a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a>
+<a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="nv">$ip</span> <span class="o">=</span> <span class="nx">IP</span><span class="o">::</span><span class="na">fromProtocol</span><span class="p">(</span><span class="s1">'::ffff:7f00:1'</span><span class="p">);</span>
+<a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="k">echo</span> <span class="nx">\json_encode</span><span class="p">([</span><span class="s1">'client_ip'</span> <span class="o">=&gt;</span> <span class="nv">$ip</span><span class="p">]);</span> <span class="c1">// string('{"client_ip":"127.0.0.1"}')</span>
 </code></pre></div>
 
 
@@ -890,10 +1267,13 @@ method is promised in <code>Darsyn\IP\IpInterface</code>:</p>
     </div>
     
     
-    <script id="__config" type="application/json">{"base": ".", "features": [], "search": "assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": [], "search": "assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="assets/javascripts/bundle.ad660dcc.min.js"></script>
+      <script src="assets/javascripts/bundle.a5f9d56c.min.js"></script>
       
     
   </body>
