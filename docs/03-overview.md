@@ -1,7 +1,6 @@
 # Overview
 
-> The `::factory()` static method is now deprecated. See the strict-parsing
-> named constructors below.
+> The `::factory()` static method is now deprecated. See Instantiation below.
 
 IP addresses get automatically validated on creation through the static named
 constructors; if the IP address supplied is invalid an
@@ -77,7 +76,7 @@ Many instances are constructed for all [helper](./04-helpers.md) and
 [type](./07-types.md) methods. Validating the input every time a new instance
 is constructed slows things down considerably, so to speed up internal
 processes the constructor does not perform any input validation. Because of
-this the constructor method has been kept private.
+this the constructor method is not public.
 
 ```php
 <?php
@@ -113,7 +112,7 @@ try {
 use Darsyn\IP\Version\IPv4;
 use Darsyn\IP\Exception;
 
-IPv4::factory('abcd'); // Accepted: the raw bytes become "97.98.99.100".
+IPv4::factory('abcd'); // Deprecated. Accepted: the raw bytes become "97.98.99.100".
 
 try {
     IPv4::fromProtocol('abcd');
@@ -121,10 +120,10 @@ try {
     echo 'Not valid IP notation, and never treated as raw bytes.';
 }
 
-IPv4::fromBinary("\x7f\x00\x00\x01");     // string("127.0.0.1")
-IPv4::fromHex('7f000001');                // string("127.0.0.1")
-IPv4::fromInteger(2130706433);            // string("127.0.0.1")
-IPv4::fromIntegerString('2130706433');    // string("127.0.0.1")
+IPv4::fromBinary("\x7f\x00\x00\x01")->toDotAddress();  // string("127.0.0.1")
+IPv4::fromHex('7f000001')->toDotAddress();             // string("127.0.0.1")
+IPv4::fromInteger(2130706433)->toDotAddress();         // string("127.0.0.1")
+IPv4::fromIntegerString('2130706433')->toDotAddress(); // string("127.0.0.1")
 ```
 
 Each strict constructor has a non-throwing companion `tryFrom*` that returns

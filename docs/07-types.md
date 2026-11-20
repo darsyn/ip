@@ -36,8 +36,8 @@ $rfc4291 = $ip->isMapped() || $ip->isCompatible(); // bool(false)
 
 Whether the IP is an IPv4-mapped IPv6 address (eg, `::ffff:7f00:1`), according
 to [RFC 4291 section 2.5.5.2](https://tools.ietf.org/html/rfc4291 "IP Version 6
-Addressing Architecture"). The `IPv4` class will always return `bool(false)` for
-this method.
+Addressing Architecture"). On the `IPv4` class this method is deprecated and
+always returns `bool(false)`.
 
 ```php
 <?php
@@ -51,8 +51,8 @@ $ip->isMapped(); // bool(true)
 
 Whether the IP is a 6to4-derived IPv6 address (eg, `2002:7f00:1::`), according
 to [RFC 3056](https://tools.ietf.org/html/rfc3056 "Connection of IPv6 Domains
-via IPv4 Clouds"). The `IPv4` class will always return `bool(false)` for this
-method.
+via IPv4 Clouds"). On the `IPv4` class this method is deprecated and always
+returns `bool(false)`.
 
 ```php
 <?php
@@ -66,8 +66,8 @@ $ip->isDerived(); // bool(true)
 
 Whether the IP is an IPv4-compatible IPv6 address (eg, `::7f00:1`), according to
 [RFC 4291 section 2.5.5.1](https://tools.ietf.org/html/rfc4291.html "IP Version
-6 Addressing Architecture"). The `IPv4` class will always return `bool(false)`
-for this method.
+6 Addressing Architecture"). On the `IPv4` class this method is deprecated and
+always returns `bool(false)`.
 
 > IPv4-compatible IPv6 addresses are deprecated in the RFC.
 
@@ -149,8 +149,8 @@ $ip->getEmbeddedIp()->toDotAddress(); // string("127.0.0.1")
 Whether the IP is reserved for link-local usage, according to [RFC
 3927](https://tools.ietf.org/html/rfc3927 "Dynamic Configuration of IPv4
 Link-Local Addresses") (IPv4) or [RFC 4291 section
-2.4](https://tools.ietf.org/html/rfc4291 "IP Version 6 Addressing Architecture")
-(IPv6).
+2.5.6](https://tools.ietf.org/html/rfc4291 "IP Version 6 Addressing
+Architecture") (IPv6).
 
 ```php
 <?php
@@ -165,7 +165,7 @@ $ip->isLinkLocal(); // bool(false)
 Whether the IP is a loopback address, according to [RFC 1122 section
 3.2.1.3](https://tools.ietf.org/html/rfc1122 "Requirements for Internet Hosts --
 Communication Layers") (IPv4) or [RFC 4291 section
-2.5.3](https://tools.ietf.org/html/rfc2373 "IP Version 6 Addressing
+2.5.3](https://tools.ietf.org/html/rfc4291 "IP Version 6 Addressing
 Architecture") (IPv6).
 
 ```php
@@ -209,10 +209,11 @@ $ip->isPrivateUse(); // bool(false)
 
 ### Unspecified
 
-Whether the IP is unspecified, according to
-[RFC 5735](https://tools.ietf.org/html/rfc5735 "Special Use IPv4 Addresses")
-(IPv4) or [RFC 2373 section 2.5.2](https://tools.ietf.org/html/rfc2373 "IP
-Version 6 Addressing Architecture") (IPv6).
+Whether the IP is unspecified, according to [RFC 1122 section
+3.2.1.3](https://tools.ietf.org/html/rfc1122 "Requirements for Internet Hosts --
+Communication Layers") (IPv4) or [RFC 4291 section
+2.5.2](https://tools.ietf.org/html/rfc4291 "IP Version 6 Addressing
+Architecture") (IPv6).
 
 ```php
 <?php
@@ -244,8 +245,11 @@ $ip->isBenchmarking(); // bool(false)
 
 Whether the IP is in range designated for documentation, according to
 [RFC 5737](https://tools.ietf.org/html/rfc5737 "IPv4 Address Blocks Reserved for
-Documentation") (IPv4) or [RFC 3849](https://tools.ietf.org/html/rfc3849 "IPv6
-Address Prefix Reserved for Documentation") (IPv6).
+Documentation") and [RFC 5771 section 9.2](https://tools.ietf.org/html/rfc5771
+"IANA Guidelines for IPv4 Multicast Address Assignments") (IPv4), or [RFC
+3849](https://tools.ietf.org/html/rfc3849 "IPv6 Address Prefix Reserved for
+Documentation") and [RFC 9637](https://tools.ietf.org/html/rfc9637 "Expanding
+the IPv6 Documentation Space") (IPv6).
 
 ```php
 <?php
@@ -278,8 +282,8 @@ IPv6 address (non IPv4-embedded).
 
 ### Broadcast
 
-Whether the IP is a broadcast address, according to
-[RFC 919](https://tools.ietf.org/html/rfc919 "BROADCASTING INTERNET DATAGRAMS").
+Whether the IP is a broadcast address, according to [RFC 919 section
+7](https://tools.ietf.org/html/rfc919 "BROADCASTING INTERNET DATAGRAMS").
 
 ```php
 <?php
@@ -291,8 +295,12 @@ IPv4::fromProtocol('255.255.255.255')->isBroadcast(); // bool(true)
 
 ### Reserved for Future Use
 
-Whether the IP is reserved for future use, according to [RFC
-1112](https://tools.ietf.org/html/rfc1112 "Host Extensions for IP Multicasting").
+Whether the IP is reserved for future use, according to [RFC 1112 section
+4](https://tools.ietf.org/html/rfc1112 "Host Extensions for IP Multicasting").
+The limited broadcast address `255.255.255.255` is not included, because it has
+its own special-purpose registry entry ([RFC
+8190](https://tools.ietf.org/html/rfc8190 "Updates to the Special-Purpose IP
+Address Registries")).
 
 ```php
 <?php
@@ -321,6 +329,8 @@ IPv4::fromProtocol('100.127.43.2')->isShared(); // bool(true)
 ### Multicast Scope
 
 The specific scope of the multicast address (returns `null` if not a multicast address).
+Scope values are defined by [RFC 7346 section 2](https://tools.ietf.org/html/rfc7346
+"IPv6 Multicast Address Scopes").
 The following constants are available on `Darsyn\IP\Version\Version6Interface`:
 
 - `MULTICAST_INTERFACE_LOCAL`
@@ -369,7 +379,7 @@ IPv6::fromProtocol('::ffff:1:0')->isUnicast(); // bool(true)
 ### Unicast Global
 
 Whether the IP is a globally routable unicast address, according to [RFC 4291
-section 2.5.4](https://tools.ietf.org/html/rfc2941 "IP Version 6 Addressing
+section 2.5.4](https://tools.ietf.org/html/rfc4291 "IP Version 6 Addressing
 Architecture").
 
 ```php
